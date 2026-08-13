@@ -1,0 +1,38 @@
+<svg viewBox="0 0 400 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="10" width="100" height="100" rx="20" fill="url(#logo_bg)" />
+  
+  <!-- Book Base -->
+  <path d="M25 80C35 75 48 75 60 80C72 75 85 75 95 80V45C85 40 72 40 60 45C48 40 35 40 25 45V80Z" fill="#0B2A4A" stroke="#087F96" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M60 45V80" stroke="#DDF4F7" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Cart -->
+  <path d="M35 42H39L45 60H75L81 46H43" stroke="#DDF4F7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="48" cy="65" r="2.5" fill="#DDF4F7"/>
+  <circle cx="72" cy="65" r="2.5" fill="#DDF4F7"/>
+  
+  <!-- Career Steps -->
+  <rect x="45" y="34" width="6" height="9" rx="1" fill="#087F96"/>
+  <rect x="54" y="29" width="6" height="14" rx="1" fill="#087F96"/>
+  <rect x="63" y="23" width="6" height="20" rx="1" fill="#056B80"/>
+  <rect x="72" y="17" width="6" height="26" rx="1" fill="#DDF4F7"/>
+  
+  <!-- Trend Line -->
+  <path d="M40 38L53 28L64 22L77 14" stroke="#34A853" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Rising Human -->
+  <circle cx="82" cy="19" r="4" fill="#FFFFFF"/>
+  <path d="M76 32C77 27 80 25 82 25C84 25 87 27 88 32" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M83 25L90 17" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Text -->
+  <text x="125" y="55" font-family="'Montserrat', 'Poppins', sans-serif" font-weight="900" font-size="22" fill="#0B2A4A" letter-spacing="-0.5">PERAKENDE <tspan fill="#087F96">KARİYER</tspan></text>
+  <text x="125" y="80" font-family="'Montserrat', 'Poppins', sans-serif" font-weight="800" font-size="20" fill="#0B2A4A" letter-spacing="-0.5">AKADEMİSİ</text>
+  <text x="125" y="100" font-family="'Inter', sans-serif" font-weight="500" font-size="11" fill="#056B80">Perakendecilikte Kariyer Yolculuğunuzun Adresi</text>
+
+  <defs>
+    <linearGradient id="logo_bg" x1="10" y1="10" x2="110" y2="110" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B2A4A"/>
+      <stop offset="1" stop-color="#061B33"/>
+    </linearGradient>
+  </defs>
+</svg>

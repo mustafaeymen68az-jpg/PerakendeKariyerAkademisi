@@ -1,0 +1,302 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id             String           @id @default(uuid())
+  name           String
+  email          String           @unique
+  password       String
+  role           String           // "ADMIN" | "TRAINER" | "COMPANY_MANAGER" | "DEPT_MANAGER" | "PARTICIPANT"
+  companyId      String?
+  company        Company?         @relation(fields: [companyId], references: [id])
+  branchId       String?
+  branch         Branch?          @relation(fields: [branchId], references: [id])
+  departmentId   String?
+  department     Department?      @relation(fields: [departmentId], references: [id])
+  enrollments    Enrollment[]
+  certificates   Certificate[]
+  kpiResults     KpiResult[]
+  notifications  Notification[]
+  auditLogs      AuditLog[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model Company {
+  id            String            @id @default(uuid())
+  name          String
+  logo          String?
+  industry      String?
+  subCount      Int               @default(0) // Şube sayısı
+  employeeCount Int               @default(0) // Çalışan sayısı
+  branches      Branch[]
+  users         User[]
+  requests      TrainingRequest[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model Branch {
+  id        String   @id @default(uuid())
+  name      String
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Department {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  slug        String       @unique
+  description String?
+  trainings   Training[]   // Many-to-many
+  users       User[]
+  kpis        KpiDefinition[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Category {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  trainings   Training[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Training {
+  id               String            @id @default(uuid())
+  title            String
+  slug             String            @unique
+  duration         Int               // Saat cinsinden
+  level            String            // "TEMEL" | "GOREV" | "YONETICI" | "ILERI_YONETIM" | "STRATEJIK"
+  format           String            // "ONLINE" | "YUZ_YUZE" | "HIBRIZ"
+  type             String            // "KURUMSAL" | "BIREYSEL" | "HER_IKISI"
+  targetAudience   String?
+  description      String?
+  objectives       String?           // Eğitimin amacı
+  content          String?           // Eğitim içeriği
+  achievements     String?           // Kazanımlar
+  prerequisites    String?           // Ön koşullar
+  examMethod       String?           // Ölçme değerlendirme yöntemi
+  kpis             String?           // Takip edilecek KPI'lar
+  trainerId        String?
+  trainer          Trainer?          @relation(fields: [trainerId], references: [id])
+  date             DateTime?
+  location         String?
+  capacity         Int?
+  status           String            @default("AKTIF") // "AKTIF" | "PLANLANDI" | "TAMAMLANDI"
+  certStatus       Boolean           @default(true)
+  coverImage       String?
+  tags             String?           // Virgülle ayrılmış etiketler
+  published        Boolean           @default(true)
+  
+  departments      Department[]      // Many-to-many
+  categoryId       String?
+  category         Category?         @relation(fields: [categoryId], references: [id])
+  programModules   ProgramModule[]
+  sessions         TrainingSession[]
+  enrollments      Enrollment[]
+  certificates     Certificate[]
+  documents        Document[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model TrainingProgram {
+  id               String          @id @default(uuid())
+  name             String
+  slug             String          @unique
+  objective        String?
+  targetAudience   String?
+  totalDuration    Int             @default(0) // Saat
+  certRequirements String?
+  examMethod       String?
+  kpis             String?
+  modules          ProgramModule[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model ProgramModule {
+  id         String          @id @default(uuid())
+  programId  String
+  program    TrainingProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  trainingId String
+  training   Training        @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  order      Int             // Sıralama
+}
+
+model Trainer {
+  id          String     @id @default(uuid())
+  name        String
+  title       String?
+  bio         String?
+  experience  String?
+  specialty   String?
+  linkedin    String?
+  image       String?
+  trainings   Training[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model TrainingSession {
+  id                String       @id @default(uuid())
+  trainingId        String
+  training          Training     @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  date              DateTime
+  time              String?
+  format            String
+  location          String?
+  capacity          Int
+  remainingCapacity Int
+  status            String       @default("ACIK") // "ACIK" | "DOLU" | "IPTAL"
+  enrollments       Enrollment[]
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+}
+
+model Enrollment {
+  id         String           @id @default(uuid())
+  userId     String
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trainingId String
+  training   Training         @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  sessionId  String?
+  session    TrainingSession? @relation(fields: [sessionId], references: [id])
+  status     String           @default("DEVAM_EDIYOR") // "DEVAM_EDIYOR" | "TAMAMLANDI" | "IPTAL"
+  progress   Int              @default(0) // 0-100
+  examScore  Int?
+  kpiScore   Int?
+  feedback   String?
+  evaluation Evaluation?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
+
+model Exam {
+  id         String     @id @default(uuid())
+  title      String
+  trainingId String?    @unique
+  questions  Question[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Question {
+  id        String   @id @default(uuid())
+  examId    String
+  exam      Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  text      String
+  options   String   // JSON string or serialized array (Option A|Option B|Option C|Option D)
+  answer    String   // Correct option (e.g. "A" or text)
+}
+
+model Certificate {
+  id         String   @id @default(uuid())
+  code       String   @unique
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trainingId String
+  training   Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  issueDate  DateTime @default(now())
+  status     String   @default("AKTIF") // "AKTIF" | "GECERSIZ"
+  pdfPath    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model TrainingRequest {
+  id            String   @id @default(uuid())
+  name          String
+  companyName   String
+  title         String?  // Katılımcının unvanı
+  phone         String
+  email         String
+  city          String
+  subCount      Int?
+  employeeCount Int?
+  department    String?
+  training      String?
+  count         Int?     // Katılımcı sayısı
+  format        String?  // ONLINE | YUZ_YUZE
+  date          DateTime?
+  notes         String?
+  gdpr          Boolean  @default(false)
+  status        String   @default("BEKLIYOR") // "BEKLIYOR" | "INCELEMEDE" | "ONAYLANDI" | "REDDEDILDI"
+  companyId     String?
+  company       Company? @relation(fields: [companyId], references: [id])
+  createdAt     DateTime @default(now())
+}
+
+model Evaluation {
+  id           String     @id @default(uuid())
+  enrollmentId String     @unique
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  score        Int        // 1-5 yıldız
+  comments     String?
+  createdAt    DateTime   @default(now())
+}
+
+model KpiDefinition {
+  id           String      @id @default(uuid())
+  departmentId String
+  department   Department  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  name         String
+  unit         String      // "TL" | "%" | "Adet" | "Gün" | "Saat"
+  target       String?
+  description  String?
+  results      KpiResult[]
+}
+
+model KpiResult {
+  id          String        @id @default(uuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kpiId       String
+  kpi         KpiDefinition @relation(fields: [kpiId], references: [id], onDelete: Cascade)
+  valueBefore Float
+  valueAfter  Float
+  date        DateTime      @default(now())
+  notes       String?
+}
+
+model Document {
+  id         String   @id @default(uuid())
+  trainingId String
+  training   Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  name       String
+  type       String   // "PDF" | "PPTX" | "XLSX" | "VIDEO"
+  url        String
+  size       String?
+  createdAt  DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String
+  details   String?
+  timestamp DateTime @default(now())
+}
