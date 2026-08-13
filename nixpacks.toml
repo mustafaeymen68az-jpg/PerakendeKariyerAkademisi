@@ -1,6 +1,4 @@
-[phases.setup]
-nixPkgs = ["python3", "gcc", "gnumake"]
-
 [variables]
 NIXPACKS_NODE_VERSION = "20"
+NIXPACKS_PKGS = "python3 gcc gnumake"
 PORT = "3000"
