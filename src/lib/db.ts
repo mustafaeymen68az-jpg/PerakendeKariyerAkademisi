@@ -4,7 +4,8 @@ import { PrismaClient } from '@prisma/client';
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 function createPrismaClient() {
-  const url = process.env.DATABASE_URL || 'file:./dev.db';
+  const rawUrl = process.env.DATABASE_URL || 'dev.db';
+  const url = rawUrl.replace(/^file:/, '');
   const adapter = new PrismaBetterSqlite3({ url });
   return new PrismaClient({ adapter });
 }
