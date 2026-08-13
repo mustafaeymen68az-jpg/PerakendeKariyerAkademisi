@@ -1,4 +1,6 @@
-[setup]
+pkgs = ["python3", "gcc", "gnumake"]
+
+[nixpkgs]
 pkgs = ["python3", "gcc", "gnumake"]
 
 [variables]
