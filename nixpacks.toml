@@ -1,7 +1,5 @@
-pkgs = ["python3", "gcc", "gnumake"]
-
-[nixpkgs]
-pkgs = ["python3", "gcc", "gnumake"]
+[phases.setup]
+nixPkgs = ["python3", "gcc", "gnumake"]
 
 [variables]
 NIXPACKS_NODE_VERSION = "20"
