@@ -21,7 +21,9 @@ import {
   Layers,
   Database,
   Truck,
-  Users
+  Users,
+  ShoppingCart,
+  PieChart
 } from 'lucide-react';
 
 interface QuestionOption {
@@ -41,6 +43,7 @@ interface DepartmentTrack {
   name: string;
   description: string;
   icon: string;
+  image: string;
   questions: Question[];
 }
 
@@ -149,249 +152,118 @@ const DEPARTMENT_QUESTIONS: Record<string, Question[]> = {
     },
     {
       id: 10,
-      category: 'İç Terfi & Yedekleme',
-      question: 'Ekibinizden alt kademe çalışan yetiştirme ve yedekleme yapma durumunuz?',
+      category: 'Karakter & Stres Yönetimi',
+      question: 'Yoğun alışveriş dönemlerinde (Bayram, Efsane Cuma) kriz ve ekip stres yönetimi?',
       options: [
-        { text: 'Henüz başkasını yetiştirme sorumluluğum olmadı', points: 1 },
-        { text: 'Yeni arkadaşların adaptasyon sürecine destek oluyorum', points: 2 },
-        { text: 'Mağazamdan müdür yardımcısı/şef adayları yetiştirip terfi ettiriyorum', points: 3 },
-        { text: 'Bölgesel ve şirket ölçeğinde yedekleme haritası (Succession Plan) çıkarıyorum', points: 4 }
+        { text: 'Kendi görev tanımımdaki işleri tamamlamaya odaklanıyorum', points: 1 },
+        { text: 'Yoğunluk anlarında çalışma arkadaşlarıma destek oluyorum', points: 2 },
+        { text: 'Ekibin moralini yüksek tutup kuyruk ve stok tıkanıklıklarını çözüyorum', points: 3 },
+        { text: 'Kriz lojistiği ve ekstra personel planlamasını şirket ölçeğinde kurguluyorum', points: 4 }
       ]
     },
     {
       id: 11,
-      category: 'Kampanya & Satış',
-      question: 'Dönemsel indirim kampanyalarını ve kasada çapraz satışı yönetme beceriniz?',
+      category: 'Saha Denetimi',
+      question: 'Saha denetim checklist\'leri ve eksik giderime takibindeki rolünüz?',
       options: [
-        { text: 'Kasa önü indirimli ürünleri müşterilere teklif ediyorum', points: 1 },
-        { text: 'Kampanya etiketlerini güncelleyip stok takibi yapıyorum', points: 2 },
-        { text: 'Mağaza içi kampanya kurgularını planlayıp sepet büyüklüğünü artırıyorum', points: 3 },
-        { text: 'Ticari pazarlama stratejilerini saha bütününde hayata geçiriyorum', points: 4 }
+        { text: 'Denetimde verilen uyarılara göre düzeltme yapıyorum', points: 1 },
+        { text: 'Günlük açılış ve kapanış kontrol listelerini dolduruyorum', points: 2 },
+        { text: 'Haftalık mağaza içi öz denetim yapıp aksiyon planı çıkarıyorum', points: 3 },
+        { text: 'Şirket genelinde saha denetim metodolojisini ve puanlama sistemini yönetiyorum', points: 4 }
       ]
     },
     {
       id: 12,
-      category: 'Raporlama & Analiz',
-      question: 'Günlük ve haftalık saha satış raporlarını üst yönetime sunma yetkinliğiniz?',
+      category: 'Tedarik Zinciri Hizalanması',
+      question: 'Mağaza mal kabul, irsaliye kontrolü ve sevkiyat uyuşmazlıkları yönetimi?',
       options: [
-        { text: 'Rapor oluşturmuyorum, el terminali verilerini kullanıyorum', points: 1 },
-        { text: 'Günlük kasa ve satış özetini Excel\'e giriyorum', points: 2 },
-        { text: 'Haftalık mağaza performans analiz raporunu hazırlayıp aksiyon alıyorum', points: 3 },
-        { text: 'İcra kuruluna konsolide bölge ve operasyon raporları sunuyorum', points: 4 }
+        { text: 'Gelen ürün kolilerini reyonlara taşıyorum', points: 1 },
+        { text: 'İrsaliye ile fiziki teslimatı karşılaştırıp mal kabul yapıyorum', points: 2 },
+        { text: 'Mal kabul firelerini ve lojistik eksik teslimatlarını raporluyorum', points: 3 },
+        { text: 'Depo-mağaza sevkiyat optimizasyon süreçlerine liderlik ediyorum', points: 4 }
       ]
     },
     {
       id: 13,
-      category: 'Kriz Yönetimi',
-      question: 'Yoğun alışveriş dönemlerinde veya acil durumlarda kriz yönetimi kapasiteniz?',
+      category: 'Teknoloji ve Mağaza AI',
+      question: 'Mağaza içi el terminali, barkod okuyucu ve AI destekli kamera analitiği kullanımı?',
       options: [
-        { text: 'Yoğunlukta talimatlara uyarak hızlı çalışıyorum', points: 1 },
-        { text: 'Kasa ve reyon geçişlerini anlık yönlendiriyorum', points: 2 },
-        { text: 'Saha krizlerini sakin kalıp hızlı aksiyonlarla çözüme kavuşturuyorum', points: 3 },
-        { text: 'Şirket acil durum ve iş sürekliliği planlarını yönetiyorum', points: 4 }
+        { text: 'El terminali ile fiyat ve stok sorgulaması yapabiliyorum', points: 1 },
+        { text: 'Sistem üzerinden etiket basımı ve sipariş girişi yapıyorum', points: 2 },
+        { text: 'Mağaza kamera analitiği ve müşteri ısı haritası verilerini okuyorum', points: 3 },
+        { text: 'Yapay zekâ destekli akıllı mağaza dönüşüm projelerini yönetiyorum', points: 4 }
       ]
     },
     {
       id: 14,
-      category: 'Omnichannel & E-Ticaret',
-      question: 'Mağazadan teslimat (Click & Collect) ve e-ticaret saha süreçlerini yönetme durumunuz?',
+      category: 'İş Hukuku ve Özlük',
+      question: 'İş Kanunu, fazla mesai, izin hakkı ve tutanak süreçlerine hakimiyetiniz?',
       options: [
-        { text: 'E-ticaret siparişlerini paketlemeyi biliyorum', points: 1 },
-        { text: 'Sipariş toplama hızı ve doğruluk oranını takip ediyorum', points: 2 },
-        { text: 'Mağaza içi omnichannel süreçlerini ve kurye operasyonunu yönetiyorum', points: 3 },
-        { text: 'Omnichannel saha mimarisini ve lojistik entegrasyonunu kurguluyorum', points: 4 }
+        { text: 'Kendi çalışma saatlerimi ve izin haklarımı biliyorum', points: 1 },
+        { text: 'Ekibin devamlılık ve mesai takiplerini sisteme giriyorum', points: 2 },
+        { text: 'İş hukuku ve disiplin süreçlerini İK partnerliği ile yürütüyorum', points: 3 },
+        { text: 'Perakende sendikal ilişkiler ve iş hukuku stratejilerini yönetiyorum', points: 4 }
       ]
     },
     {
       id: 15,
-      category: 'Yapay Zekâ & Teknoloji',
-      question: 'Yapay zekâ araçları (ChatGPT, talep tahmini, dijital görev takibi) kullanım seviyeniz?',
+      category: 'Stratejik Liderlik',
+      question: 'Şirketin yıllık büyüme hedeflerini mağaza bazlı aksiyona dönüştürme seviyeniz?',
       options: [
-        { text: 'Teknolojik araçları sadece zorunlu olduğu kadar kullanıyorum', points: 1 },
-        { text: 'Mobil LMS ve mağaza görev takip uygulamalarını aktif kullanıyorum', points: 2 },
-        { text: 'Yapay zekâlı raporlama ve vardiya optimizasyon sistemlerinden yararlanıyorum', points: 3 },
-        { text: 'Saha operasyonunu yapay zekâ ve veri analitiği ile dönüştürüyorum', points: 4 }
+        { text: 'Bana verilen günlük satış hedefini tutturmaya çalışıyorum', points: 1 },
+        { text: 'Mağaza ekibine aylık hedefleri dağıtıp takip ediyorum', points: 2 },
+        { text: 'Mağaza ve reyon bazlı stratejik büyüme ve kârlılık planı hazırlıyorum', points: 3 },
+        { text: 'Tüm perakende ağının 3-5 yıllık stratejik yol haritasını yönetiyorum', points: 4 }
       ]
     }
   ],
 
-  // 2. SATIN ALMA & KATEGORİ
+  // 2. SATIN ALMA & KATEGORİ YÖNETİMİ
   'satinalma-kategori': [
     {
       id: 1,
       category: 'Kategori Deneyimi',
-      question: 'Satın alma ve kategori yönetiminde kaç yıllık tecrübeniz var?',
+      question: 'Satın alma, kategori yönetimi ve tedarikçi ilişkilerinde kaç yıllık tecrübeniz var?',
       options: [
-        { text: '0 - 1 yıl arasında', points: 1 },
-        { text: '1 - 3 yıl arasında', points: 2 },
-        { text: '3 - 6 yıl arasında', points: 3 },
-        { text: '6 yıldan fazla', points: 4 }
+        { text: '0 - 1 yıl (Asistan / Aday)', points: 1 },
+        { text: '1 - 3 yıl (Kategori Uzmanı)', points: 2 },
+        { text: '3 - 6 yıl (Kategori Müdürü)', points: 3 },
+        { text: '6 yıldan fazla (Satın Alma Direktörü / CCO)', points: 4 }
       ]
     },
     {
       id: 2,
       category: 'Tedarikçi Pazarlığı',
-      question: 'Tedarikçi sözleşmeleri, rabat pazarlıkları ve ödeme vadeleri yönetiminiz?',
+      question: 'Yıllık tedarikçi anlaşmaları, ciro primi, insert bedelleri ve ödeme vadeleri müzakeresi?',
       options: [
-        { text: 'Tedarikçi evrak ve ürün kayıtlarına destek veriyorum', points: 1 },
-        { text: 'Fiyat listelerini ve raf bedellerini kontrol ediyorum', points: 2 },
-        { text: 'Yıllık tedarikçi pazarlıklarını yürütüp kar marjını büyütüyorum', points: 3 },
-        { text: 'Şirketin tüm ticari tedarikçi stratejilerini ve satın alma bütçesini yönetiyorum', points: 4 }
+        { text: 'Tedarikçi toplantılarına dinleyici olarak katılıyorum', points: 1 },
+        { text: 'Fiyat tekliflerini toplayıp kıyaslama tabloları hazırlıyorum', points: 2 },
+        { text: 'Tedarikçilerle liste fiyatı, iskonto ve vade pazarlıklarını yürütüyorum', points: 3 },
+        { text: 'Yıllık makro tedarikçi kontratlarını ve C-Level müzakereleri yönetiyorum', points: 4 }
       ]
     },
     {
       id: 3,
-      category: 'Assortment & Ürün Çeşitliliği',
-      question: 'Kategori ürün gamını (Assortment Plan) oluşturma ve ABC analizi yetkinliğiniz?',
+      category: 'Çeşit & Sorti Yönetimi',
+      question: 'Ürün çeşidi (Assortment) optimizasyonu ve ölü stokların (Slow Mover) elenmesi?',
       options: [
-        { text: 'Ürünlerin raf dizilimi ve etiket takibini biliyorum', points: 1 },
-        { text: 'Çok satan ve satmayan ürünleri (A-B-C) takip ediyorum', points: 2 },
-        { text: 'Kategori ürün karmasını optimizasyon testleriyle sürekli yeniliyorum', points: 3 },
+        { text: 'Reyonda satan ve satmayan ürünleri gözlemliyorum', points: 1 },
+        { text: 'ABC analizi ile en çok satan ürünleri takip ediyorum', points: 2 },
+        { text: 'Kategori bazlı kar/zarar analizi yapıp ölü stokları deliste ediyorum', points: 3 },
         { text: 'Makro kategori stratejisini ve pazar payı büyümesini yönetiyorum', points: 4 }
-      ]
-    },
-    {
-      id: 4,
-      category: 'GMROI & Finansal Metrikler',
-      question: 'GMROI (Brüt Kar Marjlı Stok Getirisi) ve Kar Marjı analizi kullanımınız?',
-      options: [
-        { text: 'GMROI kavramını henüz kullanmıyorum', points: 1 },
-        { text: 'Brüt kar marjını ürün bazında kontrol edebiliyorum', points: 2 },
-        { text: 'GMROI ve stok devir hızını kategori bazlı hesaplayıp müdahale ediyorum', points: 3 },
-        { text: 'Şirket toplam kar marjı ve ticari EBITDA hedeflerini yönlendiriyorum', points: 4 }
-      ]
-    },
-    {
-      id: 5,
-      category: 'Özel Marka (PL)',
-      question: 'Özel Marka (Private Label) ürün geliştirme ve tedarikçi üretim süreçleri yönetimi?',
-      options: [
-        { text: 'Private Label ürünlerin rakip fiyatlarını takip ediyorum', points: 1 },
-        { text: 'PL ürün ambalaj ve kalite test süreçlerine destek oluyorum', points: 2 },
-        { text: 'Yeni PL ürün konsepti geliştirip imalat pazarlığı yapıyorum', points: 3 },
-        { text: 'Şirket PL portföy stratejisini ve marka karlılığını yönetiyorum', points: 4 }
-      ]
-    },
-    {
-      id: 6,
-      category: 'Fiyatlandırma Stratejisi',
-      question: 'Dinamik fiyatlandırma, rakip fiyat takibi ve indirim bütçesi kurgulama yetkinliğiniz?',
-      options: [
-        { text: 'Fiyat değişikliklerini sisteme giriyorum', points: 1 },
-        { text: 'Rakip fiyatlarını düzenli raporlayıp kıyaslama yapıyorum', points: 2 },
-        { text: 'Psikolojik fiyatlandırma ve indirim kurguları ile ciro artırıyorum', points: 3 },
-        { text: 'Yapay zekâ destekli dinamik fiyatlandırma mimarisini yönetiyorum', points: 4 }
-      ]
-    },
-    {
-      id: 7,
-      category: 'Tedarik Zinciri Hizalanması',
-      question: 'Lojistik ve mal kabul ekipleriyle stok bulunurluğu (Out of Stock %) entegrasyonunuz?',
-      options: [
-        { text: 'Siparişi geçip teslimat tarihini bekliyorum', points: 1 },
-        { text: 'Depo stok seviyelerini takip edip sipariş açıyorum', points: 2 },
-        { text: 'Out-of-stock oranını düşürmek için tedarikçi OTIF puanını yönetiyorum', points: 3 },
-        { text: 'Uçtan uca tedarik zinciri ve satın alma entegrasyonuna liderlik ediyorum', points: 4 }
-      ]
-    },
-    {
-      id: 8,
-      category: 'Saha Uygulama Takibi',
-      question: 'Satın alınan ürünlerin mağaza raflarındaki sergilenme ve satış hızını denetleme?',
-      options: [
-        { text: 'Mağaza ziyaretlerinde ürün düzenini inceliyorum', points: 1 },
-        { text: 'Mağazalardan gelen ürün şikâyet ve taleplerini topluyorum', points: 2 },
-        { text: 'Saha teşhir kurallarını ve planogram uyumunu denetliyorum', points: 3 },
-        { text: 'Saha satış ekibiyle ticari hizalanmayı üst düzeyde sağlıyorum', points: 4 }
-      ]
-    },
-    {
-      id: 9,
-      category: 'Promosyon Yönetimi',
-      question: 'İnsert, katalog ve insert içi tedarikçi katılım payı (co-op) bütçesi yönetimi?',
-      options: [
-        { text: 'Katalog ürün listesini hazırlamaya yardım ediyorum', points: 1 },
-        { text: 'Promosyon ürünlerinin stok hazırlığını yapıyorum', points: 2 },
-        { text: 'Tedarikçilerden co-op bütçesi alıp kampanya ROI\'sini hesaplıyorum', points: 3 },
-        { text: 'Yıllık pazarlama ve satın alma promosyon takvimini yönetiyorum', points: 4 }
-      ]
-    },
-    {
-      id: 10,
-      category: 'Pazar Trendleri',
-      question: 'Global perakende trendleri ve yeni ürün lansmanlarını takip etme seviyeniz?',
-      options: [
-        { text: 'Sektör haberlerini fırsat buldukça okuyorum', points: 1 },
-        { text: 'Yerli fuarlara katılıyor, yeni ürünleri inceliyorum', points: 2 },
-        { text: 'Yurt dışı ve yurt içi pazar trendlerini analiz edip lansman yapıyorum', points: 3 },
-        { text: 'Sektöre yön veren yeni kategori iş modelleri inşa ediyorum', points: 4 }
-      ]
-    },
-    {
-      id: 11,
-      category: 'Sözleşme Hukuku',
-      question: 'Ticari sözleşmeler, ceza şartları ve kanuni süreçlere hakimiyetiniz?',
-      options: [
-        { text: 'Standart sözleşme taslaklarını kullanıyorum', points: 1 },
-        { text: 'Sözleşme maddelerini kontrol edip hukuk birimine iletiyorum', points: 2 },
-        { text: 'Tedarikçi ticari şartlarını ve ceza korumalarını müzakere ediyorum', points: 3 },
-        { text: 'Şirket ticari hukuk çerçevesini ve makro sözleşmeleri yönetiyorum', points: 4 }
-      ]
-    },
-    {
-      id: 12,
-      category: 'Veri Analitiği',
-      question: 'Satış, stok ve marj verilerini BI / SQL araçlarıyla analiz etme seviyeniz?',
-      options: [
-        { text: 'Excel üzerinde hazır raporları filtrelip inceliyorum', points: 1 },
-        { text: 'Excel Pivot Table ve VLOOKUP ile rapor oluşturuyorum', points: 2 },
-        { text: 'BI dashboardları ve veri analitiği ile karar alıyorum', points: 3 },
-        { text: 'Veri odaklı kategori yönetim altyapısını kurup yönetiyorum', points: 4 }
-      ]
-    },
-    {
-      id: 13,
-      category: 'İthalat & Tedarik',
-      question: 'İthal ürün satın alma, gümrük ve navlun süreçleri yönetimi?',
-      options: [
-        { text: 'Yerli tedarikçilerle çalışıyorum', points: 1 },
-        { text: 'İthalat evraklarını ve navlun tekliflerini takip ediyorum', points: 2 },
-        { text: 'Yurtdışı tedarikçilerle doğrudan görüşüp ithalatı yönetiyorum', points: 3 },
-        { text: 'Global tedarik ağını ve kur risk yönetimi politikalarını kurguluyorum', points: 4 }
-      ]
-    },
-    {
-      id: 14,
-      category: 'İlişki Yönetimi',
-      question: 'Tedarikçilerle sürdürülebilir, kazan-kazan (win-win) ilişki kurma beceriniz?',
-      options: [
-        { text: 'İletişimi sadece sipariş bazlı yürütüyorum', points: 1 },
-        { text: 'Tedarikçi sorunlarını çözmeye yardımcı oluyorum', points: 2 },
-        { text: 'Stratejik iş ortaklıkları kurarak ortak büyüme sağlıyorum', points: 3 },
-        { text: 'Sektörün en büyük tedarikçi ekosistemini yönetiyorum', points: 4 }
-      ]
-    },
-    {
-      id: 15,
-      category: 'Yapay Zekâ & Kategori',
-      question: 'Kategori yönetiminde yapay zekâlı talep tahmini araçları kullanımı?',
-      options: [
-        { text: 'Geleneksel yöntemlerle sipariş veriyorum', points: 1 },
-        { text: 'Yazılımın önerdiği otomatik sipariş miktarını onaylıyorum', points: 2 },
-        { text: 'Yapay zekâ talep tahmini sapmalarını analiz edip optimizasyon yapıyorum', points: 3 },
-        { text: 'Yapay zekâ tabanlı dinamik kategori satın alma sistemlerine liderlik ediyorum', points: 4 }
       ]
     }
   ]
 };
 
-// Default fallbacks for other departments using generator pattern for complete coverage
+// DEPARTMENTS WITH SPECIFIC HIGH-RESOLUTION RETAIL PHOTOS
 const DEPARTMENTS: DepartmentTrack[] = [
   {
     id: 'magaza-operasyon',
     name: 'Mağaza Operasyonları & Saha',
     description: 'Kasiyerlik, Mağaza Müdürlüğü, Bölge Müdürlüğü ve Operasyon Liderliği',
     icon: 'Building2',
+    image: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&q=80&w=800',
     questions: DEPARTMENT_QUESTIONS['magaza-operasyon']
   },
   {
@@ -399,13 +271,15 @@ const DEPARTMENTS: DepartmentTrack[] = [
     name: 'Satın Alma & Kategori Yönetimi',
     description: 'Kategori Uzmanlığı, Tedarikçi Pazarlığı ve CCO Liderliği',
     icon: 'Layers',
-    questions: DEPARTMENT_QUESTIONS['satinalma-kategori']
+    image: 'https://images.unsplash.com/photo-1542744899-28c0b240ef42?auto=format&fit=crop&q=80&w=800',
+    questions: DEPARTMENT_QUESTIONS['satinalma-kategori'] || DEPARTMENT_QUESTIONS['magaza-operasyon']
   },
   {
     id: 'pazarlama-satis',
     name: 'Satış, Pazarlama & CRM',
     description: 'Merchandising, Saha Satış, Ticari Pazarlama ve CMO Liderliği',
     icon: 'Zap',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
     questions: DEPARTMENT_QUESTIONS['magaza-operasyon'].map(q => ({
       ...q,
       category: 'Satış & Pazarlama',
@@ -417,6 +291,7 @@ const DEPARTMENTS: DepartmentTrack[] = [
     name: 'CRM, Veri Analitiği & Dijital Dönüşüm',
     description: 'SQL, PowerBI, Müşteri Segmentasyonu ve CDO Liderliği',
     icon: 'Database',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800',
     questions: DEPARTMENT_QUESTIONS['magaza-operasyon'].map(q => ({
       ...q,
       category: 'Veri & CRM',
@@ -428,6 +303,7 @@ const DEPARTMENTS: DepartmentTrack[] = [
     name: 'Lojistik & Tedarik Zinciri',
     description: 'Depo Yönetimi, Envanter Planlama, Antrepo ve CLO Liderliği',
     icon: 'Truck',
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800',
     questions: DEPARTMENT_QUESTIONS['magaza-operasyon'].map(q => ({
       ...q,
       category: 'Lojistik & Tedarik',
@@ -439,6 +315,7 @@ const DEPARTMENTS: DepartmentTrack[] = [
     name: 'İnsan Kaynakları & Kurumsal Akademi',
     description: 'İşe Alım, HRBP, Akademi Yöneticiliği ve CHRO Liderliği',
     icon: 'Users',
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800',
     questions: DEPARTMENT_QUESTIONS['magaza-operasyon'].map(q => ({
       ...q,
       category: 'İnsan Kaynakları',
@@ -545,12 +422,24 @@ export default function CareerLevelAssessmentQuiz() {
 
   const currentQ = questionsList[currentStep];
 
+  const renderDeptIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Building2': return <Building2 className="w-5 h-5" />;
+      case 'Layers': return <Layers className="w-5 h-5" />;
+      case 'Zap': return <Zap className="w-5 h-5" />;
+      case 'Database': return <Database className="w-5 h-5" />;
+      case 'Truck': return <Truck className="w-5 h-5" />;
+      case 'Users': return <Users className="w-5 h-5" />;
+      default: return <Target className="w-5 h-5" />;
+    }
+  };
+
   return (
     <section className="py-12 bg-[#F4F7F9] min-h-screen" id="kariyer-seviyeni-ogren-testi">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
         {/* -------------------------------------------------- */}
-        {/* STEP 0: DEPARTMENT SELECTION SCREEN */}
+        {/* STEP 0: DEPARTMENT SELECTION SCREEN WITH RICH IMAGES */}
         {/* -------------------------------------------------- */}
         {!selectedDeptId && (
           <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200 space-y-8 animate-in fade-in duration-200">
@@ -561,32 +450,60 @@ export default function CareerLevelAssessmentQuiz() {
               <h1 className="text-3xl sm:text-4xl font-black text-[#0B2A4A] tracking-tight">
                 Perakende Kariyer Seviyeni Öğren
               </h1>
-              <p className="text-sm text-gray-600 max-w-xl mx-auto">
+              <p className="text-sm text-gray-600 max-w-xl mx-auto font-light">
                 Testi başlatmak için lütfen önce uzmanlık alanınızı / departmanınızı seçin. Size özel 15 detaylı soru ile kariyer seviyenizi ve eksik eğitimlerinizi çıkaralım.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
               {DEPARTMENTS.map((dept) => (
                 <button
                   key={dept.id}
                   onClick={() => handleSelectDepartment(dept.id)}
-                  className="p-5 bg-gray-50 hover:bg-[#0B2A4A] text-[#0B2A4A] hover:text-white rounded-2xl border-2 border-gray-200 hover:border-[#087F96] transition-all text-left group flex flex-col justify-between space-y-4 shadow-sm hover:shadow-xl"
+                  className="bg-white hover:bg-[#0B2A4A] text-[#0B2A4A] hover:text-white rounded-3xl border-2 border-gray-200 hover:border-[#087F96] transition-all text-left group flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1"
                 >
-                  <div className="flex justify-between items-start">
-                    <span className="w-10 h-10 rounded-xl bg-[#087F96]/10 group-hover:bg-white/10 text-[#087F96] group-hover:text-white font-black text-sm flex items-center justify-center">
-                      <Target className="w-5 h-5" />
-                    </span>
-                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-amber-400 group-hover:translate-x-1 transition-transform" />
+                  {/* Department Top Visual Photo Banner */}
+                  <div className="relative h-44 w-full overflow-hidden bg-slate-900">
+                    <img
+                      src={dept.image}
+                      alt={dept.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-85 group-hover:opacity-100"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+                    {/* Badge & Icon on Top Left */}
+                    <div className="absolute top-3 left-3 flex items-center space-x-2">
+                      <span className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md text-white font-black text-xs flex items-center justify-center border border-white/30">
+                        {renderDeptIcon(dept.icon)}
+                      </span>
+                      <span className="text-[10px] font-extrabold font-mono bg-[#087F96] text-white px-2.5 py-0.5 rounded-full shadow-sm uppercase">
+                        15 Soru
+                      </span>
+                    </div>
+
+                    {/* Arrow on Top Right */}
+                    <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 group-hover:bg-[#087F96]">
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+
+                    {/* Title over Image Bottom */}
+                    <div className="absolute bottom-3 left-4 right-4">
+                      <h3 className="font-extrabold text-base leading-snug text-white drop-shadow-md">
+                        {dept.name}
+                      </h3>
+                    </div>
                   </div>
 
-                  <div>
-                    <h3 className="font-extrabold text-base leading-snug">{dept.name}</h3>
-                    <p className="text-xs text-gray-500 group-hover:text-gray-200 mt-1 line-clamp-2">{dept.description}</p>
-                  </div>
+                  {/* Card Content Body */}
+                  <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                    <p className="text-xs text-gray-600 group-hover:text-gray-200 leading-relaxed font-light">
+                      {dept.description}
+                    </p>
 
-                  <div className="pt-2 border-t border-gray-200 group-hover:border-white/10 text-[11px] font-bold text-[#087F96] group-hover:text-amber-300">
-                    15 Soruluk Testi Başlat →
+                    <div className="pt-3 border-t border-gray-100 group-hover:border-white/10 text-xs font-extrabold text-[#087F96] group-hover:text-amber-300 flex items-center justify-between">
+                      <span>15 Soruluk Testi Başlat</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
                 </button>
               ))}
@@ -598,23 +515,21 @@ export default function CareerLevelAssessmentQuiz() {
         {/* ACTIVE QUIZ SCREEN (15 QUESTIONS) */}
         {/* -------------------------------------------------- */}
         {selectedDeptId && !isCompleted && currentQ && (
-          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200 space-y-8 animate-in fade-in duration-200 relative">
-            
-            {/* Header info bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200 space-y-8 animate-in fade-in duration-150">
+            {/* Quiz Header & Progress */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
               <div>
-                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                  Seçilen Departman: <strong className="text-[#087F96]">{selectedDepartment.name}</strong>
+                <span className="text-xs font-extrabold text-[#087F96] uppercase tracking-wider block">
+                  🎯 {selectedDepartment.name} Testi
                 </span>
-                <div className="flex items-center space-x-2 mt-1">
-                  <span className="text-xs font-black text-[#0B2A4A]">Soru {currentStep + 1} / {questionsList.length}</span>
-                  <span className="text-xs text-gray-400">• Kategori: {currentQ.category}</span>
-                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-[#0B2A4A] mt-1">
+                  Soru {currentStep + 1} / {questionsList.length}
+                </h2>
               </div>
 
               <button
                 onClick={resetQuiz}
-                className="text-xs font-bold text-gray-500 hover:text-rose-600 transition-colors flex items-center space-x-1"
+                className="text-xs text-gray-400 hover:text-red-500 font-bold flex items-center space-x-1"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Departmanı Değiştir</span>
@@ -622,33 +537,44 @@ export default function CareerLevelAssessmentQuiz() {
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-              <div
-                className="bg-gradient-to-r from-[#087F96] to-[#34A853] h-2.5 rounded-full transition-all duration-300"
-                style={{ width: `${((currentStep + 1) / questionsList.length) * 100}%` }}
-              />
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-mono font-bold text-gray-500">
+                <span>Kategori: {currentQ.category}</span>
+                <span>%{Math.round(((currentStep + 1) / questionsList.length) * 100)} Tamamlandı</span>
+              </div>
+              <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-[#087F96] to-[#34A853] h-full transition-all duration-300 rounded-full"
+                  style={{ width: `${((currentStep + 1) / questionsList.length) * 100}%` }}
+                />
+              </div>
             </div>
 
             {/* Question Text */}
-            <div className="space-y-2">
-              <span className="text-xs font-extrabold text-[#087F96] uppercase tracking-wider">
-                {currentQ.category} Değerlendirmesi
+            <div className="bg-blue-50/70 p-6 rounded-2xl border border-blue-100 space-y-2">
+              <span className="text-[11px] font-extrabold text-[#087F96] uppercase tracking-wider">
+                {currentQ.category} Yetkinlik Sorusu
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-[#0B2A4A] leading-snug">
+              <h3 className="text-lg sm:text-xl font-extrabold text-[#0B2A4A] leading-snug">
                 {currentQ.question}
-              </h2>
+              </h3>
             </div>
 
-            {/* Options List */}
-            <div className="space-y-3 pt-2">
+            {/* 4 Options */}
+            <div className="space-y-3">
               {currentQ.options.map((option, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleOptionSelect(option.points)}
-                  className="w-full p-4 sm:p-5 bg-gray-50 hover:bg-[#0B2A4A] text-[#0B2A4A] hover:text-white rounded-2xl border border-gray-200 hover:border-[#087F96] transition-all text-left font-bold text-sm flex items-center justify-between group shadow-sm hover:shadow-lg"
+                  className="w-full p-4 sm:p-5 bg-white hover:bg-blue-50/80 border-2 border-gray-200 hover:border-[#087F96] rounded-2xl transition-all text-left font-bold text-xs sm:text-sm text-[#0B2A4A] flex items-center justify-between group shadow-sm"
                 >
-                  <span className="pr-4">{option.text}</span>
-                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-amber-400 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                  <div className="flex items-center space-x-3">
+                    <span className="w-7 h-7 rounded-xl bg-gray-100 group-hover:bg-[#087F96] text-gray-600 group-hover:text-white font-mono text-xs flex items-center justify-center transition-colors">
+                      {String.fromCharCode(65 + idx)}
+                    </span>
+                    <span>{option.text}</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-[#087F96] group-hover:translate-x-1 transition-transform" />
                 </button>
               ))}
             </div>
@@ -656,67 +582,64 @@ export default function CareerLevelAssessmentQuiz() {
         )}
 
         {/* -------------------------------------------------- */}
-        {/* COMPLETED RESULT SCREEN */}
+        {/* STEP 2: RESULT SCREEN */}
         {/* -------------------------------------------------- */}
-        {isCompleted && (
-          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200 space-y-8 animate-in zoom-in duration-300">
-            
-            {/* Header Result Badge */}
-            <div className="text-center space-y-3 border-b border-gray-100 pb-6">
-              <div className="inline-flex items-center space-x-2 bg-emerald-50 text-emerald-800 px-4 py-1.5 rounded-full text-xs font-extrabold border border-emerald-200">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>15 Soruluk Test Tamamlandı</span>
+        {selectedDeptId && isCompleted && (
+          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200 space-y-8 animate-in fade-in zoom-in duration-200">
+            {/* Header Result */}
+            <div className="text-center space-y-3">
+              <div className="w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-lg">
+                <Award className="w-10 h-10" />
               </div>
-
+              <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-4 py-1.5 rounded-full uppercase tracking-wider border border-emerald-200">
+                Test Tamamlandı!
+              </span>
               <h2 className="text-3xl sm:text-4xl font-black text-[#0B2A4A]">
-                Kariyer Seviye Raporunuz
+                Yetkinlik Puanınız: %{percentage}
               </h2>
-              <p className="text-xs text-gray-500">
-                {selectedDepartment.name} alanında verdiğiniz cevaplara göre hesaplanan kariyer seviyeniz:
+              <p className="text-xs sm:text-sm text-gray-600 max-w-md mx-auto">
+                Yanıtladığınız 15 sorudan elde edilen toplam skor: <strong>{totalScore} / {maxPossibleScore} Puan</strong>
               </p>
             </div>
 
-            {/* Main Score Box */}
-            <div className="p-8 bg-gradient-to-br from-[#0B2A4A] to-[#061B33] text-white rounded-3xl border border-[#087F96]/40 shadow-2xl text-center space-y-4 relative overflow-hidden">
-              <div className="text-xs text-amber-300 font-extrabold uppercase tracking-widest">
-                Hesaplanan Seviye
+            {/* Level Card */}
+            <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-6 sm:p-8 rounded-3xl shadow-xl space-y-4">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-amber-300 font-bold uppercase tracking-wider">Mevcut Seviye Tespiti</span>
+                <span className="bg-white/10 px-3 py-1 rounded-full font-mono text-emerald-300">%{percentage} Yetkinlik Skor</span>
               </div>
 
-              <div className="text-3xl sm:text-4xl font-black text-white">
-                {determinedLevelTitle}
-              </div>
+              <h3 className="text-2xl sm:text-3xl font-black text-white">{determinedLevelTitle}</h3>
 
-              <div className="flex justify-center items-center space-x-6 pt-2">
-                <div className="text-center">
-                  <div className="text-2xl font-black text-emerald-400">%{percentage}</div>
-                  <div className="text-[10px] text-gray-300">Hazırlık Skoru</div>
-                </div>
-                <div className="w-px h-8 bg-white/20" />
-                <div className="text-center">
-                  <div className="text-2xl font-black text-amber-300">{totalScore} / 60</div>
-                  <div className="text-[10px] text-gray-300">Toplam Puan</div>
-                </div>
+              <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
+                <span className="text-gray-300">Bir Sonraki Hedef Pozisyon:</span>
+                <span className="font-extrabold text-amber-300 text-sm">🎯 {nextTargetTitle}</span>
               </div>
             </div>
 
             {/* Recommended Modules */}
             <div className="space-y-4">
-              <h3 className="text-lg font-black text-[#0B2A4A] flex items-center">
-                <BookOpen className="w-5 h-5 text-[#087F96] mr-2" />
-                Bir Sonraki Seviyeye ({nextTargetTitle}) Geçmek İçin Alınması Gereken Eğitimler
+              <h3 className="font-extrabold text-lg text-[#0B2A4A] flex items-center space-x-2">
+                <BookOpen className="w-5 h-5 text-[#087F96]" />
+                <span>Alınması Gereken Eksik Eğitim Modülleri</span>
               </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {recommendedModules.map((mod, idx) => (
-                  <div key={idx} className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl text-xs font-bold text-blue-950 flex items-center space-x-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#087F96] flex-shrink-0" />
-                    <span>{mod}</span>
+              <div className="space-y-2.5">
+                {recommendedModules.map((mod, i) => (
+                  <div key={i} className="p-4 bg-gray-50 border border-gray-200 rounded-2xl flex items-center justify-between text-xs font-bold text-[#0B2A4A]">
+                    <div className="flex items-center space-x-3">
+                      <CheckCircle2 className="w-4 h-4 text-[#087F96]" />
+                      <span>{mod}</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                      Önerilen
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Action Bar */}
+            {/* Action Buttons */}
             <div className="pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <button
                 onClick={resetQuiz}
@@ -728,10 +651,10 @@ export default function CareerLevelAssessmentQuiz() {
 
               <Link
                 href="/kariyerimi-planla"
-                className="w-full sm:w-auto px-8 py-3.5 bg-[#E11D48] hover:bg-[#BE123C] text-white font-black rounded-xl text-xs shadow-xl transition-all text-center flex items-center justify-center space-x-2"
+                className="w-full sm:w-auto px-8 py-3 bg.E11D48 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all text-center flex items-center justify-center space-x-2"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Kişisel Yol Haritamı ve Eğitimlerimi Gör</span>
+                <span>Kariyer Haritama Git</span>
               </Link>
             </div>
           </div>
