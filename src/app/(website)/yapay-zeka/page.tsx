@@ -1,58 +1,94 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Cpu, BrainCircuit, Sparkles, ArrowRight, ShieldCheck, Zap, BarChart, Database, Lock, Crown } from 'lucide-react';
+import {
+  Cpu,
+  BrainCircuit,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  BarChart,
+  Database,
+  Lock,
+  Crown,
+  BookOpen,
+  Video,
+  FileText,
+  CheckCircle2
+} from 'lucide-react';
+import CourseDetailModal, { DetailedCourse } from '@/components/CourseDetailModal';
+import { AI_COURSES_DETAILED, getDetailedCourseData } from '@/data/courseDetailsData';
 
 export default function YapayZekaPage() {
+  const [selectedCourse, setSelectedCourse] = useState<DetailedCourse | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const aiCourses = [
     {
+      id: 'perakendede-yapay-zeka-kullanimi',
       title: '1. Perakendede Yapay Zekâ Kullanımı',
       badge: 'Temel & Saha',
       icon: Cpu,
       desc: 'Mağaza içi stok takibi, fiyatlandırma stratejileri ve müşteri davranış modellerinde yapay zekânın temel mantığı.'
     },
     {
+      id: 'uretken-yapay-zeka-ve-etkili-prompt-kullanim',
       title: '2. Üretken Yapay Zekâ ve Etkili Prompt Kullanımı',
       badge: 'Uygulamalı',
       icon: Sparkles,
       desc: 'ChatGPT, Claude ve LLM modellerine perakendeye özel prompt yazma, kampanya metni ve rapor taslağı oluşturma.'
     },
     {
+      id: 'yapay-zeka-ile-raporlama-ve-veri-analizi',
       title: '3. Yapay Zekâ ile Raporlama ve Veri Analizi',
       badge: 'Veri & Analitik',
       icon: BarChart,
       desc: 'Binlerce satış satırını saniyeler içinde yapay zekâya analiz ettirme, trendleri ve mağaza kayıplarını otomatik bulma.'
     },
     {
+      id: 'yapay-zeka-ile-talep-tahmini-ve-siparis-optimizasyonu',
       title: '4. Yapay Zekâ ile Talep Tahmini ve Sipariş Optimizasyonu',
       badge: 'Stok & Lojistik',
       icon: Database,
       desc: 'Hava durumu, tatil ve geçmiş satış verilerinden yapay zekâ destekli sıfır zayi otomatik sipariş oluşturma.'
     },
     {
+      id: 'yapay-zeka-destekli-magaza-yonetimi',
       title: '5. Yapay Zekâ Destekli Mağaza Yönetimi',
       badge: 'Saha Yönetimi',
       icon: Zap,
       desc: 'Vardiya çakışmalarını çözme, raf doluluk kameraları ve mağaza içi müşteri ısı haritası takibi.'
     },
     {
+      id: 'yapay-zeka-veri-guvenligi-kvkk',
       title: '6. Yapay Zekâda Veri Güvenliği, KVKK ve Etik Kullanım',
       badge: 'Hukuk & Uyum',
       icon: Lock,
       desc: 'Müşteri alışveriş verisinin KVKK uyumuyla işlenmesi, veri sızıntılarını önleme ve güvenli kurumsal AI kullanımı.'
     },
     {
+      id: 'yapay-zeka-ile-crm-ve-musteri-analitigi',
       title: '7. Yapay Zekâ ile CRM ve Müşteri Analitiği',
       badge: 'Pazarlama & CRM',
       icon: BrainCircuit,
       desc: 'Sepet tamamlatma önerileri, kayıp müşteri (churn) tahmini ve kişiselleştirilmiş dinamik teklif sistemleri.'
     },
     {
+      id: 'ceo-genel-mudur-icin-yapay-zeka',
       title: '8. CEO / Genel Müdür İçin Yapay Zekâ',
       badge: 'Üst Yönetim',
       icon: Crown,
       desc: 'Şirket sahipleri ve CEO’lara özel yapay zekâ yatırımlarının ROI hesabı, dijital dönüşüm yol haritası ve liderlik.'
     }
   ];
+
+  const handleOpenCourse = (courseItem: typeof aiCourses[0]) => {
+    const detailed = getDetailedCourseData(courseItem.id, courseItem.title, courseItem.badge);
+    setSelectedCourse(detailed);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-[#061B33] text-white py-12">
@@ -70,7 +106,7 @@ export default function YapayZekaPage() {
           </h1>
 
           <p className="text-gray-300 text-base sm:text-lg max-w-3xl mx-auto font-light leading-relaxed">
-            Perakendecilik dünyasında yapay zekâ kullanan yöneticiler ve şirketler öne geçiyor. Yapay zekâ modüllerimiz ile veriyi güce dönüştürün.
+            Perakendecilik dünyasında yapay zekâ kullanan yöneticiler ve şirketler öne geçiyor. Ders detaylarını, <strong>örnek videoları</strong> ve <strong>indirilebilir PDF dokümanları</strong> incelemek için eğitim kartlarına tıklayın.
           </p>
         </div>
 
@@ -81,7 +117,8 @@ export default function YapayZekaPage() {
             return (
               <div
                 key={idx}
-                className="bg-[#0B2A4A] border border-[#087F96]/40 hover:border-[#087F96] rounded-2xl p-6 shadow-xl transition-all hover:scale-[1.02] flex flex-col justify-between group"
+                onClick={() => handleOpenCourse(course)}
+                className="bg-[#0B2A4A] border border-[#087F96]/40 hover:border-[#087F96] rounded-2xl p-6 shadow-xl transition-all hover:scale-[1.02] flex flex-col justify-between group cursor-pointer"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -100,14 +137,26 @@ export default function YapayZekaPage() {
                   <p className="text-xs text-gray-300 mt-3 leading-relaxed font-light">
                     {course.desc}
                   </p>
+
+                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center space-x-3 text-[10px] text-gray-400 font-mono">
+                    <span className="flex items-center space-x-1 text-emerald-400">
+                      <Video className="w-3 h-3" />
+                      <span>Video Ders</span>
+                    </span>
+                    <span>•</span>
+                    <span className="flex items-center space-x-1 text-amber-300">
+                      <FileText className="w-3 h-3" />
+                      <span>PDF Rehber</span>
+                    </span>
+                  </div>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
                   <span className="text-gray-400 font-mono">AI Sertifikalı</span>
-                  <Link href="/egitimler?cat=dijitallestirme" className="text-[#087F96] hover:text-white font-bold flex items-center">
-                    <span>Katıl</span>
-                    <ArrowRight className="h-3.5 w-3.5 ml-1" />
-                  </Link>
+                  <div className="text-[#087F96] group-hover:text-white font-bold flex items-center space-x-1">
+                    <span>İçeriği Gör</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </div>
                 </div>
               </div>
             );
@@ -141,6 +190,13 @@ export default function YapayZekaPage() {
           </div>
         </div>
       </div>
+
+      {/* Interactive Course Detail Modal with Video & PDF Reader */}
+      <CourseDetailModal
+        course={selectedCourse}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
