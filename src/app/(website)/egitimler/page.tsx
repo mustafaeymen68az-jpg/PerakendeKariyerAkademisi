@@ -42,6 +42,31 @@ interface CourseItem {
   slug: string;
 }
 
+// Helper function to resolve exact top-level category name matching CATEGORY_LIST tabs
+const resolveCategoryName = (dept: any, courseTitle: string): string => {
+  const dId = (dept.id || '').toLowerCase();
+  const dName = (dept.name || '').toLowerCase();
+  const cat = (dept.category || '').toLowerCase();
+  const title = (courseTitle || '').toLowerCase();
+
+  if (dId.includes('satinalma') || dName.includes('satın alma') || title.includes('satın alma') || title.includes('kategori')) {
+    return 'Satın Alma ve Kategori';
+  }
+  if (dId.includes('lojistik') || dId.includes('stok') || dName.includes('lojistik') || dName.includes('depo') || title.includes('lojistik') || title.includes('stok devir')) {
+    return 'Lojistik ve Tedarik';
+  }
+  if (dId.includes('pazarlama') || dId.includes('satis') || dName.includes('pazarlama') || dName.includes('satış') || title.includes('pazarlama') || title.includes('merchandising') || title.includes('crm')) {
+    return 'Satış ve Pazarlama';
+  }
+  if (dId.includes('ik') || dId.includes('insan-kaynaklari') || dName.includes('insan kaynak') || title.includes('insan kaynak') || title.includes('terfi') || title.includes('ise alim')) {
+    return 'İnsan Kaynakları';
+  }
+  if (dId.includes('veri') || dId.includes('yazilim') || dId.includes('dijital') || cat.includes('teknoloji') || cat.includes('dijital') || title.includes('yapay zeka') || title.includes('prompt') || title.includes('sql') || title.includes('powerbi')) {
+    return 'Dijitalleşme';
+  }
+  return 'Mağaza Yönetimi ve Operasyon';
+};
+
 // Generate complete catalog dataset dynamically from 26 DEPARTMENTS_DATA (200+ total courses)
 const BUILD_FULL_CATALOG = (): CourseItem[] => {
   const courses: CourseItem[] = [];
@@ -60,10 +85,12 @@ const BUILD_FULL_CATALOG = (): CourseItem[] => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
 
+      const resolvedCategory = resolveCategoryName(dept, cName);
+
       courses.push({
         id: `dept_${dept.id}_y1_${idx}`,
         title: cName,
-        category: dept.category === 'Genel Operasyon' ? 'Mağaza Yönetimi ve Operasyon' : dept.category,
+        category: resolvedCategory,
         deptId: dept.id,
         department: dept.name,
         year: '1. Yıl',
@@ -88,10 +115,12 @@ const BUILD_FULL_CATALOG = (): CourseItem[] => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
 
+      const resolvedCategory = resolveCategoryName(dept, cName);
+
       courses.push({
         id: `dept_${dept.id}_y2_${idx}`,
         title: cName,
-        category: dept.category === 'Genel Operasyon' ? 'Mağaza Yönetimi ve Operasyon' : dept.category,
+        category: resolvedCategory,
         deptId: dept.id,
         department: dept.name,
         year: '2. Yıl',
