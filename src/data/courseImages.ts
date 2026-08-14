@@ -1,80 +1,134 @@
-// Category and Keyword-based High Resolution Retail Image Bank
-export const RETAIL_IMAGE_BANK: Record<string, string> = {
-  // Store Operations & Cashier
-  'magaza-operasyon': 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&q=80&w=800',
-  'kasa-pos': 'https://images.unsplash.com/photo-1556742049-0a670c480728?auto=format&fit=crop&q=80&w=800',
-  'musteri-hizmetleri': 'https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?auto=format&fit=crop&q=80&w=800',
+// High Resolution Retail & Professional Training Image Bank
+export const RETAIL_IMAGE_BANK = {
+  // Soft Skills & Personal Development
+  timeManagement: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=800', // Clock, agenda, time
+  conflictAndStress: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800', // Team collaboration & stress management
+  careerPlanning: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800', // Career roadmap, notepad, goals
+  communication: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=800', // Presentation & body language
+  digitalTransformation: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800', // Tech & digital awareness
+  leadership: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800', // Executive leadership
 
-  // Purchasing & Category
-  'satinalma-kategori': 'https://images.unsplash.com/photo-1542744899-28c0b240ef42?auto=format&fit=crop&q=80&w=800',
-  'tedarikci-muzakere': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800',
+  // Retail Store Operations
+  storeFloor: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&q=80&w=800', // Store aisles & manager
+  cashierPos: 'https://images.unsplash.com/photo-1556742049-0a670c480728?auto=format&fit=crop&q=80&w=800', // POS cashier checkout
+  customerService: 'https://images.unsplash.com/photo-1556741533-6e6a62bd8b49?auto=format&fit=crop&q=80&w=800', // Customer relations
 
-  // Sales & Marketing
-  'pazarlama-satis': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
-  'merchandising': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800',
+  // Purchasing, Category & Finance
+  purchasingCategory: 'https://images.unsplash.com/photo-1542744899-28c0b240ef42?auto=format&fit=crop&q=80&w=800', // Purchasing & vendor meeting
+  financePnL: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=800', // Finance, P&L, budget
 
-  // CRM & AI & Analytics
-  'yapay-zeka': 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800',
-  'crm-veri': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800',
+  // CRM, Data & AI
+  aiRetail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800', // AI & LLM prompt
+  dataAnalytics: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800', // Power BI & analytics
 
-  // Logistics & Supply Chain
-  'lojistik-tedarik': 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800',
-  'depo-stok': 'https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&q=80&w=800',
+  // Supply Chain & Logistics
+  logistics: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800', // Warehouse & logistics
 
-  // HR & Academy
-  'insan-kaynaklari': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800',
-  'liderlik-yonetim': 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800',
+  // HR & Safety
+  humanResources: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800', // HR interview & onboarding
+  safetyAudit: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&q=80&w=800', // ISG & risk audit
 
-  // Fresh Food & Specialty
-  'taze-gida': 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800',
-  'manav-meyve': 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=800',
-  'kasap-et': 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&q=80&w=800',
-  'unlu-mamul': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800',
-
-  // Default fallback
-  'default': 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&q=80&w=800'
+  // Fresh Food Reyons (Strictly targeted!)
+  produceReyon: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=800', // Fruit & vegetables
+  meatReyon: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&q=80&w=800', // Meat & butcher
+  bakeryReyon: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800'  // Bakery & bread
 };
 
-// Dynamic helper function to get high quality photo URL for any course
+// 10 Diverse Fallback Images to prevent repeated visuals on adjacent cards
+const FALLBACK_IMAGE_SERIES = [
+  'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1542744899-28c0b240ef42?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1556742049-0a670c480728?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800'
+];
+
 export function getCourseImage(courseTitle: string, category?: string, department?: string): string {
-  const t = (courseTitle + ' ' + (category || '') + ' ' + (department || '')).toLowerCase();
+  const title = (courseTitle || '').toLowerCase();
+  const cat = (category || '').toLowerCase();
+  const dept = (department || '').toLowerCase();
 
-  if (t.includes('yapay zeka') || t.includes('prompt') || t.includes('ai') || t.includes('robot')) {
-    return RETAIL_IMAGE_BANK['yapay-zeka'];
+  // 1. Soft Skills & Personal Development (High priority exact matches)
+  if (title.includes('verimlilik') || title.includes('zaman yönetimi') || title.includes('zaman yonetimi') || title.includes('planlama')) {
+    return RETAIL_IMAGE_BANK.timeManagement;
   }
-  if (t.includes('kasa') || t.includes('pos') || t.includes('kasiyer')) {
-    return RETAIL_IMAGE_BANK['kasa-pos'];
+  if (title.includes('çatışma') || title.includes('catisma') || title.includes('stres') || title.includes('motivasyon')) {
+    return RETAIL_IMAGE_BANK.conflictAndStress;
   }
-  if (t.includes('taze gida') || t.includes('manav') || t.includes('meyve')) {
-    return RETAIL_IMAGE_BANK['manav-meyve'];
+  if (title.includes('kariyer') || title.includes('gelişim') || title.includes('gelisim') || title.includes('hedef')) {
+    return RETAIL_IMAGE_BANK.careerPlanning;
   }
-  if (t.includes('kasap') || t.includes('et') || t.includes('sarkuteri')) {
-    return RETAIL_IMAGE_BANK['kasap-et'];
+  if (title.includes('iletişim') || title.includes('iletisim') || title.includes('beden dili') || title.includes('sunum') || title.includes('ikna')) {
+    return RETAIL_IMAGE_BANK.communication;
   }
-  if (t.includes('unlu') || t.includes('firin') || t.includes('ekmek')) {
-    return RETAIL_IMAGE_BANK['unlu-mamul'];
+  if (title.includes('dijital') || title.includes('farkındalık') || title.includes('farkindalik') || title.includes('dönüşüm') || title.includes('donusum')) {
+    return RETAIL_IMAGE_BANK.digitalTransformation;
   }
-  if (t.includes('satinalma') || t.includes('kategori') || t.includes('tedarikci')) {
-    return RETAIL_IMAGE_BANK['satinalma-kategori'];
-  }
-  if (t.includes('crm') || t.includes('veri') || t.includes('analitik') || t.includes('sql')) {
-    return RETAIL_IMAGE_BANK['crm-veri'];
-  }
-  if (t.includes('lojistik') || t.includes('depo') || t.includes('stok') || t.includes('antrepo')) {
-    return RETAIL_IMAGE_BANK['lojistik-tedarik'];
-  }
-  if (t.includes('ik') || t.includes('insan kaynak') || t.includes('terfi') || t.includes('akademi')) {
-    return RETAIL_IMAGE_BANK['insan-kaynaklari'];
-  }
-  if (t.includes('merchandising') || t.includes('gorsel') || t.includes('vitrin') || t.includes('pazarlama')) {
-    return RETAIL_IMAGE_BANK['merchandising'];
-  }
-  if (t.includes('musteri') || t.includes('ikna') || t.includes('iletisim')) {
-    return RETAIL_IMAGE_BANK['musteri-hizmetleri'];
-  }
-  if (t.includes('liderlik') || t.includes('ceo') || t.includes('mudur')) {
-    return RETAIL_IMAGE_BANK['liderlik-yonetim'];
+  if (title.includes('liderlik') || title.includes('yönetici') || title.includes('yonetici') || title.includes('koçluk') || title.includes('kocluk')) {
+    return RETAIL_IMAGE_BANK.leadership;
   }
 
-  return RETAIL_IMAGE_BANK['magaza-operasyon'];
+  // 2. AI & Technology
+  if (title.includes('yapay zekâ') || title.includes('yapay zeka') || title.includes('prompt') || title.includes('ai') || title.includes('üretken')) {
+    return RETAIL_IMAGE_BANK.aiRetail;
+  }
+  if (title.includes('crm') || title.includes('veri') || title.includes('analitik') || title.includes('sql') || title.includes('powerbi')) {
+    return RETAIL_IMAGE_BANK.dataAnalytics;
+  }
+
+  // 3. Store Operations & Cashier
+  if (title.includes('kasa') || title.includes('pos') || title.includes('kasiyer')) {
+    return RETAIL_IMAGE_BANK.cashierPos;
+  }
+  if (title.includes('müşteri') || title.includes('musteri') || title.includes('hizmet') || title.includes('şikayet')) {
+    return RETAIL_IMAGE_BANK.customerService;
+  }
+  if (title.includes('mağaza') || title.includes('magaza') || title.includes('saha') || title.includes('operasyon')) {
+    return RETAIL_IMAGE_BANK.storeFloor;
+  }
+
+  // 4. Purchasing, Category & Finance
+  if (title.includes('satın alma') || title.includes('satinalma') || title.includes('kategori') || title.includes('tedarikçi') || title.includes('pazarlık')) {
+    return RETAIL_IMAGE_BANK.purchasingCategory;
+  }
+  if (title.includes('finans') || title.includes('p&l') || title.includes('bütçe') || title.includes('butce') || title.includes('maliyet') || title.includes('kar')) {
+    return RETAIL_IMAGE_BANK.financePnL;
+  }
+
+  // 5. Logistics & Supply Chain
+  if (title.includes('lojistik') || title.includes('depo') || title.includes('stok') || title.includes('envanter') || title.includes('antrepo')) {
+    return RETAIL_IMAGE_BANK.logistics;
+  }
+
+  // 6. HR & Risk
+  if (title.includes('insan kaynak') || title.includes('işe alım') || title.includes('ise alim') || title.includes('hrbp') || title.includes('terfi')) {
+    return RETAIL_IMAGE_BANK.humanResources;
+  }
+  if (title.includes('isg') || title.includes('sağlık') || title.includes('saglik') || title.includes('risk') || title.includes('denetim') || title.includes('fire')) {
+    return RETAIL_IMAGE_BANK.safetyAudit;
+  }
+
+  // 7. Fresh Food Reyons (Strict Exact Term Check ONLY!)
+  if (title.includes('manav') || title.includes('meyve') || title.includes('sebze')) {
+    return RETAIL_IMAGE_BANK.produceReyon;
+  }
+  if (title.includes('kasap') || title.includes('şarküteri') || title.includes('sarkuteri') || title.includes('et reyonu') || title.includes('kırmızı et')) {
+    return RETAIL_IMAGE_BANK.meatReyon;
+  }
+  if (title.includes('fırın') || title.includes('firin') || title.includes('unlu mamul') || title.includes('ekmek')) {
+    return RETAIL_IMAGE_BANK.bakeryReyon;
+  }
+
+  // 8. Deterministic Hash Fallback based on Course Title (Prevents repeating adjacent images)
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) {
+    hash = title.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % FALLBACK_IMAGE_SERIES.length;
+  return FALLBACK_IMAGE_SERIES[index];
 }
