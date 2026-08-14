@@ -2,7 +2,7 @@ import React from 'react';
 import CareerPlannerWizard from '@/components/CareerPlannerWizard';
 
 export const metadata = {
-  title: 'Kariyerimi Planla | Perakende Kariyer Akademisi',
+  title: 'Kariyerimi Planlıyorum | Perakende Kariyer Akademisi',
   description: 'Mevcut pozisyonunuzu ve hedef kariyerinizi seçin. Yol haritanızı, tahmini eğitim sürenizi ve almanız gereken eğitim modüllerini anında listeleyin.'
 };
 

@@ -24,14 +24,14 @@ import {
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
+// Removed "Kariyer Planlama" and "Yetenek Havuzu" from HR_SUBMENU as requested
 const HR_SUBMENU = [
   { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari#yetkinlik-matrisi' },
-  { name: 'Kariyer Planlama', path: '/kariyerimi-planla' },
-  { name: 'Yetenek Havuzu', path: '/ik-cozumlari#yetenek-havuzu' },
   { name: 'Terfi Yönetimi', path: '/ik-cozumlari#terfi-yonetimi' },
   { name: 'Yedekleme Planı', path: '/ik-cozumlari#yedekleme-plani' },
   { name: 'Eğitim Yönetimi', path: '/ik-cozumlari#egitim-yonetimi' },
-  { name: 'Performans & KPI', path: '/ik-cozumlari#performans-kpi' }
+  { name: 'Performans & KPI', path: '/ik-cozumlari#performans-kpi' },
+  { name: 'Çalışan Gelişim Karnesi', path: '/ik-cozumlari#gelisim-karnesi' }
 ];
 
 const MENU_ITEMS = [
@@ -41,7 +41,7 @@ const MENU_ITEMS = [
   { name: 'Kariyer Haritası', path: '/#15-basamakli-harita', icon: Map },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', icon: Target, badge: '15 Soru' },
   { name: 'Yapay Zekâ', path: '/yapay-zeka', icon: Bot, badge: 'Yeni' },
-  { name: 'Aday Havuzu', path: '/yetkinlik-aday-havuzu', icon: Users, badge: 'Yakında' }
+  { name: 'Aday & Yetenek Havuzu', path: '/yetkinlik-aday-havuzu', icon: Users, badge: 'Yakında' }
 ];
 
 export default function LeftSidebarNav() {
@@ -180,14 +180,14 @@ export default function LeftSidebarNav() {
           })}
         </div>
 
-        {/* BOTTOM ACTION BUTTONS (STATIONARY ON LEFT SIDEBAR) */}
+        {/* BOTTOM ACTION BUTTONS - TITLE CHANGED TO "Kariyerimi Planlıyorum" */}
         <div className="p-4 border-t border-white/10 space-y-2 flex-shrink-0 bg-[#0B2A4A]/80">
           <Link
             href="/kariyerimi-planla"
             className="w-full py-2.5 px-3 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center space-x-2"
           >
             <Target className="h-4 w-4 text-amber-300" />
-            <span>Kariyerimi Planla</span>
+            <span>Kariyerimi Planlıyorum</span>
           </Link>
 
           <Link

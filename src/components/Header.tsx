@@ -27,10 +27,9 @@ import {
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
+// Removed Kariyer Planlama and Yetenek Havuzu from HR_SUBMENU as requested
 const HR_SUBMENU = [
   { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari#yetkinlik-matrisi', desc: 'Saha & merkez yetkinlik haritası' },
-  { name: 'Kariyer Planlama', path: '/kariyerimi-planla', desc: 'Mevcut & hedef pozisyon yol haritası' },
-  { name: 'Yetenek Havuzu', path: '/ik-cozumlari#yetenek-havuzu', desc: 'Yüksek potansiyelli çalışan pipeline\'ı' },
   { name: 'Terfi Yönetimi', path: '/ik-cozumlari#terfi-yonetimi', desc: 'Ağırlıklı %80+ Terfi Skoru' },
   { name: 'Yedekleme Planı', path: '/ik-cozumlari#yedekleme-plani', desc: 'Kritik pozisyon iş sürekliliği' },
   { name: 'Eğitim Yönetimi', path: '/ik-cozumlari#egitim-yonetimi', desc: '40 Modül & 160 Mikro Eğitim' },
@@ -45,7 +44,7 @@ const MENU_ITEMS = [
   { name: 'Kariyer Haritası', path: '/#15-basamakli-harita' },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', badge: '15 Soru' },
   { name: 'Yapay Zekâ', path: '/yapay-zeka', badge: 'Yeni' },
-  { name: 'Aday Havuzu', path: '/yetkinlik-aday-havuzu', badge: 'Yakında' }
+  { name: 'Aday & Yetenek Havuzu', path: '/yetkinlik-aday-havuzu', badge: 'Yakında' }
 ];
 
 export default function Header() {
@@ -189,14 +188,14 @@ export default function Header() {
             </nav>
           </div>
 
-          {/* RIGHT SECTION: Standardized CTA Buttons */}
+          {/* RIGHT SECTION: Standardized CTA Buttons - Title Changed to "Kariyerimi Planlıyorum" */}
           <div className="hidden lg:flex items-center space-x-2 shrink-0 ml-4">
             <Link
               href="/kariyerimi-planla"
               className="h-9 px-3.5 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5 whitespace-nowrap"
             >
               <Target className="h-3.5 w-3.5 text-amber-300" />
-              <span>Kariyerimi Planla</span>
+              <span>Kariyerimi Planlıyorum</span>
             </Link>
 
             <Link
@@ -251,7 +250,7 @@ export default function Header() {
                 className="w-full py-3 bg-[#087F96] text-white font-extrabold rounded-xl text-center text-xs flex items-center justify-center space-x-2"
               >
                 <Target className="h-4 w-4 text-amber-300" />
-                <span>Kariyerimi Planla</span>
+                <span>Kariyerimi Planlıyorum</span>
               </Link>
               <Link
                 href="/kurumsal-cozumler"

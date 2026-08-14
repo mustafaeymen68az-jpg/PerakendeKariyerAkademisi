@@ -82,13 +82,13 @@ export default async function HomePage() {
 
               {/* 2 Main CTAs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 max-w-xl mx-auto lg:mx-0">
-                {/* CTA 1: Kariyerimi Planla */}
+                {/* CTA 1: Kariyerimi Planlıyorum */}
                 <Link
                   href="/kariyerimi-planla"
                   className="group p-4 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-white/20 text-left flex flex-col justify-between"
                 >
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-black uppercase tracking-wider text-white">Kariyerimi Planla</span>
+                    <span className="text-sm font-black uppercase tracking-wider text-white">Kariyerimi Planlıyorum</span>
                     <ArrowRight className="h-4 w-4 text-white group-hover:translate-x-1 transition-transform" />
                   </div>
                   <span className="text-xs text-blue-100 font-normal mt-2">
