@@ -16,14 +16,20 @@ import {
   BookOpen,
   Video,
   FileText,
-  CheckCircle2
+  CheckCircle2,
+  UserCheck
 } from 'lucide-react';
 import CourseDetailModal, { DetailedCourse } from '@/components/CourseDetailModal';
-import { AI_COURSES_DETAILED, getDetailedCourseData } from '@/data/courseDetailsData';
+import { getDetailedCourseData } from '@/data/courseDetailsData';
+import { getInstructorForCourse, Instructor } from '@/data/instructorsData';
+import InstructorProfileModal from '@/components/InstructorProfileModal';
 
 export default function YapayZekaPage() {
   const [selectedCourse, setSelectedCourse] = useState<DetailedCourse | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
+  const [isInstructorModalOpen, setIsInstructorModalOpen] = useState(false);
 
   const aiCourses = [
     {
@@ -90,6 +96,12 @@ export default function YapayZekaPage() {
     setIsModalOpen(true);
   };
 
+  const handleOpenInstructorProfile = (e: React.MouseEvent, instructor: Instructor) => {
+    e.stopPropagation();
+    setSelectedInstructor(instructor);
+    setIsInstructorModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-[#061B33] text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -106,7 +118,7 @@ export default function YapayZekaPage() {
           </h1>
 
           <p className="text-gray-300 text-base sm:text-lg max-w-3xl mx-auto font-light leading-relaxed">
-            Perakendecilik dünyasında yapay zekâ kullanan yöneticiler ve şirketler öne geçiyor. Ders detaylarını, <strong>örnek videoları</strong> ve <strong>indirilebilir PDF dokümanları</strong> incelemek için eğitim kartlarına tıklayın.
+            Perakendecilik dünyasında yapay zekâ kullanan yöneticiler ve şirketler öne geçiyor. Eğitmen profillerini, <strong>örnek videoları</strong> ve <strong>indirilebilir PDF dokümanları</strong> incelemek için eğitim kartlarına tıklayın.
           </p>
         </div>
 
@@ -114,6 +126,8 @@ export default function YapayZekaPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {aiCourses.map((course, idx) => {
             const Icon = course.icon;
+            const instructor = getInstructorForCourse(course.id, course.badge);
+
             return (
               <div
                 key={idx}
@@ -138,15 +152,31 @@ export default function YapayZekaPage() {
                     {course.desc}
                   </p>
 
-                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center space-x-3 text-[10px] text-gray-400 font-mono">
+                  {/* INSTRUCTOR MINI PROFILE BADGE (CLICKABLE) */}
+                  <div
+                    onClick={(e) => handleOpenInstructorProfile(e, instructor)}
+                    className="mt-4 p-2 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 flex items-center space-x-2.5 transition-colors"
+                  >
+                    <img
+                      src={instructor.avatar}
+                      alt={instructor.name}
+                      className="w-8 h-8 rounded-lg object-cover border border-[#087F96] flex-shrink-0"
+                    />
+                    <div className="truncate text-left">
+                      <div className="text-[9px] text-[#DDF4F7] font-bold uppercase">Eğitmen:</div>
+                      <div className="text-xs font-bold text-white hover:text-[#087F96] truncate">{instructor.name}</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-white/10 flex items-center space-x-3 text-[10px] text-gray-400 font-mono">
                     <span className="flex items-center space-x-1 text-emerald-400">
                       <Video className="w-3 h-3" />
-                      <span>Video Ders</span>
+                      <span>Video</span>
                     </span>
                     <span>•</span>
                     <span className="flex items-center space-x-1 text-amber-300">
                       <FileText className="w-3 h-3" />
-                      <span>PDF Rehber</span>
+                      <span>PDF Doküman</span>
                     </span>
                   </div>
                 </div>
@@ -154,7 +184,7 @@ export default function YapayZekaPage() {
                 <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
                   <span className="text-gray-400 font-mono">AI Sertifikalı</span>
                   <div className="text-[#087F96] group-hover:text-white font-bold flex items-center space-x-1">
-                    <span>İçeriği Gör</span>
+                    <span>İçerik & Eğitmen</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </div>
                 </div>
@@ -191,11 +221,18 @@ export default function YapayZekaPage() {
         </div>
       </div>
 
-      {/* Interactive Course Detail Modal with Video & PDF Reader */}
+      {/* Interactive Course Detail Modal */}
       <CourseDetailModal
         course={selectedCourse}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+
+      {/* Instructor Profile Modal */}
+      <InstructorProfileModal
+        instructor={selectedInstructor}
+        isOpen={isInstructorModalOpen}
+        onClose={() => setIsInstructorModalOpen(false)}
       />
     </div>
   );

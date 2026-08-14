@@ -24,6 +24,8 @@ import {
 import { DEPARTMENTS_DATA } from '@/data/departmentsData';
 import CourseDetailModal, { DetailedCourse } from '@/components/CourseDetailModal';
 import { getDetailedCourseData } from '@/data/courseDetailsData';
+import { getInstructorForCourse, Instructor } from '@/data/instructorsData';
+import InstructorProfileModal from '@/components/InstructorProfileModal';
 
 interface CourseItem {
   id: string;
@@ -128,6 +130,9 @@ function EgitimlerCatalogContent() {
   const [selectedCourseDetail, setSelectedCourseDetail] = useState<DetailedCourse | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
+  const [isInstructorModalOpen, setIsInstructorModalOpen] = useState(false);
+
   // Sync with URL Search Parameters
   useEffect(() => {
     const deptParam = searchParams.get('dept');
@@ -149,22 +154,18 @@ function EgitimlerCatalogContent() {
   // Filter Catalog Courses
   const filteredCourses = useMemo(() => {
     return ALL_COURSES.filter((course) => {
-      // Search query filter
       const matchesSearch =
         searchQuery === '' ||
         course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Category filter
       const matchesCategory =
         selectedCategory === 'Tümü' || course.category === selectedCategory;
 
-      // Department filter
       const matchesDept =
         selectedDept === 'Tümü' || course.deptId === selectedDept;
 
-      // Year filter
       const matchesYear =
         selectedYear === 'Tümü' || course.year === selectedYear;
 
@@ -181,6 +182,12 @@ function EgitimlerCatalogContent() {
     const detailed = getDetailedCourseData(course.slug || course.id, course.title, course.category);
     setSelectedCourseDetail(detailed);
     setIsModalOpen(true);
+  };
+
+  const handleOpenInstructorModal = (e: React.MouseEvent, instructor: Instructor) => {
+    e.stopPropagation();
+    setSelectedInstructor(instructor);
+    setIsInstructorModalOpen(true);
   };
 
   return (
@@ -346,108 +353,125 @@ function EgitimlerCatalogContent() {
         <>
           {viewMode === 'grid' && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCourses.map((course) => (
-                <div
-                  key={course.id}
-                  onClick={() => handleOpenCourseModal(course)}
-                  className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group cursor-pointer border-t-4 border-t-[#087F96]"
-                >
-                  <div>
-                    <div className="flex items-center justify-between text-[11px] font-bold mb-3">
-                      <span className="bg-[#DDF4F7] text-[#087F96] px-2.5 py-1 rounded-full font-mono uppercase">
-                        {course.year}
+              {filteredCourses.map((course) => {
+                const instructor = getInstructorForCourse(course.slug || course.id, course.category);
+
+                return (
+                  <div
+                    key={course.id}
+                    onClick={() => handleOpenCourseModal(course)}
+                    className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group cursor-pointer border-t-4 border-t-[#087F96]"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between text-[11px] font-bold mb-3">
+                        <span className="bg-[#DDF4F7] text-[#087F96] px-2.5 py-1 rounded-full font-mono uppercase">
+                          {course.year}
+                        </span>
+                        <span className="text-gray-500 flex items-center font-mono">
+                          <Clock className="h-3.5 w-3.5 mr-1 text-gray-400" />
+                          {course.duration} Saat
+                        </span>
+                      </div>
+
+                      <span className="text-[10px] font-bold text-[#087F96] uppercase tracking-wider block mb-1">
+                        🎯 {course.department}
                       </span>
-                      <span className="text-gray-500 flex items-center font-mono">
-                        <Clock className="h-3.5 w-3.5 mr-1 text-gray-400" />
-                        {course.duration} Saat
-                      </span>
+
+                      <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors leading-tight">
+                        {course.title}
+                      </h3>
+
+                      <p className="text-xs text-gray-600 mt-2.5 line-clamp-3 font-light leading-relaxed">
+                        {course.description}
+                      </p>
+
+                      {/* INSTRUCTOR MINI BADGE (CLICKABLE) */}
+                      <div
+                        onClick={(e) => handleOpenInstructorModal(e, instructor)}
+                        className="mt-4 p-2 bg-gray-50 hover:bg-blue-50 rounded-xl border border-gray-200 flex items-center space-x-2.5 transition-colors"
+                      >
+                        <img
+                          src={instructor.avatar}
+                          alt={instructor.name}
+                          className="w-7 h-7 rounded-lg object-cover border border-[#087F96] flex-shrink-0"
+                        />
+                        <div className="truncate text-left">
+                          <div className="text-[9px] text-[#087F96] font-bold uppercase">Eğitmen:</div>
+                          <div className="text-xs font-bold text-[#0B2A4A] hover:underline truncate">{instructor.name}</div>
+                        </div>
+                      </div>
                     </div>
 
-                    <span className="text-[10px] font-bold text-[#087F96] uppercase tracking-wider block mb-1">
-                      🎯 {course.department}
-                    </span>
-
-                    <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors leading-tight">
-                      {course.title}
-                    </h3>
-
-                    <p className="text-xs text-gray-600 mt-2.5 line-clamp-3 font-light leading-relaxed">
-                      {course.description}
-                    </p>
-
-                    <div className="mt-4 pt-3 border-t border-gray-100 flex items-center space-x-3 text-[10px] text-gray-500 font-mono">
-                      <span className="flex items-center space-x-1 text-emerald-600 font-bold">
-                        <Video className="w-3 h-3" />
-                        <span>Video Ders</span>
+                    <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs">
+                      <span className="text-gray-500 font-medium">
+                        {course.level}
                       </span>
-                      <span>•</span>
-                      <span className="flex items-center space-x-1 text-amber-600 font-bold">
-                        <FileText className="w-3 h-3" />
-                        <span>PDF Doküman</span>
-                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenCourseModal(course);
+                        }}
+                        className="px-3.5 py-1.5 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl transition-all flex items-center space-x-1 shadow-sm"
+                      >
+                        <span>İncele / PDF Gör</span>
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      </button>
                     </div>
                   </div>
-
-                  <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs">
-                    <span className="text-gray-500 font-medium">
-                      {course.level}
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenCourseModal(course);
-                      }}
-                      className="px-3.5 py-1.5 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl transition-all flex items-center space-x-1 shadow-sm"
-                    >
-                      <span>İncele / PDF Gör</span>
-                      <ChevronRight className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
           {/* List Rows View */}
           {viewMode === 'list' && (
             <div className="space-y-4">
-              {filteredCourses.map((course) => (
-                <div
-                  key={course.id}
-                  onClick={() => handleOpenCourseModal(course)}
-                  className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group cursor-pointer"
-                >
-                  <div className="space-y-1.5 flex-1">
-                    <div className="flex items-center space-x-2 text-xs">
-                      <span className="bg-[#DDF4F7] text-[#087F96] font-mono font-bold px-2 py-0.5 rounded text-[11px]">
-                        {course.year}
-                      </span>
-                      <span className="text-[#087F96] font-bold text-xs">
-                        {course.department}
-                      </span>
-                      <span className="text-gray-400">•</span>
-                      <span className="text-gray-500 font-medium">{course.level}</span>
-                    </div>
-                    <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors">
-                      {course.title}
-                    </h3>
-                    <p className="text-xs text-gray-600 line-clamp-1 font-light">{course.description}</p>
-                  </div>
+              {filteredCourses.map((course) => {
+                const instructor = getInstructorForCourse(course.slug || course.id, course.category);
 
-                  <div className="flex items-center space-x-4 shrink-0">
-                    <span className="text-xs font-mono font-bold text-gray-600">⏱️ {course.duration} Saat</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenCourseModal(course);
-                      }}
-                      className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl text-xs shadow-sm transition-all"
-                    >
-                      Ders İncele
-                    </button>
+                return (
+                  <div
+                    key={course.id}
+                    onClick={() => handleOpenCourseModal(course)}
+                    className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group cursor-pointer"
+                  >
+                    <div className="space-y-1.5 flex-1">
+                      <div className="flex items-center space-x-2 text-xs">
+                        <span className="bg-[#DDF4F7] text-[#087F96] font-mono font-bold px-2 py-0.5 rounded text-[11px]">
+                          {course.year}
+                        </span>
+                        <span className="text-[#087F96] font-bold text-xs">
+                          {course.department}
+                        </span>
+                        <span className="text-gray-400">•</span>
+                        <span
+                          onClick={(e) => handleOpenInstructorModal(e, instructor)}
+                          className="text-[#0B2A4A] font-bold underline hover:text-[#087F96]"
+                        >
+                          Eğitmen: {instructor.name}
+                        </span>
+                      </div>
+                      <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors">
+                        {course.title}
+                      </h3>
+                      <p className="text-xs text-gray-600 line-clamp-1 font-light">{course.description}</p>
+                    </div>
+
+                    <div className="flex items-center space-x-4 shrink-0">
+                      <span className="text-xs font-mono font-bold text-gray-600">⏱️ {course.duration} Saat</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenCourseModal(course);
+                        }}
+                        className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl text-xs shadow-sm transition-all"
+                      >
+                        Ders İncele
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -459,39 +483,46 @@ function EgitimlerCatalogContent() {
                   <tr>
                     <th className="py-3.5 px-4">Eğitim Modülü</th>
                     <th className="py-3.5 px-4">Kadro / Pozisyon</th>
-                    <th className="py-3.5 px-4">Müfredat Dönemi</th>
+                    <th className="py-3.5 px-4">Eğitmen</th>
                     <th className="py-3.5 px-4">Süre</th>
                     <th className="py-3.5 px-4 text-right">İşlem</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredCourses.map((course) => (
-                    <tr
-                      key={course.id}
-                      onClick={() => handleOpenCourseModal(course)}
-                      className="hover:bg-blue-50/50 cursor-pointer transition-colors"
-                    >
-                      <td className="py-3 px-4 font-bold text-[#0B2A4A]">{course.title}</td>
-                      <td className="py-3 px-4 text-gray-700 font-medium">{course.department}</td>
-                      <td className="py-3 px-4">
-                        <span className="bg-[#DDF4F7] text-[#087F96] font-mono font-bold px-2 py-0.5 rounded text-[10px]">
-                          {course.year}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 font-mono font-bold text-gray-600">{course.duration} Saat</td>
-                      <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenCourseModal(course);
-                          }}
-                          className="px-3 py-1 bg-[#087F96] text-white font-bold rounded-lg hover:bg-[#056B80]"
-                        >
-                          Detay
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {filteredCourses.map((course) => {
+                    const instructor = getInstructorForCourse(course.slug || course.id, course.category);
+
+                    return (
+                      <tr
+                        key={course.id}
+                        onClick={() => handleOpenCourseModal(course)}
+                        className="hover:bg-blue-50/50 cursor-pointer transition-colors"
+                      >
+                        <td className="py-3 px-4 font-bold text-[#0B2A4A]">{course.title}</td>
+                        <td className="py-3 px-4 text-gray-700 font-medium">{course.department}</td>
+                        <td className="py-3 px-4">
+                          <span
+                            onClick={(e) => handleOpenInstructorModal(e, instructor)}
+                            className="font-bold text-[#087F96] hover:underline"
+                          >
+                            {instructor.name}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 font-mono font-bold text-gray-600">{course.duration} Saat</td>
+                        <td className="py-3 px-4 text-right">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenCourseModal(course);
+                            }}
+                            className="px-3 py-1 bg-[#087F96] text-white font-bold rounded-lg hover:bg-[#056B80]"
+                          >
+                            Detay
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -513,6 +544,13 @@ function EgitimlerCatalogContent() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+
+      {/* Instructor Profile Modal */}
+      <InstructorProfileModal
+        instructor={selectedInstructor}
+        isOpen={isInstructorModalOpen}
+        onClose={() => setIsInstructorModalOpen(false)}
+      />
     </div>
   );
 }
@@ -533,7 +571,7 @@ export default function EgitimlerPage() {
           </h1>
 
           <p className="text-gray-200 text-sm sm:text-base max-w-3xl mx-auto font-light leading-relaxed">
-            Mağaza kasiyerliğinden bölge müdürlüğüne, satın almadan lojistiğe kadar 26 perakende pozisyonu için hazırlanmış <strong>200'den fazla eğitim modülü</strong>, <strong>örnek ders videoları</strong> ve <strong>indirilebilir PDF dokümanları</strong>.
+            Mağaza kasiyerliğinden bölge müdürlüğüne, satın almadan lojistiğe kadar 26 perakende pozisyonu için hazırlanmış <strong>200'den fazla eğitim modülü</strong>, <strong>eğitmen profilleri</strong>, <strong>örnek ders videoları</strong> ve <strong>indirilebilir PDF dokümanları</strong>.
           </p>
         </div>
 
