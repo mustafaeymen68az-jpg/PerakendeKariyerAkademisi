@@ -44,7 +44,6 @@ const MENU_ITEMS = [
   { name: 'İK Çözümleri', path: '/ik-cozumlari', isDropdown: true },
   { name: 'Kariyer Haritası', path: '/#15-basamakli-harita' },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', badge: '15 Soruluk Test' },
-  { name: 'Kariyerimi Planla', path: '/kariyerimi-planla', badge: 'Planlayıcı' },
   { name: 'Yapay Zekâ', path: '/yapay-zeka', badge: 'Yeni' },
   { name: 'Kurumsal Solutions', path: '/kurumsal-cozumler' },
   { name: 'Aday Havuzu', path: '/yetkinlik-aday-havuzu', badge: 'Yakında' }
