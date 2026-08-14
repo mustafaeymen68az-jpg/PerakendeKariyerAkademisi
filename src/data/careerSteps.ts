@@ -57,7 +57,7 @@ export interface CareerTrack15 {
 }
 
 // ==========================================
-// TRACK 1: KASİYERLİKTEN CEO / GENEL MÜDÜRLÜĞE
+// TRACK 1: KASİYERLİKTEN CEO / GENEL MÜDÜRLÜĞE (15 BASAMAKLI MASTER ROTA)
 // ==========================================
 export const CAREER_STEPS_15_DATA: CareerStep15[] = [
   {
@@ -508,41 +508,24 @@ export const CAREER_STEPS_15_DATA: CareerStep15[] = [
   }
 ];
 
-const LEVEL_DURATIONS = [
-  '6–12 Ay',   // 1
-  '6–12 Ay',   // 2
-  '12–18 Ay',  // 3
-  '6–12 Ay',   // 4
-  '12–18 Ay',  // 5
-  '6–12 Ay',   // 6
-  '18–24 Ay',  // 7
-  '12–18 Ay',  // 8
-  '6–12 Ay',   // 9
-  '24–36 Ay',  // 10
-  '18–24 Ay',  // 11
-  '24–36 Ay',  // 12
-  '24–36 Ay',  // 13
-  '24 Ay',     // 14
-  'Sürekli Liderlik' // 15
-];
-
-// Helper generator function to create 15 steps for alternate career tracks
-function generateAlternateTrackSteps(
+// Custom step generator function supporting custom title & custom duration arrays
+function createTailoredSteps(
   titles: string[],
+  durations: string[],
   departmentName: string
 ): CareerStep15[] {
   return titles.map((title, index) => {
     const stepId = index + 1;
-    const isPeak = stepId === 15;
-    const nextTitle = isPeak ? titles[14] : titles[index + 1];
+    const isPeak = stepId === titles.length;
+    const nextTitle = isPeak ? titles[titles.length - 1] : titles[index + 1];
 
     return {
       id: stepId,
       title: title,
       badgeHeading: `${departmentName} - Seviye ${stepId}`,
-      coreMessage: isPeak ? 'Zirve Liderlik' : `Adım Step ${stepId}`,
+      coreMessage: isPeak ? 'Zirve Liderlik' : `Adım ${stepId}`,
       purpose: `${title} pozisyonunda ${departmentName.toLowerCase()} alanındaki yetkinlikleri ve operasyonu yönetmek.`,
-      recommendedDuration: LEVEL_DURATIONS[index],
+      recommendedDuration: durations[index] || '12–18 Ay',
       currentTrainings: [
         `${title} Temel Müfredatı`,
         `${departmentName} Operasyon Standartları`,
@@ -561,7 +544,7 @@ function generateAlternateTrackSteps(
         'Hedef gerçekleşme yüzdesi'
       ],
       nextCareerLevel: nextTitle,
-      nextCareerLevelId: isPeak ? 15 : stepId + 1,
+      nextCareerLevelId: isPeak ? stepId : stepId + 1,
       requiredTrainingForNextLevel: [
         `İleri ${nextTitle} Müfredatı`,
         `Stratejik ${departmentName} Yönetimi`,
@@ -578,12 +561,12 @@ function generateAlternateTrackSteps(
   });
 }
 
-// 6 DISTINCT CAREER TRACKS (ALL 15 STEPS EACH)
+// 6 TAILORED CAREER TRACKS (OPTIMIZED NATURAL STEP COUNTS)
 export const ALL_CAREER_TRACKS_15: CareerTrack15[] = [
   {
     id: 'kasiyer-ceo',
     name: 'Kasiyerlikten CEO / Genel Müdürlüğe',
-    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    badgeText: '15 BASAMAKLI MASTER KARİYER HARİTASI',
     headline: 'Kasadan CEO Koltuğuna İlerleme Haritası',
     department: 'Mağaza Operasyonu & Genel Yönetim',
     startRole: '1. Kasiyer (0-1 Yıl)',
@@ -594,137 +577,159 @@ export const ALL_CAREER_TRACKS_15: CareerTrack15[] = [
   {
     id: 'satinalma-direktoru',
     name: 'Reyon Elemanlığından Satın Alma Direktörlüğüne',
-    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    badgeText: '8 BASAMAKLI STRATEJİK KARİYER HARİTASI',
     headline: 'Reyondan Satın Alma Direktörlüğüne İlerleme Haritası',
     department: 'Satın Alma & Kategori Yönetimi',
     startRole: '1. Reyon Elemanı (0-1 Yıl)',
-    peakRole: '15. Satın Alma & Ticaret Direktörü (CCO)',
-    description: 'Reyon uzmanlığından tedarikçi müzakerelerine, kategori yönetiminden ticari direktörlüğe uzanan stratejik perakende rotası.',
-    steps: generateAlternateTrackSteps([
-      'Reyon Elemanı',
-      'Kıdemli Reyon Personeli',
-      'Reyon Şefi',
-      'Kasa & Saha Sorumlusu',
-      'Mağaza Müdür Yardımcısı',
-      'Kategori Asistanı / Stajyeri',
-      'Kategori Uzman Yardımcısı',
-      'Kategori Uzmanı',
-      'Kıdemli Kategori Uzmanı',
-      'Kategori Yöneticisi Adayı',
-      'Kategori Yöneticisi',
-      'Satın Alma Müdürü',
-      'Kıdemli Satın Alma Müdürü',
-      'Ticari & Satın Alma Grup Müdürü',
-      'Satın Alma & Ticaret Direktörü (CCO)'
-    ], 'Satın Alma & Kategori')
+    peakRole: '8. Satın Alma & Ticaret Direktörü (CCO)',
+    description: 'Reyon uzmanlığından tedarikçi müzakerelerine, kategori yönetiminden ticari direktörlüğe uzanan odaklanmış perakende rotası.',
+    steps: createTailoredSteps(
+      [
+        'Reyon Elemanı',
+        'Reyon Şefi / Saha Sorumlusu',
+        'Kategori Asistanı',
+        'Kategori Uzman Yardımcısı',
+        'Kategori Uzmanı',
+        'Kategori Yöneticisi',
+        'Satın Alma & Kategori Müdürü',
+        'Satın Alma & Ticaret Direktörü (CCO)'
+      ],
+      [
+        '6–12 Ay',
+        '12–18 Ay',
+        '6–12 Ay',
+        '12–18 Ay',
+        '18–24 Ay',
+        '24–36 Ay',
+        '24–36 Ay',
+        'Sürekli Liderlik'
+      ],
+      'Satın Alma & Kategori'
+    )
   },
   {
     id: 'pazarlama-satis',
     name: 'Reyon Elemanlığından Pazarlama ve Satış Müdürlüğüne',
-    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    badgeText: '7 BASAMAKLI STRATEJİK KARİYER HARİTASI',
     headline: 'Reyondan Pazarlama ve Satış Müdürlüğüne İlerleme Haritası',
     department: 'Satış, Pazarlama & CRM',
     startRole: '1. Reyon Elemanı (0-1 Yıl)',
-    peakRole: '15. Satış ve Pazarlama Direktörü (CMO)',
+    peakRole: '7. Satış ve Pazarlama Direktörü (CMO)',
     description: 'Müşteri temasından sepet büyütmeye, CRM verisinden markanın tüm satış ve pazarlama direktörlüğüne ulaşan modern kariyer yolu.',
-    steps: generateAlternateTrackSteps([
-      'Reyon Elemanı',
-      'Müşteri İlişkileri Temsilcisi',
-      'Reyon & Görsel Şefi (Merchandiser)',
-      'Mağaza Satış Lideri',
-      'Mağaza Müdür Yardımcısı',
-      'Pazarlama Asistanı',
-      'Ticari Pazarlama Uzman Yardımcısı',
-      'CRM & Müşteri Analitiği Uzmanı',
-      'Kıdemli Pazarlama Uzmanı',
-      'Dijital Pazarlama Yöneticisi',
-      'Ticari Pazarlama Yöneticisi',
-      'Bölge Satış & Pazarlama Müdürü',
-      'Pazarlama Müdürü',
-      'Satış & Pazarlama Grup Müdürü',
-      'Satış ve Pazarlama Direktörü (CMO)'
-    ], 'Satış & Pazarlama')
+    steps: createTailoredSteps(
+      [
+        'Reyon Elemanı / Müşteri Temsilcisi',
+        'Merchandiser & Görsel Şef',
+        'Pazarlama & Satış Asistanı',
+        'CRM & Müşteri Analitiği Uzmanı',
+        'Dijital & Ticari Pazarlama Yöneticisi',
+        'Pazarlama ve Satış Müdürü',
+        'Satış ve Pazarlama Direktörü (CMO)'
+      ],
+      [
+        '6–12 Ay',
+        '12–18 Ay',
+        '6–12 Ay',
+        '18–24 Ay',
+        '24–36 Ay',
+        '24–36 Ay',
+        'Sürekli Liderlik'
+      ],
+      'Satış & Pazarlama'
+    )
   },
   {
     id: 'crm-veri',
     name: 'Reyon Elemanlığından CRM, Veri & Dijital Dönüşüm Direktörlüğüne',
-    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    badgeText: '7 BASAMAKLI STRATEJİK KARİYER HARİTASI',
     headline: 'Reyondan CRM ve Veri Direktörlüğüne İlerleme Haritası',
     department: 'CRM, Veri Analitiği & Dijitalleşme',
     startRole: '1. Reyon Elemanı (0-1 Yıl)',
-    peakRole: '15. CRM, Veri ve Dijital Dönüşüm Direktörü (CDO)',
+    peakRole: '7. CRM, Veri ve Dijital Dönüşüm Direktörü (CDO)',
     description: 'Saha müşteri kaydından başlayarak SQL, Power BI, sepet analitiği, CRM segmentasyonu ve şirketin tüm veri-yapay zeka direktörlüğüne uzanan teknoloji rotası.',
-    steps: generateAlternateTrackSteps([
-      'Reyon Elemanı',
-      'Kasa & CRM Veri Kayıt Sorumlusu',
-      'Mağaza Müşteri İlişkileri Şefi',
-      'Saha Veri Toplama & Kampanya Lideri',
-      'Mağaza Müdür Yardımcısı',
-      'CRM / Veri Analitiği Asistanı',
-      'Raporlama & SQL Uzman Yardımcısı',
-      'CRM & Müşteri Analitiği Uzmanı',
-      'Kıdemli Veri Analisti',
-      'Perakende BI Yöneticisi Adayı',
-      'CRM & Müşteri Bağlılığı Yöneticisi',
-      'Veri Analitiği & BI Müdürü',
-      'Kıdemli CRM & Veri Yönetimi Müdürü',
-      'Dijital Dönüşüm & Veri Grup Müdürü',
-      'CRM, Veri ve Dijital Dönüşüm Direktörü (CDO)'
-    ], 'CRM & Veri Analitiği')
+    steps: createTailoredSteps(
+      [
+        'Reyon Elemanı & Kasa Kayıt Sorumlusu',
+        'Saha Veri & Kampanya Şefi',
+        'CRM / Raporlama Asistanı',
+        'CRM & SQL Veri Analitiği Uzmanı',
+        'Perakende İş Zekası (BI) Yöneticisi',
+        'Veri Analitiği & CRM Müdürü',
+        'CRM, Veri ve Dijital Dönüşüm Direktörü (CDO)'
+      ],
+      [
+        '6–12 Ay',
+        '12–18 Ay',
+        '6–12 Ay',
+        '18–24 Ay',
+        '24–36 Ay',
+        '24–36 Ay',
+        'Sürekli Liderlik'
+      ],
+      'CRM & Veri Analitiği'
+    )
   },
   {
     id: 'lojistik-tedarik',
     name: 'Reyon Elemanlığından Lojistik ve Tedarik Chain Müdürlüğüne',
-    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    badgeText: '7 BASAMAKLI STRATEJİK KARİYER HARİTASI',
     headline: 'Reyondan Lojistik Müdürlüğüne İlerleme Haritası',
     department: 'Lojistik & Tedarik Zinciri',
     startRole: '1. Reyon Elemanı (0-1 Yıl)',
-    peakRole: '15. Lojistik & Tedarik Zinciri Direktörü (CLO)',
+    peakRole: '7. Lojistik & Tedarik Zinciri Direktörü (CLO)',
     description: 'Depo ve mal kabulden başlayarak stok planlama, antrepo yönetimi ve tüm perakende lojistik ağının direktörlüğüne uzanan operasyonel hat.',
-    steps: generateAlternateTrackSteps([
-      'Reyon Elemanı',
-      'Mal Kabul & Depo Görevlisi',
-      'Depo Şefi / Stok Sorumlusu',
-      'Mağaza Stok & Fire Şefi',
-      'Bölge Stok Kontrolörü',
-      'Lojistik Operasyon Asistanı',
-      'Depo & Sevkiyat Uzman Yardımcısı',
-      'Stok & Envanter Planlama Uzmanı',
-      'Kıdemli Lojistik Uzmanı',
-      'Depo / Antrepo Yöneticisi',
-      'Tedarik Zinciri Yöneticisi',
-      'Lojistik Operasyon Müdürü',
-      'Kıdemli Lojistik Müdürü',
-      'Tedarik Zinciri Grup Müdürü',
-      'Lojistik & Tedarik Zinciri Direktörü (CLO)'
-    ], 'Lojistik & Tedarik Zinciri')
+    steps: createTailoredSteps(
+      [
+        'Reyon Elemanı & Mal Kabul Görevlisi',
+        'Depo & Stok Şefi',
+        'Lojistik Operasyon Asistanı',
+        'Stok & Envanter Planlama Uzmanı',
+        'Depo & Antrepo Yöneticisi',
+        'Lojistik ve Tedarik Chain Müdürü',
+        'Lojistik & Tedarik Zinciri Direktörü (CLO)'
+      ],
+      [
+        '6–12 Ay',
+        '12–18 Ay',
+        '6–12 Ay',
+        '18–24 Ay',
+        '24–36 Ay',
+        '24–36 Ay',
+        'Sürekli Liderlik'
+      ],
+      'Lojistik & Tedarik Zinciri'
+    )
   },
   {
     id: 'insan-kaynaklari',
     name: 'Reyon Elemanlığından İnsan Kaynakları Direktörlüğüne',
-    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    badgeText: '7 BASAMAKLI STRATEJİK KARİYER HARİTASI',
     headline: 'Reyondan İK Direktörlüğüne İlerleme Haritası',
     department: 'İnsan Kaynakları & Kurumsal Akademi',
     startRole: '1. Reyon Elemanı (0-1 Yıl)',
-    peakRole: '15. İnsan Kaynakları Direktörü (CHRO)',
-    description: 'Saha çalışan deneyiminden başlayarak eğitim uzmanlığı, HRBP,akademi yöneticiliği ve şirket insan kaynakları direktörlüğüne giden insan odaklı rota.',
-    steps: generateAlternateTrackSteps([
-      'Reyon Elemanı',
-      'Mağaza Ekip Lideri',
-      'Mağaza Müdür Yardımcısı',
-      'Mağaza Eğitmen Şefi',
-      'Saha İK & İşe Alım Sorumlusu',
-      'Akademi / LMS Uzman Yardımcısı',
-      'İK Operasyon Uzmanı',
-      'İşe Alım & Yetenek Uzmanı',
-      'Saha İK Partneri (HRBP)',
-      'Kıdemli İK Uzmanı / HRBP',
-      'Eğitim & Gelişim Yöneticisi',
-      'İnsan Kaynakları Müdürü',
-      'Kurumsal Akademi Yöneticisi',
-      'İK Grup Müdürü',
-      'İnsan Kaynakları Direktörü (CHRO)'
-    ], 'İnsan Kaynakları')
+    peakRole: '7. İnsan Kaynakları Direktörü (CHRO)',
+    description: 'Saha çalışan deneyiminden başlayarak eğitim uzmanlığı, HRBP, akademi yöneticiliği ve şirket insan kaynakları direktörlüğüne giden insan odaklı rota.',
+    steps: createTailoredSteps(
+      [
+        'Reyon Elemanı & Ekip Lideri',
+        'Mağaza Eğitmen Şefi',
+        'Saha İK & Akademi Uzman Yardımcısı',
+        'Saha İK Partneri (HRBP) / İşe Alım Uzmanı',
+        'Eğitim & Gelişim Yöneticisi',
+        'İnsan Kaynakları Müdürü',
+        'İnsan Kaynakları Direktörü (CHRO)'
+      ],
+      [
+        '6–12 Ay',
+        '12–18 Ay',
+        '6–12 Ay',
+        '18–24 Ay',
+        '24–36 Ay',
+        '24–36 Ay',
+        'Sürekli Liderlik'
+      ],
+      'İnsan Kaynakları'
+    )
   }
 ];
 
