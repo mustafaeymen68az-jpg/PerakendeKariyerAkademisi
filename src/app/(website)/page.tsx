@@ -359,7 +359,7 @@ export default async function HomePage() {
             </div>
 
             <div className="p-6 bg-gray-50 rounded-2xl border border-gray-200 space-y-2">
-              <h3 className="font-extrabold text-base text-[#0B2A4A]">6. Yeteneği Objektif Ölçün</h3>
+              <h3 className="font-extrabold text-base text-[#0B2A4A]">6. Yetneği Objektif Ölçün</h3>
               <p className="text-xs text-gray-600">Terfi kararlarını yalnızca yöneticinin kişisel kanaatine bırakmayın.</p>
             </div>
 
@@ -377,7 +377,12 @@ export default async function HomePage() {
       <PromotionReadinessModule />
       <TalentPoolModule />
       <SuccessionPlanModule />
-      <CareerMapInteractive />
+
+      {/* DIRECT TARGET ANCHOR FOR KARİYER HARİTASI */}
+      <div id="kariyer-haritasi" className="scroll-mt-24">
+        <CareerMapInteractive />
+      </div>
+
       <CompetencyPassport />
       <EmployeeScorecard />
       <EnterpriseDashboardPreview />

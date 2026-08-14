@@ -42,7 +42,7 @@ const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/' },
   { name: 'Eğitim Kataloğu', path: '/egitimler' },
   { name: 'İK Çözümleri', path: '/ik-cozumlari', isDropdown: true },
-  { name: 'Kariyer Haritası', path: '/#kariyer-haritasi' },
+  { name: 'Kariyer Haritası', path: '/#15-basamakli-harita' },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', badge: '15 Soruluk Test' },
   { name: 'Kariyerimi Planla', path: '/kariyerimi-planla', badge: 'Planlayıcı' },
   { name: 'Yapay Zekâ', path: '/yapay-zeka', badge: 'Yeni' },
@@ -53,32 +53,9 @@ const MENU_ITEMS = [
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isHrDropdownOpen, setIsHrDropdownOpen] = useState(false);
-  const profileRef = useRef<HTMLDivElement>(null);
   const hrRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-
-  const [sessionUser, setSessionUser] = useState<{
-    id?: string;
-    name: string;
-    email: string;
-    role: string;
-    department?: string;
-    company?: string;
-  } | null>(null);
-
-  useEffect(() => {
-    try {
-      const match = document.cookie.match(/user_session=([^;]+)/);
-      if (match) {
-        const parsed = JSON.parse(decodeURIComponent(match[1]));
-        setSessionUser(parsed);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,9 +71,6 @@ export default function Header() {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
-        setIsProfileOpen(false);
-      }
       if (hrRef.current && !hrRef.current.contains(event.target as Node)) {
         setIsHrDropdownOpen(false);
       }
@@ -104,12 +78,6 @@ export default function Header() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const handleLogout = () => {
-    document.cookie = 'user_session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    setSessionUser(null);
-    window.location.href = '/';
-  };
 
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${
