@@ -20,9 +20,9 @@ import { INSTRUCTORS_DATA } from '@/data/instructorsData';
 
 export default function EgitmenDetailPage() {
   const params = useParams();
-  const id = (params?.id as string) || 'ahmet-celik';
+  const slug = (params?.slug as string) || (params?.id as string) || 'ahmet-celik';
 
-  const instructor = INSTRUCTORS_DATA[id] || INSTRUCTORS_DATA['ahmet-celik'];
+  const instructor = INSTRUCTORS_DATA[slug] || INSTRUCTORS_DATA['ahmet-celik'];
 
   return (
     <div className="min-h-screen bg-[#F4F7F9] py-12">
