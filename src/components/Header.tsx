@@ -43,9 +43,8 @@ const MENU_ITEMS = [
   { name: 'Eğitim Kataloğu', path: '/egitimler' },
   { name: 'İK Çözümleri', path: '/ik-cozumlari', isDropdown: true },
   { name: 'Kariyer Haritası', path: '/#15-basamakli-harita' },
-  { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', badge: '15 Soruluk Test' },
+  { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', badge: '15 Soru' },
   { name: 'Yapay Zekâ', path: '/yapay-zeka', badge: 'Yeni' },
-  { name: 'Kurumsal Solutions', path: '/kurumsal-cozumler' },
   { name: 'Aday Havuzu', path: '/yetkinlik-aday-havuzu', badge: 'Yakında' }
 ];
 
@@ -111,9 +110,9 @@ export default function Header() {
 
       {/* Main Header Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between h-14">
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2 shrink-0">
             <Logo variant="dark" size="md" showSubtext={true} />
           </Link>
 
@@ -125,7 +124,7 @@ export default function Header() {
                   <div key={item.name} className="relative" ref={hrRef}>
                     <button
                       onClick={() => setIsHrDropdownOpen(!isHrDropdownOpen)}
-                      className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 ${
+                      className={`h-9 px-3.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
                         pathname.startsWith('/ik-cozumlari')
                           ? 'bg-[#087F96] text-white shadow-md'
                           : 'text-gray-200 hover:bg-white/10 hover:text-white'
@@ -166,7 +165,7 @@ export default function Header() {
                 <Link
                   key={item.name}
                   href={item.path}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 ${
+                  className={`h-9 px-3.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
                     isActive 
                       ? 'bg-[#087F96] text-white shadow-md' 
                       : 'text-gray-200 hover:bg-white/10 hover:text-white'
@@ -174,10 +173,9 @@ export default function Header() {
                 >
                   <span>{item.name}</span>
                   {item.badge && (
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black ${
-                      item.badge === 'Planlayıcı' ? 'bg-[#087F96] text-white' :
-                      item.badge === '15 Soruluk Test' ? 'bg-emerald-500 text-white' : 
-                      item.badge === 'Yeni' ? 'bg-[#E11D48] text-white' : 'bg-amber-400 text-black'
+                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-extrabold uppercase ${
+                      item.badge === '15 Soru' ? 'bg-emerald-500 text-white' : 
+                      item.badge === 'Yeni' ? 'bg-[#E11D48] text-white' : 'bg-amber-400 text-slate-950'
                     }`}>
                       {item.badge}
                     </span>
@@ -187,19 +185,19 @@ export default function Header() {
             })}
           </nav>
 
-          {/* Right Action Controls */}
-          <div className="hidden lg:flex items-center space-x-3">
+          {/* Right Action Controls - Standardized CTA Buttons */}
+          <div className="hidden lg:flex items-center space-x-2.5 shrink-0">
             <Link
               href="/kariyerimi-planla"
-              className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5"
+              className="h-9 px-4 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5 whitespace-nowrap"
             >
               <Target className="h-3.5 w-3.5 text-amber-300" />
               <span>Kariyerimi Planla</span>
             </Link>
 
             <Link
-              href="/kurumsal-demo"
-              className="px-4 py-2 bg-gradient-to-r from-[#E11D48] to-[#BE123C] hover:opacity-95 text-white font-black rounded-xl text-xs shadow-lg transition-all flex items-center space-x-1.5"
+              href="/kurumsal-cozumler"
+              className="h-9 px-4 bg-[#E11D48] hover:bg-[#BE123C] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5 whitespace-nowrap"
             >
               <Building2 className="h-3.5 w-3.5" />
               <span>Kurumsal Solutions</span>
@@ -248,7 +246,15 @@ export default function Header() {
               onClick={() => setIsOpen(false)}
               className="w-full py-3 bg-[#087F96] text-white font-bold rounded-xl text-xs text-center block shadow-md"
             >
-              Kariyerimi Planla (Mevcut → Hedef Pozisyon)
+              Kariyerimi Planla
+            </Link>
+
+            <Link
+              href="/kurumsal-cozumler"
+              onClick={() => setIsOpen(false)}
+              className="w-full py-3 bg-[#E11D48] text-white font-bold rounded-xl text-xs text-center block shadow-md"
+            >
+              Kurumsal Solutions
             </Link>
           </div>
         </div>
