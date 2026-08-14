@@ -122,7 +122,30 @@ export default function KurumsalYoneticiPaneliPage() {
           </div>
         </div>
 
-        {/* Dashboard Rows */}
+        {/* HR Talent Pool Banner (+80 Points Threshold) */}
+        <div className="bg-gradient-to-r from-[#0B2A4A] to-[#087F96] text-white p-6 rounded-3xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 border border-white/20">
+          <div className="space-y-1.5 text-center md:text-left">
+            <span className="bg-emerald-400 text-[#0B2A4A] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider font-mono">
+              +80 Puan Barajı Aktif ✓
+            </span>
+            <h3 className="font-display font-extrabold text-xl">
+              Perakende İK Yetenek Havuzu (+80p Barajı Geçenler)
+            </h3>
+            <p className="text-gray-200 text-xs font-light max-w-2xl">
+              Eğitim modüllerinde 80 puan üzeri alan yüksek nitelikli personeller listelenir. Aradığınız pozisyondaki çalışanı seçerek anında İK talebi oluşturabilir ve bildirim gönderebilirsiniz.
+            </p>
+          </div>
+
+          <Link
+            href="/kurumsal/yetenek-havuzu"
+            className="px-6 py-3.5 bg-white text-[#0B2A4A] hover:bg-gray-100 font-extrabold rounded-2xl shadow-md transition-all shrink-0 text-xs flex items-center space-x-2"
+          >
+            <Sparkles className="h-4 w-4 text-[#087F96]" />
+            <span>Yetenek Havuzunu İncele & Aday Seç →</span>
+          </Link>
+        </div>
+
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Promotion Ready Candidates & High Potentials */}
           <div className="lg:col-span-8 space-y-6">

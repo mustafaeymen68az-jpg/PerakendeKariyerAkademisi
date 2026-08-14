@@ -1107,3 +1107,47 @@ export const DEPARTMENTS_DATA: DepartmentItem[] = [
     description: 'Perakendecilikte vizyoner liderlik, kârlı büyüme, yapay zekâ destekli üst yönetim.'
   }
 ];
+
+export interface DepartmentModuleScoreItem {
+  title: string;
+  year: number;
+  points: number; // Allocated points out of 100 total
+}
+
+export function getDepartment100PointBreakdown(departmentId: string): {
+  departmentName: string;
+  modules: DepartmentModuleScoreItem[];
+  totalAvailablePoints: number;
+} {
+  const dept = DEPARTMENTS_DATA.find((d) => d.id === departmentId) || DEPARTMENTS_DATA[0];
+  const allCourses = [
+    ...dept.year1Courses.map((c) => ({ title: c, year: 1 })),
+    ...dept.year2Courses.map((c) => ({ title: c, year: 2 }))
+  ];
+
+  const totalCount = allCourses.length;
+  if (totalCount === 0) {
+    return { departmentName: dept.name, modules: [], totalAvailablePoints: 100 };
+  }
+
+  // Base points per module
+  const basePoint = Math.floor(100 / totalCount);
+  const remainder = 100 - basePoint * totalCount;
+
+  const modules: DepartmentModuleScoreItem[] = allCourses.map((item, index) => {
+    // Add remainder to top key modules so total exact sum = 100 Points
+    const extra = index < remainder ? 1 : 0;
+    return {
+      title: item.title,
+      year: item.year,
+      points: basePoint + extra
+    };
+  });
+
+  return {
+    departmentName: dept.name,
+    modules,
+    totalAvailablePoints: 100
+  };
+}
+

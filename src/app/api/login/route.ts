@@ -9,11 +9,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: 'Lütfen e-posta ve şifrenizi giriniz.' }, { status: 400 });
     }
 
+    // Auto-seed/ensure special Admin account for mustafaeymen68az@gmail.com
+    if (email === 'mustafaeymen68az@gmail.com') {
+      let adminUser = await prisma.user.findUnique({ where: { email } });
+      if (!adminUser) {
+        await prisma.user.create({
+          data: {
+            name: 'Mustafa Eymen',
+            surname: 'Admin',
+            email: 'mustafaeymen68az@gmail.com',
+            password: password || '123456',
+            role: 'ADMIN',
+            title: 'Sistem Yöneticisi & Admin'
+          }
+        });
+      } else if (adminUser.role !== 'ADMIN') {
+        // Upgrade role to ADMIN if it was previously set otherwise
+        await prisma.user.update({
+          where: { id: adminUser.id },
+          data: { role: 'ADMIN' }
+        });
+      }
+    }
+
     // Auto-seed/ensure default Instructor account if requested
     if (email === 'egitmen@perakendekariyer.com') {
       let trainerUser = await prisma.user.findUnique({ where: { email } });
       if (!trainerUser) {
-        trainerUser = await prisma.user.create({
+        await prisma.user.create({
           data: {
             name: 'Dr. Ahmet Yılmaz',
             surname: 'Eğitmen',

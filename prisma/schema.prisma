@@ -354,4 +354,17 @@ model CourseAssignment {
   updatedAt   DateTime @updatedAt
 }
 
+model TalentPoolRequest {
+  id             String   @id @default(uuid())
+  companyName    String
+  hrName         String
+  hrEmail        String
+  candidateName  String
+  candidateDept  String
+  candidateScore Int
+  status         String   @default("BEKLIYOR") // "BEKLIYOR" | "ILETISIME_GECILDI" | "TAMAMLANDI"
+  createdAt      DateTime @default(now())
+}
+
+
 
