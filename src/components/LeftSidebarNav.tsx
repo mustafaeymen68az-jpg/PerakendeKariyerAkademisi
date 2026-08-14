@@ -24,8 +24,9 @@ import {
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
-// Submenu items map to dedicated distinct pages under /ik-cozumlari/[slug]
+// Added "Çalışan Kariyer Planlaması" under İK Çözümleri submenu as requested
 const HR_SUBMENU = [
+  { name: 'Çalışan Kariyer Planlaması', path: '/ik-cozumlari/calisan-kariyer-planlamasi' },
   { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari/yetkinlik-matrisi' },
   { name: 'Terfi Yönetimi', path: '/ik-cozumlari/terfi-yonetimi' },
   { name: 'Yedekleme Planı', path: '/ik-cozumlari/yedekleme-plani' },

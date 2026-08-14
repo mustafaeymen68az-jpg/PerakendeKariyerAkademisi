@@ -21,6 +21,7 @@ import {
 import PromotionReadinessModule from '@/components/PromotionReadinessModule';
 import SuccessionPlanModule from '@/components/SuccessionPlanModule';
 import EnterpriseROICalculator from '@/components/EnterpriseROICalculator';
+import EmployeeCareerPlanningModule from '@/components/EmployeeCareerPlanningModule';
 
 interface HRDetailData {
   slug: string;
@@ -37,6 +38,26 @@ interface HRDetailData {
 }
 
 const HR_SOLUTIONS_DATA: Record<string, HRDetailData> = {
+  'calisan-kariyer-planlamasi': {
+    slug: 'calisan-kariyer-planlamasi',
+    title: 'Çalışan Kariyer Planlaması & SWOT Analizi',
+    badge: 'Puan Sıralaması & SWOT Analizi',
+    subtitle: 'Yetkinlik Puanlarına Göre Sıralı Çalışan Listesi, Akıllı Pozisyon Önerisi ve 90 Günlük Gelişim Tavsiyeleri',
+    description: 'Çalışanları yetkinlik puanlarına göre listeleyin, otomatik üretilen SWOT analizlerini inceleyin ve 90 günlük somut gelişim tavsiyeleriyle en doğru pozisyon terfisini belirleyin.',
+    iconName: 'Target',
+    benefits: [
+      'Puanlara göre sıralı canlı çalışan veri listesi',
+      'Kişiye özel S-W-O-T Analiz Raporu (Güçlü/Zayıf Yönler, Fırsat ve Riskler)',
+      'Yapay zekâ ve kural tabanlı %95 hassasiyetli hedef pozisyon önerisi',
+      '30-60-90 günlük bireysel aksiyon tavsiye takvimi'
+    ],
+    moduleDetails: [
+      { heading: 'Puan Bazlı Çalışan Sıralaması', text: 'Çalışanlar yetkinlik sınav ve saha notlarına göre +90p, +80p şeklinde otomatik gruplanır.' },
+      { heading: '4 Kutu SWOT Karnesi', text: 'Çalışanın güçlü yönleri ve geliştirmesi gereken kritik 3 alan tek bakışta analiz edilir.' },
+      { heading: 'Uyumlu Pozisyon Önerisi', text: 'Mevcut rol ile hedef rol arasındaki yetkinlik örtüşme yüzdesi (%94) hesaplanır.' }
+    ]
+  },
+
   'yetkinlik-matrisi': {
     slug: 'yetkinlik-matrisi',
     title: 'Perakende Yetkinlik Matrisi & Beceri Haritası',
@@ -241,24 +262,8 @@ export default async function HRSolutionDetailPage({ params }: { params: Promise
           </div>
         </div>
 
-        {/* Module Details & Interactive Views */}
-        <div className="bg-white p-8 rounded-3xl border border-gray-200 shadow-md space-y-6">
-          <h2 className="text-xl font-extrabold text-[#0B2A4A] flex items-center space-x-2">
-            <Layers className="w-6 h-6 text-[#087F96]" />
-            <span>Modül İncelemesi ve Uygulama Detayları</span>
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {data.moduleDetails.map((det, idx) => (
-              <div key={idx} className="p-6 bg-gradient-to-br from-slate-50 to-blue-50/40 rounded-2xl border border-gray-200 space-y-2">
-                <h3 className="font-extrabold text-sm text-[#0B2A4A]">{det.heading}</h3>
-                <p className="text-xs text-gray-600 font-light leading-relaxed">{det.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Specialized Interactive Modules based on Slug */}
+        {data.slug === 'calisan-kariyer-planlamasi' && <EmployeeCareerPlanningModule />}
         {data.slug === 'terfi-yonetimi' && <PromotionReadinessModule />}
         {data.slug === 'yedekleme-plani' && <SuccessionPlanModule />}
         {data.slug === 'yetkinlik-matrisi' && <EnterpriseROICalculator />}

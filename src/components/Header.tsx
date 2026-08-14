@@ -27,8 +27,9 @@ import {
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
-// Submenu items map to dedicated distinct pages under /ik-cozumlari/[slug]
+// Added "Çalışan Kariyer Planlaması" under HR_SUBMENU as requested
 const HR_SUBMENU = [
+  { name: 'Çalışan Kariyer Planlaması', path: '/ik-cozumlari/calisan-kariyer-planlamasi', desc: 'SWOT analizi & pozisyon önerisi' },
   { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari/yetkinlik-matrisi', desc: 'Saha & merkez yetkinlik haritası' },
   { name: 'Terfi Yönetimi', path: '/ik-cozumlari/terfi-yonetimi', desc: 'Ağırlıklı %80+ Terfi Skoru' },
   { name: 'Yedekleme Planı', path: '/ik-cozumlari/yedekleme-plani', desc: 'Kritik pozisyon iş sürekliliği' },
@@ -128,7 +129,7 @@ export default function Header() {
                         onClick={() => setIsHrDropdownOpen(!isHrDropdownOpen)}
                         className={`h-8 px-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-1 whitespace-nowrap ${
                           pathname.startsWith('/ik-cozumlari')
-                            ? 'bg-[#087F96] text-[#0B2A4A] bg-white shadow-md'
+                            ? 'bg-[#087F96] text-white shadow-md'
                             : 'text-gray-200 hover:bg-white/10 hover:text-white'
                         }`}
                       >
