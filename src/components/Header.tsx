@@ -42,7 +42,7 @@ const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/' },
   { name: 'Eğitim Kataloğu', path: '/egitimler' },
   { name: 'İK Çözümleri', path: '/ik-cozumlari', isDropdown: true },
-  { name: 'Kariyer Haritası', path: '/#15-basamakli-harita' },
+  { name: 'Kariyer Haritası', path: '/#kariyer-haritasi' },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', badge: '15 Soru' },
   { name: 'Yapay Zekâ', path: '/yapay-zeka', badge: 'Yeni' },
   { name: 'Aday & Yetenek Havuzu', path: '/yetkinlik-aday-havuzu', badge: 'Yakında' }

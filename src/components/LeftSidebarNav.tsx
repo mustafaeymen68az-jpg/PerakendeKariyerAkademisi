@@ -39,7 +39,7 @@ const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/', icon: Home },
   { name: 'Eğitim Kataloğu', path: '/egitimler', icon: BookOpen },
   { name: 'İK Çözümleri', path: '/ik-cozumlari', icon: Briefcase, isDropdown: true },
-  { name: 'Kariyer Haritası', path: '/#15-basamakli-harita', icon: Map },
+  { name: 'Kariyer Haritası', path: '/#kariyer-haritasi', icon: Map },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', icon: Target, badge: '15 Soru' },
   { name: 'Yapay Zekâ', path: '/yapay-zeka', icon: Bot, badge: 'Yeni' },
   { name: 'Aday & Yetenek Havuzu', path: '/yetkinlik-aday-havuzu', icon: Users, badge: 'Yakında' }
