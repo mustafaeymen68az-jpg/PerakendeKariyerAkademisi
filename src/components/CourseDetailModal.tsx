@@ -28,6 +28,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import { getInstructorForCourse, Instructor } from '@/data/instructorsData';
+import { getCourseImage } from '@/data/courseImages';
 import InstructorProfileModal from '@/components/InstructorProfileModal';
 
 export interface DetailedCourse {
@@ -83,6 +84,7 @@ export default function CourseDetailModal({ course, isOpen, onClose }: CourseDet
 
   const currentPdf = selectedPdfIndex !== null ? course.pdfDocuments[selectedPdfIndex] : null;
   const assignedInstructor = getInstructorForCourse(course.id, course.category);
+  const courseImage = getCourseImage(course.title, course.category, course.department);
 
   const handleOpenInstructor = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -95,84 +97,93 @@ export default function CourseDetailModal({ course, isOpen, onClose }: CourseDet
       <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
         <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-gray-200 overflow-hidden relative animate-in fade-in zoom-in duration-200">
 
-          {/* Modal Header */}
-          <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-6 sm:p-8 relative flex-shrink-0">
-            <button
-              onClick={onClose}
-              className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+          {/* Modal Header with Course Background Photo Banner */}
+          <div className="relative bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-6 sm:p-8 flex-shrink-0 overflow-hidden">
+            {/* Photo background with dark overlay */}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-25 mix-blend-overlay"
+              style={{ backgroundImage: `url(${courseImage})` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B2A4A] via-black/40 to-transparent" />
 
-            <div className="space-y-3 pr-10">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] uppercase tracking-wider font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-3 py-0.5 rounded-full">
-                  {course.category}
-                </span>
-                {course.level && (
-                  <span className="text-[10px] font-extrabold bg-white/10 text-gray-200 px-3 py-0.5 rounded-full">
-                    {course.level}
+            <div className="relative z-10">
+              <button
+                onClick={onClose}
+                className="absolute top-0 right-0 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="space-y-3 pr-10">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-3 py-0.5 rounded-full backdrop-blur-md">
+                    {course.category}
                   </span>
-                )}
-                <span className="text-[10px] font-mono font-bold text-amber-300 bg-black/20 px-2.5 py-0.5 rounded-full flex items-center space-x-1">
-                  <Clock className="w-3 h-3 text-amber-300 inline mr-0.5" />
-                  <span>{course.duration ? `${course.duration} ${typeof course.duration === 'number' ? 'Saat' : ''}` : '24 Saat'}</span>
-                </span>
+                  {course.level && (
+                    <span className="text-[10px] font-extrabold bg-white/10 text-gray-200 px-3 py-0.5 rounded-full backdrop-blur-md">
+                      {course.level}
+                    </span>
+                  )}
+                  <span className="text-[10px] font-mono font-bold text-amber-300 bg-black/40 px-2.5 py-0.5 rounded-full flex items-center space-x-1 backdrop-blur-md">
+                    <Clock className="w-3 h-3 text-amber-300 inline mr-0.5" />
+                    <span>{course.duration ? `${course.duration} ${typeof course.duration === 'number' ? 'Saat' : ''}` : '24 Saat'}</span>
+                  </span>
+                </div>
+
+                <h2 className="text-2xl sm:text-3xl font-black leading-tight text-white drop-shadow-md">{course.title}</h2>
+                <p className="text-xs sm:text-sm text-gray-200 line-clamp-2 font-light">{course.description}</p>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-black leading-tight text-white">{course.title}</h2>
-              <p className="text-xs sm:text-sm text-gray-200 line-clamp-2 font-light">{course.description}</p>
-            </div>
+              {/* Navigation Tabs */}
+              <div className="flex items-center space-x-2 pt-6 overflow-x-auto border-t border-white/10 mt-6 text-xs">
+                <button
+                  onClick={() => setActiveTab('content')}
+                  className={`px-4 py-2 rounded-xl font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
+                    activeTab === 'content'
+                      ? 'bg-[#087F96] text-white shadow-md'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
+                  }`}
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>Ders İçeriği & Müfredat</span>
+                </button>
 
-            {/* Navigation Tabs */}
-            <div className="flex items-center space-x-2 pt-6 overflow-x-auto border-t border-white/10 mt-6 text-xs">
-              <button
-                onClick={() => setActiveTab('content')}
-                className={`px-4 py-2 rounded-xl font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
-                  activeTab === 'content'
-                    ? 'bg-[#087F96] text-white shadow-md'
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
-                }`}
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>Ders İçeriği & Müfredat</span>
-              </button>
+                <button
+                  onClick={() => setActiveTab('video')}
+                  className={`px-4 py-2 rounded-xl font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
+                    activeTab === 'video'
+                      ? 'bg-[#087F96] text-white shadow-md'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
+                  }`}
+                >
+                  <Video className="w-4 h-4 text-emerald-300" />
+                  <span>🎬 Örnek Eğitim Videosu</span>
+                </button>
 
-              <button
-                onClick={() => setActiveTab('video')}
-                className={`px-4 py-2 rounded-xl font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
-                  activeTab === 'video'
-                    ? 'bg-[#087F96] text-white shadow-md'
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
-                }`}
-              >
-                <Video className="w-4 h-4 text-emerald-300" />
-                <span>🎬 Örnek Eğitim Videosu</span>
-              </button>
+                <button
+                  onClick={() => setActiveTab('pdf')}
+                  className={`px-4 py-2 rounded-xl font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
+                    activeTab === 'pdf'
+                      ? 'bg-[#087F96] text-white shadow-md'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
+                  }`}
+                >
+                  <FileText className="w-4 h-4 text-amber-300" />
+                  <span>📄 PDF Dokümanlar ({course.pdfDocuments?.length || 2})</span>
+                </button>
 
-              <button
-                onClick={() => setActiveTab('pdf')}
-                className={`px-4 py-2 rounded-xl font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
-                  activeTab === 'pdf'
-                    ? 'bg-[#087F96] text-white shadow-md'
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
-                }`}
-              >
-                <FileText className="w-4 h-4 text-amber-300" />
-                <span>📄 PDF Dokümanlar ({course.pdfDocuments?.length || 2})</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab('badge')}
-                className={`px-4 py-2 rounded-xl font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
-                  activeTab === 'badge'
-                    ? 'bg-[#087F96] text-white shadow-md'
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
-                }`}
-              >
-                <Award className="w-4 h-4 text-yellow-300" />
-                <span>🏆 Sertifika & Rozet</span>
-              </button>
+                <button
+                  onClick={() => setActiveTab('badge')}
+                  className={`px-4 py-2 rounded-xl font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
+                    activeTab === 'badge'
+                      ? 'bg-[#087F96] text-white shadow-md'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
+                  }`}
+                >
+                  <Award className="w-4 h-4 text-yellow-300" />
+                  <span>🏆 Sertifika & Rozet</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -284,7 +295,7 @@ export default function CourseDetailModal({ course, isOpen, onClose }: CourseDet
                     {!isPlayingVideo ? (
                       <>
                         {/* Video Poster Preview Background */}
-                        <div className="absolute inset-0 bg-cover bg-center opacity-40 blur-[1px]" style={{ backgroundImage: `url(${course.videoSample?.thumbnail || 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&q=80&w=1000'})` }} />
+                        <div className="absolute inset-0 bg-cover bg-center opacity-40 blur-[1px]" style={{ backgroundImage: `url(${course.videoSample?.thumbnail || courseImage})` }} />
 
                         {/* Play Overlay */}
                         <div className="relative z-10 text-center space-y-3 p-6">

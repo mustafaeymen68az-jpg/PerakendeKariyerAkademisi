@@ -25,6 +25,7 @@ import { DEPARTMENTS_DATA } from '@/data/departmentsData';
 import CourseDetailModal, { DetailedCourse } from '@/components/CourseDetailModal';
 import { getDetailedCourseData } from '@/data/courseDetailsData';
 import { getInstructorForCourse, Instructor } from '@/data/instructorsData';
+import { getCourseImage } from '@/data/courseImages';
 import InstructorProfileModal from '@/components/InstructorProfileModal';
 
 interface CourseItem {
@@ -348,74 +349,91 @@ function EgitimlerCatalogContent() {
         </div>
       </div>
 
-      {/* Grid Cards View */}
+      {/* Grid Cards View with Rich Photo Banners */}
       {filteredCourses.length > 0 ? (
         <>
           {viewMode === 'grid' && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCourses.map((course) => {
                 const instructor = getInstructorForCourse(course.slug || course.id, course.category);
+                const courseImg = getCourseImage(course.title, course.category, course.department);
 
                 return (
                   <div
                     key={course.id}
                     onClick={() => handleOpenCourseModal(course)}
-                    className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group cursor-pointer border-t-4 border-t-[#087F96]"
+                    className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all flex flex-col justify-between group cursor-pointer hover:-translate-y-1"
                   >
-                    <div>
-                      <div className="flex items-center justify-between text-[11px] font-bold mb-3">
-                        <span className="bg-[#DDF4F7] text-[#087F96] px-2.5 py-1 rounded-full font-mono uppercase">
+                    {/* Top Course Photo Banner */}
+                    <div className="relative h-44 w-full overflow-hidden bg-slate-900">
+                      <img
+                        src={courseImg}
+                        alt={course.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+
+                      {/* Badges on Top */}
+                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between text-[10px] font-bold">
+                        <span className="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full font-mono uppercase border border-white/30">
                           {course.year}
                         </span>
-                        <span className="text-gray-500 flex items-center font-mono">
-                          <Clock className="h-3.5 w-3.5 mr-1 text-gray-400" />
-                          {course.duration} Saat
+                        <span className="bg-black/50 backdrop-blur-md text-amber-300 font-mono font-bold px-3 py-1 rounded-full border border-white/20">
+                          ⏱️ {course.duration} Saat
                         </span>
                       </div>
 
-                      <span className="text-[10px] font-bold text-[#087F96] uppercase tracking-wider block mb-1">
-                        🎯 {course.department}
-                      </span>
-
-                      <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors leading-tight">
-                        {course.title}
-                      </h3>
-
-                      <p className="text-xs text-gray-600 mt-2.5 line-clamp-3 font-light leading-relaxed">
-                        {course.description}
-                      </p>
-
-                      {/* INSTRUCTOR MINI BADGE (CLICKABLE) */}
-                      <div
-                        onClick={(e) => handleOpenInstructorModal(e, instructor)}
-                        className="mt-4 p-2 bg-gray-50 hover:bg-blue-50 rounded-xl border border-gray-200 flex items-center space-x-2.5 transition-colors"
-                      >
-                        <img
-                          src={instructor.avatar}
-                          alt={instructor.name}
-                          className="w-7 h-7 rounded-lg object-cover border border-[#087F96] flex-shrink-0"
-                        />
-                        <div className="truncate text-left">
-                          <div className="text-[9px] text-[#087F96] font-bold uppercase">Eğitmen:</div>
-                          <div className="text-xs font-bold text-[#0B2A4A] hover:underline truncate">{instructor.name}</div>
-                        </div>
+                      {/* Department Tag on Photo Bottom */}
+                      <div className="absolute bottom-2.5 left-4 right-4">
+                        <span className="text-[10px] font-extrabold text-emerald-300 uppercase tracking-wider block drop-shadow-md">
+                          🎯 {course.department}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs">
-                      <span className="text-gray-500 font-medium">
-                        {course.level}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenCourseModal(course);
-                        }}
-                        className="px-3.5 py-1.5 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl transition-all flex items-center space-x-1 shadow-sm"
-                      >
-                        <span>İncele / PDF Gör</span>
-                        <ChevronRight className="h-3.5 w-3.5" />
-                      </button>
+                    {/* Card Content Body */}
+                    <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                      <div>
+                        <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors leading-snug">
+                          {course.title}
+                        </h3>
+
+                        <p className="text-xs text-gray-600 mt-2.5 line-clamp-3 font-light leading-relaxed">
+                          {course.description}
+                        </p>
+
+                        {/* INSTRUCTOR MINI BADGE (CLICKABLE) */}
+                        <div
+                          onClick={(e) => handleOpenInstructorModal(e, instructor)}
+                          className="mt-4 p-2 bg-gray-50 hover:bg-blue-50 rounded-xl border border-gray-200 flex items-center space-x-2.5 transition-colors"
+                        >
+                          <img
+                            src={instructor.avatar}
+                            alt={instructor.name}
+                            className="w-7 h-7 rounded-lg object-cover border border-[#087F96] flex-shrink-0"
+                          />
+                          <div className="truncate text-left">
+                            <div className="text-[9px] text-[#087F96] font-bold uppercase">Eğitmen:</div>
+                            <div className="text-xs font-bold text-[#0B2A4A] hover:underline truncate">{instructor.name}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-xs">
+                        <span className="text-gray-500 font-medium">
+                          {course.level}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenCourseModal(course);
+                          }}
+                          className="px-3.5 py-1.5 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl transition-all flex items-center space-x-1 shadow-sm"
+                        >
+                          <span>İncele / PDF Gör</span>
+                          <ChevronRight className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -428,33 +446,41 @@ function EgitimlerCatalogContent() {
             <div className="space-y-4">
               {filteredCourses.map((course) => {
                 const instructor = getInstructorForCourse(course.slug || course.id, course.category);
+                const courseImg = getCourseImage(course.title, course.category, course.department);
 
                 return (
                   <div
                     key={course.id}
                     onClick={() => handleOpenCourseModal(course)}
-                    className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group cursor-pointer"
+                    className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group cursor-pointer"
                   >
-                    <div className="space-y-1.5 flex-1">
-                      <div className="flex items-center space-x-2 text-xs">
-                        <span className="bg-[#DDF4F7] text-[#087F96] font-mono font-bold px-2 py-0.5 rounded text-[11px]">
-                          {course.year}
-                        </span>
-                        <span className="text-[#087F96] font-bold text-xs">
-                          {course.department}
-                        </span>
-                        <span className="text-gray-400">•</span>
-                        <span
-                          onClick={(e) => handleOpenInstructorModal(e, instructor)}
-                          className="text-[#0B2A4A] font-bold underline hover:text-[#087F96]"
-                        >
-                          Eğitmen: {instructor.name}
-                        </span>
+                    <div className="flex items-center space-x-4 flex-1">
+                      <img
+                        src={courseImg}
+                        alt={course.title}
+                        className="w-20 h-20 rounded-xl object-cover border border-gray-200 flex-shrink-0"
+                      />
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center space-x-2 text-xs">
+                          <span className="bg-[#DDF4F7] text-[#087F96] font-mono font-bold px-2 py-0.5 rounded text-[11px]">
+                            {course.year}
+                          </span>
+                          <span className="text-[#087F96] font-bold text-xs">
+                            {course.department}
+                          </span>
+                          <span className="text-gray-400">•</span>
+                          <span
+                            onClick={(e) => handleOpenInstructorModal(e, instructor)}
+                            className="text-[#0B2A4A] font-bold underline hover:text-[#087F96]"
+                          >
+                            Eğitmen: {instructor.name}
+                          </span>
+                        </div>
+                        <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors">
+                          {course.title}
+                        </h3>
+                        <p className="text-xs text-gray-600 line-clamp-1 font-light">{course.description}</p>
                       </div>
-                      <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors">
-                        {course.title}
-                      </h3>
-                      <p className="text-xs text-gray-600 line-clamp-1 font-light">{course.description}</p>
                     </div>
 
                     <div className="flex items-center space-x-4 shrink-0">
@@ -481,7 +507,7 @@ function EgitimlerCatalogContent() {
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#0B2A4A] text-white uppercase font-bold tracking-wider">
                   <tr>
-                    <th className="py-3.5 px-4">Eğitim Modülü</th>
+                    <th className="py-3.5 px-4">Görsel & Eğitim Modülü</th>
                     <th className="py-3.5 px-4">Kadro / Pozisyon</th>
                     <th className="py-3.5 px-4">Eğitmen</th>
                     <th className="py-3.5 px-4">Süre</th>
@@ -491,6 +517,7 @@ function EgitimlerCatalogContent() {
                 <tbody className="divide-y divide-gray-200">
                   {filteredCourses.map((course) => {
                     const instructor = getInstructorForCourse(course.slug || course.id, course.category);
+                    const courseImg = getCourseImage(course.title, course.category, course.department);
 
                     return (
                       <tr
@@ -498,7 +525,10 @@ function EgitimlerCatalogContent() {
                         onClick={() => handleOpenCourseModal(course)}
                         className="hover:bg-blue-50/50 cursor-pointer transition-colors"
                       >
-                        <td className="py-3 px-4 font-bold text-[#0B2A4A]">{course.title}</td>
+                        <td className="py-3 px-4 flex items-center space-x-3">
+                          <img src={courseImg} alt={course.title} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                          <span className="font-bold text-[#0B2A4A]">{course.title}</span>
+                        </td>
                         <td className="py-3 px-4 text-gray-700 font-medium">{course.department}</td>
                         <td className="py-3 px-4">
                           <span
