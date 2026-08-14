@@ -134,6 +134,12 @@ function EgitimlerCatalogContent() {
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   const [isInstructorModalOpen, setIsInstructorModalOpen] = useState(false);
 
+  // Helper to calculate total courses per category
+  const getCategoryCount = (catName: string) => {
+    if (catName === 'Tümü') return ALL_COURSES.length;
+    return ALL_COURSES.filter((c) => c.category === catName).length;
+  };
+
   // Sync with URL Search Parameters
   useEffect(() => {
     const deptParam = searchParams.get('dept');
@@ -224,41 +230,52 @@ function EgitimlerCatalogContent() {
             />
           </div>
 
-          {/* Category Tabs */}
+          {/* Category Tabs with Course Counts */}
           <div className="flex items-center space-x-1 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 text-xs">
-            {CATEGORY_LIST.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleSelectCategoryTab(cat)}
-                className={`px-3.5 py-2 rounded-xl font-extrabold whitespace-nowrap transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-[#087F96] text-white shadow-sm'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-[#0B2A4A]'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+            {CATEGORY_LIST.map((cat) => {
+              const count = getCategoryCount(cat);
+              return (
+                <button
+                  key={cat}
+                  onClick={() => handleSelectCategoryTab(cat)}
+                  className={`px-3.5 py-2 rounded-xl font-extrabold whitespace-nowrap transition-all flex items-center space-x-1.5 ${
+                    selectedCategory === cat
+                      ? 'bg-[#087F96] text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-[#0B2A4A]'
+                  }`}
+                >
+                  <span>{cat}</span>
+                  <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-black ${
+                    selectedCategory === cat ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'
+                  }`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Secondary Filter Dropdowns */}
+        {/* Secondary Filter Dropdowns with Position Course Counts */}
         <div className="pt-4 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4 text-xs font-medium">
           <div className="flex flex-wrap items-center gap-3">
-            {/* Department Dropdown */}
+            {/* Department Dropdown with Explicit Module Count per Position */}
             <div className="flex items-center space-x-2">
               <span className="text-gray-500 font-bold">Pozisyon / Kadro:</span>
               <select
                 value={selectedDept}
                 onChange={(e) => handleSelectDeptDropdown(e.target.value)}
-                className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 font-bold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-[#087F96]"
+                className="bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 font-bold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-[#087F96] text-xs sm:text-sm"
               >
-                <option value="Tümü">Tüm Perakende Kadroları (26 Pozisyon)</option>
-                {DEPARTMENTS_DATA.map((dept) => (
-                  <option key={dept.id} value={dept.id}>
-                    {dept.name} ({dept.category})
-                  </option>
-                ))}
+                <option value="Tümü">Tüm Perakende Kadroları (26 Pozisyon • {ALL_COURSES.length} Modül)</option>
+                {DEPARTMENTS_DATA.map((dept) => {
+                  const courseCount = ALL_COURSES.filter((c) => c.deptId === dept.id).length || dept.totalCourses;
+                  return (
+                    <option key={dept.id} value={dept.id}>
+                      {dept.name} — {courseCount} Eğitim Modülü ({dept.category})
+                    </option>
+                  );
+                })}
               </select>
             </div>
 
@@ -301,7 +318,7 @@ function EgitimlerCatalogContent() {
         <div className="bg-[#0B2A4A] text-white p-5 sm:p-6 rounded-2xl border border-[#087F96]/40 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <span className="text-[10px] uppercase font-bold text-amber-300 bg-amber-500/20 px-2.5 py-0.5 rounded-full font-mono">
-              SEÇİLEN KADRO ÖZEL MÜFREDATI ({activeDepartmentObject.totalCourses} Modül • {activeDepartmentObject.totalHours} Saat)
+              SEÇİLEN KADRO ÖZEL MÜFREDATI: {ALL_COURSES.filter(c => c.deptId === activeDepartmentObject.id).length || activeDepartmentObject.totalCourses} EĞİTİM MODÜLÜ ({activeDepartmentObject.totalHours} SAAT)
             </span>
             <h2 className="text-xl font-extrabold">{activeDepartmentObject.name} Eğitim Kataloğu</h2>
             <p className="text-xs text-gray-200 font-light">{activeDepartmentObject.description}</p>
