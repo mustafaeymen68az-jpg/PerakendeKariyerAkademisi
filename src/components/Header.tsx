@@ -111,85 +111,89 @@ export default function Header() {
       {/* Main Header Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center space-x-2 shrink-0">
-            <Logo variant="dark" size="md" showSubtext={true} />
-          </Link>
+          
+          {/* LEFT SECTION: Brand Logo + Navigation Links Aligned Left */}
+          <div className="flex items-center space-x-4 xl:space-x-6 flex-1 min-w-0">
+            {/* Brand Logo */}
+            <Link href="/" className="flex items-center space-x-2 shrink-0">
+              <Logo variant="dark" size="md" showSubtext={true} />
+            </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-1">
-            {MENU_ITEMS.map((item) => {
-              if (item.isDropdown) {
-                return (
-                  <div key={item.name} className="relative" ref={hrRef}>
-                    <button
-                      onClick={() => setIsHrDropdownOpen(!isHrDropdownOpen)}
-                      className={`h-9 px-3.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
-                        pathname.startsWith('/ik-cozumlari')
-                          ? 'bg-[#087F96] text-white shadow-md'
-                          : 'text-gray-200 hover:bg-white/10 hover:text-white'
-                      }`}
-                    >
-                      <span>İK Çözümleri</span>
-                      <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isHrDropdownOpen ? 'rotate-180' : ''}`} />
-                    </button>
+            {/* Desktop Nav - Aligned Left Next to Logo */}
+            <nav className="hidden lg:flex items-center space-x-0.5">
+              {MENU_ITEMS.map((item) => {
+                if (item.isDropdown) {
+                  return (
+                    <div key={item.name} className="relative" ref={hrRef}>
+                      <button
+                        onClick={() => setIsHrDropdownOpen(!isHrDropdownOpen)}
+                        className={`h-8 px-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-1 whitespace-nowrap ${
+                          pathname.startsWith('/ik-cozumlari')
+                            ? 'bg-[#087F96] text-white shadow-md'
+                            : 'text-gray-200 hover:bg-white/10 hover:text-white'
+                        }`}
+                      >
+                        <span>İK Çözümleri</span>
+                        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isHrDropdownOpen ? 'rotate-180' : ''}`} />
+                      </button>
 
-                    {/* HR Dropdown Menu */}
-                    {isHrDropdownOpen && (
-                      <div className="absolute left-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-gray-200 py-3 z-50 text-gray-900 animate-in fade-in zoom-in duration-150">
-                        <div className="px-4 py-1.5 border-b border-gray-100 mb-1">
-                          <span className="text-[10px] font-black text-[#087F96] uppercase tracking-wider">Kurumsal İK Modülleri</span>
+                      {/* HR Dropdown Menu */}
+                      {isHrDropdownOpen && (
+                        <div className="absolute left-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-gray-200 py-3 z-50 text-gray-900 animate-in fade-in zoom-in duration-150">
+                          <div className="px-4 py-1.5 border-b border-gray-100 mb-1">
+                            <span className="text-[10px] font-black text-[#087F96] uppercase tracking-wider">Kurumsal İK Modülleri</span>
+                          </div>
+                          {HR_SUBMENU.map((sub) => (
+                            <Link
+                              key={sub.name}
+                              href={sub.path}
+                              onClick={() => setIsHrDropdownOpen(false)}
+                              className="px-4 py-2 hover:bg-gray-50 flex items-start space-x-2.5 transition-colors group"
+                            >
+                              <div className="w-2 h-2 rounded-full bg-[#087F96] mt-1.5 group-hover:scale-125 transition-transform" />
+                              <div>
+                                <div className="font-bold text-xs text-[#0B2A4A] group-hover:text-[#087F96]">{sub.name}</div>
+                                <div className="text-[10px] text-gray-500">{sub.desc}</div>
+                              </div>
+                            </Link>
+                          ))}
                         </div>
-                        {HR_SUBMENU.map((sub) => (
-                          <Link
-                            key={sub.name}
-                            href={sub.path}
-                            onClick={() => setIsHrDropdownOpen(false)}
-                            className="px-4 py-2 hover:bg-gray-50 flex items-start space-x-2.5 transition-colors group"
-                          >
-                            <div className="w-2 h-2 rounded-full bg-[#087F96] mt-1.5 group-hover:scale-125 transition-transform" />
-                            <div>
-                              <div className="font-bold text-xs text-[#0B2A4A] group-hover:text-[#087F96]">{sub.name}</div>
-                              <div className="text-[10px] text-gray-500">{sub.desc}</div>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                const isActive = pathname === item.path;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.path}
+                    className={`h-8 px-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-1 whitespace-nowrap ${
+                      isActive 
+                        ? 'bg-[#087F96] text-white shadow-md' 
+                        : 'text-gray-200 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <span>{item.name}</span>
+                    {item.badge && (
+                      <span className={`text-[8px] px-1.5 py-0.2 rounded-full font-black uppercase ${
+                        item.badge === '15 Soru' ? 'bg-emerald-500 text-white' : 
+                        item.badge === 'Yeni' ? 'bg-[#E11D48] text-white' : 'bg-amber-400 text-slate-950'
+                      }`}>
+                        {item.badge}
+                      </span>
                     )}
-                  </div>
+                  </Link>
                 );
-              }
+              })}
+            </nav>
+          </div>
 
-              const isActive = pathname === item.path;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.path}
-                  className={`h-9 px-3.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-1.5 whitespace-nowrap ${
-                    isActive 
-                      ? 'bg-[#087F96] text-white shadow-md' 
-                      : 'text-gray-200 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <span>{item.name}</span>
-                  {item.badge && (
-                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-extrabold uppercase ${
-                      item.badge === '15 Soru' ? 'bg-emerald-500 text-white' : 
-                      item.badge === 'Yeni' ? 'bg-[#E11D48] text-white' : 'bg-amber-400 text-slate-950'
-                    }`}>
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right Action Controls - Standardized CTA Buttons */}
-          <div className="hidden lg:flex items-center space-x-2.5 shrink-0">
+          {/* RIGHT SECTION: Standardized CTA Buttons */}
+          <div className="hidden lg:flex items-center space-x-2 shrink-0 ml-4">
             <Link
               href="/kariyerimi-planla"
-              className="h-9 px-4 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5 whitespace-nowrap"
+              className="h-9 px-3.5 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5 whitespace-nowrap"
             >
               <Target className="h-3.5 w-3.5 text-amber-300" />
               <span>Kariyerimi Planla</span>
@@ -197,7 +201,7 @@ export default function Header() {
 
             <Link
               href="/kurumsal-cozumler"
-              className="h-9 px-4 bg-[#E11D48] hover:bg-[#BE123C] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5 whitespace-nowrap"
+              className="h-9 px-3.5 bg-[#E11D48] hover:bg-[#BE123C] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5 whitespace-nowrap"
             >
               <Building2 className="h-3.5 w-3.5" />
               <span>Kurumsal Solutions</span>
@@ -218,44 +222,46 @@ export default function Header() {
 
       {/* Mobile Drawer Menu */}
       {isOpen && (
-        <div className="lg:hidden bg-[#061B33] border-b border-white/10 px-4 py-6 space-y-4 animate-in slide-in-from-top duration-200">
-          <div className="space-y-1">
+        <div className="lg:hidden bg-[#061B33] border-b border-white/10 animate-in slide-in-from-top duration-200">
+          <div className="px-4 pt-3 pb-6 space-y-2">
             {MENU_ITEMS.map((item) => (
               <Link
                 key={item.name}
                 href={item.path}
                 onClick={() => setIsOpen(false)}
-                className="block px-4 py-3 rounded-xl text-sm font-bold text-gray-200 hover:bg-white/10 hover:text-white"
+                className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  pathname === item.path
+                    ? 'bg-[#087F96] text-white'
+                    : 'text-gray-200 hover:bg-white/5'
+                }`}
               >
-                {item.name}
+                <span>{item.name}</span>
+                {item.badge && (
+                  <span className="text-[9px] bg-emerald-500 text-white px-2 py-0.5 rounded-full uppercase font-mono">
+                    {item.badge}
+                  </span>
+                )}
               </Link>
             ))}
-          </div>
 
-          <div className="pt-4 border-t border-white/10 space-y-2">
-            <Link
-              href="/kariyer-seviyeni-ogren"
-              onClick={() => setIsOpen(false)}
-              className="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs text-center block shadow-md"
-            >
-              Kariyer Seviyeni Öğren (15 Soruluk Test)
-            </Link>
-
-            <Link
-              href="/kariyerimi-planla"
-              onClick={() => setIsOpen(false)}
-              className="w-full py-3 bg-[#087F96] text-white font-bold rounded-xl text-xs text-center block shadow-md"
-            >
-              Kariyerimi Planla
-            </Link>
-
-            <Link
-              href="/kurumsal-cozumler"
-              onClick={() => setIsOpen(false)}
-              className="w-full py-3 bg-[#E11D48] text-white font-bold rounded-xl text-xs text-center block shadow-md"
-            >
-              Kurumsal Solutions
-            </Link>
+            <div className="pt-4 border-t border-white/10 space-y-2">
+              <Link
+                href="/kariyerimi-planla"
+                onClick={() => setIsOpen(false)}
+                className="w-full py-3 bg-[#087F96] text-white font-extrabold rounded-xl text-center text-xs flex items-center justify-center space-x-2"
+              >
+                <Target className="h-4 w-4 text-amber-300" />
+                <span>Kariyerimi Planla</span>
+              </Link>
+              <Link
+                href="/kurumsal-cozumler"
+                onClick={() => setIsOpen(false)}
+                className="w-full py-3 bg-[#E11D48] text-white font-extrabold rounded-xl text-center text-xs flex items-center justify-center space-x-2"
+              >
+                <Building2 className="h-4 w-4" />
+                <span>Kurumsal Solutions</span>
+              </Link>
+            </div>
           </div>
         </div>
       )}
