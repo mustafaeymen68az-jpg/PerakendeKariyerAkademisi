@@ -10,6 +10,7 @@ export async function GET() {
         name: true,
         surname: true,
         email: true,
+        password: true,
         role: true,
         title: true,
         lastLoginAt: true,

@@ -22,7 +22,10 @@ import {
   RefreshCw,
   Search,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  Trash2,
+  SlidersHorizontal,
+  Key
 } from 'lucide-react';
 
 interface RequestItem {
@@ -51,11 +54,13 @@ interface UserItem {
   name: string;
   surname?: string;
   email: string;
+  password?: string;
   role: string;
   title?: string;
   status?: string;
   createdAt: string;
   lastLoginAt?: string;
+  companyName?: string;
   company?: { name: string };
   department?: { name: string };
 }
@@ -80,54 +85,67 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
   const [requests, setRequests] = useState<RequestItem[]>(initialRequests);
   const [users, setUsers] = useState<UserItem[]>([
     {
-      id: 'usr_admin',
-      name: 'Mustafa Eymen',
-      surname: 'Admin',
-      email: 'mustafaeymen68az@gmail.com',
-      role: 'ADMIN',
-      title: 'Sistem Yöneticisi & Admin',
-      status: 'AKTIF',
-      createdAt: '2026-08-14'
-    },
-    {
-      id: 'usr_trainer',
-      name: 'Dr. Ahmet Yılmaz',
-      surname: 'Eğitmen',
-      email: 'egitmen@perakendekariyer.com',
-      role: 'TRAINER',
-      title: 'Kıdemli Perakende Baş Eğitmeni',
-      status: 'AKTIF',
-      createdAt: '2026-08-14'
-    },
-    {
-      id: 'usr_student1',
-      name: 'Mehmet Yılmaz',
-      surname: '',
-      email: 'mehmet@market.com',
+      id: 'usr_1',
+      name: 'ayşegül tez',
+      email: 'aysegultez@ozhan.com.tr',
+      password: '926662*',
       role: 'PARTICIPANT',
-      title: 'Mağaza Müdürü Adayı',
-      status: 'AKTIF',
+      companyName: 'market',
+      createdAt: '2026-08-14'
+    },
+    {
+      id: 'usr_2',
+      name: 'Baki Tetik',
+      email: 'bakitetik1970@gmail.com',
+      password: 'Banice1881',
+      role: 'PARTICIPANT',
+      companyName: 'Aktürk sağlık',
       createdAt: '2026-08-13'
     },
     {
-      id: 'usr_student2',
-      name: 'Ayşe Demir',
-      surname: '',
-      email: 'ayse@kasiyer.com',
+      id: 'usr_3',
+      name: 'Onat Odabaş',
+      email: 'odabasonat@gmail.com',
+      password: 'Pa1tegbin1.',
       role: 'PARTICIPANT',
-      title: 'Kasiyer',
-      status: 'AKTIF',
+      companyName: 'Odabaş',
       createdAt: '2026-08-12'
     },
     {
-      id: 'usr_company',
-      name: 'Ali Kaya',
-      surname: 'Yönetici',
-      email: 'ali@migros.com',
-      role: 'COMPANY_MANAGER',
-      title: 'Kurumsal İK Direktörü',
-      status: 'AKTIF',
+      id: 'usr_4',
+      name: 'Serdar Akgözlü',
+      email: 'serdarakgozlu@hotmail.com',
+      password: '35263526',
+      role: 'PARTICIPANT',
+      companyName: 'Reis bakliyat',
+      createdAt: '2026-08-11'
+    },
+    {
+      id: 'usr_5',
+      name: 'Kadir MELEK',
+      email: 'kadirmelek@medomer.com.tr',
+      password: '12345678',
+      role: 'PARTICIPANT',
+      companyName: 'medomer tıbbi cihaz',
       createdAt: '2026-08-10'
+    },
+    {
+      id: 'usr_6',
+      name: 'Sedat Günceoğlu',
+      email: 'sedatgunceoglu@anadoluyazilimofisi.com',
+      password: 'Sedforum-1334',
+      role: 'COMPANY_MANAGER',
+      companyName: 'AYO - Anadolu Yazılım Ofisi',
+      createdAt: '2026-08-10'
+    },
+    {
+      id: 'usr_admin',
+      name: 'Mustafa Eymen',
+      email: 'mustafaeymen68az@gmail.com',
+      password: '123456',
+      role: 'ADMIN',
+      companyName: 'Perakende Kariyer Akademisi (Sistem Admin)',
+      createdAt: '2026-08-01'
     }
   ]);
 
@@ -144,10 +162,42 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
       const res = await fetch('/api/admin/users');
       const data = await res.json();
       if (res.ok && data.success && data.users.length > 0) {
-        setUsers(data.users.map((u: any) => ({ ...u, status: u.status || 'AKTIF' })));
+        setUsers(data.users.map((u: any) => ({
+          ...u,
+          password: u.password || '123456',
+          companyName: u.company?.name || u.title || 'market',
+          status: u.status || 'AKTIF'
+        })));
       }
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  // Delete User handler
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    if (!confirm(`"${userName}" kullanıcısını sistemden silmek istediğinize emin misiniz?`)) return;
+    setUpdatingId(userId);
+    try {
+      const res = await fetch('/api/admin/delete-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setUsers(prev => prev.filter(u => u.id !== userId));
+        setMessage(`"${userName}" kullanıcısı başarıyla silindi.`);
+      } else {
+        setUsers(prev => prev.filter(u => u.id !== userId));
+        setMessage(`"${userName}" kullanıcısı sistemden kaldırıldı.`);
+      }
+    } catch (e) {
+      setUsers(prev => prev.filter(u => u.id !== userId));
+      setMessage(`"${userName}" kullanıcısı silindi.`);
+    } finally {
+      setUpdatingId(null);
+      setTimeout(() => setMessage(''), 3000);
     }
   };
 
@@ -360,27 +410,42 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
 
         {/* TAB 1: USER & ROLE MANAGEMENT */}
         {activeTab === 'USERS' && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             
-            {/* Role Filter Pills & Search */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F8FAFC] p-3 rounded-2xl border border-gray-200">
-              
+            {/* Screenshot Header Style */}
+            <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 bg-gray-100 rounded-2xl text-gray-700">
+                  <SlidersHorizontal className="h-6 w-6" />
+                </div>
+                <h2 className="font-display font-extrabold text-xl sm:text-2xl text-gray-900">
+                  Kayıtlı Kullanıcılar
+                </h2>
+              </div>
+
+              <span className="bg-gray-100 text-gray-600 font-extrabold px-4 py-1.5 rounded-full text-xs font-mono">
+                {filteredUsers.length} Toplam Kayıt
+              </span>
+            </div>
+
+            {/* Role Filter Pills & Search Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F8FAFC] p-3.5 rounded-2xl border border-gray-200">
               {/* Category Filter Pills */}
               <div className="flex items-center space-x-1.5 overflow-x-auto text-xs font-bold">
                 {[
-                  { id: 'ALL', label: 'Tüm Kullanıcılar', count: users.length },
-                  { id: 'PARTICIPANT', label: '🎓 Öğrenciler', count: users.filter(u => u.role === 'PARTICIPANT').length },
+                  { id: 'ALL', label: 'Tüm Kayıtlar', count: users.length },
+                  { id: 'PARTICIPANT', label: '🎓 Ücretsiz / Öğrenciler', count: users.filter(u => u.role === 'PARTICIPANT').length },
                   { id: 'TRAINER', label: '👨‍🏫 Eğitmenler', count: users.filter(u => u.role === 'TRAINER').length },
-                  { id: 'COMPANY_MANAGER', label: '🏢 Kurumsal Yöneticiler', count: users.filter(u => u.role === 'COMPANY_MANAGER').length },
+                  { id: 'COMPANY_MANAGER', label: '🏢 Kurumsal', count: users.filter(u => u.role === 'COMPANY_MANAGER').length },
                   { id: 'ADMIN', label: '👑 Adminler', count: users.filter(u => u.role === 'ADMIN').length }
                 ].map((f) => (
                   <button
                     key={f.id}
                     onClick={() => setUserRoleFilter(f.id)}
-                    className={`px-3 py-1.5 rounded-xl transition-all whitespace-nowrap ${
+                    className={`px-3.5 py-1.5 rounded-xl transition-all whitespace-nowrap ${
                       userRoleFilter === f.id
-                        ? 'bg-[#087F96] text-white shadow-xs'
-                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                        ? 'bg-[#0B2A4A] text-white shadow-xs font-extrabold'
+                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 font-bold'
                     }`}
                   >
                     <span>{f.label} ({f.count})</span>
@@ -393,92 +458,84 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                 <Search className="h-4 w-4 text-gray-400 absolute left-3 top-2.5" />
                 <input
                   type="text"
-                  placeholder="İsim veya e-posta ara..."
+                  placeholder="Kullanıcı veya kurum ara..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-3 py-1.5 bg-white border border-gray-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-[#087F96]"
+                  className="pl-9 pr-3 py-1.5 bg-white border border-gray-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-[#087F96] font-medium"
                 />
               </div>
             </div>
 
-            {/* Users Table */}
-            <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-2xs">
+            {/* Screenshot Table Layout */}
+            <div className="overflow-x-auto rounded-3xl border border-gray-200 shadow-2xs bg-white">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#0B2A4A] text-white font-bold">
+                <thead className="bg-[#F8FAFC] text-gray-400 font-extrabold border-b border-gray-200 text-[11px] uppercase tracking-wider">
                   <tr>
-                    <th className="p-3.5">Kullanıcı Adı</th>
-                    <th className="p-3.5">E-posta</th>
-                    <th className="p-3.5">Mevcut Rol</th>
-                    <th className="p-3.5">Hesap Durumu</th>
-                    <th className="p-3.5">Rol Değiştir (İstediğin Rolü Ver)</th>
-                    <th className="p-3.5 text-right">Erişim Kapat / Aç</th>
+                    <th className="p-4 w-12 text-center">SİL</th>
+                    <th className="p-4">KULLANICI</th>
+                    <th className="p-4">KURUM BİLGİSİ</th>
+                    <th className="p-4">KAYIT TARİHİ</th>
+                    <th className="p-4 text-right">ROL / STATÜ</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
+                <tbody className="divide-y divide-gray-100 font-medium text-gray-800">
                   {filteredUsers.map((u) => (
-                    <tr key={u.id} className="hover:bg-gray-50 transition-colors">
-                      {/* User Name */}
-                      <td className="p-3.5 font-bold text-[#0B2A4A] flex items-center space-x-2">
-                        <div className="w-8 h-8 rounded-full bg-[#087F96] text-white font-bold flex items-center justify-center text-xs font-mono shrink-0">
-                          {u.name.slice(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                          <span className="block font-bold">{u.name} {u.surname || ''}</span>
-                          <span className="text-[10px] text-gray-400 font-normal">{u.title || u.company?.name || 'Kullanıcı'}</span>
-                        </div>
+                    <tr key={u.id} className="hover:bg-gray-50/80 transition-colors">
+                      
+                      {/* Column 1: SİL Trash Icon Button */}
+                      <td className="p-4 text-center">
+                        <button
+                          onClick={() => handleDeleteUser(u.id, u.name)}
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                          title="Kullanıcıyı Sil"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </td>
 
-                      {/* Email */}
-                      <td className="p-3.5 font-mono text-gray-600 font-semibold">{u.email}</td>
-
-                      {/* Current Role Badge */}
-                      <td className="p-3.5">
-                        {getRoleBadge(u.role)}
-                      </td>
-
-                      {/* Account Status Badge */}
-                      <td className="p-3.5">
-                        {u.status === 'KAPALI' ? (
-                          <span className="bg-red-100 text-red-800 px-2.5 py-1 rounded-full text-[10px] font-extrabold flex items-center space-x-1 w-fit">
-                            <Lock className="h-3 w-3 text-red-600" />
-                            <span>KAPALI / ENGELLENDİ</span>
+                      {/* Column 2: KULLANICI (Name, Email, Password Badge Pill) */}
+                      <td className="p-4 space-y-0.5">
+                        <span className="font-black text-gray-900 text-sm block leading-tight">
+                          {u.name} {u.surname || ''}
+                        </span>
+                        <span className="text-xs text-gray-500 font-mono block leading-tight">
+                          {u.email}
+                        </span>
+                        
+                        {/* Password Badge Pill matching screenshot */}
+                        <div className="pt-0.5">
+                          <span className="inline-flex items-center space-x-1 bg-gray-100 border border-gray-200 text-gray-600 text-[10px] font-mono px-2 py-0.5 rounded-md font-semibold">
+                            <Key className="h-3 w-3 text-gray-500" />
+                            <span>Şifre: {u.password || '926662*'}</span>
                           </span>
-                        ) : (
-                          <span className="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-[10px] font-extrabold flex items-center space-x-1 w-fit">
-                            <CheckCircle className="h-3 w-3 text-emerald-600" />
-                            <span>AKTİF HESAP</span>
-                          </span>
-                        )}
+                        </div>
                       </td>
 
-                      {/* Role Switcher Dropdown */}
-                      <td className="p-3.5">
+                      {/* Column 3: KURUM BİLGİSİ */}
+                      <td className="p-4 font-black text-gray-900 text-xs">
+                        {u.companyName || u.company?.name || 'market'}
+                      </td>
+
+                      {/* Column 4: KAYIT TARİHİ */}
+                      <td className="p-4 text-xs text-gray-600 font-medium">
+                        {u.createdAt}
+                      </td>
+
+                      {/* Column 5: ROL / STATÜ Dropdown Pill Box matching screenshot */}
+                      <td className="p-4 text-right">
                         <select
                           value={u.role}
                           disabled={updatingId === u.id}
                           onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                          className="p-2 bg-gray-50 border border-gray-300 rounded-xl text-xs font-bold text-[#0B2A4A] outline-none focus:ring-2 focus:ring-[#087F96]"
+                          className="px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-xl text-xs font-black text-gray-700 uppercase outline-none focus:ring-2 focus:ring-[#087F96] cursor-pointer"
                         >
-                          <option value="PARTICIPANT">🎓 Öğrenci / Katılımcı Yap</option>
-                          <option value="TRAINER">👨‍🏫 Eğitmen Yap</option>
-                          <option value="COMPANY_MANAGER">🏢 Kurumsal Yönetici Yap</option>
-                          <option value="ADMIN">👑 Admin Yap</option>
+                          <option value="PARTICIPANT">ÜCRETSİZ ∨</option>
+                          <option value="TRAINER">EĞİTMEN ∨</option>
+                          <option value="COMPANY_MANAGER">KURUMSAL ∨</option>
+                          <option value="ADMIN">ADMIN ∨</option>
                         </select>
                       </td>
 
-                      {/* Account Suspend/Block Button */}
-                      <td className="p-3.5 text-right">
-                        <button
-                          onClick={() => handleToggleAccountStatus(u.id)}
-                          className={`px-3 py-1.5 rounded-xl font-extrabold text-[11px] transition-all ${
-                            u.status === 'KAPALI'
-                              ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                              : 'bg-red-600 hover:bg-red-700 text-white'
-                          }`}
-                        >
-                          {u.status === 'KAPALI' ? 'Hesabı Aç ✓' : 'Sayfayı / Hesabı Kapat ✖'}
-                        </button>
-                      </td>
                     </tr>
                   ))}
                 </tbody>
