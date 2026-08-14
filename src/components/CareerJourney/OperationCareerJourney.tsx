@@ -34,7 +34,8 @@ import {
   ArrowRight,
   Crown,
   UserCheck,
-  Database
+  Database,
+  Calendar
 } from 'lucide-react';
 import {
   ALL_CAREER_TRACKS_15,
@@ -43,6 +44,27 @@ import {
   SCORING_WEIGHTS_15,
   CAREER_MOTTO
 } from '@/data/careerSteps';
+
+const TURKISH_MONTHS = [
+  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+];
+
+function parseDurationRange(durationStr: string): { minMonths: number; maxMonths: number } {
+  if (durationStr.includes('Sürekli')) return { minMonths: 24, maxMonths: 36 };
+  const matches = durationStr.match(/(\d+)(?:–(\d+))?/);
+  if (!matches) return { minMonths: 12, maxMonths: 18 };
+  const min = parseInt(matches[1], 10);
+  const max = matches[2] ? parseInt(matches[2], 10) : min;
+  return { minMonths: min, maxMonths: max };
+}
+
+function calculateTargetDate(startMonthIndex: number, startYear: number, monthsToAdd: number): string {
+  const totalMonths = startMonthIndex + monthsToAdd;
+  const targetYear = startYear + Math.floor(totalMonths / 12);
+  const targetMonthIndex = totalMonths % 12;
+  return `${TURKISH_MONTHS[targetMonthIndex]} ${targetYear}`;
+}
 
 export default function OperationCareerJourney() {
   const [activeTrackId, setActiveTrackId] = useState<string>('kasiyer-ceo');
@@ -66,6 +88,59 @@ export default function OperationCareerJourney() {
   };
 
   const totalStepsInTrack = activeTrack.steps.length;
+
+  // --------------------------------------------------
+  // DYNAMIC DURATION & TARGET DATE ENGINE CALCULATIONS
+  // --------------------------------------------------
+  // 1. Total Track Duration (Step 1 to Peak)
+  let totalTrackMinMonths = 0;
+  let totalTrackMaxMonths = 0;
+
+  // Sum step durations up to step before peak
+  activeTrack.steps.forEach((step, idx) => {
+    if (idx < totalStepsInTrack - 1) {
+      const parsed = parseDurationRange(step.recommendedDuration);
+      totalTrackMinMonths += parsed.minMonths;
+      totalTrackMaxMonths += parsed.maxMonths;
+    }
+  });
+
+  const totalTrackYearsMin = (totalTrackMinMonths / 12).toFixed(1);
+  const totalTrackYearsMax = (totalTrackMaxMonths / 12).toFixed(1);
+  const totalTrackYearsFormatted = `~${totalTrackYearsMin} – ${totalTrackYearsMax} Yıl`;
+
+  // 2. Remaining Duration from Currently Selected Step to Peak
+  let remainingMinMonths = 0;
+  let remainingMaxMonths = 0;
+
+  const selectedIdx = activeTrack.steps.findIndex(s => s.id === selectedStep.id);
+  if (selectedIdx >= 0 && selectedIdx < totalStepsInTrack - 1) {
+    activeTrack.steps.forEach((step, idx) => {
+      if (idx >= selectedIdx && idx < totalStepsInTrack - 1) {
+        const parsed = parseDurationRange(step.recommendedDuration);
+        remainingMinMonths += parsed.minMonths;
+        remainingMaxMonths += parsed.maxMonths;
+      }
+    });
+  }
+
+  const remainingYearsMin = (remainingMinMonths / 12).toFixed(1);
+  const remainingYearsMax = (remainingMaxMonths / 12).toFixed(1);
+  const remainingYearsFormatted = selectedIdx >= totalStepsInTrack - 1
+    ? 'Zirvedesiniz!'
+    : `~${remainingYearsMin} – ${remainingYearsMax} Yıl (${remainingMinMonths}–${remainingMaxMonths} Ay)`;
+
+  // 3. Estimated Month & Year Reaching Peak (Starting August 2026 - Month Index 7, Year 2026)
+  const currentMonthIndex = 7; // August
+  const currentYear = 2026;
+
+  const targetMinDateFormatted = selectedIdx >= totalStepsInTrack - 1
+    ? 'Zirvedesiniz'
+    : calculateTargetDate(currentMonthIndex, currentYear, remainingMinMonths);
+
+  const targetMaxDateFormatted = selectedIdx >= totalStepsInTrack - 1
+    ? 'Zirvedesiniz'
+    : calculateTargetDate(currentMonthIndex, currentYear, remainingMaxMonths);
 
   return (
     <div className="min-h-screen bg-[#F4F7F9] font-sans pb-24">
@@ -191,6 +266,62 @@ export default function OperationCareerJourney() {
             </div>
           </div>
 
+          {/* -------------------------------------------------- */}
+          {/* DYNAMIC TIMELINE SUMMARY BANNER (TOP METRICS) */}
+          {/* -------------------------------------------------- */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#0B2A4A] p-5 rounded-2xl border border-[#087F96]/40 text-white shadow-lg">
+            {/* Metric 1: Total Track Duration */}
+            <div className="flex items-center space-x-3.5 border-b md:border-b-0 md:border-r border-white/10 pb-3 md:pb-0 md:pr-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/40 text-amber-300 flex items-center justify-center flex-shrink-0">
+                <Crown className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-[10px] uppercase font-bold text-gray-300 tracking-wider">
+                  Başlangıçtan Zirveye Toplam Süre
+                </div>
+                <div className="text-base font-black text-white mt-0.5">
+                  {totalTrackYearsFormatted} <span className="text-xs font-normal text-amber-300">({totalTrackMinMonths}–{totalTrackMaxMonths} Ay)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Metric 2: Remaining Duration from Selected Step */}
+            <div className="flex items-center space-x-3.5 border-b md:border-b-0 md:border-r border-white/10 pb-3 md:pb-0 md:pr-4">
+              <div className="w-10 h-10 rounded-xl bg-[#087F96]/20 border border-[#087F96]/40 text-[#DDF4F7] flex items-center justify-center flex-shrink-0">
+                <Target className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-[10px] uppercase font-bold text-gray-300 tracking-wider">
+                  Seçilen Pozisyondan Zirveye Kalan Süre
+                </div>
+                <div className="text-base font-black text-emerald-400 mt-0.5">
+                  {remainingYearsFormatted}
+                </div>
+                <div className="text-[10px] text-gray-300 font-semibold truncate">
+                  Seçilen: #{selectedStep.id} {selectedStep.title}
+                </div>
+              </div>
+            </div>
+
+            {/* Metric 3: Target Month/Year of Reaching Peak */}
+            <div className="flex items-center space-x-3.5">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center justify-center flex-shrink-0">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-[10px] uppercase font-bold text-gray-300 tracking-wider">
+                  Tahmini Zirveye Ulaşım Tarihi
+                </div>
+                <div className="text-base font-black text-amber-300 mt-0.5">
+                  {selectedIdx >= totalStepsInTrack - 1 ? 'Zirvedesiniz!' : `${targetMinDateFormatted} – ${targetMaxDateFormatted}`}
+                </div>
+                <div className="text-[9px] text-gray-400 font-mono">
+                  Planlanan Dönem: Ağustos 2026 İtibariyle
+                </div>
+              </div>
+            </div>
+          </div>
+
           {activeView === 'staircase' ? (
             /* DYNAMIC STAIRCASE VIEW (ADAPTS TO 7, 8, OR 15 STEPS NATURALLY) */
             <div className="space-y-10">
@@ -277,13 +408,13 @@ export default function OperationCareerJourney() {
                 </div>
 
                 {/* Footer Axis Label */}
-                <div className="flex items-center justify-between text-xs font-mono font-bold text-gray-500 pt-6 border-t border-gray-100">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono font-bold text-gray-600 pt-6 border-t border-gray-100">
                   <span className="flex items-center space-x-1.5 text-[#087F96]">
                     <Clock className="w-4 h-4" />
                     <span>BAŞLANGIÇ: {activeTrack.startRole}</span>
                   </span>
-                  <span className="text-gray-400 font-normal">
-                    Tıkla ve "Buradan Sonra Nereye Gidebilirim?" Eğitimlerini İncele
+                  <span className="text-gray-500 font-medium text-center">
+                    🏆 Toplam Yolculuk: <strong>{totalTrackYearsFormatted}</strong> | Seçim Tarihi: Ağustos 2026
                   </span>
                   <span className="flex items-center space-x-1.5 text-amber-600 font-extrabold">
                     <Crown className="w-4 h-4 text-amber-500" />
@@ -413,16 +544,39 @@ export default function OperationCareerJourney() {
               <div className="inline-flex items-center space-x-2 bg-[#087F96]/10 text-[#087F96] px-3.5 py-1 rounded-full text-xs font-extrabold mb-2">
                 <span>{activeTrack.name} • Basamak #{selectedStep.id}</span>
                 <span>•</span>
-                <span>⏱️ Ortalama Süre: {selectedStep.recommendedDuration}</span>
+                <span>⏱️ Bu Seviyenin Süresi: {selectedStep.recommendedDuration}</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-black text-[#0B2A4A]">{selectedStep.title} Kariyer Kartı</h3>
               <p className="text-xs sm:text-sm text-gray-600 mt-1">{selectedStep.purpose}</p>
             </div>
 
+            {/* Dynamic Timeline Calculation Pill inside Modal */}
+            <div className="p-4 bg-gradient-to-r from-[#0B2A4A] to-[#061B33] text-white rounded-2xl border border-[#087F96]/40 shadow-md space-y-2">
+              <div className="flex items-center justify-between text-xs border-b border-white/10 pb-2">
+                <span className="text-amber-300 font-bold flex items-center space-x-1">
+                  <Crown className="w-3.5 h-3.5" />
+                  <span>Zirveye Kalan Süre:</span>
+                </span>
+                <span className="font-extrabold text-emerald-400 text-sm">
+                  {remainingYearsFormatted}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between text-xs pt-1">
+                <span className="text-gray-300 font-medium flex items-center space-x-1">
+                  <Calendar className="w-3.5 h-3.5 text-[#087F96]" />
+                  <span>Zirveye Ulaşılacak Tahmini Tarih:</span>
+                </span>
+                <span className="font-black text-amber-300 font-mono">
+                  {selectedIdx >= totalStepsInTrack - 1 ? 'Zirvedesiniz' : `${targetMinDateFormatted} – ${targetMaxDateFormatted}`}
+                </span>
+              </div>
+            </div>
+
             {/* Highlight: Buradan Sonra Nereye Gidebilirim? */}
-            <div className="p-4 bg-[#0B2A4A] text-white rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-[#087F96]/40 shadow-lg">
+            <div className="p-4 bg-[#087F96] text-white rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-white/20 shadow-lg">
               <div>
-                <span className="text-[10px] text-amber-300 font-extrabold uppercase tracking-wider block">
+                <span className="text-[10px] text-amber-200 font-extrabold uppercase tracking-wider block">
                   Buradan Sonra Nereye Gidebilirim?
                 </span>
                 <div className="font-extrabold text-base text-white mt-0.5">
@@ -434,7 +588,7 @@ export default function OperationCareerJourney() {
                   const nextStep = activeTrack.steps.find(s => s.id === selectedStep.nextCareerLevelId);
                   if (nextStep) setSelectedStep(nextStep);
                 }}
-                className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white text-xs font-bold rounded-xl shadow transition-all flex items-center space-x-1"
+                className="px-4 py-2 bg-[#0B2A4A] hover:bg-[#061B33] text-white text-xs font-bold rounded-xl shadow transition-all flex items-center space-x-1"
               >
                 <span>Sonraki Basamağı İncele</span>
                 <ChevronRight className="w-3.5 h-3.5" />
