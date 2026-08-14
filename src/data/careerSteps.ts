@@ -25,11 +25,11 @@ export interface CareerStep15 {
     stages: { name: string; icon: string; desc: string }[];
   };
   promotionReadinessScorecard?: {
-    trainingScore: number; // e.g. 90
-    kpiScore: number; // e.g. 82
-    fieldCompetencyScore: number; // e.g. 85
-    finalProjectScore: number; // e.g. 75
-    totalScore: number; // e.g. 83
+    trainingScore: number;
+    kpiScore: number;
+    fieldCompetencyScore: number;
+    finalProjectScore: number;
+    totalScore: number;
   };
   branchingView?: {
     stage1: string;
@@ -44,8 +44,22 @@ export interface CareerStep15 {
   };
 }
 
+export interface CareerTrack15 {
+  id: string;
+  name: string;
+  badgeText: string;
+  headline: string;
+  department: string;
+  startRole: string;
+  peakRole: string;
+  description: string;
+  steps: CareerStep15[];
+}
+
+// ==========================================
+// TRACK 1: KASİYERLİKTEN CEO / GENEL MÜDÜRLÜĞE
+// ==========================================
 export const CAREER_STEPS_15_DATA: CareerStep15[] = [
-  // 1. KASİYER
   {
     id: 1,
     title: 'Kasiyer',
@@ -69,21 +83,8 @@ export const CAREER_STEPS_15_DATA: CareerStep15[] = [
       'KVKK',
       'İSG'
     ],
-    competencies: [
-      'Müşteri odaklılık',
-      'Dikkat',
-      'Hız ve doğruluk',
-      'İş disiplini',
-      'Temel satış',
-      'Sistem kullanımı'
-    ],
-    kpis: [
-      'Kasa açık/fazla farkı',
-      'İşlem hata oranı',
-      'İşlem hızı',
-      'Müşteri memnuniyet puanı',
-      'Dijital kart yönlendirme'
-    ],
+    competencies: ['Müşteri odaklılık', 'Dikkat', 'Hız ve doğruluk', 'İş disiplini', 'Temel satış', 'Sistem kullanımı'],
+    kpis: ['Kasa açık/fazla farkı', 'İşlem hata oranı', 'İşlem hızı', 'Müşteri memnuniyet puanı', 'Dijital kart yönlendirme'],
     nextCareerLevel: 'Kıdemli Kasiyer / Kasa Sorumlusu',
     nextCareerLevelId: 2,
     requiredTrainingForNextLevel: [
@@ -100,18 +101,9 @@ export const CAREER_STEPS_15_DATA: CareerStep15[] = [
       'Temel Liderlik',
       'Temel Excel ve Rapor Okuma'
     ],
-    nextCompetencies: [
-      'İlk seviye liderlik',
-      'Ekip koordinasyonu',
-      'Problem çözme',
-      'Hata kontrolü',
-      'Çalışan yönlendirme',
-      'Günlük raporlama'
-    ],
+    nextCompetencies: ['İlk seviye liderlik', 'Ekip koordinasyonu', 'Problem çözme', 'Hata kontrolü', 'Çalışan yönlendirme', 'Günlük raporlama'],
     ctaText: 'Bu Kariyer Basamağına Hazırlan'
   },
-
-  // 2. KIDEMLİ KASİYER / KASA SORUMLUSU
   {
     id: 2,
     title: 'Kıdemli Kasiyer / Kasa Sorumlusu',
@@ -129,20 +121,8 @@ export const CAREER_STEPS_15_DATA: CareerStep15[] = [
       'Vardiya Takibi',
       'Yeni Kasiyer İşbaşı Eğitimi'
     ],
-    competencies: [
-      'Ekip koordinasyonu',
-      'Problem çözme',
-      'İlk seviye liderlik',
-      'Vardiya takibi',
-      'Hata kontrolü',
-      'Müşteri problemi çözme'
-    ],
-    kpis: [
-      'Kasa ekibi açık/fazla oranı',
-      'Kuyruk bekleme süresi',
-      'Müşteri şikâyet çözüm hızı',
-      'Yeni kasiyer adaptasyon süresi'
-    ],
+    competencies: ['Ekip koordinasyonu', 'Problem çözme', 'İlk seviye liderlik', 'Vardiya takibi', 'Hata kontrolü', 'Müşteri problemi çözme'],
+    kpis: ['Kasa ekibi açık/fazla oranı', 'Kuyruk bekleme süresi', 'Müşteri şikâyet çözüm hızı', 'Yeni kasiyer adaptasyon süresi'],
     nextCareerLevel: 'Takım Lideri / Vardiya Sorumlusu',
     nextCareerLevelId: 3,
     requiredTrainingForNextLevel: [
@@ -161,18 +141,9 @@ export const CAREER_STEPS_15_DATA: CareerStep15[] = [
       'Geri Bildirim',
       'Temel KPI'
     ],
-    nextCompetencies: [
-      'Görev dağıtma',
-      'Önceliklendirme',
-      'Zaman yönetimi',
-      'Ekip yönlendirme',
-      'Anlık karar alma',
-      'Saha kontrolü'
-    ],
+    nextCompetencies: ['Görev dağıtma', 'Önceliklendirme', 'Zaman yönetimi', 'Ekip yönlendirme', 'Anlık karar alma', 'Saha kontrolü'],
     ctaText: 'Vardiya Liderliğine Hazırlan'
   },
-
-  // 3. TAKIM LİDERİ / VARDİYA SORUMLUSU
   {
     id: 3,
     title: 'Takım Lideri / Vardiya Sorumlusu',
@@ -188,624 +159,327 @@ export const CAREER_STEPS_15_DATA: CareerStep15[] = [
       'Check-list Yönetimi',
       'Temel KPI ve Saha Kontrolü'
     ],
-    competencies: [
-      'Görev dağıtma',
-      'Önceliklendirme',
-      'Zaman yönetimi',
-      'Ekip yönlendirme',
-      'Anlık karar alma',
-      'Saha kontrolü'
-    ],
-    kpis: [
-      'Vardiya görev gerçekleşme oranı',
-      'Reyon raf bulunurluğu',
-      'Ekip motivasyon puanı',
-      'Açılış/Kapanış denetim skoru'
-    ],
+    competencies: ['Görev dağıtma', 'Önceliklendirme', 'Zaman yönetimi', 'Ekip yönlendirme', 'Anlık karar alma', 'Saha kontrolü'],
+    kpis: ['Vardiya görev gerçekleşme oranı', 'Kasa ve reyon geçiş süresi', 'Saha standartları skor kartı', 'Mağaza içi müşteri NPS'],
     nextCareerLevel: 'Mağaza Müdür Yardımcısı Adayı',
     nextCareerLevelId: 4,
     requiredTrainingForNextLevel: [
-      'Günlük Mağaza İşleyişi',
-      'Kasa Operasyonu',
+      'Mağaza Operasyon Yönetimi',
+      'Stok ve Envanter Yönetimi',
       'Reyon Yönetimi',
-      'Depo ve Mal Kabul',
-      'Stok Yönetimi',
-      'Sipariş',
-      'Sayım ve Envanter',
-      'Fire ve İade',
-      'SKT',
-      'Planogram',
-      'Kampanya',
-      'Taze Gıda Temelleri',
-      'Perakende Matematiği',
-      'Temel Finans',
-      'KPI',
-      'Excel',
-      'Mikro / Mikroskop'
+      'Saha Hijyen ve Düzen',
+      'Zimmet ve Mal Kabul',
+      'İade ve Değişim Süreçleri',
+      'İş Güvenliği ve Acil Durum',
+      'Mağaza Performans Metrikleri',
+      'Satış ve Ciro Odaklılık',
+      'Liderlik ve Koçluk',
+      'Çatışma ve Problem Yönetimi',
+      'Geri Bildirim Verme',
+      'Mağaza İçi İletişim',
+      'Temel Raporlama ve Analiz'
     ],
-    nextCompetencies: [
-      'Tüm mağaza süreçlerine hakimiyet',
-      'Rotasyonel mağazacılık',
-      'Stok ve sayım disiplini',
-      'Finansal temel farkındalık'
-    ],
-    ctaText: 'Rotasyon Programına Başvur'
+    nextCompetencies: ['Operasyonel sorumluluk', 'Stok bilinci', 'Saha takibi', 'Liderlik başlangıcı', 'Performans odağı', 'Problem çözme'],
+    ctaText: 'Müdür Yardımcılığı Adaylığına Hazırlan'
   },
-
-  // 4. MAĞAZA MÜDÜR YARDIMCISI ADAYI
   {
     id: 4,
     title: 'Mağaza Müdür Yardımcısı Adayı',
-    badgeHeading: 'Saha Rotasyon Programı',
-    coreMessage: 'Mağazanın Tamamını Öğren',
-    purpose: 'Mağazanın 6 kritik departmanında rotasyon tamamlayarak müdür yardımcılığına hazırlanmak.',
-    recommendedDuration: '3–6 Ay',
+    badgeHeading: 'Yönetim Öncesi Hazırlık Havuzu',
+    coreMessage: 'Liderliğe Son Adım',
+    purpose: 'Mağaza yöneticiliğine geçiş öncesinde tüm operasyonel, stok ve liderlik yetkinliklerini simülasyon ve saha uygulamalarıyla tamamlamak.',
+    recommendedDuration: '6–12 Ay',
     currentTrainings: [
-      'Mağaza Rotasyon Programı',
-      'Reyon ve Mal Kabul Disiplini',
-      'Stok Sayım Yöntemleri',
-      'Taze Gıda Hijyen ve Kalite'
+      'Mağaza Operasyon Yönetimi',
+      'Stok ve Envanter Yönetimi',
+      'Reyon Yönetimi',
+      'Liderlik ve Koçluk',
+      'Temel Raporlama ve Analiz'
     ],
-    competencies: [
-      'Çok yönlü departman hakimiyeti',
-      'Hızlı adaptasyon',
-      'Kapsamlı saha analizi',
-      'Vekâlet yeteneği'
-    ],
-    kpis: [
-      'Rotasyon modül tamamlama skoru',
-      'Departman sınav puanları',
-      'Saha gölgeleme değerlendirmesi'
-    ],
+    competencies: ['Operasyonel sorumluluk', 'Stok bilinci', 'Saha takibi', 'Liderlik başlangıcı', 'Performans odağı', 'Problem çözme'],
+    kpis: ['Adaylık sınav puanı', 'Stok doğruluğu skoru', 'Saha simülasyon başarı puanı', 'Mentor değerlendirme notu'],
     nextCareerLevel: 'Mağaza Müdür Yardımcısı',
     nextCareerLevelId: 5,
     requiredTrainingForNextLevel: [
-      'Günlük Operasyon Yönetimi',
-      'Vardiya ve Norm Kadro Takibi',
-      'Stok ve Otomatik Sipariş',
-      'Raf Bulunurluğu ve Merchandising',
-      'Sayım ve Envanter Kontrolü',
-      'Fire ve SKT Takibi',
-      'Müşteri Şikâyet Yönetimi',
-      'KPI Yorumlama ve Aksiyon Alma',
-      'CRM ve Dijital Kart Takibi'
+      'Gelişmiş Mağaza Operasyonları',
+      'Saha Vardiya Çizelgesi Yönetimi',
+      'Fire ve Kayıp-Kaçak İleri Analizi',
+      'Stok Devir Hızı ve Sipariş Yönetimi',
+      'Personel İşe Alım Mülakatı',
+      'Mağaza İçi Ekip Motivasyonu',
+      'Performans Karne Takibi',
+      'Kriz ve Müşteri Şikayet Yönetimi'
     ],
-    nextCompetencies: [
-      'Operasyon koordinasyonu',
-      'Personel yönetimi',
-      'KPI yorumlama',
-      'Stok yönetimi',
-      'Müşteri problemi çözme',
-      'Vekâlet'
-    ],
-    rotationProgram: {
-      title: '6 Aşamalı Mağaza Rotasyon Programı',
-      stages: [
-        { name: 'Kasa', icon: 'Calculator', desc: 'Kasa işlemleri & mutabakat' },
-        { name: 'Reyon', icon: 'Layers', desc: 'Raf düzeni & planogram' },
-        { name: 'Depo', icon: 'PackageCheck', desc: 'Mal kabul & stok sayımı' },
-        { name: 'Taze Gıda', icon: 'Apple', desc: 'Hijyen & tazelik kontrolü' },
-        { name: 'Müşteri Hizmetleri', icon: 'Headphones', desc: 'İade & şikâyet yönetimi' },
-        { name: 'Yönetici Gölgeleme', icon: 'UserCheck', desc: 'Müdür yanında birebir pratik' }
-      ]
-    },
-    ctaText: 'Rotasyonu Tamamla & Müdür Yardımcısı Ol'
+    nextCompetencies: ['Vardiya yönetimi', 'Stok denetimi', 'Ekip motivasyonu', 'Saha denetimi', 'Veri takibi'],
+    ctaText: 'Mağaza Müdür Yardımcılığına Geç'
   },
-
-  // 5. MAĞAZA MÜDÜR YARDIMCISI
   {
     id: 5,
     title: 'Mağaza Müdür Yardımcısı',
-    badgeHeading: 'Günlük Operasyon Yöneticisi',
-    coreMessage: 'Günlük Operasyonu Yönet',
-    purpose: 'Mağazanın günlük operasyonunu eksiksiz yürütmek ve Mağaza Müdürüne vekâlet etmek.',
+    badgeHeading: 'Bireysel Başarıdan Ekip Başarısına Geçiş',
+    coreMessage: 'Resmi Yönetim Başlıyor',
+    purpose: 'Bireysel başarıdan ekip başarısına geçerek, mağazanın günlük operasyon, stok, personel ve müşteri memnuniyeti süreçlerini kesintisiz yönetmek.',
     recommendedDuration: '12–18 Ay',
     currentTrainings: [
-      'Günlük Operasyon Yönetimi',
-      'Vardiya ve Norm Kadro',
-      'Stok ve Sipariş Yönetimi',
-      'Raf Bulunurluğu',
-      'Sayım ve Envanter',
-      'Fire ve İade Yönetimi',
-      'SKT Kontrolü',
-      'Müşteri İlişkileri',
-      'KPI ve Excel Raporlama'
+      'Gelişmiş Mağaza Operasyonları',
+      'Saha Vardiya Çizelgesi Yönetimi',
+      'Fire ve Kayıp-Kaçak İleri Analizi',
+      'Stok Devir Hızı ve Sipariş Yönetimi',
+      'Personel İşe Alım Mülakatı',
+      'Mağaza İçi Ekip Motivasyonu'
     ],
-    competencies: [
-      'Operasyon koordinasyonu',
-      'Personel yönetimi',
-      'KPI yorumlama',
-      'Stok yönetimi',
-      'Müşteri problemi çözme',
-      'Vekâlet'
-    ],
-    kpis: [
-      'Raf bulunurluğu (%98+)',
-      'Fire ve zayi oranı',
-      'Envanter farkı',
-      'Kampanya uygulama başarısı',
-      'Personel görev gerçekleşmesi',
-      'Müşteri memnuniyet skoru'
-    ],
+    competencies: ['Vardiya yönetimi', 'Stok denetimi', 'Ekip motivasyonu', 'Saha denetimi', 'Veri takibi'],
+    kpis: ['Mağaza ciro hedef oranı', 'Stok devir hızı', 'Fire ve kayıp oranı (%1.5 altı)', 'Ekip bağlılığı ve turnover'],
     nextCareerLevel: 'Mağaza Müdürü Adayı',
     nextCareerLevelId: 6,
     requiredTrainingForNextLevel: [
-      'Mağaza Müdürü Yetiştirme Programı',
-      'Mağaza Liderliği ve Strateji',
-      'KPI Yönetimi ve Aksiyon Planlama',
-      'Brüt Kâr ve Marj Yönetimi',
+      'Mağaza Müdürü Aday Havuzu Eğitim Müfredatı',
+      'P&L (Kar/Zarar) Temelleri',
+      'Stratejik Mağaza Yönetimi',
       'Mağaza Bütçe Planlama',
-      'Personel Verimliliği ve Norm Kadro',
-      'Stok Devir Hızı ve GMROI',
-      'Fire Minimizasyonu Stratejileri',
-      'Müşteri Deneyimi Mükemmelliği',
-      'Performans Görüşmesi ve Geri Bildirim',
-      'Kriz Yönetimi'
+      'İleri Müşteri Deneyimi Stratejileri',
+      'Bölge İletişimi ve Raporlama',
+      'Liderlik ve Koçluk Yetkinliği',
+      'Mağaza İçi Çatışma Yönetimi'
     ],
-    nextCompetencies: [
-      'P&L (Kâr-Zarar) yönetimi',
-      'Stratejik mağaza liderliği',
-      'Performans koçluğu',
-      'Bütçeleme ve maliyet kontrolü'
-    ],
-    finalProject: {
-      title: '90 Günlük Mağaza Gelişim Projesi',
-      stages: ['Mevcut Durum Analizi', 'Problem ve Kök Neden', 'Hedef KPI ve Aksiyon', 'Uygulama', 'Sonuç Raporu']
-    },
-    ctaText: 'Mağaza Müdürü Adaylığına Yüksel'
+    nextCompetencies: ['Kar/zarar mantığı', 'Stratejik bakış', 'Gelişmiş liderlik', 'Bütçe bilinci'],
+    ctaText: 'Mağaza Müdürü Aday Havuzuna Katıl'
   },
-
-  // 6. MAĞAZA MÜDÜRÜ ADAYI
   {
     id: 6,
     title: 'Mağaza Müdürü Adayı',
-    badgeHeading: 'Terfiye Hazırlık Değerlendirme Süreci',
-    coreMessage: 'Yönetmeye Hazır Olduğunu Kanıtla',
-    purpose: 'Mağazayı bağımsız yönetebilme yetkinliğini 90 günlük gelişim projesi ve simülasyonlarla kanıtlamak.',
-    recommendedDuration: '3–6 Ay',
+    badgeHeading: 'Sorumluluk Alanını Büyütme',
+    coreMessage: 'Mağazanın Tüm Sorumluluğuna Aday Ol',
+    purpose: 'Mağazanın tek yetkilisi ve lideri olmak üzere P&L, ciro, stok, personel ve bölge hedeflerine tam hazırlık sağlamak.',
+    recommendedDuration: '6–12 Ay',
     currentTrainings: [
-      'Mağaza Müdürü Yetiştirme Programı',
-      'Finans & P&L Yönetimi',
-      'Kriz Yönetimi ve Vekâlet'
+      'P&L (Kar/Zarar) Temelleri',
+      'Stratejik Mağaza Yönetimi',
+      'Mağaza Bütçe Planlama',
+      'Bölge İletişimi ve Raporlama'
     ],
-    competencies: [
-      'Bağımsız mağaza yönetimi',
-      'Liderlik ve temsil',
-      'Finansal analiz',
-      'Proje sunum yeteneği'
-    ],
-    kpis: [
-      'Mağaza vekâlet günleri KPI skoru',
-      '90 Günlük Proje değerlendirme puanı',
-      'Bölge Müdürü onay skoru'
-    ],
+    competencies: ['Kar/zarar mantığı', 'Stratejik bakış', 'Gelişmiş liderlik', 'Bütçe bilinci'],
+    kpis: ['P&L sınav başarısı', 'Bölge müdürü değerlendirmesi', 'Proje sunum notu'],
     nextCareerLevel: 'Mağaza Müdürü',
     nextCareerLevelId: 7,
     requiredTrainingForNextLevel: [
-      'Liderlik ve Mağaza Koçluğu',
-      'İleri Mağaza Finansı',
-      'Müşteri Sadakati ve CRM Stratejileri',
-      'İnsan Kaynakları ve Ekip Yönetimi'
+      'Tam Yetkili Mağaza Müdürlüğü Müfredatı',
+      'Finansal Mağazacılık & P&L Yönetimi',
+      'İncelenmiş Ciro ve EBITDA Yönetimi',
+      'İş Hukuku ve Mağaza Özlük Yönetimi',
+      'Mağaza İçi Risk ve Denetim',
+      'Bölgesel Rekabet Analizi'
     ],
-    nextCompetencies: [
-      'Tam iş birimi liderliği',
-      'Ciro ve marj yönetimi',
-      'Ekip geliştirme'
-    ],
-    promotionReadinessScorecard: {
-      trainingScore: 90,
-      kpiScore: 82,
-      fieldCompetencyScore: 85,
-      finalProjectScore: 75,
-      totalScore: 83
-    },
-    ctaText: 'Terfi Skorunu İncele & Atan'
+    nextCompetencies: ['Mağaza liderliği', 'Bütçe ve P&L yönetimi', 'İç terfi yönetimi', 'Kriz stratejisi'],
+    ctaText: 'Mağaza Müdürü Koltuğuna Geç'
   },
-
-  // 7. MAĞAZA MÜDÜRÜ
   {
     id: 7,
     title: 'Mağaza Müdürü',
-    badgeHeading: "Mağazanın CEO'su Ol",
-    coreMessage: 'İş Sonuçlarını Yönet',
-    purpose: 'Mağazanın satışından, kârlılığından, müşterilerinden, çalışanlarından ve operasyonel standartlarından tam sorumluluk almak.',
+    badgeHeading: 'Tam Sorumlu Mağaza Lideri',
+    coreMessage: 'Kendi İşletmenin CEO\'su Ol',
+    purpose: 'Mağazayı bağımsız bir iş birimi gibi yöneterek ciro, kârlılık, stok, müşteri ve insan kaynağını hedefler doğrultusunda sevk ve idare etmek.',
     recommendedDuration: '18–24 Ay',
     currentTrainings: [
-      'Mağaza Liderliği ve Stratejisi',
-      'P&L ve Finansal Tablolar',
-      'KPI ve Bütçe Yönetimi',
-      'Müşteri Deneyimi Stratejileri',
-      'CRM ve Sepet Büyütme',
-      'İnsan Kaynakları ve Performans'
+      'Finansal Mağazacılık & P&L Yönetimi',
+      'İncelenmiş Ciro ve EBITDA Yönetimi',
+      'İş Hukuku ve Mağaza Özlük Yönetimi',
+      'Mağaza İçi Risk ve Denetim'
     ],
-    competencies: [
-      'İş liderliği',
-      'Ciro ve kârlılık yönetimi',
-      'Ekip koçluğu',
-      'Operasyonel mükemmellik',
-      'Müşteri odaklılık'
-    ],
-    kpis: [
-      'Ciro ve Satış Büyümesi (% YoY)',
-      'Müşteri Sayısı ve Sepet Ortalaması',
-      'Brüt Kâr ve Marj Oranı',
-      'Fire ve Envanter Farkı',
-      'Stok Devir Günü (GMROI)',
-      'Personel Maliyeti & Norm Kadro',
-      'Müşteri Memnuniyeti (NPS)',
-      'Denetim Skoru'
-    ],
+    competencies: ['Mağaza liderliği', 'Bütçe ve P&L yönetimi', 'İç terfi yönetimi', 'Kriz stratejisi'],
+    kpis: ['Yıllık mağaza ciro hedefi', 'Mağaza EBITDA net karı', 'Mağaza içi terfi yetiştirme sayısı', 'Müşteri memnuniyet skoru'],
     nextCareerLevel: 'Kıdemli / Mentor Mağaza Müdürü',
     nextCareerLevelId: 8,
     requiredTrainingForNextLevel: [
-      'Mağaza Müdürü Geliştirme ve Koçluk',
-      'Mentorluk ve İç Eğitmenlik',
-      'Performans Görüşmesi Yönetimi',
-      'Yeni Yönetici Yetiştirme',
-      'Düşük Performanslı Mağaza İyileştirme',
-      'Yeni Mağaza Açılış Süreçleri',
-      'Kök Neden Analizi ve Problem Çözme',
-      'Proje Yönetimi ve Süreç Geliştirme'
+      'Mentorluk ve Koçluk Becerileri',
+      'Çoklu Mağaza Başlatma (New Store Opening)',
+      'Problem Mağaza İyileştirme (Turnaround)',
+      'Bölge İK ve İşe Alım Katkısı',
+      'Saha Standartları Denetçiliği'
     ],
-    nextCompetencies: [
-      'Koçluk ve mentorluk',
-      'Başka yöneticileri yetiştirme',
-      'Süreç iyileştirme',
-      'Çoklu mağaza desteği'
-    ],
+    nextCompetencies: ['Mentorluk', 'Model olma', 'Sorunlu mağaza iyileştirme', 'Bölgeye rehberlik'],
     ctaText: 'Mentor Mağaza Müdürlüğüne İlerle'
   },
-
-  // 8. KIDEMLİ / MENTOR MAĞAZA MÜDÜRÜ
   {
     id: 8,
     title: 'Kıdemli / Mentor Mağaza Müdürü',
-    badgeHeading: 'Başarılı Yönetici Yetiştirme Seviyesi',
-    coreMessage: 'Başarılı mağaza yönetmekten başarılı yönetici yetiştirmeye.',
-    purpose: 'Yalnızca kendi mağazasını yönetmekle kalmayıp yeni mağaza müdürlerini eğitmek ve düşük performanslı mağazaları iyileştirmek.',
-    recommendedDuration: '18–24 Ay',
+    badgeHeading: 'Deneyimi Paylaşma ve Diğer Müdürleri Yetiştirme',
+    coreMessage: 'Lider Yetiştiren Lider Ol',
+    purpose: 'Diğer mağaza müdürlerine mentorluk yapmak, problemli mağazaları iyileştirmek ve bölgeye liderlik desteği vermek.',
+    recommendedDuration: '12–18 Ay',
     currentTrainings: [
-      'Koçluk ve Mentorluk',
-      'İç Eğitmenlik Sertifikasyonu',
-      'Düşük Performans İyileştirme',
-      'Yeni Mağaza Açılış Operasyonu'
+      'Mentorluk ve Koçluk Becerileri',
+      'Çoklu Mağaza Başlatma (New Store Opening)',
+      'Problem Mağaza İyileştirme (Turnaround)'
     ],
-    competencies: [
-      'Yönetici geliştirme',
-      'Mentorluk',
-      'İç eğitmenlik',
-      'Düşük performans analizi',
-      'Saha rol modelliği'
-    ],
-    kpis: [
-      'Yetiştirilen müdür sayısı',
-      'Mentorluk yapılan mağazaların ciro artışı',
-      'Yeni mağaza açılış zamanında tamamlama oranı'
-    ],
+    competencies: ['Mentorluk', 'Model olma', 'Sorunlu mağaza iyileştirme', 'Bölgeye rehberlik'],
+    kpis: ['Yetiştirilen yeni mağaza müdürü sayısı', 'Mentörlük yapılan mağazaların ciro artışı', 'Bölge denetim skoru'],
     nextCareerLevel: 'Bölge Müdürü Adayı',
     nextCareerLevelId: 9,
     requiredTrainingForNextLevel: [
-      'Çoklu Mağaza Yönetimi',
-      'Bölgesel KPI ve Performans Analizi',
-      'Mağazalar Arası Benchmarking',
-      'Bölgesel Kârlılık ve Bütçeleme',
-      'Mağaza Müdürü Performans Yönetimi',
-      'İleri Bölge Denetimi',
-      'Power BI ve Raporlama',
-      'CRM ve Bölgesel Kampanyalar',
-      'Problemli Mağaza Dönüşüm Stratejileri'
+      'Bölge Müdürlüğü İleri Strateji Akademisi',
+      'Çoklu Mağaza P&L Konsolidasyonu',
+      'Bölgesel İnsan Kaynağı ve Terfi Yönetimi',
+      'Bölge Lojistik ve Tedarik Yönetimi',
+      'Stratejik Bölge Rekabet Yönetimi'
     ],
-    nextCompetencies: [
-      'Çoklu mağaza vizyonu',
-      'Bölgesel kârlılık yönetimi',
-      'Benchmarking ve analitik bakış'
-    ],
-    ctaText: 'Bölge Yönetimi Adaylığına Geç'
+    nextCompetencies: ['Çoklu mağaza vizyonu', 'Bölgesel P&L analitiği', 'Üst yönetim iletişimi'],
+    ctaText: 'Bölge Müdürü Adaylığına Hazırlan'
   },
-
-  // 9. BÖLGE MÜDÜRÜ ADAYI
   {
     id: 9,
     title: 'Bölge Müdürü Adayı',
-    badgeHeading: 'Tek Mağazadan Bölge Yönetimine Geçiş',
-    coreMessage: 'Çoklu Mağazaya Hazırlan',
-    purpose: 'Bir mağaza grubunu (3-5 mağaza) mentörlük eşliğinde yöneterek Bölge Müdürlüğüne hazırlanmak.',
+    badgeHeading: 'Tek Mağazadan Çoklu Mağaza Yönetimine Geçiş',
+    coreMessage: 'Bölge Vizyonunu İnşa Et',
+    purpose: '10-20 mağazalık bir bölgenin tüm operasyonel, finansal ve insan kaynağı sorumluluğunu üstlenmeye hazır hale gelmek.',
     recommendedDuration: '6–12 Ay',
     currentTrainings: [
-      'Çoklu Mağaza Yönetim Programı',
-      'Bölge KPI ve Benchmarking',
-      'Power BI ile Bölge Analitiği'
+      'Bölge Müdürlüğü İleri Strateji Akademisi',
+      'Çoklu Mağaza P&L Konsolidasyonu',
+      'Bölgesel İnsan Kaynağı ve Terfi Yönetimi'
     ],
-    competencies: [
-      'Çoklu mağaza gözetimi',
-      'Mağaza müdürlerini yönlendirme',
-      'Bölgesel kârlılık vizyonu'
-    ],
-    kpis: [
-      'Sorumlu 3-5 mağazanın toplam ciro ve kârlılığı',
-      'Bölge iyileştirme projesi değerlendirme skoru'
-    ],
+    competencies: ['Çoklu mağaza vizyonu', 'Bölgesel P&L analitiği', 'Üst yönetim iletişimi'],
+    kpis: ['Bölge adaylık sınav skoru', 'Simülasyon bölge yönetimi başarısı', 'Genel müdürlük mülakat onayı'],
     nextCareerLevel: 'Bölge Müdürü',
     nextCareerLevelId: 10,
     requiredTrainingForNextLevel: [
-      'Stratejik Bölge Yönetimi',
-      'Bölge Bütçesi ve EBITDA Yönetimi',
-      'Mağaza Müdürleri Liderliği ve Koçluk',
-      'Bölgesel Stok ve Lojistik Optimizasyonu'
+      'Tam Yetkili Bölge Yönetimi Müfredatı',
+      'Bölgesel Satış & Pazarlama Stratejileri',
+      'Çoklu Saha Denetimi ve Standartlaştırma',
+      'Bölge İK ve Yedekleme Haritası',
+      'Genel Merkez & İcra Kurulu Raporlaması'
     ],
-    nextCompetencies: [
-      'Bölge liderliği',
-      'Müdür yönetimi',
-      'Stratejik karar alma'
-    ],
-    branchingView: {
-      stage1: '1 Mağaza (Müdür)',
-      stage2: '3–5 Mağaza (Adaylık)',
-      stage3: 'Tüm Bölge (Bölge Müdürü)'
-    },
-    finalProject: {
-      title: '3–5 Mağazalık Bölge Performans İyileştirme Projesi',
-      stages: ['Bölge Analizi', 'Mağaza Benchmarking', 'Kök Neden & Aksiyon', 'Uygulama', 'Final KPI Sunumu']
-    },
-    ctaText: 'Bölge Müdürü Olarak Atan'
+    nextCompetencies: ['Bölge liderliği', 'Çoklu P&L yönetimi', 'Stratejik hizalanma', 'Müdür yedekleme'],
+    ctaText: 'Bölge Müdürlüğü Görevini Üstlen'
   },
-
-  // 10. BÖLGE MÜDÜRÜ
   {
     id: 10,
     title: 'Bölge Müdürü',
-    badgeHeading: 'Mağazaları Değil, Mağaza Müdürlerini Yönetin',
-    coreMessage: 'Mağaza Yönetmez, Mağaza Müdürlerini Yönetir.',
-    purpose: 'Sorumlu olduğu 10-15 mağazanın satış, kârlılık, insan kaynağı, stok ve operasyonel mükemmelliğini yönetmek.',
-    recommendedDuration: '24 Ay',
+    badgeHeading: 'Bölgesel Saha Lideri',
+    coreMessage: 'Bölgeni Şirketin Büyüme Motoru Yap',
+    purpose: 'Sorumluluğundaki 10-20 mağazanın tüm satış, kârlılık, stok ve insan kaynağını genel merkez stratejilerine uygun olarak sevk etmek.',
+    recommendedDuration: '24–36 Ay',
     currentTrainings: [
-      'Stratejik Bölge Yönetimi',
-      'Bölgesel P&L ve EBITDA',
-      'Yönetici Yetiştirme ve Koçluk',
-      'Bölgesel İnsan Kaynakları',
-      'Power BI ve Bölge Analitiği'
+      'Tam Yetkili Bölge Yönetimi Müfredatı',
+      'Bölgesel Satış & Pazarlama Stratejileri',
+      'Çoklu Saha Denetimi ve Standartlaştırma'
     ],
-    competencies: [
-      'Bölge müdürlüğü liderliği',
-      'Çoklu saha yönetimi',
-      'Mağaza müdürlerini geliştirme',
-      'Bölgesel kârlılık',
-      'Denetim ve standartlar'
-    ],
-    kpis: [
-      'Bölge Toplam Cirosu ve Büyüme',
-      'Bölge Brüt Kâr ve Mağaza Kârlılıkları',
-      'Bölgesel Fire ve Stok Devir Hızı',
-      'Personel Verimliliği ve Devir Oranı (Turnover)',
-      'Bölge Müşteri Memnuniyeti & Denetim Skoru'
-    ],
-    nextCareerLevel: 'Kıdemli Bölge Müdürü / Bölge Operasyon Yöneticisi',
+    competencies: ['Bölge liderliği', 'Çoklu P&L yönetimi', 'Stratejik hizalanma', 'Müdür yedekleme'],
+    kpis: ['Bölge toplam ciro ve EBITDA kârı', 'Bölge mağaza müdürü yedekleme oranı', 'Bölge kayıp-kaçak ve fire ortalaması'],
+    nextCareerLevel: 'Kıdemli Bölge Müdürü',
     nextCareerLevelId: 11,
     requiredTrainingForNextLevel: [
-      'İş ve Süreç Geliştirme',
-      'Proje Yönetimi ve Stratejik Operasyon',
-      'Yatırım, Lokasyon ve Yeni Mağaza Stratejileri',
-      'İç Denetim ve Risk Yönetimi',
-      'İleri Veri Analizi ve Yapay Zekâ',
-      'Yönetici Yedekleme (Succession Planning)'
+      'Üst Düzey Bölgesel İnovasyon',
+      'Makro Perakende Stratejileri',
+      'Yeni Bölge Açılış Stratejileri',
+      'Sektörel Benchmark ve Rekabet Yönetimi'
     ],
-    nextCompetencies: [
-      'Şirket çapında süreç geliştirme',
-      'Yatırım ve lokasyon analizi',
-      'Risk yönetimi'
-    ],
-    ctaText: 'Bölge Operasyon Yöneticiliğine İlerle'
+    nextCompetencies: ['Kıdemli bölge liderliği', 'Stratejik mentorluk', 'Makro bütçeleme'],
+    ctaText: 'Kıdemli Bölge Müdürlüğüne Yüksel'
   },
-
-  // 11. KIDEMLİ BÖLGE MÜDÜRÜ / BÖLGE OPERASYON YÖNETİCİSİ
   {
     id: 11,
-    title: 'Kıdemli Bölge Müdürü / Bölge Operasyon Yöneticisi',
-    badgeHeading: 'Bölge Yönetiminden Şirket Operasyon Sistemine',
-    coreMessage: 'Bölge yönetiminden şirket operasyon sistemine geçiş.',
-    purpose: 'Büyük mağaza gruplarını yönetmek, yeni formatlar geliştirmek ve şirket çapında operasyonel standartları belirlemek.',
+    title: 'Kıdemli Bölge Müdürü',
+    badgeHeading: 'Bölge Liderlerinin Lideri',
+    coreMessage: 'Stratejik Saha Gücü Oluştur',
+    purpose: 'Birden fazla bölgeye rehberlik etmek, büyük metropol bölgelerini yönetmek ve operasyon müdürlüğüne hazırlanmak.',
     recommendedDuration: '18–24 Ay',
     currentTrainings: [
-      'İş ve Süreç Geliştirme',
-      'Yatırım ve Lokasyon Analizi',
-      'İç Denetim & Risk Yönetimi',
-      'Yapay Zekâ ve İleri Veri Analitiği'
+      'Üst Düzey Bölgesel İnovasyon',
+      'Makro Perakende Stratejileri',
+      'Yeni Bölge Açılış Stratejileri'
     ],
-    competencies: [
-      'Sistem geliştirme',
-      'Bölge müdürlerini yönetme',
-      'Stratejik proje liderliği',
-      'Değişim yönetimi'
-    ],
-    kpis: [
-      'Büyük bölge grubunun karlılığı',
-      'Yeni açılan mağazaların verimlilik süresi',
-      'Şirket çapında süreç iyileştirme ROI puanı'
-    ],
+    competencies: ['Kıdemli bölge liderliği', 'Stratejik mentorluk', 'Makro bütçeleme'],
+    kpis: ['Metropol bölge ciro büyümesi', 'Yetiştirilen bölge müdürü sayısı', 'Şirket genel operasyon kurul katkısı'],
     nextCareerLevel: 'Operasyon Müdürü',
     nextCareerLevelId: 12,
     requiredTrainingForNextLevel: [
-      'Operasyon Stratejisi ve Yıllık Planlama',
-      'Şirket Kârlılığı, EBITDA ve İşletme Sermayesi',
-      'Stok Yatırımı ve Tedarik Zinciri Entegrasyonu',
-      'Operasyon Bütçesi Yönetimi',
-      'Bölge Müdürleri Yönetimi ve Organizasyon Tasarımı',
-      'Power BI ve Yapay Zekâ Destekli Talep Tahmini',
-      'Risk Yönetimi ve İş Sürekliliği'
+      'Şirket Ölçeğinde Operasyon Yönetimi',
+      'Saha Verimlilik ve Süreç Mimarisi',
+      'Omnichannel ve E-Ticaret Saha Entegrasyonu',
+      'Tedarik Zinciri ve Lojistik Hizalanması',
+      'Büyük Ölçekli Bütçe ve Maliyet Yönetimi'
     ],
-    nextCompetencies: [
-      'Şirket operasyon stratejisi',
-      'EBITDA ve sermaye yönetimi',
-      'Bölge müdürlerinin liderliği',
-      'Sistem tasarımı'
-    ],
-    finalProject: {
-      title: 'Şirket Çapında Operasyonel Verimlilik ve Kârlılık Projesi'
-    },
-    ctaText: 'Operasyon Müdürlüğüne Yüksel'
+    nextCompetencies: ['Şirket geneli operasyon vizyonu', 'Süreç mimarisi', 'Omnichannel yönetimi'],
+    ctaText: 'Operasyon Müdürlüğüne İlerle'
   },
-
-  // 12. OPERASYON MÜDÜRÜ
   {
     id: 12,
     title: 'Operasyon Müdürü',
-    badgeHeading: 'Mağaza Ağının Sistem Yöneticisi',
-    coreMessage: 'Mağazaları Değil, Mağazaların Başarılı Çalışmasını Sağlayan Sistemi Yönet.',
-    purpose: 'Şirketin tüm mağaza ağının operasyonel performansından, Bölge Müdürlerinin yönetiminden ve saha stratejilerinden sorumlu olmak.',
-    recommendedDuration: '24+ Ay',
+    badgeHeading: 'Tüm Saha Ağının Mimarisi',
+    coreMessage: 'Şirketin Operasyonel Kalbini Yönet',
+    purpose: 'Tüm mağazalar ağının operasyonel standartlarını, saha süreçlerini, bütçelerini ve verimlilik politikalarını belirlemek.',
+    recommendedDuration: '24–36 Ay',
     currentTrainings: [
-      'Operasyon Stratejisi',
-      'Yıllık İş Planlama ve Bütçe',
-      'EBITDA ve İşletme Sermayesi',
-      'Organizasyon Tasarımı',
-      'Yapay Zekâ ve Talep Tahmini'
+      'Şirket Ölçeğinde Operasyon Yönetimi',
+      'Saha Verimlilik ve Süreç Mimarisi',
+      'Omnichannel ve E-Ticaret Saha Entegrasyonu'
     ],
-    competencies: [
-      'Tüm mağaza ağının liderliği',
-      'Operasyon stratejisi',
-      'Finansal ve operasyonel mükemmellik',
-      'Dijital dönüşüm',
-      'Üst yönetim temsilciliği'
-    ],
-    kpis: [
-      'Şirket Toplam Satış ve Mağaza Kârlılıkları',
-      'Operasyon Bütçesi ve Gider Yönetimi Uyum Oranı',
-      'Şirket Çapında Fire ve Stok Devir Oranı',
-      'Personel Verimliliği ve Genel Turnover',
-      'Dijital Dönüşüm & Yapay Zekâ Entegrasyon Puanı'
-    ],
+    competencies: ['Şirket geneli operasyon vizyonu', 'Süreç mimarisi', 'Omnichannel yönetimi'],
+    kpis: ['Şirket toplam operasyon maliyeti / ciro oranı', 'Saha standartlaşma endeksi', 'Bölge müdürleri bağlılık ve başarı oranı'],
     nextCareerLevel: 'Operasyon Direktörü',
     nextCareerLevelId: 13,
     requiredTrainingForNextLevel: [
-      'Stratejik Yönetim ve İcra Kurulu Liderliği',
-      'Yönetim Kurulu Raporlama Standartları',
-      'Yatırım Yönetimi ve Bölgesel Büyüme Stratejileri',
-      'Yeni Mağaza Formatları Tasarımı',
-      'İşletme Sermayesi ve Nakit Akışı Yönetimi',
-      'Dijital Dönüşüm ve Omnichannel Stratejileri',
-      'CRM ve İnsan Sermayesi Yönetimi',
-      'Kurumsallaşma ve Liderlik'
+      'C-Level Operasyonel Liderlik',
+      'Stratejik Şirket Dönüşümü',
+      'Yatırım ROI ve Mağaza Ağı Genişleme',
+      'Yönetim Kurulu ve İcra Kurulu Raporlaması'
     ],
-    nextCompetencies: [
-      'İcra kurulu liderliği',
-      'Omnichannel stratejisi',
-      'Kurumsal büyüme',
-      'Yönetim kurulu raporlaması'
-    ],
-    ctaText: 'Operasyon Direktörlüğüne İlerle'
+    nextCompetencies: ['Direktörlük vizyonu', 'C-Level yönetişim', 'Makro şirket karlılığı'],
+    ctaText: 'Operasyon Direktörlüğüne Yüksel'
   },
-
-  // 13. OPERASYON DİREKTÖRÜ
   {
     id: 13,
     title: 'Operasyon Direktörü',
-    badgeHeading: 'Operasyonu Şirket Stratejisine Bağlama',
-    coreMessage: 'Operasyonu şirket stratejisine bağlar.',
-    purpose: 'Şirketin tüm operasyonel vizyonunu genel şirket stratejisiyle birleştirip yönetim kurulu seviyesinde yürütmek.',
-    recommendedDuration: '24+ Ay',
+    badgeHeading: 'İcra Kurulu Operasyon Lideri',
+    coreMessage: 'Operasyonu Geleceğe Taşı',
+    purpose: 'Şirket icra kurulunda tüm saha ve operasyonu temsil ederek makro stratejilere ve karlılık hedeflerine yön vermek.',
+    recommendedDuration: '24–36 Ay',
     currentTrainings: [
-      'Stratejik Yönetim',
-      'Yönetim Kurulu Raporlama',
-      'Yatırım Yönetimi & Format Geliştirme',
-      'Omnichannel & CRM Stratejisi',
-      'İnsan Sermayesi Yönetimi'
+      'C-Level Operasyonel Liderlik',
+      'Stratejik Şirket Dönüşümü',
+      'Yatırım ROI ve Mağaza Ağı Genişleme'
     ],
-    competencies: [
-      'Şirket üst düzey liderliği',
-      'Yatırım ve format stratejisi',
-      'Omnichannel vizyonu',
-      'Yönetim kurulu seviyesinde temsil'
-    ],
-    kpis: [
-      'Şirket Toplam EBITDA ve Büyüme',
-      'Omnichannel satış payı ve kârlılığı',
-      'Şirket çapında operasyonel mükemmellik indeksi'
-    ],
-    nextCareerLevel: 'Genel Müdür',
+    competencies: ['Direktörlük vizyonu', 'C-Level yönetişim', 'Makro şirket karlılığı'],
+    kpis: ['Şirket toplam EBITDA ve kar marjı', 'Saha verimlilik artış yüzdesi', 'Mağaza ağı büyüme stratejisi başarısı'],
+    nextCareerLevel: 'Genel Müdür Yardımcısı',
     nextCareerLevelId: 14,
     requiredTrainingForNextLevel: [
-      'Genel Müdürlük ve İcra Yönetimi',
-      'Kurumsal Yönetişim ve Yönetim Kurulu İlişkileri',
-      'Finansal Tablolar, Nakit Akışı ve Sermaye Yönetimi',
-      'Satınalma, Kategori ve Private Label Stratejileri',
-      'Pazarlama ve Omnichannel CRM',
-      'İnsan Sermayesi ve Teşkilat Yönetimi',
-      'Data, Yapay Zekâ, Siber Güvenlik ve Risk'
+      'Executive Genel Yönetim Müfredatı',
+      'Şirket Değerlemesi ve Sermaye Yönetimi',
+      'Global Perakende İnovasyonu',
+      'Kurumsal Yönetişim ve Hissedar İlişkileri'
     ],
-    nextCompetencies: [
-      'Tüm fonksiyonların (Finans, Satınalma, İK, Lojistik, Teknoloji vb.) yönetimi',
-      'Şirket Genel Müdürlük vizyonu',
-      'Kurumsal yönetişim'
-    ],
-    ctaText: 'Genel Müdürlük Seviyesine Yüksel'
+    nextCompetencies: ['Genel yönetim zekası', 'Sermaye odağı', 'Şirket liderliği'],
+    ctaText: 'Genel Müdür Yardımcılığına İlerle'
   },
-
-  // 14. GENEL MÜDÜR
   {
     id: 14,
-    title: 'Genel Müdür',
-    badgeHeading: 'Fonksiyon Yönetiminden Şirket Yönetimine',
-    coreMessage: 'Fonksiyon Yönetiminden Şirket Yönetimine',
-    purpose: 'Tüm departmanları (Finans, Operasyon, Satınalma, İK, Lojistik, Teknoloji, Pazarlama) hizalayarak şirketin cirosunu ve değerini büyütmek.',
-    recommendedDuration: '36+ Ay',
+    title: 'Genel Müdür Yardımcısı',
+    badgeHeading: 'Şirketin İkinci Kaptanı',
+    coreMessage: 'Zirveye Bir Adım Kala',
+    purpose: 'Tüm operasyonel, ticari ve idari birimlerin Genel Müdür (CEO) vizyonu doğrultusunda uyum içinde çalışmasını sağlamak.',
+    recommendedDuration: '24 Ay',
     currentTrainings: [
-      'Genel Müdürlük ve İcra Yönetimi',
-      'Kurumsal Yönetişim',
-      'Yönetim Kurulu İlişkileri',
-      'Finansal Tablolar ve Nakit Akışı',
-      'Kategori & Satınalma Stratejisi',
-      'Omnichannel Pazarlama',
-      'Yapay Zekâ ve Veri Yönetişimi'
+      'Executive Genel Yönetim Müfredatı',
+      'Şirket Değerlemesi ve Sermaye Yönetimi',
+      'Global Perakende İnovasyonu'
     ],
-    competencies: [
-      'Tam şirket yönetimi',
-      'Tüm fonksiyonların liderliği',
-      'Stratejik sermaye ve büyüme yönetimi',
-      'Kurumsal temsil'
-    ],
-    kpis: [
-      'Şirket Değerlemesi ve Ciro Büyümesi',
-      'Konsolide EBITDA ve Serbest Nakit Akışı',
-      'Pazar Payı ve Marka Algısı',
-      'Çalışan Memnuniyeti ve Kurum Kültürü Skoru'
-    ],
-    nextCareerLevel: 'CEO',
+    competencies: ['Genel yönetim zekası', 'Sermaye odağı', 'Şirket liderliği'],
+    kpis: ['Şirket yıllık büyüme oranı', 'Pazar payı artışı', 'Yönetim kurulu stratejik hedef tamamlama'],
+    nextCareerLevel: 'Genel Müdür / CEO',
     nextCareerLevelId: 15,
     requiredTrainingForNextLevel: [
-      'Gıda Perakendesinde CEO Rolü',
-      'Vizyon ve Strateji Oluşturma',
-      'Sürdürülebilir Büyüme ve Finansal Strateji',
-      'Şirket Değerlemesi ve Sermaye Yönetimi',
-      'RFM, Churn, CLV ve Yapay Zekâ – CEO Perspektifi',
-      'Tahmine Dayalı Analitik ve Veri Yönetişimi',
-      'CEO Liderliği ve Üst Yönetim Takımı Kurma',
-      'Yönetici Yedekleme ve Kurumsallaşma',
-      'Yönetim Kurulu Yönetimi ve Nesil Geçişi',
-      'Risk Yönetimi ve Yeni İş Modelleri'
+      'Global Executive CEO Summit',
+      'Yapay Zekâ ve Şirket Dönüşümü',
+      'Yönetim Kurulu Başrakanlığı ve Kurumsallaşma'
     ],
-    nextCompetencies: [
-      'Geleceği tasarlama',
-      'Sürdürülebilir vizyon ve büyüme',
-      'Yönetim kurulu ve hissedar ilişkileri',
-      'Yeni iş modelleri geliştirme'
-    ],
-    departmentIcons: [
-      { name: 'Finans', key: 'BarChart3' },
-      { name: 'Operasyon', key: 'Building2' },
-      { name: 'Satınalma', key: 'ShoppingBag' },
-      { name: 'CRM', key: 'Users' },
-      { name: 'İK', key: 'UserCheck' },
-      { name: 'Lojistik', key: 'Truck' },
-      { name: 'Teknoloji', key: 'Cpu' },
-      { name: 'Pazarlama', key: 'Megaphone' }
-    ],
+    nextCompetencies: ['CEO vizyonerliği', 'Geleceği tasarlama'],
     ctaText: 'CEO Koltuğuna Hazırlan'
   },
-
-  // 15. CEO
   {
     id: 15,
-    title: 'CEO',
+    title: 'Genel Müdür / CEO',
     badgeHeading: 'Zirve Liderlik Paneli',
     coreMessage: 'Geleceği Yönet',
     purpose: 'Şirketi yönetmekten geleceği tasarlamaya geçerek vizyon, büyüme, sermaye, teknoloji ve sürdürülebilir liderlik inşa etmek.',
@@ -817,47 +491,225 @@ export const CAREER_STEPS_15_DATA: CareerStep15[] = [
       'Kurumsallaşma ve Yönetim Kurulu Yönetimi',
       'Sürdürülebilir Büyüme ve Nesil Geçişi'
     ],
-    competencies: [
-      'Geleceği tasarlama',
-      'Stratejik vizyonerlik',
-      'Sermaye ve değer yaratımı',
-      'Yönetim kurulu liderliği',
-      'Sürdürülebilir dönüşüm'
-    ],
-    kpis: [
-      'Şirket Piyasa Değeri ve Büyüme',
-      'Sürdürülebilir Karlılık (EBITDA)',
-      'Global / Bölgesel Pazar Liderliği',
-      'Teknoloji ve İnovasyon İndeksi'
-    ],
+    competencies: ['Geleceği tasarlama', 'Stratejik vizyonerlik', 'Sermaye ve değer yaratımı', 'Yönetim kurulu liderliği', 'Sürdürülebilir dönüşüm'],
+    kpis: ['Şirket Piyasa Değeri ve Büyüme', 'Sürdürülebilir Karlılık (EBITDA)', 'Global / Bölgesel Pazar Liderliği', 'Teknoloji ve İnovasyon İndeksi'],
     nextCareerLevel: 'Geleceği Tasarlayan Yönetim Kurulu Liderliği',
     nextCareerLevelId: 15,
-    requiredTrainingForNextLevel: [
-      'Global Perakende Liderlik Zirveleri',
-      'Geleceğin Yapay Zekâ İş Modelleri',
-      'Sürdürülebilirlik ve ESG Stratejileri'
-    ],
-    nextCompetencies: [
-      'Sürekli vizyoner liderlik',
-      'Sektöre yön verme'
-    ],
+    requiredTrainingForNextLevel: ['Global Perakende Liderlik Zirveleri', 'Geleceğin Yapay Zekâ İş Modelleri', 'Sürdürülebilirlik ve ESG Stratejileri'],
+    nextCompetencies: ['Sürekli vizyoner liderlik', 'Sektöre yön verme'],
     ceoFocusAreas: [
       { title: 'Vizyon', desc: 'Şirketin 5-10 yıllık gelecek rotasını belirleme' },
       { title: 'Büyüme', desc: 'Pazar payını ve yeni yatırımları ölçeklendirme' },
       { title: 'Sermaye', desc: 'Finansal kaynakları ve şirket değerini büyütme' },
       { title: 'Teknoloji', desc: 'Yapay zekâ ve dijital dönüşüme liderlik etme' },
-      { title: 'Müşteri', desc: 'Yeni nesil tüketici deneyimini şekillendirme' },
-      { title: 'İnsan', desc: 'Üst düzey yönetim takımını kurma ve yedekleme' },
-      { title: 'Kurumsallaşma', desc: 'Sürdürülebilir yönetişim sistemini oturtma' },
-      { title: 'Yönetim Kurulu', desc: 'Hissedarlar ve kurul ile stratejik hizalanma' },
-      { title: 'Risk', desc: 'Küresel ve bölgesel krizlere hazırlık' },
-      { title: 'Yeni İş Modelleri', desc: 'Omnichannel ve e-ticaret yenilikleri' }
+      { title: 'İnsan', desc: 'Üst düzey yönetim takımını kurma ve yedekleme' }
     ],
     ctaText: 'Geleceğin Perakendesini Tasarla'
   }
 ];
 
-// Donut / Bar Chart Data for Promotion Scoring Model (%100 Total)
+// Helper generator function to create 15 steps for alternate career tracks
+function generateAlternateTrackSteps(
+  titles: string[],
+  departmentName: string
+): CareerStep15[] {
+  return titles.map((title, index) => {
+    const stepId = index + 1;
+    const isPeak = stepId === 15;
+    const nextTitle = isPeak ? titles[14] : titles[index + 1];
+
+    return {
+      id: stepId,
+      title: title,
+      badgeHeading: `${departmentName} - Seviye ${stepId}`,
+      coreMessage: isPeak ? 'Zirve Liderlik' : `Adım Step ${stepId}`,
+      purpose: `${title} pozisyonunda ${departmentName.toLowerCase()} alanındaki yetkinlikleri ve operasyonu yönetmek.`,
+      recommendedDuration: `${Math.round(stepId * 1.2)}–${Math.round(stepId * 1.5)} Ay`,
+      currentTrainings: [
+        `${title} Temel Müfredatı`,
+        `${departmentName} Operasyon Standartları`,
+        'Veri Analitiği ve Raporlama',
+        'Ekip İletişimi ve Koçluk'
+      ],
+      competencies: [
+        `${departmentName} uzmanlığı`,
+        'Analitik düşünme',
+        'Problem çözme',
+        'Ekip koçluğu'
+      ],
+      kpis: [
+        `${departmentName} performans skoru`,
+        'Hata ve sapma oranı',
+        'Hedef gerçekleşme yüzdesi'
+      ],
+      nextCareerLevel: nextTitle,
+      nextCareerLevelId: isPeak ? 15 : stepId + 1,
+      requiredTrainingForNextLevel: [
+        `İleri ${nextTitle} Müfredatı`,
+        `Stratejik ${departmentName} Yönetimi`,
+        'P&L ve Bütçe Planlama',
+        'C-Level Yönetici Liderliği'
+      ],
+      nextCompetencies: [
+        `İleri ${nextTitle} yetkinliği`,
+        'Stratejik liderlik',
+        'Bütçe yönetimi'
+      ],
+      ctaText: isPeak ? 'Zirve Liderliği Yönet' : `${nextTitle} Pozisyonuna Hazırlan`
+    };
+  });
+}
+
+// 6 DISTINCT CAREER TRACKS (ALL 15 STEPS EACH)
+export const ALL_CAREER_TRACKS_15: CareerTrack15[] = [
+  {
+    id: 'kasiyer-ceo',
+    name: 'Kasiyerlikten CEO / Genel Müdürlüğe',
+    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    headline: 'Kasadan CEO Koltuğuna İlerleme Haritası',
+    department: 'Mağaza Operasyonu & Genel Yönetim',
+    startRole: '1. Kasiyer (0-1 Yıl)',
+    peakRole: '15. CEO (Geleceği Tasarlama)',
+    description: 'Sahanın en alt kademesinden başlayıp tüm operasyon, bölge ve genel yönetim basamaklarını tırmanarak zirveye ulaşan efsanevi kariyer rotası.',
+    steps: CAREER_STEPS_15_DATA
+  },
+  {
+    id: 'satinalma-direktoru',
+    name: 'Reyon Elemanlığından Satın Alma Direktörlüğüne',
+    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    headline: 'Reyondan Satın Alma Direktörlüğüne İlerleme Haritası',
+    department: 'Satın Alma & Kategori Yönetimi',
+    startRole: '1. Reyon Elemanı (0-1 Yıl)',
+    peakRole: '15. Satın Alma & Ticaret Direktörü (CCO)',
+    description: 'Reyon uzmanlığından tedarikçi müzakerelerine, kategori yönetiminden ticari direktörlüğe uzanan stratejik perakende rotası.',
+    steps: generateAlternateTrackSteps([
+      'Reyon Elemanı',
+      'Kıdemli Reyon Personeli',
+      'Reyon Şefi',
+      'Kasa & Saha Sorumlusu',
+      'Mağaza Müdür Yardımcısı',
+      'Kategori Asistanı / Stajyeri',
+      'Kategori Uzman Yardımcısı',
+      'Kategori Uzmanı',
+      'Kıdemli Kategori Uzmanı',
+      'Kategori Yöneticisi Adayı',
+      'Kategori Yöneticisi',
+      'Satın Alma Müdürü',
+      'Kıdemli Satın Alma Müdürü',
+      'Ticari & Satın Alma Grup Müdürü',
+      'Satın Alma & Ticaret Direktörü (CCO)'
+    ], 'Satın Alma & Kategori')
+  },
+  {
+    id: 'pazarlama-satis',
+    name: 'Reyon Elemanlığından Pazarlama ve Satış Müdürlüğüne',
+    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    headline: 'Reyondan Pazarlama ve Satış Müdürlüğüne İlerleme Haritası',
+    department: 'Satış, Pazarlama & CRM',
+    startRole: '1. Reyon Elemanı (0-1 Yıl)',
+    peakRole: '15. Satış ve Pazarlama Direktörü (CMO)',
+    description: 'Müşteri temasından sepet büyütmeye, CRM verisinden markanın tüm satış ve pazarlama direktörlüğüne ulaşan modern kariyer yolu.',
+    steps: generateAlternateTrackSteps([
+      'Reyon Elemanı',
+      'Müşteri İlişkileri Temsilcisi',
+      'Reyon & Görsel Şefi (Merchandiser)',
+      'Mağaza Satış Lideri',
+      'Mağaza Müdür Yardımcısı',
+      'Pazarlama Asistanı',
+      'Ticari Pazarlama Uzman Yardımcısı',
+      'CRM & Müşteri Analitiği Uzmanı',
+      'Kıdemli Pazarlama Uzmanı',
+      'Dijital Pazarlama Yöneticisi',
+      'Ticari Pazarlama Yöneticisi',
+      'Bölge Satış & Pazarlama Müdürü',
+      'Pazarlama Müdürü',
+      'Satış & Pazarlama Grup Müdürü',
+      'Satış ve Pazarlama Direktörü (CMO)'
+    ], 'Satış & Pazarlama')
+  },
+  {
+    id: 'crm-veri',
+    name: 'Reyon Elemanlığından CRM, Veri & Dijital Dönüşüm Direktörlüğüne',
+    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    headline: 'Reyondan CRM ve Veri Direktörlüğüne İlerleme Haritası',
+    department: 'CRM, Veri Analitiği & Dijitalleşme',
+    startRole: '1. Reyon Elemanı (0-1 Yıl)',
+    peakRole: '15. CRM, Veri ve Dijital Dönüşüm Direktörü (CDO)',
+    description: 'Saha müşteri kaydından başlayarak SQL, Power BI, sepet analitiği, CRM segmentasyonu ve şirketin tüm veri-yapay zeka direktörlüğüne uzanan teknoloji rotası.',
+    steps: generateAlternateTrackSteps([
+      'Reyon Elemanı',
+      'Kasa & CRM Veri Kayıt Sorumlusu',
+      'Mağaza Müşteri İlişkileri Şefi',
+      'Saha Veri Toplama & Kampanya Lideri',
+      'Mağaza Müdür Yardımcısı',
+      'CRM / Veri Analitiği Asistanı',
+      'Raporlama & SQL Uzman Yardımcısı',
+      'CRM & Müşteri Analitiği Uzmanı',
+      'Kıdemli Veri Analisti',
+      'Perakende BI Yöneticisi Adayı',
+      'CRM & Müşteri Bağlılığı Yöneticisi',
+      'Veri Analitiği & BI Müdürü',
+      'Kıdemli CRM & Veri Yönetimi Müdürü',
+      'Dijital Dönüşüm & Veri Grup Müdürü',
+      'CRM, Veri ve Dijital Dönüşüm Direktörü (CDO)'
+    ], 'CRM & Veri Analitiği')
+  },
+  {
+    id: 'lojistik-tedarik',
+    name: 'Reyon Elemanlığından Lojistik ve Tedarik Chain Müdürlüğüne',
+    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    headline: 'Reyondan Lojistik Müdürlüğüne İlerleme Haritası',
+    department: 'Lojistik & Tedarik Zinciri',
+    startRole: '1. Reyon Elemanı (0-1 Yıl)',
+    peakRole: '15. Lojistik & Tedarik Zinciri Direktörü (CLO)',
+    description: 'Depo ve mal kabulden başlayarak stok planlama, antrepo yönetimi ve tüm perakende lojistik ağının direktörlüğüne uzanan operasyonel hat.',
+    steps: generateAlternateTrackSteps([
+      'Reyon Elemanı',
+      'Mal Kabul & Depo Görevlisi',
+      'Depo Şefi / Stok Sorumlusu',
+      'Mağaza Stok & Fire Şefi',
+      'Bölge Stok Kontrolörü',
+      'Lojistik Operasyon Asistanı',
+      'Depo & Sevkiyat Uzman Yardımcısı',
+      'Stok & Envanter Planlama Uzmanı',
+      'Kıdemli Lojistik Uzmanı',
+      'Depo / Antrepo Yöneticisi',
+      'Tedarik Zinciri Yöneticisi',
+      'Lojistik Operasyon Müdürü',
+      'Kıdemli Lojistik Müdürü',
+      'Tedarik Zinciri Grup Müdürü',
+      'Lojistik & Tedarik Zinciri Direktörü (CLO)'
+    ], 'Lojistik & Tedarik Zinciri')
+  },
+  {
+    id: 'insan-kaynaklari',
+    name: 'Reyon Elemanlığından İnsan Kaynakları Direktörlüğüne',
+    badgeText: '15 BASAMAKLI KARİYER HARİTASI',
+    headline: 'Reyondan İK Direktörlüğüne İlerleme Haritası',
+    department: 'İnsan Kaynakları & Kurumsal Akademi',
+    startRole: '1. Reyon Elemanı (0-1 Yıl)',
+    peakRole: '15. İnsan Kaynakları Direktörü (CHRO)',
+    description: 'Saha çalışan deneyiminden başlayarak eğitim uzmanlığı, HRBP,akademi yöneticiliği ve şirket insan kaynakları direktörlüğüne giden insan odaklı rota.',
+    steps: generateAlternateTrackSteps([
+      'Reyon Elemanı',
+      'Mağaza Ekip Lideri',
+      'Mağaza Müdür Yardımcısı',
+      'Mağaza Eğitmen Şefi',
+      'Saha İK & İşe Alım Sorumlusu',
+      'Akademi / LMS Uzman Yardımcısı',
+      'İK Operasyon Uzmanı',
+      'İşe Alım & Yetenek Uzmanı',
+      'Saha İK Partneri (HRBP)',
+      'Kıdemli İK Uzmanı / HRBP',
+      'Eğitim & Gelişim Yöneticisi',
+      'İnsan Kaynakları Müdürü',
+      'Kurumsal Akademi Yöneticisi',
+      'İK Grup Müdürü',
+      'İnsan Kaynakları Direktörü (CHRO)'
+    ], 'İnsan Kaynakları')
+  }
+];
+
 export const SCORING_WEIGHTS_15 = [
   { label: 'KPI ve İş Sonuçları', percent: 30, color: '#0B2A4A', icon: 'Target' },
   { label: 'Saha Yetkinliği', percent: 25, color: '#087F96', icon: 'ShieldCheck' },
