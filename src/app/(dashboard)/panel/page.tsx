@@ -193,13 +193,64 @@ export default function PanelPage() {
                       </div>
                       <div className="flex justify-between items-center text-[11px] text-gray-500 pt-1 font-mono">
                         <span>Kariyer Yılı: 1. Yıl • Modül {idx + 1}</span>
-                        <Link href="/egitimler" className="text-[#087F96] font-bold hover:underline">
-                          Derse Devam Et →
-                        </Link>
                       </div>
                     </div>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* 🎓 ÖĞRENCİ DERS BAZLI PUAN KARNESİ & TOPLAM YETKİNLİK SKORU */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div className="flex items-center space-x-2">
+                  <div className="p-2 bg-[#0B2A4A] text-white rounded-xl">
+                    <Award className="h-5 w-5 text-amber-300" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-base text-[#0B2A4A]">
+                      Ders Bazlı Puan Karnem & Yetkinlik Derlemesi
+                    </h3>
+                    <p className="text-xs text-gray-500 font-light">
+                      Her eğitimden kazandığınız puanlar ve 100 üzerinden toplam yetkinlik skoru derlemeniz.
+                    </p>
+                  </div>
+                </div>
+
+                <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                  Toplam Yetkinlik: 86 / 100 Puan
+                </span>
+              </div>
+
+              <div className="space-y-2 text-xs">
+                {[
+                  { course: 'Kasa Sistemleri & Hızlı Geçiş Standartları', points: 25, earned: 24, scorePct: 96, status: 'GEÇTİ ✓' },
+                  { course: 'Nakit, POS & Kasa Açığı Güvenlik Prosedürleri', points: 20, earned: 19, scorePct: 95, status: 'GEÇTİ ✓' },
+                  { course: 'Müşteri İlişkileri & İletişim Protokolü', points: 25, earned: 25, scorePct: 100, status: 'GEÇTİ ✓' },
+                  { course: 'Çapraz Satış Teknikleri & Kasa Arkası Fırsatlar', points: 30, earned: 18, scorePct: 60, status: 'DEVAM EDİYOR ⚡' }
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-bold text-[#0B2A4A]">{idx + 1}. {item.course}</span>
+                      </div>
+                      <span className="text-[11px] text-gray-500 block font-mono">
+                        Sınav Başarı Skoru: %{item.scorePct}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center space-x-3 shrink-0 self-start sm:self-auto">
+                      <span className="font-mono text-xs font-black text-[#0B2A4A] bg-white px-2.5 py-1 rounded-lg border border-gray-200">
+                        {item.earned} / {item.points} Puan
+                      </span>
+                      <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full ${
+                        item.status.includes('GEÇTİ') ? 'bg-emerald-200 text-emerald-900' : 'bg-amber-100 text-amber-900'
+                      }`}>
+                        {item.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 

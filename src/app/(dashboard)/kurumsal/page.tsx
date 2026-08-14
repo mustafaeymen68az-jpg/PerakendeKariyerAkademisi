@@ -15,8 +15,13 @@ import {
   Crown, 
   FileText, 
   AlertTriangle,
-  Sparkles
+  Sparkles,
+  Search,
+  Filter,
+  CheckCircle2,
+  Trophy
 } from 'lucide-react';
+import { DEPARTMENTS_DATA, getDepartment100PointBreakdown } from '@/data/departmentsData';
 
 export default function KurumsalYoneticiPaneliPage() {
   const corporateStats = {
@@ -200,53 +205,141 @@ export default function KurumsalYoneticiPaneliPage() {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Column: Low Performers & Department Success */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Düşük Gelişim Gösteren Çalışanlar */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 space-y-4">
-              <h3 className="font-display font-bold text-base text-[#0B2A4A] flex items-center space-x-2 text-red-600">
-                <AlertTriangle className="h-5 w-5" />
-                <span>Destek Gereken Çalışanlar</span>
-              </h3>
-
-              <div className="space-y-3 text-xs">
-                {lowPerformers.map((lp, idx) => (
-                  <div key={idx} className="bg-red-50 p-3 rounded-xl border border-red-200 space-y-1">
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-[#0B2A4A]">{lp.name} ({lp.dept})</span>
-                      <span className="text-red-600 font-mono font-bold">%{lp.score}</span>
-                    </div>
-                    <p className="text-gray-600 text-[11px] font-mono">• {lp.issue}</p>
-                  </div>
-                ))}
+        {/* 📊 DEPARTMAN BAZLI ÖĞRENCİ YETKİNLİK & PUAN TABLOSU */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-3 bg-[#0B2A4A] text-white rounded-2xl shadow-md border border-[#087F96]">
+                <BarChart3 className="h-6 w-6 text-[#087F96]" />
+              </div>
+              <div>
+                <h3 className="font-display font-extrabold text-xl text-[#0B2A4A]">
+                  Departman Bazlı Öğrenci Yetkinlik & Ders Puan Tablosu
+                </h3>
+                <p className="text-xs text-gray-500 font-light">
+                  Seçtiğiniz departmandaki tüm öğrencilerin ders ders aldığı puanları ve 100 üzerinden yetkinlik skorlarını inceleyin.
+                </p>
               </div>
             </div>
 
-            {/* Departman Bazlı Başarı */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 space-y-4">
-              <h3 className="font-display font-bold text-base text-[#0B2A4A]">Departman Bazlı Başarı</h3>
-              <div className="space-y-2.5 text-xs font-mono">
-                {[
-                  { dept: 'Taze Gıda Reyonları', score: 94 },
-                  { dept: 'Mağaza Müdürleri', score: 92 },
-                  { dept: 'Satınalma & Kategori', score: 88 },
-                  { dept: 'Kasiyer', score: 82 }
-                ].map((d, i) => (
-                  <div key={i} className="space-y-1">
-                    <div className="flex justify-between text-gray-700">
-                      <span>{d.dept}</span>
-                      <span className="font-bold text-[#087F96]">%{d.score}</span>
-                    </div>
-                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
-                      <div className="bg-[#087F96] h-full" style={{ width: `${d.score}%` }} />
-                    </div>
-                  </div>
+            {/* Department Selector */}
+            <div className="flex items-center space-x-2 text-xs font-bold self-start sm:self-auto">
+              <label className="text-[#0B2A4A] whitespace-nowrap">Departman Seç:</label>
+              <select
+                className="p-2.5 bg-gray-50 border border-gray-300 rounded-xl text-xs font-extrabold text-[#0B2A4A] outline-none focus:ring-2 focus:ring-[#087F96]"
+                onChange={(e) => {
+                  // Standard client re-render hook if needed
+                }}
+              >
+                {DEPARTMENTS_DATA.map((d) => (
+                  <option key={d.id} value={d.id}>{d.name} (Eğitim Tablosu)</option>
                 ))}
-              </div>
+              </select>
             </div>
           </div>
+
+          {/* Department Students Matrix Table */}
+          <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-2xs">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#0B2A4A] text-white font-bold">
+                <tr>
+                  <th className="p-3.5">Öğrenci Adı & Kadrosu</th>
+                  <th className="p-3.5">Kayıtlı Departman</th>
+                  <th className="p-3.5">Ders Bazlı Puan Dağılımı (100 Puan)</th>
+                  <th className="p-3.5 font-mono">Sınav Ortalama</th>
+                  <th className="p-3.5 font-mono">100 Üzerinden Toplam Skor</th>
+                  <th className="p-3.5 text-right">İK Yetenek Havuzu</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
+                {[
+                  {
+                    name: 'Mehmet Yılmaz',
+                    role: 'Kasiyer → Mağaza Müdür Adayı',
+                    dept: 'Kasiyerlik & Operasyon',
+                    courseScores: 'Ders 1: 24/25 | Ders 2: 19/20 | Ders 3: 25/25 | Ders 4: 18/30',
+                    examAvg: 96,
+                    totalCompetencyScore: 86,
+                    isTalentPool: true,
+                    avatar: 'MY'
+                  },
+                  {
+                    name: 'Ayşe Yıldız',
+                    role: 'Reyon Şefi → Müdür Yardımcısı',
+                    dept: 'Reyon Satış & Planogram',
+                    courseScores: 'Ders 1: 20/20 | Ders 2: 25/25 | Ders 3: 25/25 | Ders 4: 24/30',
+                    examAvg: 98,
+                    totalCompetencyScore: 94,
+                    isTalentPool: true,
+                    avatar: 'AY'
+                  },
+                  {
+                    name: 'Zeynep Kaya',
+                    role: 'Kasap Şefi',
+                    dept: 'Taze Gıda & Şarküteri',
+                    courseScores: 'Ders 1: 25/25 | Ders 2: 24/25 | Ders 3: 23/25 | Ders 4: 23/25',
+                    examAvg: 95,
+                    totalCompetencyScore: 95,
+                    isTalentPool: true,
+                    avatar: 'ZK'
+                  },
+                  {
+                    name: 'Canan Demir',
+                    role: 'Reyon Satış Elemanı',
+                    dept: 'Reyon Satış',
+                    courseScores: 'Ders 1: 15/25 | Ders 2: 12/25 | Ders 3: 18/25 | Ders 4: 20/25',
+                    examAvg: 65,
+                    totalCompetencyScore: 65,
+                    isTalentPool: false,
+                    avatar: 'CD'
+                  }
+                ].map((st, i) => (
+                  <tr key={i} className="hover:bg-gray-50 transition-colors">
+                    <td className="p-3.5 flex items-center space-x-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-[#087F96] text-white font-bold flex items-center justify-center text-xs font-mono shrink-0">
+                        {st.avatar}
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#0B2A4A] block">{st.name}</span>
+                        <span className="text-[10px] text-gray-500">{st.role}</span>
+                      </div>
+                    </td>
+
+                    <td className="p-3.5 text-gray-600 font-medium">{st.dept}</td>
+
+                    <td className="p-3.5 font-mono text-[11px] text-[#0B2A4A] bg-gray-50 rounded-lg">
+                      {st.courseScores}
+                    </td>
+
+                    <td className="p-3.5 font-mono font-bold text-[#34A853]">
+                      %{st.examAvg}
+                    </td>
+
+                    <td className="p-3.5 font-mono font-black text-sm text-[#0B2A4A]">
+                      {st.totalCompetencyScore} / 100 Puan
+                    </td>
+
+                    <td className="p-3.5 text-right">
+                      {st.isTalentPool ? (
+                        <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full inline-flex items-center space-x-1">
+                          <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                          <span>+80p Havuzunda ✓</span>
+                        </span>
+                      ) : (
+                        <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-1 rounded-full">
+                          Gelişim Devam Ediyor
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+
       </div>
     </div>
   );
