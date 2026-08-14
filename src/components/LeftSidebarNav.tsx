@@ -24,14 +24,14 @@ import {
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
-// Removed "Kariyer Planlama" and "Yetenek Havuzu" from HR_SUBMENU as requested
+// Submenu items map to dedicated distinct pages under /ik-cozumlari/[slug]
 const HR_SUBMENU = [
-  { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari#yetkinlik-matrisi' },
-  { name: 'Terfi Yönetimi', path: '/ik-cozumlari#terfi-yonetimi' },
-  { name: 'Yedekleme Planı', path: '/ik-cozumlari#yedekleme-plani' },
-  { name: 'Eğitim Yönetimi', path: '/ik-cozumlari#egitim-yonetimi' },
-  { name: 'Performans & KPI', path: '/ik-cozumlari#performans-kpi' },
-  { name: 'Çalışan Gelişim Karnesi', path: '/ik-cozumlari#gelisim-karnesi' }
+  { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari/yetkinlik-matrisi' },
+  { name: 'Terfi Yönetimi', path: '/ik-cozumlari/terfi-yonetimi' },
+  { name: 'Yedekleme Planı', path: '/ik-cozumlari/yedekleme-plani' },
+  { name: 'Eğitim Yönetimi', path: '/ik-cozumlari/egitim-yonetimi' },
+  { name: 'Performans & KPI', path: '/ik-cozumlari/performans-kpi' },
+  { name: 'Çalışan Gelişim Karnesi', path: '/ik-cozumlari/gelisim-karnesi' }
 ];
 
 const MENU_ITEMS = [
@@ -139,7 +139,11 @@ export default function LeftSidebarNav() {
                         <Link
                           key={sub.name}
                           href={sub.path}
-                          className="block px-3 py-1.5 rounded-lg text-[11px] font-bold text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                          className={`block px-3 py-1.5 rounded-lg text-[11px] font-bold transition-colors ${
+                            pathname === sub.path
+                              ? 'text-white bg-[#087F96]/40'
+                              : 'text-gray-300 hover:text-white hover:bg-white/5'
+                          }`}
                         >
                           • {sub.name}
                         </Link>
@@ -180,7 +184,7 @@ export default function LeftSidebarNav() {
           })}
         </div>
 
-        {/* BOTTOM ACTION BUTTONS - TITLE CHANGED TO "Kariyerimi Planlıyorum" */}
+        {/* BOTTOM ACTION BUTTONS */}
         <div className="p-4 border-t border-white/10 space-y-2 flex-shrink-0 bg-[#0B2A4A]/80">
           <Link
             href="/kariyerimi-planla"
