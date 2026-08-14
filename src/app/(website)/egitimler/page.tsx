@@ -141,8 +141,10 @@ function EgitimlerCatalogContent() {
 
     if (deptParam) {
       setSelectedDept(deptParam);
+      setSelectedCategory('Tümü');
     }
     if (catParam) {
+      setSelectedDept('Tümü');
       if (catParam === 'dijitallestirme') setSelectedCategory('Dijitalleşme');
       else if (catParam === 'magaza') setSelectedCategory('Mağaza Yönetimi ve Operasyon');
       else if (catParam === 'satinalma') setSelectedCategory('Satın Alma ve Kategori');
@@ -191,6 +193,20 @@ function EgitimlerCatalogContent() {
     setIsInstructorModalOpen(true);
   };
 
+  const handleSelectCategoryTab = (cat: string) => {
+    setSelectedCategory(cat);
+    if (cat !== 'Tümü') {
+      setSelectedDept('Tümü'); // reset position dropdown to prevent empty filtering collision
+    }
+  };
+
+  const handleSelectDeptDropdown = (deptId: string) => {
+    setSelectedDept(deptId);
+    if (deptId !== 'Tümü') {
+      setSelectedCategory('Tümü'); // reset category tab to prevent empty filtering collision
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Search and Filters Bar */}
@@ -213,7 +229,7 @@ function EgitimlerCatalogContent() {
             {CATEGORY_LIST.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => handleSelectCategoryTab(cat)}
                 className={`px-3.5 py-2 rounded-xl font-extrabold whitespace-nowrap transition-all ${
                   selectedCategory === cat
                     ? 'bg-[#087F96] text-white shadow-sm'
@@ -234,7 +250,7 @@ function EgitimlerCatalogContent() {
               <span className="text-gray-500 font-bold">Pozisyon / Kadro:</span>
               <select
                 value={selectedDept}
-                onChange={(e) => setSelectedDept(e.target.value)}
+                onChange={(e) => handleSelectDeptDropdown(e.target.value)}
                 className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 font-bold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-[#087F96]"
               >
                 <option value="Tümü">Tüm Perakende Kadroları (26 Pozisyon)</option>
@@ -284,14 +300,14 @@ function EgitimlerCatalogContent() {
       {activeDepartmentObject && (
         <div className="bg-[#0B2A4A] text-white p-5 sm:p-6 rounded-2xl border border-[#087F96]/40 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <span className="text-[10px] uppercase font-bold text-amber-300 bg-amber-500/20 px-2.5 py-0.5 rounded-full">
-              Seçilen Kadro Özel Müfredatı
+            <span className="text-[10px] uppercase font-bold text-amber-300 bg-amber-500/20 px-2.5 py-0.5 rounded-full font-mono">
+              SEÇİLEN KADRO ÖZEL MÜFREDATI ({activeDepartmentObject.totalCourses} Modül • {activeDepartmentObject.totalHours} Saat)
             </span>
             <h2 className="text-xl font-extrabold">{activeDepartmentObject.name} Eğitim Kataloğu</h2>
             <p className="text-xs text-gray-200 font-light">{activeDepartmentObject.description}</p>
           </div>
           <button
-            onClick={() => setSelectedDept('Tümü')}
+            onClick={() => handleSelectDeptDropdown('Tümü')}
             className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap"
           >
             Tüm Pozisyonları Göster
