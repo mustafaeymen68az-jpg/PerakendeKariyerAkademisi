@@ -1,33 +1,24 @@
 'use client';
 
 import React from 'react';
-import { 
-  Building2, 
-  Award, 
-  CheckCircle2, 
-  ExternalLink, 
+import Link from 'next/link';
+import {
+  Award,
+  BookOpen,
+  Briefcase,
+  Building2,
+  CheckCircle2,
+  ChevronRight,
+  ExternalLink,
+  GraduationCap,
+  Layers,
+  ShieldCheck,
   Sparkles,
-  TrendingUp,
-  BrainCircuit,
-  ShoppingBag,
+  Target,
   Users
 } from 'lucide-react';
 
 export default function FounderSection() {
-  const expertiseList = [
-    'Perakende Sektör Dinamikleri',
-    'Mağaza Operasyon Yönetimi',
-    'Satın Alma & Müzakere',
-    'Kategori Yönetimi',
-    'KPI ve Performans Yönetimi',
-    'Veri Analitiği & Raporlama',
-    'Perakende Eğitim Müfredatı',
-    'Kariyer & Yetkinlik Geliştirme',
-    'İnsan Kaynakları Teknolojisi',
-    'Dijital Dönüşüm & AI Entegrasyonu',
-    'CRM & Müşteri Bağlılığı'
-  ];
-
   return (
     <section className="py-16 bg-white border-b border-gray-200" id="kurucu">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,10 +36,10 @@ export default function FounderSection() {
 
             <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 flex items-center space-x-4">
               <div className="w-16 h-16 rounded-2xl bg-[#087F96] text-white font-black text-2xl flex items-center justify-center border-2 border-white/20 flex-shrink-0 shadow-lg">
-                SK
+                AÇ
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">Selim Kılıç</h3>
+                <h3 className="text-xl font-bold text-white">Ahmet Çelik</h3>
                 <p className="text-xs text-[#087F96] font-extrabold uppercase">Kurucu & Perakende Stratejisti</p>
                 <a
                   href="https://www.linkedin.com"
@@ -68,19 +59,45 @@ export default function FounderSection() {
           </div>
 
           {/* Core Expertise Grid */}
-          <div className="lg:col-span-7 bg-[#061B33] p-6 sm:p-8 rounded-2xl border border-[#087F96]/40 space-y-4">
-            <h3 className="text-sm font-extrabold text-[#DDF4F7] uppercase tracking-wider flex items-center">
-              <Award className="h-4 w-4 text-[#087F96] mr-2" />
-              Uzmanlık ve Danışmanlık Alanları
-            </h3>
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-2">
+              <div className="font-extrabold text-[#DDF4F7] text-sm flex items-center space-x-2">
+                <Target className="h-4 w-4 text-[#087F96]" />
+                <span>Saha Yetkinlik Standartlaştırma</span>
+              </div>
+              <p className="text-gray-300 leading-relaxed">
+                Mağaza çalışanlarının, reyon şeflerinin ve müdür yardımcılarının yetkinliklerini objektif skorlama sistemleriyle ölçme.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
-              {expertiseList.map((item, idx) => (
-                <div key={idx} className="p-3 bg-white/5 rounded-xl border border-white/10 flex items-center space-x-2 text-xs text-gray-200">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0" />
-                  <span className="font-semibold">{item}</span>
-                </div>
-              ))}
+            <div className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-2">
+              <div className="font-extrabold text-[#DDF4F7] text-sm flex items-center space-x-2">
+                <Users className="h-4 w-4 text-emerald-400" />
+                <span>İç Terfi & Yedekleme Mimarisi</span>
+              </div>
+              <p className="text-gray-300 leading-relaxed">
+                Kritik pozisyonların (Mağaza Müdürü, Bölge Müdürü) tek kişiye bağımlı kalmadan kurum içinden yetiştirilerek yedeklenmesi.
+              </p>
+            </div>
+
+            <div className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-2">
+              <div className="font-extrabold text-[#DDF4F7] text-sm flex items-center space-x-2">
+                <BookOpen className="h-4 w-4 text-amber-400" />
+                <span>Mikro Öğrenme ve Akademi Tasarımı</span>
+              </div>
+              <p className="text-gray-300 leading-relaxed">
+                Yoğun mağaza temposuna uygun 10–20 dakikalık modüller, mini sınavlar ve saha görevleri ile sürekli öğrenme kültürü.
+              </p>
+            </div>
+
+            <div className="p-5 bg-white/5 rounded-2xl border border-white/10 space-y-2">
+              <div className="font-extrabold text-[#DDF4F7] text-sm flex items-center space-x-2">
+                <Building2 className="h-4 w-4 text-purple-400" />
+                <span>Kurumsal İK & Executive Yönetişim</span>
+              </div>
+              <p className="text-gray-300 leading-relaxed">
+                C-Level (CEO, CHRO, CCO) seviyesi için makro P&L yönetimi, turnover azaltma ve ROI odaklı insan kaynağı yatırımları.
+              </p>
             </div>
           </div>
         </div>

@@ -7,7 +7,7 @@ import { Award, ArrowLeft, Printer, ShieldCheck } from 'lucide-react';
 
 export default function SertifikaOrnegiPage() {
   const certDetails = {
-    participantName: 'Selim Kılıç',
+    participantName: 'Ahmet Çelik',
     courseTitle: 'Mağaza P&L (Kar-Zarar) ve Finansal KPI Yönetimi',
     department: 'Mağaza Müdürleri',
     duration: '40 Saat',
@@ -28,94 +28,72 @@ export default function SertifikaOrnegiPage() {
 
           <button
             onClick={() => window.print()}
-            className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-lg text-xs transition-all flex items-center space-x-1.5 shadow"
+            className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow transition-all flex items-center space-x-1.5"
           >
             <Printer className="h-4 w-4" />
             <span>Sertifikayı Yazdır / PDF İndir</span>
           </button>
         </div>
 
-        {/* Certificate Outer Frame */}
-        <div className="bg-[#FFFFFF] text-[#0B2A4A] p-8 sm:p-12 rounded-3xl border-8 border-[#0B2A4A] shadow-2xl relative overflow-hidden space-y-8 font-sans">
-          {/* Inner Golden/Turquoise Filigree Frame Border */}
-          <div className="border-2 border-[#087F96] p-8 sm:p-10 rounded-2xl relative space-y-8">
-            {/* Header with Logo */}
-            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 gap-4">
-              <Logo variant="light" size="lg" showSubtext={true} />
-              <div className="text-right font-mono text-xs text-gray-500">
-                <span className="block font-bold text-[#0B2A4A]">KURUMSAL BAŞARI BELGESİ</span>
-                <span>Belge No: <strong>{certDetails.certificateNo}</strong></span>
-              </div>
+        {/* Certificate Frame */}
+        <div className="bg-white text-gray-900 rounded-3xl p-8 sm:p-14 shadow-2xl border-8 border-amber-400/80 relative space-y-8 print:p-6 print:border-4">
+          {/* Decorative Corner Accents */}
+          <div className="absolute top-4 left-4 w-12 h-12 border-t-2 border-l-2 border-[#0B2A4A]" />
+          <div className="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 border-[#0B2A4A]" />
+          <div className="absolute bottom-4 left-4 w-12 h-12 border-b-2 border-l-2 border-[#0B2A4A]" />
+          <div className="absolute bottom-4 right-4 w-12 h-12 border-b-2 border-r-2 border-[#0B2A4A]" />
+
+          {/* Certificate Header */}
+          <div className="text-center space-y-4">
+            <div className="flex justify-center">
+              <Logo variant="light" size="lg" />
             </div>
 
-            {/* Certificate Title */}
-            <div className="text-center space-y-3 py-2">
-              <span className="text-xs font-bold text-[#087F96] tracking-widest uppercase font-mono">
-                ÜSTÜN BAŞARI VE YETKİNLİK SERTİFİKASI
-              </span>
-              <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B2A4A]">
-                Bu Belge Sayın
-              </h2>
-              <h1 className="font-display font-black text-3xl sm:text-5xl text-[#087F96] tracking-tight underline decoration-[#087F96]/30 py-2">
+            <div className="space-y-1">
+              <span className="text-xs font-black text-[#087F96] tracking-widest uppercase">PERAKENDE KARİYER AKADEMİSİ</span>
+              <h1 className="font-serif text-3xl sm:text-5xl font-black text-[#0B2A4A] tracking-tight">ÜSTÜN BAŞARI SERTİFİKASI</h1>
+              <p className="text-xs text-gray-500 font-mono">Resmi Dijital Doğrulama Sertifikası</p>
+            </div>
+          </div>
+
+          {/* Certificate Body */}
+          <div className="text-center space-y-6 max-w-2xl mx-auto py-4">
+            <p className="text-xs sm:text-sm text-gray-600 font-light">
+              Bu sertifika, aşağıda bilgileri yer alan katılımcının Perakende Kariyer Akademisi tarafından düzenlenen ileri düzey gelişim ve yetkinlik programını başarıyla tamamladığını belgelemektedir:
+            </p>
+
+            <div className="space-y-1">
+              <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#0B2A4A] border-b-2 border-amber-400 inline-block pb-1">
                 {certDetails.participantName}
-              </h1>
-              <p className="text-xs sm:text-sm text-gray-600 max-w-xl mx-auto font-light leading-relaxed">
-                Perakende Kariyer Akademisi 2 Yıllık Yapılandırılmış Gelişim Müfredatı kapsamında düzenlenen aşağıdaki uzmanlık modülünü başarıyla tamamlamıştır.
-              </p>
+              </h2>
+              <p className="text-xs text-[#087F96] font-extrabold uppercase pt-2">{certDetails.department}</p>
             </div>
 
-            {/* Course Title Badge */}
-            <div className="bg-[#F4F7F9] border border-[#087F96]/30 p-6 rounded-2xl text-center space-y-2">
-              <span className="text-xs font-bold text-[#056B80] uppercase tracking-wider block font-mono">
-                TAMAMLATILAN EĞİTİM MODÜLÜ
-              </span>
-              <h3 className="font-display font-black text-xl sm:text-2xl text-[#0B2A4A]">
-                {certDetails.courseTitle}
-              </h3>
-              <div className="flex justify-center items-center space-x-6 text-xs text-gray-600 font-mono pt-2">
-                <span>Departman: <strong>{certDetails.department}</strong></span>
-                <span>•</span>
-                <span>Eğitim Süresi: <strong>{certDetails.duration}</strong></span>
-              </div>
+            <div className="bg-blue-50/80 p-4 rounded-2xl border border-blue-200 space-y-1">
+              <span className="text-[10px] uppercase font-bold text-gray-500">Tamamlanan Müfredat / Program:</span>
+              <h3 className="font-extrabold text-base text-[#0B2A4A]">{certDetails.courseTitle}</h3>
+              <p className="text-xs text-gray-600">Toplam Süre: {certDetails.duration}</p>
+            </div>
+          </div>
+
+          {/* Footer & Seals */}
+          <div className="pt-8 border-t border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-6 items-center text-center">
+            <div className="text-xs space-y-1">
+              <div className="font-bold text-[#0B2A4A]">Tamamlama Tarihi</div>
+              <div className="text-gray-600 font-mono">{certDetails.completionDate}</div>
             </div>
 
-            {/* Footer Signatures and QR Code */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-end border-t border-gray-200 pt-8 text-xs">
-              {/* QR Verification Box */}
-              <div className="flex items-center space-x-3 bg-[#F4F7F9] p-3 rounded-xl border border-gray-200">
-                {/* SVG QR Code Simulation */}
-                <svg className="w-16 h-16 shrink-0" viewBox="0 0 100 100" fill="#0B2A4A">
-                  <rect width="100" height="100" fill="#FFFFFF"/>
-                  <path d="M10 10h30v30H10zM60 10h30v30H60zM10 60h30v30H10z"/>
-                  <path d="M20 20h10v10H20zM70 20h10v10H70zM20 70h10v10H20z" fill="#FFFFFF"/>
-                  <path d="M50 10h5v80h-5zM10 50h80v5H10zM60 60h15v15H60zM80 75h10v15H80z"/>
-                </svg>
-                <div className="text-[10px] space-y-0.5 font-mono">
-                  <span className="font-bold text-[#087F96] block">QR KOD DOĞRULAMA</span>
-                  <span className="text-gray-500 block">Kamera ile tara</span>
-                  <span className="text-gray-400 block text-[9px] truncate">www.perakendekariyer.com</span>
-                </div>
+            {/* Medal / Seal */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950 font-black flex items-center justify-center shadow-lg border-2 border-white">
+                <Award className="h-8 w-8 text-[#0B2A4A]" />
               </div>
+              <span className="text-[10px] font-black text-[#0B2A4A] mt-1 uppercase tracking-wider">PKA ONAYLI SERTİFİKA</span>
+            </div>
 
-              {/* Date & Location */}
-              <div className="text-center space-y-1 font-mono text-xs">
-                <span className="text-gray-400 text-[10px] block">TAMAMLAMA TARİHİ</span>
-                <span className="font-bold text-[#0B2A4A] text-sm block">{certDetails.completionDate}</span>
-                <span className="text-gray-500 text-[11px] block">İstanbul, Türkiye</span>
-              </div>
-
-              {/* Official Seal / Signature */}
-              <div className="text-right space-y-1">
-                <div className="font-display font-extrabold text-sm text-[#0B2A4A]">
-                  Perakende Kariyer Akademisi
-                </div>
-                <div className="text-xs text-[#087F96] font-semibold italic">
-                  Akademi Direktörlüğü
-                </div>
-                <div className="text-[10px] text-gray-400 font-mono pt-1">
-                  Resmi Onay Mührü
-                </div>
-              </div>
+            <div className="text-xs space-y-1">
+              <div className="font-bold text-[#0B2A4A]">Sertifika No</div>
+              <div className="text-gray-600 font-mono">{certDetails.certificateNo}</div>
             </div>
           </div>
         </div>

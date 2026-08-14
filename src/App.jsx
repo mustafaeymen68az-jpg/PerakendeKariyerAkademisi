@@ -354,7 +354,7 @@ export default function App() {
                 <span style={{ color: 'var(--color-success)', fontWeight: '600' }}>90% Sınav</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', padding: '0.5rem 0.75rem', background: 'rgba(99, 102, 241, 0.15)', borderRadius: '6px', border: '1px solid rgba(99, 102, 241, 0.3)' }}>
-                <span style={{ fontWeight: '600', color: '#fff' }}>4. Selim K. (Siz - 1120 Puan)</span>
+                <span style={{ fontWeight: '600', color: '#fff' }}>4. Ahmet Ç. (Siz - 1120 Puan)</span>
                 <span style={{ color: '#fff', fontWeight: '700' }}>88% Sınav</span>
               </div>
             </div>

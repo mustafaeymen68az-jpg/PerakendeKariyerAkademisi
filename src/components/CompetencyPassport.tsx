@@ -22,7 +22,7 @@ export default function CompetencyPassport() {
   const [copied, setCopied] = useState(false);
 
   const passportData = {
-    name: 'Selim Kılıç',
+    name: 'Ahmet Çelik',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250',
     passportNo: 'PKA-2026-88941',
     currentRole: 'Mağaza Müdür Yardımcısı',
@@ -78,7 +78,7 @@ export default function CompetencyPassport() {
               <div className="flex items-center space-x-4">
                 <div className="w-20 h-20 rounded-2xl bg-white/10 p-1 border-2 border-white/30 overflow-hidden flex-shrink-0 shadow-lg">
                   <div className="w-full h-full bg-[#061B33] rounded-xl flex items-center justify-center font-bold text-white text-2xl border border-white/20">
-                    SK
+                    AÇ
                   </div>
                 </div>
                 <div>
@@ -118,63 +118,58 @@ export default function CompetencyPassport() {
                         {[1, 2, 3, 4, 5].map((star) => (
                           <Star 
                             key={star} 
-                            className={`h-3.5 w-3.5 ${star <= comp.rating ? 'fill-[#D97706]' : 'text-gray-300'}`} 
+                            className={`h-3.5 w-3.5 ${star <= comp.rating ? 'fill-[#D97706] text-[#D97706]' : 'text-gray-300'}`} 
                           />
                         ))}
                       </div>
-                      <span className="text-xs font-black text-gray-700 w-10 text-right">%{comp.score}</span>
+                      <span className="text-xs font-mono font-bold text-[#087F96] w-8 text-right">
+                        %{comp.score}
+                      </span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right: Badges, QR Code & Share Action */}
-            <div className="lg:col-span-5 space-y-6 flex flex-col justify-between">
+            {/* Right: Badges, Verified URL & Actions */}
+            <div className="lg:col-span-5 space-y-6 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-gray-200 lg:pl-8 pt-6 lg:pt-0">
               <div className="space-y-4">
-                {/* Stats Summary Box */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-center">
-                    <div className="text-2xl font-black text-[#0B2A4A]">{passportData.completedCourses}</div>
-                    <div className="text-[11px] text-gray-600 font-semibold">Tamamlanan Eğitim</div>
+                <h4 className="text-xs font-bold text-[#0B2A4A] uppercase tracking-wider flex items-center space-x-1.5">
+                  <Award className="h-4 w-4 text-[#087F96]" />
+                  <span>Kazanılan Başarı Dijital Rozetleri</span>
+                </h4>
+
+                <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                    <div className="font-bold text-[#0B2A4A]">14 Ders</div>
+                    <div className="text-[10px] text-gray-600">Tamamlanan Eğitim</div>
                   </div>
-                  <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
-                    <div className="text-2xl font-black text-emerald-800">{passportData.earnedBadges}</div>
-                    <div className="text-[11px] text-emerald-700 font-semibold">Dijital Rozet</div>
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                    <div className="font-bold text-emerald-900">8 Rozet</div>
+                    <div className="text-[10px] text-gray-600">Dijital Sertifika</div>
                   </div>
                 </div>
 
-                {/* KPI Highlight */}
-                <div className="p-3.5 bg-purple-50 border border-purple-200 rounded-xl text-xs text-purple-900 font-medium">
-                  <span className="font-bold block text-purple-950 mb-0.5">⭐ Başarı Kaydı:</span>
-                  {passportData.kpiAchievements}
-                </div>
-
-                {/* Verification Box with QR Code Simulation */}
-                <div className="p-4 bg-[#0B2A4A] text-white rounded-2xl text-center space-y-3 border border-[#087F96]/30">
-                  <div className="flex justify-center">
-                    <div className="w-24 h-24 bg-white p-2 rounded-xl flex items-center justify-center shadow-md">
-                      {/* Simulated QR Code SVG */}
-                      <QrCode className="h-20 w-20 text-[#0B2A4A]" />
-                    </div>
-                  </div>
-                  <div className="text-[11px] text-gray-300">
-                    Resmi Doğrulama Bağlantısı & QR Kod
-                  </div>
-                  <div className="text-[10px] text-gray-400 font-mono break-all bg-[#061B33] p-1.5 rounded border border-white/10">
-                    perakendekariyerakademisi.com/verify/...
-                  </div>
+                <div className="p-4 bg-[#0B2A4A] text-white rounded-2xl space-y-2">
+                  <div className="text-[10px] text-amber-300 font-bold uppercase">Saha Performans Notu</div>
+                  <p className="text-xs font-medium">{passportData.kpiAchievements}</p>
                 </div>
               </div>
 
-              {/* Share CTA Button */}
-              <button 
-                onClick={handleShare}
-                className="w-full py-3.5 px-4 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2 text-sm"
-              >
-                <Share2 className="h-4 w-4" />
-                <span>{copied ? 'Doğrulama Linki Kopyalandı!' : 'Yetkinlik Pasaportumu Paylaş'}</span>
-              </button>
+              {/* Share & QR Code */}
+              <div className="space-y-3 pt-4 border-t border-gray-100">
+                <div className="text-[11px] text-gray-500 font-mono break-all bg-gray-50 p-2 rounded-lg border border-gray-200 text-center">
+                  {passportData.verifiedUrl}
+                </div>
+
+                <button
+                  onClick={handleShare}
+                  className="w-full py-3 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-2"
+                >
+                  <Share2 className="h-4 w-4" />
+                  <span>{copied ? 'Pasaport Linki Kopyalandı!' : 'Doğrulanmış Pasaportu Paylaş'}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
