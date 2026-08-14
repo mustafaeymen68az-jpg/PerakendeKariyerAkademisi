@@ -12,6 +12,13 @@ model User {
   email          String           @unique
   password       String
   role           String           // "ADMIN" | "TRAINER" | "COMPANY_MANAGER" | "DEPT_MANAGER" | "PARTICIPANT"
+  lastLoginAt    DateTime?        // Son giriş zamanı - 7 gün kontrolü için
+  surname        String?
+  companyName    String?
+  sectorChannel  String?
+  sectorDetail   String?
+  city           String?
+  title          String?
   companyId      String?
   company        Company?         @relation(fields: [companyId], references: [id])
   branchId       String?
@@ -23,6 +30,14 @@ model User {
   kpiResults     KpiResult[]
   notifications  Notification[]
   auditLogs      AuditLog[]
+  swotAnalyses   SwotAnalysis[]
+  sentMessages   InstructorMessage[] @relation("SentInstructorMessages")
+  education      String?          // Nerede okuduğu / Eğitim geçmişi
+  experience     String?          // Kariyer geçmişi & Deneyimler
+  bio            String?          // Biyografi özeti
+  avatar         String?          // Profil fotoğrafı URL
+  cvUrl          String?          // Özgeçmiş döküman bağlantısı
+  assignedCourses String?         // Atadığı veya uzmanı olduğu eğitimlerin kaydı
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }
@@ -300,3 +315,43 @@ model AuditLog {
   details   String?
   timestamp DateTime @default(now())
 }
+
+model SwotAnalysis {
+  id          String   @id @default(uuid())
+  userId      String   // Öğrenci ID
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trainerName String   @default("Kariyer Akademisi Eğitmeni")
+  strengths   String   // Güçlü Yönler (JSON or text)
+  weaknesses  String   // Zayıf Yönler (JSON or text)
+  opportunities String // Fırsatlar (JSON or text)
+  threats     String   // Tehditler (JSON or text)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model InstructorMessage {
+  id         String   @id @default(uuid())
+  trainerId  String
+  trainer    User     @relation("SentInstructorMessages", fields: [trainerId], references: [id], onDelete: Cascade)
+  studentId  String?  // Null ise tüm öğrencilere
+  type       String   @default("MESAJ") // "MESAJ" | "SORU" | "DUYURU"
+  title      String
+  content    String
+  createdAt  DateTime @default(now())
+}
+
+model CourseAssignment {
+  id          String   @id @default(uuid())
+  trainerId   String
+  department  String
+  courseTitle String
+  studentName String
+  dueDate     DateTime?
+  status      String   @default("ATANDI") // "ATANDI" | "TAMAMLANDI" | "GECIKTI"
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+

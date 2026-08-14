@@ -9,6 +9,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: 'Lütfen e-posta ve şifrenizi giriniz.' }, { status: 400 });
     }
 
+    // Auto-seed/ensure default Instructor account if requested
+    if (email === 'egitmen@perakendekariyer.com') {
+      let trainerUser = await prisma.user.findUnique({ where: { email } });
+      if (!trainerUser) {
+        trainerUser = await prisma.user.create({
+          data: {
+            name: 'Dr. Ahmet Yılmaz',
+            surname: 'Eğitmen',
+            email: 'egitmen@perakendekariyer.com',
+            password: password || '123456',
+            role: 'TRAINER',
+            title: 'Kıdemli Perakende Baş Eğitmeni'
+          }
+        });
+      }
+    }
+
     const user = await prisma.user.findUnique({
       where: { email },
       include: {
@@ -21,20 +38,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: 'Geçersiz e-posta adresi veya şifre.' }, { status: 401 });
     }
 
+    // Update lastLoginAt
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
     // Determine redirect URL based on role
     let redirectUrl = '/panel';
     if (user.role === 'ADMIN') {
       redirectUrl = '/admin';
     } else if (user.role === 'COMPANY_MANAGER') {
       redirectUrl = '/kurumsal';
+    } else if (user.role === 'TRAINER') {
+      redirectUrl = '/egitmen';
     }
 
-    // Set a simulated session cookie (simple HTTP-only indicator in a production app)
     const response = NextResponse.json({
       success: true,
       user: {
         id: user.id,
-        name: user.name,
+        name: `${user.name} ${user.surname || ''}`.trim(),
         email: user.email,
         role: user.role,
         company: user.company?.name || null,
@@ -43,10 +67,9 @@ export async function POST(req: Request) {
       redirectUrl
     });
 
-    // Save simple user details in a cookie for dashboard pages to read
     response.cookies.set('user_session', JSON.stringify({
       id: user.id,
-      name: user.name,
+      name: `${user.name} ${user.surname || ''}`.trim(),
       email: user.email,
       role: user.role,
       companyId: user.companyId,
@@ -54,7 +77,8 @@ export async function POST(req: Request) {
       department: user.department?.name || null
     }), {
       path: '/',
-      maxAge: 60 * 60 * 24 // 1 day
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      sameSite: 'lax',
     });
 
     return response;

@@ -36,7 +36,7 @@ export default async function DashboardLayout({
 
   let user: any = null;
   try {
-    user = JSON.parse(sessionCookie.value);
+    user = JSON.parse(decodeURIComponent(sessionCookie.value));
   } catch (e) {
     redirect('/giris');
   }
@@ -78,10 +78,10 @@ export default async function DashboardLayout({
             </div>
             <div className="flex flex-col">
               <span className="font-display font-bold text-sm leading-tight text-white">
-                Perakende Mühendisi
+                Perakende Kariyer
               </span>
               <span className="text-[9px] text-turquoise-accent uppercase tracking-widest font-semibold">
-                Akademi Paneli
+                Akademisi Paneli
               </span>
             </div>
           </Link>
@@ -113,13 +113,13 @@ export default async function DashboardLayout({
             </div>
           </div>
           
-          <Link
+          <a
             href="/api/auth/logout"
             className="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-xs font-semibold text-red-400 hover:text-white hover:bg-red-500/10 transition-colors w-full"
           >
             <LogOut className="h-4 w-4" />
             <span>Çıkış Yap</span>
-          </Link>
+          </a>
         </div>
       </aside>
 

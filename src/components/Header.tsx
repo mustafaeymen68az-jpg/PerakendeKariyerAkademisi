@@ -120,13 +120,20 @@ export default function Header() {
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="hidden lg:flex items-center space-x-3">
+          <div className="hidden lg:flex items-center space-x-2">
             <Link
               href="/panel"
               className="flex items-center space-x-1.5 px-3 py-2 border border-[#087F96]/40 rounded-lg text-xs font-semibold text-white hover:bg-white/10 transition-colors"
             >
               <User className="h-3.5 w-3.5 text-[#087F96]" />
               <span>Öğrenci Paneli</span>
+            </Link>
+            <Link
+              href="/egitmen"
+              className="flex items-center space-x-1.5 px-3 py-2 bg-[#087F96]/20 border border-[#087F96]/60 text-white rounded-lg text-xs font-semibold hover:bg-[#087F96]/40 transition-colors"
+            >
+              <GraduationCap className="h-3.5 w-3.5 text-[#087F96]" />
+              <span>Eğitmen Paneli</span>
             </Link>
             <Link
               href="/kurumsal"

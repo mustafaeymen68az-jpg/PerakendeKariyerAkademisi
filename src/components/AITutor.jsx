@@ -76,7 +76,7 @@ export default function AITutor() {
     {
       id: 1,
       sender: 'bot',
-      text: 'Merhaba! Ben Perakende Mühendisi Eğitim Akademisi Yapay Zeka Danışmanıyım. Perakende analitiği, stok optimizasyonu, yöneylem araştırması veya mağaza operasyonları konularında sorularınızı yanıtlamaya hazırım. Sol taraftaki hazır konuları seçebilir veya sorunuzu aşağıya yazabilirsiniz.',
+      text: 'Merhaba! Ben Perakende Kariyer Akademisi Yapay Zeka Danışmanıyım. Perakende analitiği, stok optimizasyonu, yöneylem araştırması veya mağaza operasyonları konularında sorularınızı yanıtlamaya hazırım. Sol taraftaki hazır konuları seçebilir veya sorunuzu aşağıya yazabilirsiniz.',
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);

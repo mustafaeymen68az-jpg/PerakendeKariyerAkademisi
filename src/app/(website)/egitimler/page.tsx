@@ -16,9 +16,10 @@ import {
   CheckCircle2, 
   LayoutGrid, 
   List as ListIcon, 
-  Table as TableIcon 
+  Table as TableIcon,
+  UserCheck
 } from 'lucide-react';
-import { DEPARTMENTS_DATA } from '@/components/DepartmentGrid';
+import { DEPARTMENTS_DATA } from '@/data/departmentsData';
 
 interface CourseItem {
   id: string;
@@ -62,7 +63,7 @@ const BUILD_FULL_CATALOG = (): CourseItem[] => {
         duration: 12 + idx * 4,
         position: dept.name,
         level: idx === 0 ? 'Temel Seviye' : 'Görev Yetkinliği',
-        description: `${dept.name} kadrosu için 1. yıl müfredatı kapsamındaki ${cName} eğitim modülü. ${dept.description}`,
+        description: `${dept.name} pozisyonu için 1. yıl müfredatı kapsamındaki ${cName} eğitim modülü. ${dept.description}`,
         slug: slug || `egitim-${dept.id}-y1-${idx}`
       });
     });
@@ -90,7 +91,7 @@ const BUILD_FULL_CATALOG = (): CourseItem[] => {
         duration: 20 + idx * 6,
         position: dept.name,
         level: idx >= 2 ? 'Stratejik Yönetim' : 'İleri Seviye',
-        description: `${dept.name} kadrosu için 2. yıl müfredatı kapsamındaki ${cName} eğitim modülü. ${dept.description}`,
+        description: `${dept.name} pozisyonu için 2. yıl müfredatı kapsamındaki ${cName} eğitim modülü. ${dept.description}`,
         slug: slug || `egitim-${dept.id}-y2-${idx}`
       });
     });
@@ -104,7 +105,7 @@ const ALL_CATALOG_COURSES = BUILD_FULL_CATALOG();
 function EgitimlerCatalogContent() {
   const searchParams = useSearchParams();
   const initialSearchParam = searchParams.get('search') || '';
-  const initialDeptParam = searchParams.get('dept') || '';
+  const initialDeptParam = searchParams.get('dept') || searchParams.get('pos') || searchParams.get('position') || searchParams.get('title') || '';
 
   const [searchQuery, setSearchQuery] = useState(initialSearchParam);
   const [selectedDept, setSelectedDept] = useState('Tümü');
@@ -115,7 +116,7 @@ function EgitimlerCatalogContent() {
   // Layout view mode state: 'grid' | 'list' | 'table'
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
 
-  // Handle URL query parameters (search or dept)
+  // Handle URL query parameters or cookie session
   useEffect(() => {
     if (initialSearchParam) {
       setSearchQuery(initialSearchParam);
@@ -123,10 +124,29 @@ function EgitimlerCatalogContent() {
 
     if (initialDeptParam) {
       const found = DEPARTMENTS_DATA.find(
-        (d) => d.id === initialDeptParam || d.name.toLowerCase() === initialDeptParam.toLowerCase()
+        (d) => d.id === initialDeptParam || d.name.toLowerCase().includes(initialDeptParam.toLowerCase()) || initialDeptParam.toLowerCase().includes(d.name.toLowerCase())
       );
       if (found) {
         setSelectedDept(found.name);
+      }
+    } else {
+      // Check user session cookie for registered position
+      try {
+        const match = document.cookie.match(/user_session=([^;]+)/);
+        if (match) {
+          const userObj = JSON.parse(decodeURIComponent(match[1]));
+          const userPos = userObj.title || userObj.department;
+          if (userPos) {
+            const found = DEPARTMENTS_DATA.find(
+              (d) => d.name.toLowerCase().includes(userPos.toLowerCase()) || userPos.toLowerCase().includes(d.name.toLowerCase())
+            );
+            if (found) {
+              setSelectedDept(found.name);
+            }
+          }
+        }
+      } catch (err) {
+        // Fallback
       }
     }
   }, [initialSearchParam, initialDeptParam]);
@@ -145,7 +165,6 @@ function EgitimlerCatalogContent() {
     'Dijitalleşme ve Yenilikçi Perakendecilik',
     'Dijital Perakende',
     'Teknoloji & Veri',
-    'Teknoloji',
     'Stratejik Yönetim ve Liderlik Gelişimi',
     'Saha Güvenliği',
     'Saha Destek',
@@ -176,14 +195,14 @@ function EgitimlerCatalogContent() {
         }
       }
 
-      // 2. Exact Department Filter
+      // 2. Exact Department / Position Filter
       let matchesDept = selectedDept === 'Tümü';
       if (!matchesDept) {
         const deptObj = DEPARTMENTS_DATA.find((d) => d.name === selectedDept || d.id === selectedDept);
         if (deptObj) {
           matchesDept = course.deptId === deptObj.id || course.department === deptObj.name;
         } else {
-          matchesDept = course.department === selectedDept;
+          matchesDept = course.department.toLowerCase().includes(selectedDept.toLowerCase()) || selectedDept.toLowerCase().includes(course.department.toLowerCase());
         }
       }
 
@@ -201,14 +220,14 @@ function EgitimlerCatalogContent() {
         {/* Header */}
         <div className="bg-[#0B2A4A] text-white p-8 rounded-2xl shadow-xl border border-[#087F96]/30 relative overflow-hidden">
           <div className="relative z-10 max-w-3xl space-y-3">
-            <span className="text-xs font-bold text-[#DDF4F7] bg-[#087F96] px-3 py-1 rounded-full uppercase">
-              26 Departman & {ALL_CATALOG_COURSES.length} Modüllü Kurumsal Müfredat
+            <span className="text-xs font-bold text-[#DDF4F7] bg-[#087F96] px-3 py-1 rounded-full uppercase tracking-wider">
+              26 Pozisyon Kadrosu & {ALL_CATALOG_COURSES.length} Modüllü Müfredat
             </span>
             <h1 className="font-display font-black text-3xl sm:text-4xl text-white">
               Kariyer ve Eğitim Kataloğu
             </h1>
             <p className="text-gray-300 text-sm font-light leading-relaxed">
-              Her departmanın 1. ve 2. Yıl eğitim müfredatının tamamını arayın, listeleyin veya tablo olarak inceleyin.
+              Her pozisyon ve kadronun 1. ve 2. Yıl özel eğitim müfredatını inceleyin, arayın veya filtreleyin.
             </p>
           </div>
         </div>
@@ -220,7 +239,7 @@ function EgitimlerCatalogContent() {
             <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Eğitim adı, pozisyon (örn. Satınalma, Kasiyer, BI, Kasap) veya konu ara..."
+              placeholder="Eğitim adı, pozisyon (örn. Kasap, Kasiyer, Şarküteri, Mağaza Müdürü) veya konu ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-[#F4F7F9] border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#087F96] transition-all text-[#0B2A4A] font-semibold"
@@ -229,15 +248,15 @@ function EgitimlerCatalogContent() {
 
           {/* Select Filters Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2 text-xs">
-            {/* Departman Filter */}
+            {/* Departman / Pozisyon Filter */}
             <div>
-              <label className="block text-gray-500 font-bold mb-1">Departman & Pozisyon</label>
+              <label className="block text-gray-500 font-bold mb-1">Şirketteki Pozisyonunuz</label>
               <select
                 value={selectedDept}
                 onChange={(e) => setSelectedDept(e.target.value)}
                 className="w-full p-2.5 bg-[#F4F7F9] border border-gray-200 rounded-lg text-xs font-semibold text-[#0B2A4A] focus:outline-none focus:border-[#087F96]"
               >
-                <option value="Tümü">Tüm Departmanlar (26 Kadro - {ALL_CATALOG_COURSES.length} Modül)</option>
+                <option value="Tümü">Tüm Pozisyonlar (26 Kadro - {ALL_CATALOG_COURSES.length} Modül)</option>
                 {DEPARTMENTS_DATA.map((d) => (
                   <option key={d.id} value={d.name}>
                     {d.name} ({d.totalCourses} Eğitim)
@@ -291,29 +310,32 @@ function EgitimlerCatalogContent() {
         </div>
 
         {/* Active Filter Info Badges */}
-        {(selectedDept !== 'Tümü' || searchQuery) && (
-          <div className="bg-[#DDF4F7] border border-[#087F96]/30 p-3.5 rounded-xl flex items-center justify-between text-xs text-[#056B80]">
-            <span className="font-semibold flex items-center space-x-2">
-              <Sparkles className="w-4 h-4 text-[#087F96]" />
-              <span>
-                Filtre: {selectedDept !== 'Tümü' && <strong>"{selectedDept}" Departmanına Ait Tüm Eğitimler ({filteredCourses.length} Modül) </strong>}
-                {searchQuery && <strong>"{searchQuery}" Arama Terimi </strong>}
-                listeleniyor.
-              </span>
-            </span>
+        {selectedDept !== 'Tümü' && (
+          <div className="bg-[#DDF4F7] border border-[#087F96]/30 p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-[#056B80]">
+            <div className="flex items-center space-x-2">
+              <UserCheck className="w-5 h-5 text-[#087F96] shrink-0" />
+              <div>
+                <span className="font-bold text-[#0B2A4A] text-sm block">
+                  🎯 "{selectedDept}" Pozisyonuna Özel Eğitim Müfredatı
+                </span>
+                <span className="font-medium text-xs">
+                  Bu kadroya tanımlanmış 1. Yıl ve 2. Yıl eğitim modülleri listelenmektedir.
+                </span>
+              </div>
+            </div>
             <button
               onClick={() => {
                 setSelectedDept('Tümü');
                 setSearchQuery('');
               }}
-              className="font-bold underline text-[#087F96]"
+              className="font-bold underline text-[#087F96] hover:text-[#0B2A4A] shrink-0"
             >
-              Filtreleri Temizle
+              Tüm Kataloğu Gör
             </button>
           </div>
         )}
 
-        {/* Results Toolbar: Counter & View Mode Toggles (Grid / List / Table) */}
+        {/* Results Toolbar: Counter & View Mode Toggles */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-gray-600 bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
           <div>
             <span>
@@ -363,21 +385,6 @@ function EgitimlerCatalogContent() {
                 <span>Tablo</span>
               </button>
             </div>
-
-            {(selectedDept !== 'Tümü' || selectedCategory !== 'Tümü' || selectedYear !== 'Tümü' || selectedLevel !== 'Tümü' || searchQuery) && (
-              <button
-                onClick={() => {
-                  setSelectedDept('Tümü');
-                  setSelectedCategory('Tümü');
-                  setSelectedYear('Tümü');
-                  setSelectedLevel('Tümü');
-                  setSearchQuery('');
-                }}
-                className="text-[#087F96] hover:underline ml-2"
-              >
-                Filtreleri Temizle
-              </button>
-            )}
           </div>
         </div>
 
@@ -406,7 +413,7 @@ function EgitimlerCatalogContent() {
                       </div>
 
                       <span className="text-[10px] font-bold text-[#087F96] uppercase tracking-wider block mb-1">
-                        {course.department}
+                        🎯 {course.department} Pozisyonu
                       </span>
 
                       <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors leading-tight">
@@ -451,7 +458,7 @@ function EgitimlerCatalogContent() {
                           {course.year}
                         </span>
                         <span className="text-[#087F96] font-bold text-xs">
-                          {course.department}
+                          🎯 {course.department} Pozisyonu
                         </span>
                       </div>
 
@@ -499,7 +506,7 @@ function EgitimlerCatalogContent() {
                       <tr>
                         <th className="p-4">Kariyer Yılı</th>
                         <th className="p-4">Eğitim Modül Adı & Açıklama</th>
-                        <th className="p-4">Departman & Kadro</th>
+                        <th className="p-4">Pozisyon / Kadro</th>
                         <th className="p-4">Süre</th>
                         <th className="p-4">Seviye</th>
                         <th className="p-4 text-right">İşlem</th>

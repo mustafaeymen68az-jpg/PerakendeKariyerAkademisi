@@ -378,7 +378,7 @@ export default function RequestFormClient({ departments, initialTraining, initia
             className="mt-1 h-4.5 w-4.5 rounded border-gray-300 text-corporate-blue focus:ring-corporate-blue cursor-pointer"
           />
           <span className="text-xs text-secondary-text leading-relaxed">
-            Perakende Mühendisi Eğitim Akademisi'nin kurumsal başvuru kapsamında paylaştığım kişisel verilerimi incelemesini, benimle irtibata geçmesini ve <Link href="/kvkk" target="_blank" className="text-corporate-blue hover:underline">KVKK Aydınlatma Metni</Link>'nde belirtilen kurallara uygun olarak işlemesini onaylıyorum. *
+            Perakende Kariyer Akademisi'nin kurumsal başvuru kapsamında paylaştığım kişisel verilerimi incelemesini, benimle irtibata geçmesini ve <Link href="/kvkk" target="_blank" className="text-corporate-blue hover:underline">KVKK Aydınlatma Metni</Link>'nde belirtilen kurallara uygun olarak işlemesini onaylıyorum. *
           </span>
         </label>
         {errors.gdpr && <p className="text-[10px] font-bold text-red-500">{errors.gdpr}</p>}
