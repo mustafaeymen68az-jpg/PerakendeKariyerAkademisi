@@ -508,6 +508,24 @@ export const CAREER_STEPS_15_DATA: CareerStep15[] = [
   }
 ];
 
+const LEVEL_DURATIONS = [
+  '6–12 Ay',   // 1
+  '6–12 Ay',   // 2
+  '12–18 Ay',  // 3
+  '6–12 Ay',   // 4
+  '12–18 Ay',  // 5
+  '6–12 Ay',   // 6
+  '18–24 Ay',  // 7
+  '12–18 Ay',  // 8
+  '6–12 Ay',   // 9
+  '24–36 Ay',  // 10
+  '18–24 Ay',  // 11
+  '24–36 Ay',  // 12
+  '24–36 Ay',  // 13
+  '24 Ay',     // 14
+  'Sürekli Liderlik' // 15
+];
+
 // Helper generator function to create 15 steps for alternate career tracks
 function generateAlternateTrackSteps(
   titles: string[],
@@ -524,7 +542,7 @@ function generateAlternateTrackSteps(
       badgeHeading: `${departmentName} - Seviye ${stepId}`,
       coreMessage: isPeak ? 'Zirve Liderlik' : `Adım Step ${stepId}`,
       purpose: `${title} pozisyonunda ${departmentName.toLowerCase()} alanındaki yetkinlikleri ve operasyonu yönetmek.`,
-      recommendedDuration: `${Math.round(stepId * 1.2)}–${Math.round(stepId * 1.5)} Ay`,
+      recommendedDuration: LEVEL_DURATIONS[index],
       currentTrainings: [
         `${title} Temel Müfredatı`,
         `${departmentName} Operasyon Standartları`,

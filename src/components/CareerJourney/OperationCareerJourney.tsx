@@ -190,11 +190,11 @@ export default function OperationCareerJourney() {
           </div>
 
           {activeView === 'staircase' ? (
-            /* STAIRCASE VIEW (MATCHING ATTACHED DESIGN) */
+            /* STAIRCASE VIEW (MATCHING ATTACHED DESIGN WITH DURATION BADGES ON TOP EDGE OF STAIRS) */
             <div className="space-y-10">
               {/* Desktop 15 Steps Ascending Stairs */}
-              <div className="hidden lg:block relative pt-14 pb-8 px-2 overflow-x-auto">
-                <div className="grid grid-cols-15 gap-1.5 items-end min-h-[380px] min-w-[1100px]">
+              <div className="hidden lg:block relative pt-16 pb-8 px-2 overflow-x-auto">
+                <div className="grid grid-cols-15 gap-1.5 items-end min-h-[400px] min-w-[1150px]">
                   {activeTrack.steps.map((step) => {
                     const isSelected = selectedStep.id === step.id;
                     const isUserCurrent = step.id === userCurrentLevelId;
@@ -231,6 +231,14 @@ export default function OperationCareerJourney() {
                           isSelected ? 'ring-4 ring-offset-2 ring-[#087F96] scale-105 z-30' : ''
                         }`}
                       >
+                        {/* DURATION BADGE FLOATING DIRECTLY ABOVE TOP EDGE OF EACH STAIRCASE CARD */}
+                        <div className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap z-20 pointer-events-none">
+                          <span className="text-[9px] font-black text-[#0B2A4A] bg-white border border-[#087F96]/40 px-1.5 py-0.5 rounded-full shadow-md font-mono flex items-center space-x-0.5">
+                            <Clock className="w-2.5 h-2.5 text-[#087F96]" />
+                            <span>{step.recommendedDuration}</span>
+                          </span>
+                        </div>
+
                         {/* Header Badge */}
                         <div className="flex items-center justify-between text-[10px]">
                           <span className={`w-5 h-5 rounded-full font-mono font-black flex items-center justify-center ${badgeBg}`}>
@@ -243,11 +251,14 @@ export default function OperationCareerJourney() {
                           )}
                         </div>
 
-                        {/* Title */}
-                        <div className="my-auto text-center py-1">
-                          <h3 className="font-display font-extrabold text-[10px] leading-tight tracking-tight line-clamp-3">
+                        {/* Title & Duration */}
+                        <div className="my-auto text-center py-1 space-y-0.5">
+                          <h3 className="font-display font-extrabold text-[10px] leading-tight tracking-tight line-clamp-2">
                             {step.title}
                           </h3>
+                          <div className="text-[8px] font-extrabold opacity-80 flex items-center justify-center space-x-0.5 font-mono">
+                            <span>⏱️ {step.recommendedDuration}</span>
+                          </div>
                         </div>
 
                         {/* Footer button */}
@@ -320,8 +331,8 @@ export default function OperationCareerJourney() {
                               {isCompleted ? '✓' : `#${step.id}`}
                             </span>
                             <div>
-                              <span className="text-[10px] font-mono opacity-80 uppercase block font-semibold">
-                                {step.recommendedDuration}
+                              <span className="text-[10px] font-mono opacity-90 uppercase font-black text-amber-500 bg-black/10 px-2 py-0.5 rounded-full inline-block mb-0.5">
+                                ⏱️ {step.recommendedDuration}
                               </span>
                               <h3 className="font-display font-extrabold text-sm sm:text-base">
                                 {step.title}
@@ -358,7 +369,7 @@ export default function OperationCareerJourney() {
                       <span className="w-8 h-8 rounded-xl bg-[#0B2A4A] text-white font-extrabold text-xs flex items-center justify-center">
                         #{step.id}
                       </span>
-                      <span className="text-xs text-gray-500 font-medium">{step.recommendedDuration}</span>
+                      <span className="text-xs text-[#087F96] font-bold bg-[#DDF4F7] px-2 py-0.5 rounded-md font-mono">⏱️ {step.recommendedDuration}</span>
                     </div>
 
                     <h3 className="font-extrabold text-base text-[#0B2A4A] mb-1">{step.title}</h3>
@@ -395,7 +406,7 @@ export default function OperationCareerJourney() {
               <div className="inline-flex items-center space-x-2 bg-[#087F96]/10 text-[#087F96] px-3.5 py-1 rounded-full text-xs font-extrabold mb-2">
                 <span>{activeTrack.name} • Basamak #{selectedStep.id}</span>
                 <span>•</span>
-                <span>Süre: {selectedStep.recommendedDuration}</span>
+                <span>⏱️ Ortalama Süre: {selectedStep.recommendedDuration}</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-black text-[#0B2A4A]">{selectedStep.title} Kariyer Kartı</h3>
               <p className="text-xs sm:text-sm text-gray-600 mt-1">{selectedStep.purpose}</p>
