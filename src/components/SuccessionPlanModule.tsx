@@ -16,8 +16,12 @@ import {
   Users,
   Award,
   Zap,
-  Clock
+  Clock,
+  ExternalLink,
+  User
 } from 'lucide-react';
+import CandidateProfileModal from './CandidateProfileModal';
+import { TalentCandidate } from '@/data/talentPoolData';
 
 export interface SuccessionRole {
   id: string;
@@ -133,6 +137,10 @@ export default function SuccessionPlanModule() {
   const [riskFilter, setRiskFilter] = useState<'all' | 'low' | 'medium' | 'high'>('all');
   const [selectedRoleId, setSelectedRoleId] = useState<string>('1');
 
+  // Candidate Profile Modal State
+  const [modalCandidate, setModalCandidate] = useState<TalentCandidate | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   // Filter roles dynamically based on clicked top risk summary card
   const filteredRoles = React.useMemo(() => {
     if (riskFilter === 'all') return SUCCESSION_DATA;
@@ -142,6 +150,59 @@ export default function SuccessionPlanModule() {
   const activeRole = React.useMemo(() => {
     return SUCCESSION_DATA.find(r => r.id === selectedRoleId) || filteredRoles[0] || SUCCESSION_DATA[0];
   }, [selectedRoleId, filteredRoles]);
+
+  // Helper to open profile card modal
+  const handleOpenCandidateModal = (rawName: string, targetRole: string, score: number) => {
+    const cleanName = rawName.replace(/\(.*\)/, '').trim();
+    
+    const candidateData: TalentCandidate = {
+      id: `succ_${cleanName.toLowerCase().replace(/\s+/g, '_')}`,
+      name: cleanName,
+      avatar: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400`,
+      deptId: 'operasyon',
+      departmentName: 'Mağaza Operasyonları & Saha Liderliği',
+      targetPosition: targetRole,
+      currentCompany: 'Perakende Kariyer Akademisi İç Terfi Havuzu',
+      city: 'Türkiye (Perakende Saha)',
+      experienceYears: 4,
+      competencyScore: score,
+      theoryExamScore: Math.min(100, score + 2),
+      fieldAuditScore: score,
+      leadershipScore: Math.max(70, score - 3),
+      completedCourses: [
+        {
+          title: `${targetRole} Liderlik & Yetkinlik Modülü`,
+          duration: '24 Saat',
+          completedDate: '15 Mayıs 2026',
+          grade: `%${score} (Üstün Başarı)`
+        },
+        {
+          title: 'Zor Müşteri İkna ve Çatışma Yönetimi',
+          duration: '16 Saat',
+          completedDate: '10 Nisan 2026',
+          grade: '%94 (Pek İyi)'
+        },
+        {
+          title: 'Reyon Teşhir 5S & FIFO Standartları',
+          duration: '18 Saat',
+          completedDate: '02 Mart 2026',
+          grade: '%90 (Başarılı)'
+        }
+      ],
+      certificates: [
+        {
+          title: `${targetRole} Yetkinlik Pasaportu`,
+          credentialId: `PKA-2026-SUCC-${score}`,
+          issueDate: 'Mayıs 2026',
+          badgeColor: 'emerald'
+        }
+      ],
+      biography: `${cleanName}, şirket içi yedek yönetici yetiştirme havuzunda %${score} yetkinlik puanı alarak ${targetRole} kadrosu için 1. sırada onaylanmış terfi adayıdır.`
+    };
+
+    setModalCandidate(candidateData);
+    setIsModalOpen(true);
+  };
 
   return (
     <section className="py-16 bg-[#0B2A4A] text-white relative overflow-hidden">
@@ -159,7 +220,7 @@ export default function SuccessionPlanModule() {
             Kritik Pozisyon Yedekleme Planı
           </h2>
           <p className="text-sm sm:text-base text-gray-300 font-light leading-relaxed">
-            Aşağıdaki risk kartlarına tıklayarak <strong>Çift/Çok Yedekli</strong>, <strong>Tek Yedekli</strong> ve <strong>Yedeği Olmayan Kritik Riskli</strong> pozisyonları anında filtreleyebilirsiniz.
+            Yedek yönetici adaylarının <strong>üzerine tıklayarak</strong> yetkinlik sınav puanlarını, eğitim geçmişini ve dijital yetkinlik pasaportunu detaylı inceleyebilirsiniz.
           </p>
         </div>
 
@@ -243,7 +304,7 @@ export default function SuccessionPlanModule() {
 
           <span className="text-emerald-400 flex items-center space-x-1">
             <CheckCircle2 className="w-4 h-4" />
-            <span>Resmi İç Terfi Pipeline Kaydı</span>
+            <span>Kişi Kartına Tıklayıp Detay İnceleyin</span>
           </span>
         </div>
 
@@ -306,9 +367,14 @@ export default function SuccessionPlanModule() {
                   {activeRole.riskLevelText}
                 </span>
 
-                <span className="text-xs text-gray-300 font-mono">
-                  Mevcut Yöneticisi: <strong className="text-white">{activeRole.currentManager}</strong>
-                </span>
+                {/* CLICKABLE CURRENT MANAGER BADGE */}
+                <div 
+                  onClick={() => handleOpenCandidateModal(activeRole.currentManager, activeRole.roleName, 95)}
+                  className="text-xs text-gray-300 font-mono cursor-pointer hover:text-amber-300 transition-colors flex items-center space-x-1 bg-white/10 px-3 py-1 rounded-lg border border-white/15"
+                >
+                  <User className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Mevcut Yönetici: <strong className="text-white underline">{activeRole.currentManager}</strong> (Kartı Aç)</span>
+                </div>
               </div>
 
               <h3 className="text-2xl font-black text-white">{activeRole.roleName}</h3>
@@ -318,29 +384,39 @@ export default function SuccessionPlanModule() {
               </p>
             </div>
 
-            {/* Successor Candidates List */}
+            {/* Successor Candidates List (CLICKABLE TO OPEN CANDIDATE PROFILE MODAL) */}
             <div className="space-y-3">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-amber-300 flex items-center space-x-1.5">
-                <UserCheck className="w-4 h-4" />
-                <span>Onaylı Yedek Yönetici Adayları ({activeRole.successors.length})</span>
-              </h4>
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-extrabold uppercase tracking-wider text-amber-300 flex items-center space-x-1.5">
+                  <UserCheck className="w-4 h-4" />
+                  <span>Onaylı Yedek Yönetici Adayları ({activeRole.successors.length})</span>
+                </h4>
+                <span className="text-[10px] text-emerald-300 font-mono">Tıklayıp Kartı Açın 🔍</span>
+              </div>
 
               {activeRole.successors.length > 0 ? (
                 <div className="space-y-2.5">
                   {activeRole.successors.map((succ, idx) => (
-                    <div key={idx} className="p-4 bg-white/10 rounded-2xl border border-white/15 flex items-center justify-between gap-3 hover:bg-white/15 transition-all">
+                    <div 
+                      key={idx}
+                      onClick={() => handleOpenCandidateModal(succ.name, activeRole.roleName, succ.score)}
+                      className="p-4 bg-white/10 hover:bg-white/20 border border-white/15 hover:border-emerald-400 rounded-2xl flex items-center justify-between gap-3 transition-all cursor-pointer group hover:scale-[1.01] shadow-md"
+                    >
                       <div className="flex items-center space-x-3">
-                        <div className="w-7 h-7 rounded-xl bg-[#087F96] text-white flex items-center justify-center font-bold text-xs font-mono">
+                        <div className="w-8 h-8 rounded-xl bg-[#087F96] text-white flex items-center justify-center font-bold text-xs font-mono border border-white/20 group-hover:bg-emerald-600 transition-colors">
                           #{idx + 1}
                         </div>
                         <div>
-                          <div className="font-bold text-xs text-white">{succ.name}</div>
+                          <div className="font-bold text-xs text-white group-hover:text-amber-300 transition-colors flex items-center space-x-1.5">
+                            <span>{succ.name}</span>
+                            <ExternalLink className="w-3.5 h-3.5 text-amber-300 opacity-80 group-hover:opacity-100" />
+                          </div>
                           <div className="text-[10px] text-emerald-300 font-mono font-bold mt-0.5">{succ.status}</div>
                         </div>
                       </div>
 
-                      <div className="text-right font-mono">
-                        <span className="px-2.5 py-1 bg-emerald-500 text-white rounded-lg text-xs font-black">
+                      <div className="text-right font-mono flex items-center space-x-2">
+                        <span className="px-2.5 py-1 bg-emerald-500 text-white rounded-lg text-xs font-black group-hover:bg-emerald-400 transition-colors">
                           {succ.score} Puan
                         </span>
                       </div>
@@ -374,6 +450,13 @@ export default function SuccessionPlanModule() {
         </div>
 
       </div>
+
+      {/* CANDIDATE PROFILE MODAL */}
+      <CandidateProfileModal
+        candidate={modalCandidate}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </section>
   );
 }
