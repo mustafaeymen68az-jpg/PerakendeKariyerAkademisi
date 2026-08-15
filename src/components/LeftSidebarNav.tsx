@@ -55,13 +55,13 @@ const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/', icon: Home },
   { name: 'Eğitim Kataloğu', path: '/egitimler', icon: BookOpen },
   { name: 'Kurumsal Akademi', path: '/kurumsal-cozumler', icon: Building2 },
-  { name: 'Kurumsal Ücretlendirme', path: '/kurumsal-fiyatlandirma', icon: CreditCard },
   { name: 'İK Çözümleri', path: '/ik-cozumlari', icon: Briefcase, isDropdown: true },
   { name: 'Kariyer Haritası', path: '/kariyer-yollari', icon: Map },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', icon: Target },
   { name: 'Yapay Zekâ', path: '/yapay-zeka', icon: Bot },
   { name: 'Aday & Yetenek Havuzu', path: '/yetkinlik-aday-havuzu', icon: Users },
-  { name: 'Eğitmenlerimiz', path: '/egitmenler', icon: GraduationCap, isInstructorsDropdown: true }
+  { name: 'Eğitmenlerimiz', path: '/egitmenler', icon: GraduationCap, isInstructorsDropdown: true },
+  { name: 'Kurumsal Ücretlendirme', path: '/kurumsal-fiyatlandirma', icon: CreditCard }
 ];
 
 export default function LeftSidebarNav() {
