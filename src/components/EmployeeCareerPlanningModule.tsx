@@ -155,7 +155,7 @@ export interface EmployeeCareerRecord {
   }[];
 }
 
-function generate50EmployeesData(): EmployeeCareerRecord[] {
+function generate1000EmployeesData(): EmployeeCareerRecord[] {
   const avatars = [
     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
@@ -167,144 +167,186 @@ function generate50EmployeesData(): EmployeeCareerRecord[] {
     'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400'
   ];
 
-  const cities = ['İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Adana', 'Kocaeli', 'Gaziantep', 'Konya', 'Trabzon'];
+  const cities = ['İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Adana', 'Kocaeli', 'Gaziantep', 'Konya', 'Trabzon', 'Eskişehir', 'Samsun', 'Mersin', 'Kayseri', 'Denizli'];
 
-  const definitions: { id: string; name: string; score: number; department: DepartmentType; role: string; target: string; match: number }[] = [
-    // 91-100 Puan (10 Personel)
-    { id: 'emp_1', name: 'Ahmet Çelik', score: 94, department: 'Kasa & Operasyon', role: 'Baş Kasiyer', target: 'Mağaza Müdür Yardımcısı', match: 96 },
-    { id: 'emp_2', name: 'Zeynep Kaya', score: 91, department: 'Reyon & Teşhir', role: 'Reyon Şefi', target: 'Kategori Yöneticisi Yardımcısı', match: 92 },
-    { id: 'emp_3', name: 'Dr. Mehmet Yılmaz', score: 96, department: 'Mağaza Yönetimi', role: 'Mağaza Müdürü', target: 'Bölge Müdürü (Area Manager)', match: 98 },
-    { id: 'emp_4', name: 'Caner Şahin', score: 92, department: 'Kasa & Operasyon', role: 'Kasa Operasyon Şefi', target: 'Kasa Direktörü Adayı', match: 95 },
-    { id: 'emp_5', name: 'Selin Özer', score: 95, department: 'Mağaza Yönetimi', role: 'Kıdemli Mağaza Müdürü', target: 'Bölge Operasyon Müdürü', match: 97 },
-    { id: 'emp_6', name: 'Deniz Arslan', score: 97, department: 'Merkez & İK', role: 'Kategori Yöneticisi', target: 'Satın Alma Direktörü Adayı', match: 99 },
-    { id: 'emp_7', name: 'Murat Yıldırım', score: 93, department: 'Mağaza Yönetimi', role: 'Mağaza Müdürü', target: 'Bölge Müdür Yardımcısı', match: 94 },
-    { id: 'emp_8', name: 'Gamze Tekin', score: 94, department: 'Merkez & İK', role: 'İnsan Kaynakları Uzmanı', target: 'İK Müdürü', match: 96 },
-    { id: 'emp_9', name: 'Serkan Bulut', score: 92, department: 'Lojistik & Depo', role: 'Lojistik & Depo Şefi', target: 'Tedarik Zinciri Müdürü', match: 93 },
-    { id: 'emp_10', name: 'Elif Aksoy', score: 96, department: 'Reyon & Teşhir', role: 'Görsel Mağazacılık Şefi', target: 'Görsel Tasarım Direktörü', match: 98 },
-
-    // 81-90 Puan (15 Personel)
-    { id: 'emp_11', name: 'Ahmet Kaya', score: 88, department: 'Mağaza Yönetimi', role: 'Mağaza Müdür Yardımcısı', target: 'Mağaza Müdürü', match: 94 },
-    { id: 'emp_12', name: 'Ayşe Demir', score: 86, department: 'Lojistik & Depo', role: 'Lojistik & Depo Sorumlusu', target: 'Tedarik Zinciri & Depo Müdürü', match: 88 },
-    { id: 'emp_13', name: 'Seda Öztürk', score: 81, department: 'Reyon & Teşhir', role: 'Reyon Şefi', target: 'Mağaza Müdür Yardımcısı', match: 85 },
-    { id: 'emp_14', name: 'Hakan Erdem', score: 89, department: 'Lojistik & Depo', role: 'Depo Şefi', target: 'Lojistik Bölge Müdürü', match: 91 },
-    { id: 'emp_15', name: 'Oğuzhan Kaya', score: 87, department: 'Taze Gıda & Şarküteri', role: 'Kasap Reyon Şefi', target: 'Taze Gıda Kategori Şefi', match: 89 },
-    { id: 'emp_16', name: 'Ebru Yılmaz', score: 85, department: 'Kasa & Operasyon', role: 'Kasa Şefi', target: 'Baş Kasiyer', match: 87 },
-    { id: 'emp_17', name: 'Fatih Kılıç', score: 84, department: 'Reyon & Teşhir', role: 'Gıda Dışı Reyon Şefi', target: 'Mağaza Müdür Yardımcısı', match: 86 },
-    { id: 'emp_18', name: 'Yasemin Çetin', score: 83, department: 'Taze Gıda & Şarküteri', role: 'Şarküteri Şefi', target: 'Taze Gıda Reyon Şefi', match: 85 },
-    { id: 'emp_19', name: 'Volkan Şahin', score: 88, department: 'Mağaza Yönetimi', role: 'Mağaza Müdür Yardımcısı', target: 'Alsancak Mağaza Müdürü', match: 92 },
-    { id: 'emp_20', name: 'Kübra Aydın', score: 89, department: 'Kasa & Operasyon', role: 'Kıdemli Kasiyer', target: 'Kasa Şefi', match: 90 },
-    { id: 'emp_21', name: 'Tolga Arslan', score: 82, department: 'Lojistik & Depo', role: 'Sevkiyat Sorumlusu', target: 'Filo Yönetim Şefi', match: 84 },
-    { id: 'emp_22', name: 'Gizem Güneş', score: 87, department: 'Merkez & İK', role: 'Müşteri Hizmetleri Şefi', target: 'Müşteri Deneyimi Müdürü', match: 89 },
-    { id: 'emp_23', name: 'Onur Doğan', score: 86, department: 'Taze Gıda & Şarküteri', role: 'Unlu Mamüller Şefi', target: 'Üretim Müdürü', match: 88 },
-    { id: 'emp_24', name: 'Büşra Şimşek', score: 85, department: 'Mağaza Yönetimi', role: 'Mağaza Müdür Yardımcısı', target: 'Kadıköy Mağaza Müdürü', match: 87 },
-    { id: 'emp_25', name: 'Kadir Yalçın', score: 83, department: 'Taze Gıda & Şarküteri', role: 'Manav Reyon Şefi', target: 'Hal & Tedarik Şefi', match: 85 },
-
-    // 71-80 Puan (12 Personel)
-    { id: 'emp_26', name: 'Burak Çetin', score: 76, department: 'Kasa & Operasyon', role: 'Kasiyer & Reyon Elemanı', target: 'Baş Kasiyer Adayı', match: 78 },
-    { id: 'emp_27', name: 'Merve Öztürk', score: 74, department: 'Reyon & Teşhir', role: 'Satış Elemanı', target: 'Reyon Şefi Adayı', match: 75 },
-    { id: 'emp_28', name: 'Cemal Aktaş', score: 79, department: 'Reyon & Teşhir', role: 'Reyon Elemanı', target: 'Kıdemli Reyon Görevlisi', match: 80 },
-    { id: 'emp_29', name: 'Tuğba Şen', score: 78, department: 'Kasa & Operasyon', role: 'Kasiyer', target: 'Kasa Şefi Adayı', match: 79 },
-    { id: 'emp_30', name: 'Kerem Demir', score: 77, department: 'Lojistik & Depo', role: 'Depo Elemanı', target: 'Mal Kabul Sorumlusu', match: 78 },
-    { id: 'emp_31', name: 'Sibel Kaplan', score: 75, department: 'Reyon & Teşhir', role: 'Tekstil Satış Elemanı', target: 'Reyon Şefi Adayı', match: 76 },
-    { id: 'emp_32', name: 'Sinan Kara', score: 73, department: 'Taze Gıda & Şarküteri', role: 'Manav Görevlisi', target: 'Manav Şefi Adayı', match: 74 },
-    { id: 'emp_33', name: 'Hande Bozkurt', score: 79, department: 'Taze Gıda & Şarküteri', role: 'Şarküteri Elemanı', target: 'Usta Şarküteri Şefi', match: 81 },
-    { id: 'emp_34', name: 'Alperen Çelik', score: 72, department: 'Taze Gıda & Şarküteri', role: 'Kasap Çırağı', target: 'Kasap Şefi Adayı', match: 73 },
-    { id: 'emp_35', name: 'Aslıhan Polat', score: 76, department: 'Kasa & Operasyon', role: 'Kasiyer', target: 'Hızlı Geçiş Kasiyeri', match: 77 },
-    { id: 'emp_36', name: 'Melih Koç', score: 77, department: 'Lojistik & Depo', role: 'Koli & Mal Kabul Elemanı', target: 'Depo Kabul Adayı', match: 78 },
-    { id: 'emp_37', name: 'Derya Avcı', score: 71, department: 'Reyon & Teşhir', role: 'Kozmetik Reyon Elemanı', target: 'Kozmetik Uzmanı', match: 72 },
-
-    // 51-70 Puan (8 Personel)
-    { id: 'emp_38', name: 'Emre Aksoy', score: 65, department: 'Reyon & Teşhir', role: 'Stajyer Reyon Elemanı', target: 'Reyon Elemanı (Orta Performans)', match: 65 },
-    { id: 'emp_39', name: 'Tarık Yıldız', score: 58, department: 'Lojistik & Depo', role: 'Depo Destek Elemanı', target: 'Depo Elemanı (Orta Seviye)', match: 58 },
-    { id: 'emp_40', name: 'İbrahim Tuna', score: 68, department: 'Kasa & Operasyon', role: 'Stajyer Kasiyer', target: 'Yardımcı Kasiyer', match: 68 },
-    { id: 'emp_41', name: 'Rabia Eker', score: 63, department: 'Lojistik & Depo', role: 'Depo Destek Elemanı', target: 'Mal Kabul Elemanı', match: 63 },
-    { id: 'emp_42', name: 'Mert Yücel', score: 61, department: 'Mağaza Yönetimi', role: 'Temizlik Görevlisi', target: 'Saha Düzen Görevlisi', match: 61 },
-    { id: 'emp_43', name: 'Nurcan Bilgin', score: 59, department: 'Reyon & Teşhir', role: 'Reyon Elemanı', target: 'Kıdemli Eleman Adayı', match: 59 },
-    { id: 'emp_44', name: 'Ferhat Taş', score: 67, department: 'Kasa & Operasyon', role: 'Kasa Görevlisi', target: 'Kasiyer', match: 67 },
-    { id: 'emp_45', name: 'Ezgi Çakır', score: 54, department: 'Lojistik & Depo', role: 'Mal Kabul Stajyeri', target: 'Depo Stajyeri', match: 54 },
-
-    // 0-50 Puan (5 Personel)
-    { id: 'emp_46', name: 'Hasan Arslan', score: 45, department: 'Kasa & Operasyon', role: 'Kasiyer Adayı (Deneme Süresinde)', target: 'Temal Perakende Eğitimi (Zayıf Performans)', match: 45 },
-    { id: 'emp_47', name: 'Mustafa Aydın', score: 38, department: 'Reyon & Teşhir', role: 'Reyon Yardımcı Elemanı', target: 'Temel Saha İSG & Temizlik Eğitimi', match: 38 },
-    { id: 'emp_48', name: 'Serhat Ucar', score: 48, department: 'Mağaza Yönetimi', role: 'Saha Elemanı (Mentörlükte)', target: '30 Günlük İyileştirme Planı', match: 48 },
-    { id: 'emp_49', name: 'Betül Soylu', score: 42, department: 'Kasa & Operasyon', role: 'Kasiyer Adayı (Kasa İkazlı)', target: 'Temel Kasa Eğitimi', match: 42 },
-    { id: 'emp_50', name: 'Yasin Çakmak', score: 35, department: 'Lojistik & Depo', role: 'Depo Destek Elemanı (İkazlı)', target: 'İSG & Depo Oryantasyonu', match: 35 }
+  const maleNames = [
+    'Ahmet', 'Mehmet', 'Caner', 'Murat', 'Hakan', 'Oğuzhan', 'Fatih', 'Volkan', 'Tolga', 'Onur',
+    'Kadir', 'Burak', 'Cemal', 'Kerem', 'Sinan', 'Alperen', 'Melih', 'Emre', 'Tarık', 'İbrahim',
+    'Mert', 'Ferhat', 'Hasan', 'Mustafa', 'Serhat'
   ];
 
-  return definitions.map((def, idx) => {
-    const avatar = avatars[idx % avatars.length];
-    const city = cities[idx % cities.length];
-    const tenureYears = Math.floor(def.score / 15) + 1;
-    const tenure = `${tenureYears} Yıl ${(idx * 3) % 12} Ay`;
-    const startDate = `${(idx % 28) + 1} ${['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'][idx % 12]} 202${2 + (idx % 4)}`;
+  const femaleNames = [
+    'Zeynep', 'Selin', 'Deniz', 'Gamze', 'Elif', 'Ayşe', 'Seda', 'Ebru', 'Yasemin', 'Kübra',
+    'Gizem', 'Büşra', 'Merve', 'Tuğba', 'Sibel', 'Hande', 'Aslıhan', 'Derya', 'Rabia', 'Nurcan',
+    'Ezgi', 'Betül', 'Ceren', 'Pınar', 'Sümeyye'
+  ];
 
-    const awards: AwardRecord[] = def.score >= 90 ? [
-      { title: `2025 Yılı ${city} Perakende Yıldızı Ödülü`, category: 'Ödül', givenDate: '15 Aralık 2025', organization: 'Perakende Kariyer Akademisi', reason: `%${def.score} Üstün Başarı Skoru` },
-      { title: 'Sıfır Fire ve Mükemmel Stok Plaketi', category: 'Plaket', givenDate: '10 Haziran 2024', organization: 'Genel Müdürlük', reason: 'Stok devir başarısı' }
-    ] : def.score >= 80 ? [
-      { title: 'Ayın Örnek Çalışanı Rozeti', category: 'Rozet', givenDate: '01 Eylül 2024', organization: 'Müşteri Hizmetleri', reason: 'Yüksek CSAT müşteri skoru' }
+  const lastNames = [
+    'Çelik', 'Kaya', 'Yılmaz', 'Şahin', 'Özer', 'Arslan', 'Yıldırım', 'Tekin', 'Bulut', 'Aksoy',
+    'Demir', 'Öztürk', 'Erdem', 'Kılıç', 'Çetin', 'Güneş', 'Doğan', 'Şimşek', 'Yalçın', 'Aktaş',
+    'Şen', 'Kaplan', 'Kara', 'Bozkurt', 'Polat'
+  ];
+
+  const roleByDept: Record<DepartmentType, { role: string; target: string }[]> = {
+    'Mağaza Yönetimi': [
+      { role: 'Mağaza Müdürü', target: 'Bölge Müdürü (Area Manager)' },
+      { role: 'Kıdemli Mağaza Müdürü', target: 'Bölge Operasyon Müdürü' },
+      { role: 'Mağaza Müdür Yardımcısı', target: 'Mağaza Müdürü' },
+      { role: 'Vardiya Müdürü', target: 'Mağaza Müdür Yardımcısı' },
+      { role: 'Stajyer Mağaza Müdürü', target: 'Vardiya Müdürü' }
+    ],
+    'Kasa & Operasyon': [
+      { role: 'Kasa Operasyon Şefi', target: 'Kasa Direktörü Adayı' },
+      { role: 'Baş Kasiyer', target: 'Mağaza Müdür Yardımcısı' },
+      { role: 'Kasa Şefi', target: 'Baş Kasiyer' },
+      { role: 'Kasiyer & Reyon Elemanı', target: 'Kasa Şefi' },
+      { role: 'Stajyer Kasiyer', target: 'Kasiyer' }
+    ],
+    'Reyon & Teşhir': [
+      { role: 'Görsel Mağazacılık Şefi', target: 'Görsel Tasarım Direktörü' },
+      { role: 'Reyon Şefi', target: 'Kategori Yöneticisi Yardımcısı' },
+      { role: 'Gıda Dışı Reyon Şefi', target: 'Mağaza Müdür Yardımcısı' },
+      { role: 'Satış Elemanı', target: 'Reyon Şefi Adayı' },
+      { role: 'Reyon Elemanı', target: 'Satış Elemanı' }
+    ],
+    'Lojistik & Depo': [
+      { role: 'Lojistik & Depo Şefi', target: 'Tedarik Zinciri Müdürü' },
+      { role: 'Depo Şefi', target: 'Lojistik Bölge Müdürü' },
+      { role: 'Lojistik & Depo Sorumlusu', target: 'Depo Şefi' },
+      { role: 'Sevkiyat Sorumlusu', target: 'Filo Yönetim Şefi' },
+      { role: 'Depo Destek Elemanı', target: 'Mal Kabul Sorumlusu' }
+    ],
+    'Taze Gıda & Şarküteri': [
+      { role: 'Kasap Reyon Şefi', target: 'Taze Gıda Kategori Şefi' },
+      { role: 'Şarküteri Şefi', target: 'Taze Gıda Reyon Şefi' },
+      { role: 'Unlu Mamüller Şefi', target: 'Üretim Müdürü' },
+      { role: 'Manav Reyon Şefi', target: 'Hal & Tedarik Şefi' },
+      { role: 'Manav Görevlisi', target: 'Manav Şefi Adayı' }
+    ],
+    'Merkez & İK': [
+      { role: 'Kategori Yöneticisi', target: 'Satın Alma Direktörü Adayı' },
+      { role: 'İnsan Kaynakları Uzmanı', target: 'İK Müdürü' },
+      { role: 'Müşteri Hizmetleri Şefi', target: 'Müşteri Deneyimi Müdürü' },
+      { role: 'İK İş Ortağı', target: 'Kıdemli İK Yöneticisi' },
+      { role: 'Veri Analisti', target: 'İş Zekası Yöneticisi' }
+    ]
+  };
+
+  const list: EmployeeCareerRecord[] = [];
+
+  for (let i = 0; i < 1000; i++) {
+    const isMale = i % 2 === 0;
+    const firstName = isMale ? maleNames[i % maleNames.length] : femaleNames[i % femaleNames.length];
+    const lastName = lastNames[(i * 7) % lastNames.length];
+    
+    let name = `${firstName} ${lastName}`;
+    if (i === 0) name = 'Ahmet Çelik';
+    if (i === 1) name = 'Zeynep Kaya';
+    if (i === 2) name = 'Dr. Mehmet Yılmaz';
+    if (i === 3) name = 'Caner Şahin';
+
+    // Score distribution:
+    // 0..179 (180 headcount = 18%): 91-99 (Terfi Edebilir)
+    // 180..499 (320 headcount = 32%): 81-90 (Başarılı)
+    // 500..779 (280 headcount = 28%): 71-80 (Geliştirilebilir)
+    // 780..929 (150 headcount = 15%): 51-70 (Orta Performans)
+    // 930..999 (70 headcount = 7%): 35-50 (Zayıf Performans)
+    let score = 85;
+    if (i < 180) score = 91 + (i % 9);
+    else if (i < 500) score = 81 + (i % 10);
+    else if (i < 780) score = 71 + (i % 10);
+    else if (i < 930) score = 51 + (i % 20);
+    else score = 35 + (i % 16);
+
+    // Department distribution:
+    const deptModulo = i % 100;
+    let dept: DepartmentType = 'Reyon & Teşhir';
+    if (deptModulo < 16) dept = 'Mağaza Yönetimi';
+    else if (deptModulo < 40) dept = 'Kasa & Operasyon';
+    else if (deptModulo < 62) dept = 'Reyon & Teşhir';
+    else if (deptModulo < 80) dept = 'Lojistik & Depo';
+    else if (deptModulo < 94) dept = 'Taze Gıda & Şarküteri';
+    else dept = 'Merkez & İK';
+
+    const rolesList = roleByDept[dept];
+    const roleObj = rolesList[i % rolesList.length];
+
+    const match = Math.min(99, Math.max(45, score + (i % 5) - 2));
+    const avatar = avatars[i % avatars.length];
+    const city = cities[i % cities.length];
+    const tenureYears = Math.floor(score / 15) + 1;
+    const tenure = `${tenureYears} Yıl ${(i * 3) % 12} Ay`;
+    const startDate = `${(i % 28) + 1} ${['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'][i % 12]} 202${2 + (i % 4)}`;
+
+    const awards: AwardRecord[] = score >= 90 ? [
+      { title: `2025 Yılı ${city} Perakende Yıldızı Ödülü`, category: 'Ödül', givenDate: '15 Aralık 2025', organization: 'Perakende Kariyer Akademisi', reason: `%${score} Üstün Başarı Skoru` },
+      { title: 'Sıfır Fire ve Müşteri Teşekkür Plaketi', category: 'Plaket', givenDate: '10 Haziran 2024', organization: 'Genel Müdürlük', reason: 'Saha operasyon mükemmelliği' }
+    ] : score >= 80 ? [
+      { title: 'Ayın Örnek Çalışanı Rozeti', category: 'Rozet', givenDate: '01 Eylül 2024', organization: 'Müşteri Hizmetleri', reason: 'Yüksek CSAT skoru' }
     ] : [];
 
-    const promotions: PromotionRecord[] = def.score >= 80 ? [
-      { fromRole: 'Kasiyer / Reyon Görevlisi', toRole: def.role, promotionDate: '15 Mart 2023', approvedBy: 'Ahmet Çelik (İK Direktörü)', note: 'Yüksek performans ve disiplin puanı ile terfi ettirildi.' }
+    const promotions: PromotionRecord[] = score >= 80 ? [
+      { fromRole: 'Stajyer / Görevli', toRole: roleObj.role, promotionDate: '15 Mart 2023', approvedBy: 'Ahmet Çelik (İK Direktörü)', note: 'Yüksek başarı puanı ile terfi.' }
     ] : [];
 
-    const warnings: DisciplineNotice[] = def.score <= 50 ? [
-      { type: 'Sözlü İkaz', issueDate: '10 Mart 2026', reason: 'Vardiya açılış gecikmesi ve müşteri ikazı', status: 'Aktif Not', issuedBy: 'Mağaza Müdürü' }
-    ] : def.score <= 70 ? [
-      { type: 'Sözlü İkaz', issueDate: '12 Ekim 2023', reason: 'Kasa Z-raporu alımında gecikme', status: 'Sicil Temiz (Zamanaşımı)', issuedBy: 'Kasa Şefi' }
+    const warnings: DisciplineNotice[] = score <= 50 ? [
+      { type: 'Sözlü İkaz', issueDate: '10 Mart 2026', reason: 'Vardiya açılış saati aksaması', status: 'Aktif Not', issuedBy: 'Mağaza Müdürü' }
+    ] : score <= 70 ? [
+      { type: 'Sözlü İkaz', issueDate: '12 Ekim 2023', reason: 'Operasyonel evrak gecikmesi', status: 'Sicil Temiz (Zamanaşımı)', issuedBy: 'Saha Şefi' }
     ] : [];
 
-    const penalties: DisciplineNotice[] = def.score <= 40 ? [
-      { type: 'Tutanak', issueDate: '15 Nisan 2026', reason: 'Reyon etiket ve hijyen denetiminde eksiklik', status: 'Tutanak İşleme Alındı', issuedBy: 'İSG ve Disiplin Kurulu' }
+    const penalties: DisciplineNotice[] = score <= 40 ? [
+      { type: 'Tutanak', issueDate: '15 Nisan 2026', reason: 'Reyon etiket ve hijyen denetimi uyarısı', status: 'Tutanak İşleme Alındı', issuedBy: 'İSG Kurulu' }
     ] : [];
 
-    return {
-      id: def.id,
-      name: def.name,
+    list.push({
+      id: `emp_${i + 1}`,
+      name,
       avatar,
-      department: def.department,
-      currentRole: def.role,
-      recommendedRole: def.target,
-      matchPercentage: def.match,
-      competencyScore: def.score,
+      department: dept,
+      currentRole: roleObj.role,
+      recommendedRole: roleObj.target,
+      matchPercentage: match,
+      competencyScore: score,
       city,
       experienceYears: tenureYears,
       startDate,
       tenure,
       previousExperiences: [
-        { companyName: 'BİM A.Ş. / Migros', role: 'Reyon / Kasiyer Görevlisi', duration: '2 Yıl', yearsRange: '2020–2022' }
+        { companyName: 'BİM A.Ş. / Migros', role: 'Saha Görevlisi', duration: '2 Yıl', yearsRange: '2020–2022' }
       ],
       priorTrainings: [
-        { title: 'Temel Müşteri İlişkileri Kursu', institution: 'MEB Sertifika', instructorName: 'Seda Yılmaz', companyWhereTaken: 'Harici Kurum', durationHours: 24, year: '2020' }
+        { title: 'Temel Perakendecilik Sertifikası', institution: 'MEB Sertifika', instructorName: 'Seda Yılmaz', companyWhereTaken: 'Harici Kurum', durationHours: 24, year: '2020' }
       ],
       completedTrainings: [
-        { courseTitle: `${def.role} Uzmanlık Eğitimi`, duration: '16 Saat', durationHours: 16, completedDate: '10 Mayıs 2026', instructorName: 'Prof. Dr. Ahmet Çelik', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: def.score, gradeStatus: def.score >= 90 ? 'Üstün Başarı' : def.score >= 80 ? 'Pek İyi' : 'Başarılı', certificateId: `PKA-2026-${def.id}-001` }
+        { courseTitle: `${roleObj.role} Master Sertifika Programı`, duration: '16 Saat', durationHours: 16, completedDate: '10 Mayıs 2026', instructorName: 'Prof. Dr. Ahmet Çelik', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score, gradeStatus: score >= 90 ? 'Üstün Başarı' : score >= 80 ? 'Pek İyi' : 'Başarılı', certificateId: `PKA-2026-${i + 1}-001` }
       ],
       awards,
       promotions,
       warnings,
       penalties,
       evaluations: {
-        managerReview: { author: 'Murat Yıldırım', role: 'Mağaza Müdürü (Üst Yönetici)', rating: def.score / 20, comment: `${def.name} yetkinlik skoru %${def.score} seviyesindedir. ${def.target} rolü için takibe alınmıştır.`, date: '10 Haziran 2026' },
-        subordinateReview: { author: 'Selin Demir', role: 'Ekip Çalışanı', rating: 4.5, comment: 'Vardiyada yapıcı ve yardımsever.', date: '02 Haziran 2026' },
-        hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 4.8, comment: `${def.name} İK Kariyer haritasında ${def.score} puanla yer almaktadır.`, date: '14 Haziran 2026' }
+        managerReview: { author: 'Murat Yıldırım', role: 'Mağaza Müdürü', rating: score / 20, comment: `${name} yetkinlik skoru %${score} seviyesindedir. ${roleObj.target} rolü için takibe alınmıştır.`, date: '10 Haziran 2026' },
+        subordinateReview: { author: 'Selin Demir', role: 'Ekip Çalışanı', rating: 4.5, comment: 'Vardiyada uyumlu ve destekçi.', date: '02 Haziran 2026' },
+        hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 4.8, comment: `${name} İK Kariyer haritasında ${score} puanla yer almaktadır.`, date: '14 Haziran 2026' }
       },
       swot: {
-        strengths: [`%${def.score} Yetkinlik Puanı`, 'Disiplinli vardiya takibi'],
-        weaknesses: ['İleri Finansal Bütçe Analitiği'],
-        opportunities: [`${def.target} pozisyon terfisi`],
+        strengths: [`%${score} Yetkinlik Puanı`, 'Disiplinli vardiya takibi'],
+        weaknesses: ['İleri Finansal Analitik'],
+        opportunities: [`${roleObj.target} pozisyon terfisi`],
         threats: ['Yoğun vardiya temposu']
       },
       developmentAreas: ['Saha İletişimi ve Bütçe Yönetimi'],
       careerAdvice: [
         { phase: '1. Ay (Ağustos 2026)', action: 'Terfi ve gelişim modülleri başlanacak.', targetDate: '15 Ağustos 2026' }
       ]
-    };
-  });
+    });
+  }
+
+  return list;
 }
 
-const INITIAL_EMPLOYEES_CAREER_DATA = generate50EmployeesData();
+const INITIAL_EMPLOYEES_CAREER_DATA = generate1000EmployeesData();
 
 export default function EmployeeCareerPlanningModule() {
   const [employeesData, setEmployeesData] = useState<EmployeeCareerRecord[]>(INITIAL_EMPLOYEES_CAREER_DATA);
@@ -312,6 +354,7 @@ export default function EmployeeCareerPlanningModule() {
   const [scoreFilterCategory, setScoreFilterCategory] = useState<string>('all');
   const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [displayLimit, setDisplayLimit] = useState<number>(50);
 
   // Interactive Training Breakdown Modal State
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -340,6 +383,11 @@ export default function EmployeeCareerPlanningModule() {
       }
     }
   }, [employeesData]);
+
+  // Reset display limit when filter conditions change
+  React.useEffect(() => {
+    setDisplayLimit(50);
+  }, [scoreFilterCategory, selectedDepartmentFilter, searchQuery]);
 
   // Dynamically calculate score tier counts for top Summary Dashboard (filtered dynamically by selected Department)
   const scoreCounts = useMemo(() => {
@@ -440,6 +488,10 @@ export default function EmployeeCareerPlanningModule() {
       return matchesScore && matchesDept && matchesSearch;
     });
   }, [employeesData, scoreFilterCategory, selectedDepartmentFilter, searchQuery]);
+
+  const visibleEmployees = useMemo(() => {
+    return filteredEmployees.slice(0, displayLimit);
+  }, [filteredEmployees, displayLimit]);
 
   const activeEmployee = useMemo(() => {
     return employeesData.find(e => e.id === selectedEmpId) || employeesData[0];
@@ -578,7 +630,7 @@ export default function EmployeeCareerPlanningModule() {
           </div>
           <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Özgeçmiş, Deneyim ve Eğitim Karnesi</h2>
           <p className="text-xs sm:text-sm text-gray-200 font-light max-w-3xl leading-relaxed">
-            Eğitim özet kartlarına ve departman analiz butonlarına tıklayarak <strong>hangi departmanda kaç kişinin ne durumda olduğunu</strong>, eğitmen ve kurum detaylarını, ödülleri ve sicil durumlarını inceleyebilirsiniz.
+            Eğitim özet kartlarına ve departman analiz butonlarına tıklayarak <strong>1000 kişilik organizasyonda hangi departmanda kaç kişinin ne durumda olduğunu</strong>, eğitmen ve kurum detaylarını, ödülleri ve sicil durumlarını inceleyebilirsiniz.
           </p>
         </div>
 
@@ -621,7 +673,7 @@ export default function EmployeeCareerPlanningModule() {
               </h3>
             </div>
             <span className="text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
-              {selectedDepartmentFilter === 'all' ? 'Canlı 50 Personel Analizi ⚡' : `Canlı ${selectedDepartmentFilter} (${scoreCounts.total} Personel) ⚡`}
+              {selectedDepartmentFilter === 'all' ? 'Canlı 1.000 Personel Analizi ⚡' : `Canlı ${selectedDepartmentFilter} (${scoreCounts.total} Personel) ⚡`}
             </span>
           </div>
 
@@ -783,7 +835,7 @@ export default function EmployeeCareerPlanningModule() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
             type="text"
-            placeholder="Çalışan adı, pozisyon veya departman ara..."
+            placeholder="1.000 çalışan arasında adı, pozisyon veya departman ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#087F96] text-[#0B2A4A]"
@@ -799,13 +851,13 @@ export default function EmployeeCareerPlanningModule() {
               onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
               className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-extrabold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-[#087F96]"
             >
-              <option value="all">Tüm Departmanlar (50 Personel)</option>
-              <option value="Mağaza Yönetimi">Mağaza Yönetimi</option>
-              <option value="Kasa & Operasyon">Kasa & Operasyon</option>
-              <option value="Reyon & Teşhir">Reyon & Teşhir</option>
-              <option value="Lojistik & Depo">Lojistik & Depo</option>
-              <option value="Taze Gıda & Şarküteri">Taze Gıda & Şarküteri</option>
-              <option value="Merkez & İK">Merkez & İK</option>
+              <option value="all">Tüm Departmanlar (1.000 Personel)</option>
+              <option value="Mağaza Yönetimi">Mağaza Yönetimi ({departmentAnalytics.find(d => d.name === 'Mağaza Yönetimi')?.count})</option>
+              <option value="Kasa & Operasyon">Kasa & Operasyon ({departmentAnalytics.find(d => d.name === 'Kasa & Operasyon')?.count})</option>
+              <option value="Reyon & Teşhir">Reyon & Teşhir ({departmentAnalytics.find(d => d.name === 'Reyon & Teşhir')?.count})</option>
+              <option value="Lojistik & Depo">Lojistik & Depo ({departmentAnalytics.find(d => d.name === 'Lojistik & Depo')?.count})</option>
+              <option value="Taze Gıda & Şarküteri">Taze Gıda & Şarküteri ({departmentAnalytics.find(d => d.name === 'Taze Gıda & Şarküteri')?.count})</option>
+              <option value="Merkez & İK">Merkez & İK ({departmentAnalytics.find(d => d.name === 'Merkez & İK')?.count})</option>
             </select>
           </div>
 
@@ -850,7 +902,7 @@ export default function EmployeeCareerPlanningModule() {
           </div>
 
           <div className="space-y-3 max-h-[900px] overflow-y-auto pr-1">
-            {filteredEmployees.map((emp) => {
+            {visibleEmployees.map((emp) => {
               const isSelected = emp.id === activeEmployee.id;
               return (
                 <div
@@ -901,6 +953,17 @@ export default function EmployeeCareerPlanningModule() {
                 </div>
               );
             })}
+
+            {/* LOAD MORE BUTTON FOR 1000 EMPLOYEES */}
+            {filteredEmployees.length > displayLimit && (
+              <button
+                onClick={() => setDisplayLimit(prev => prev + 50)}
+                className="w-full py-3 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-extrabold rounded-2xl text-xs shadow-md transition-all flex items-center justify-center space-x-2 border border-[#087F96]/30 cursor-pointer mt-2"
+              >
+                <span>Daha Fazla Çalışan Göster (+50 Personel)</span>
+                <span className="text-[10px] opacity-75 font-mono">({displayLimit} / {filteredEmployees.length} Gösteriliyor)</span>
+              </button>
+            )}
           </div>
         </div>
 
