@@ -544,39 +544,188 @@ export default function KurumsalCozumlerPage() {
           </div>
         </div>
 
-        {/* TRAIN THE TRAINER DEDICATED SECTION */}
-        <div id="ic-egitmen" className="bg-[#061B33] text-white rounded-3xl p-8 sm:p-10 border border-[#087F96]/40 shadow-xl space-y-6">
-          <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-bold text-[#DDF4F7] bg-[#087F96] px-3.5 py-1 rounded-full uppercase tracking-wider">
-              Sürdürülebilir Akademi Mimarisi
-            </span>
-            <h2 className="font-display font-black text-2xl sm:text-3xl">
-              Train The Trainer – İç Eğitmen Eğitimi Programı
+        {/* EXPANDED "WOW" TRAIN THE TRAINER DEDICATED SECTION WITH HD VISUALS & FINANCIAL ROI CALCULATOR */}
+        <div id="ic-egitmen" className="bg-gradient-to-br from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white rounded-3xl p-8 sm:p-12 border border-[#087F96]/40 shadow-2xl space-y-10 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Header Title & Badges */}
+          <div className="text-center space-y-3 max-w-4xl mx-auto">
+            <div className="inline-flex items-center space-x-2 bg-amber-400 text-slate-950 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider shadow-md">
+              <GraduationCap className="h-4 w-4 text-slate-950" />
+              <span>Sürdürülebilir Akademi Mimarisi</span>
+            </div>
+
+            <h2 className="font-display font-black text-3xl sm:text-5xl text-white leading-tight">
+              Train The Trainer – <span className="text-amber-300">Şirketinizin İç Eğitmen Ordusu</span>
             </h2>
-            <p className="text-gray-300 text-xs sm:text-sm font-light leading-relaxed">
-              Akademilerin sürdürülebilirliğini sağlayacak kurum içi eğitmen yetiştirme programı. Şirket içi başarılı mağaza müdürlerini ve reyon şeflerini pedagojik ve teknik yönden eğiterek kendi akademinizin eğitmeni yapın.
+
+            <p className="text-gray-200 text-sm sm:text-base font-light leading-relaxed max-w-3xl mx-auto">
+              Dışarıdan sürekli yüksek bütçeli eğitim danışmanlığı satın almak yerine; şirketinizin kendi başarılı mağaza müdürlerini ve reyon şeflerini <strong>pedagojik ve teknik açıdan sertifikalı başeğitmenlere dönüştürüyoruz.</strong>
             </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
-              <Medal className="h-6 w-6 text-[#087F96]" />
-              <h3 className="font-bold text-white text-sm">Eğitmenlik Metodolojisi</h3>
-              <p className="text-gray-300 font-light">Yetişkin eğitimi (Andragoji), sahada etkili sunum teknikleri ve soru yanıtlama kriz yönetimi.</p>
-            </div>
-
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
-              <FileCheck2 className="h-6 w-6 text-[#34A853]" />
-              <h3 className="font-bold text-white text-sm">Standart İçerik Dağıtımı</h3>
-              <p className="text-gray-300 font-light">Şirket genelindeki tüm şubelerde 1:1 aynı kalite ve standartta mağazacılık ve taze gıda anlatımı.</p>
-            </div>
-
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
-              <GraduationCap className="h-6 w-6 text-[#DDF4F7]" />
-              <h3 className="font-bold text-white text-sm">Sertifikalı İç Eğitmen</h3>
-              <p className="text-gray-300 font-light">Programı başarıyla tamamlayan şeflere Kurumsal İç Eğitmen Sertifikası verilir.</p>
+            {/* Key Financial & Cultural Metrics */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto pt-3 text-xs font-bold font-mono">
+              <div className="p-3 bg-white/10 rounded-2xl border border-white/20 text-emerald-300 flex items-center justify-center space-x-2">
+                <DollarSign className="w-5 h-5 text-emerald-400" />
+                <span>Yılda ₺2.400.000+ Net Tasarruf</span>
+              </div>
+              <div className="p-3 bg-white/10 rounded-2xl border border-white/20 text-amber-300 flex items-center justify-center space-x-2">
+                <Building2 className="w-5 h-5 text-amber-400" />
+                <span>%100 Özgün Kurum Kültürü Hafızası</span>
+              </div>
+              <div className="p-3 bg-white/10 rounded-2xl border border-white/20 text-cyan-300 flex items-center justify-center space-x-2">
+                <Zap className="w-5 h-5 text-cyan-300" />
+                <span>50+ Şubede 1:1 Standart Kalite</span>
+              </div>
             </div>
           </div>
+
+          {/* Visual Image Banner & Story Split */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center pt-2">
+            {/* Left Image Banner 1 */}
+            <div className="relative rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl group h-80 sm:h-96">
+              <img 
+                src="/images/corp/ttt_1.jpg" 
+                alt="Train The Trainer Master Workshop" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B2A4A]/90 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 p-4 bg-slate-950/80 backdrop-blur-md rounded-2xl border border-white/20 text-xs space-y-1">
+                <span className="text-amber-300 font-bold uppercase tracking-wider">🎓 Master İç Eğitmen Atölyesi</span>
+                <p className="text-gray-200 font-light">Kendi müdürlerinizin anlatıcı değil, dönüştürücü liderler haline geldiği uygulama atölyeleri.</p>
+              </div>
+            </div>
+
+            {/* Right Story Banner 2 */}
+            <div className="relative rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl group h-80 sm:h-96">
+              <img 
+                src="/images/corp/ttt_2.jpg" 
+                alt="Kurum Kültürü & Mentörlük" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B2A4A]/90 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 p-4 bg-slate-950/80 backdrop-blur-md rounded-2xl border border-white/20 text-xs space-y-1">
+                <span className="text-cyan-300 font-bold uppercase tracking-wider">🏛️ Nesilden Nesile Şirket Kültürü Transferi</span>
+                <p className="text-gray-200 font-light">Kıdemli şeflerin saha tecrübelerini yeni giren personellere kurum ruhuyla aktardığı birebir mentörlük.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 3 STRATEGIC VALUE PILLARS (EKONOMİK TASARRUF, KURUM KÜLTÜRÜ, SÜRDÜRÜLEBİLİRLİK) */}
+          <div className="space-y-4 pt-4">
+            <div className="text-center space-y-1">
+              <span className="text-xs font-mono font-bold text-cyan-300 uppercase">YÖNETİM HAFIZASI & ROI</span>
+              <h3 className="font-display font-extrabold text-2xl text-white">İç Eğitmenliğin Kuruma 3 Stratejik Gücü</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              {/* VALUE PILLAR 1: EKONOMİK TASARRUF */}
+              <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-3 hover:bg-white/15 transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold">
+                  <DollarSign className="w-7 h-7 text-emerald-300" />
+                </div>
+                <h4 className="font-bold text-lg text-white">1. Milyonlarca Liralık Ekonomik Tasarruf</h4>
+                <p className="text-xs text-gray-200 leading-relaxed font-light">
+                  Dışarıdan alınan günlük 50.000 TL+ danışmanlık ve salon eğitim faturalarını sıfırlar. Kendi kadrolu iç eğitmenlerinizle yılda <strong>₺2.400.000+ net bütçe tasarrufu</strong> sağlarsınız.
+                </p>
+                <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-emerald-300">
+                  💰 %75 Yıllık Bütçe Tasarrufu
+                </div>
+              </div>
+
+              {/* VALUE PILLAR 2: KURUM KÜLTÜRÜ */}
+              <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-3 hover:bg-white/15 transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold">
+                  <Building2 className="w-7 h-7 text-amber-300" />
+                </div>
+                <h4 className="font-bold text-lg text-white">2. Güçlü & Özgün Kurum Kültürü</h4>
+                <p className="text-xs text-gray-200 leading-relaxed font-light">
+                  Dışarıdan gelen jenerik teoriler yerine, şirketinizin 20 yıllık saha tecrübesi, müşteri dili ve çalışma etiği yeni işe giren her çalışana <strong>şirket aidiyeti ve gururuyla</strong> aşılanır.
+                </p>
+                <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-amber-300">
+                  🏛️ Nesiller Boyu Korumalı Şirket Hafızası
+                </div>
+              </div>
+
+              {/* VALUE PILLAR 3: STANDART & HIZ */}
+              <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-3 hover:bg-white/15 transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold">
+                  <Zap className="w-7 h-7 text-cyan-300" />
+                </div>
+                <h4 className="font-bold text-lg text-white">3. %100 Standart Kalite & Yeni Şube Hızı</h4>
+                <p className="text-xs text-gray-200 leading-relaxed font-light">
+                  Yeni mağaza açılışlarında veya kadro genişlemelerinde dışarıdan eğitmen beklemek yok! Sertifikalı iç eğitmenleriniz <strong>aynı gün yeni ekibi sahada eğitime alıp standartlaştırır.</strong>
+                </p>
+                <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-cyan-300">
+                  ⚡ 3 Kat Hızlı Şube Kadrolaşması
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* 4-STAGE MASTER TRAINER CERTIFICATION METHODOLOGY */}
+          <div className="space-y-4 pt-4 border-t border-white/10">
+            <div className="text-center space-y-1">
+              <span className="text-xs font-mono font-bold text-amber-300 uppercase">AKADEMİK METODOLOJİ</span>
+              <h3 className="font-display font-extrabold text-2xl text-white">İç Eğitmenlik Sertifikasyon Süreci (4 Adım)</h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+              <div className="bg-slate-950/70 p-4 rounded-2xl border border-cyan-400/30 space-y-2">
+                <div className="w-7 h-7 rounded-lg bg-cyan-400 text-slate-950 font-black flex items-center justify-center">1</div>
+                <h4 className="font-bold text-white text-sm">Andragoji (Yetişkin Eğitimi)</h4>
+                <p className="text-gray-300 font-light">Yetişkinlerin nasıl öğrendiği, saha alışkanlıklarının nasıl değiştirildiği ve dikkat yönetimi.</p>
+              </div>
+
+              <div className="bg-slate-950/70 p-4 rounded-2xl border border-emerald-400/30 space-y-2">
+                <div className="w-7 h-7 rounded-lg bg-emerald-400 text-slate-950 font-black flex items-center justify-center">2</div>
+                <h4 className="font-bold text-white text-sm">Hitabet & Kriz Yönetimi</h4>
+                <p className="text-gray-300 font-light">Sahnede ve mağazada topluluk önünde konuşma, zor soruları yanıtlama ve kriz yönetimi.</p>
+              </div>
+
+              <div className="bg-slate-950/70 p-4 rounded-2xl border border-amber-400/30 space-y-2">
+                <div className="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 font-black flex items-center justify-center">3</div>
+                <h4 className="font-bold text-white text-sm">Şirket Kitapçığına %100 Uyum</h4>
+                <p className="text-gray-300 font-light">Marketinizin manav fire, şarküteri soğuk zincir ve kasa POS El Kitapçıklarının birebir öğretimi.</p>
+              </div>
+
+              <div className="bg-slate-950/70 p-4 rounded-2xl border border-purple-400/30 space-y-2">
+                <div className="w-7 h-7 rounded-lg bg-purple-400 text-slate-950 font-black flex items-center justify-center">4</div>
+                <h4 className="font-bold text-white text-sm">Supervizör Audit & Sertifika</h4>
+                <p className="text-gray-300 font-light">Canlı deneme dersi sunumu ve bağımsız jüri değerlendirmesi sonrası Kurumsal İç Eğitmen Sertifikası.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* ROI COMPARISON MINI TABLE WIDGET */}
+          <div className="bg-slate-950/80 rounded-2xl p-6 border border-white/20 space-y-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-b border-white/10 pb-3">
+              <div>
+                <h4 className="font-bold text-base text-white">Finansal Karşılaştırma: Dış Eğitmen vs İç Eğitmen Ordusu</h4>
+                <p className="text-xs text-gray-400">100 Şubeli Perakende Zinciri Yıllık Tahmini Hesaplaması:</p>
+              </div>
+              <div className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-mono font-bold border border-emerald-400/30">
+                💰 YILLIK %75 NET ROI
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+              <div className="bg-rose-500/10 p-4 rounded-xl border border-rose-500/30 space-y-1">
+                <span className="text-rose-300 font-bold uppercase">❌ Dış Eğitim Danışmanlığı Maliyeti:</span>
+                <div className="text-xl font-black text-rose-400">₺3.200.000 / Yıl</div>
+                <p className="text-[11px] text-gray-300 font-sans font-light">Geliş-gidiş, konaklama, günlük 50.000 TL salon ve danışman kaşe ücretleri.</p>
+              </div>
+
+              <div className="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/30 space-y-1">
+                <span className="text-emerald-300 font-bold uppercase">✅ Train The Trainer İç Eğitmen Maliyeti:</span>
+                <div className="text-xl font-black text-emerald-400">₺750.000 / Yıl</div>
+                <p className="text-[11px] text-gray-300 font-sans font-light">Sertifikalı iç eğitmenlerle sıfır dış bağımlılık ve 7/24 sürdürülebilir eğitim.</p>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* DEMO & QUOTE CALL TO ACTION */}
