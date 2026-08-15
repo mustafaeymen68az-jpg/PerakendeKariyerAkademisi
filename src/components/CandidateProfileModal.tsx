@@ -188,14 +188,23 @@ export default function CandidateProfileModal({ candidate, isOpen, onClose }: Ca
             Kapat
           </button>
 
-          <a
-            href={`data:text/plain;charset=utf-8,${encodeURIComponent(`PERAKENDE KARİYER AKADEMİSİ - YETKİNLİK PASAPORTU\n\nAday: ${candidate.name}\nHedef Pozisyon: ${candidate.targetPosition || candidate.departmentName}\nYetkinlik Skoru: ${candidate.competencyScore}/100\nŞehir: ${candidate.city}\nTamamlanan Eğitim Sayısı: ${completedCourses.length}\n`)}`}
-            download={`${(candidate.name || 'Aday').replace(/\s+/g, '_')}_Yetkinlik_Pasaportu.txt`}
-            className="w-full sm:w-auto px-8 py-3 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all text-center flex items-center justify-center space-x-2"
-          >
-            <Download className="w-4 h-4" />
-            <span>Aday Yetkinlik Pasaportunu İndir</span>
-          </a>
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <a
+              href={`/ik-cozumlari/calisan-kariyer-planlamasi?name=${encodeURIComponent(candidate.name || '')}`}
+              className="w-full sm:w-auto px-6 py-3 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all text-center flex items-center justify-center space-x-2 border border-blue-400/40"
+            >
+              <span>Çalışanın Kariyer Planlama Profiline Git →</span>
+            </a>
+
+            <a
+              href={`data:text/plain;charset=utf-8,${encodeURIComponent(`PERAKENDE KARİYER AKADEMİSİ - YETKİNLİK PASAPORTU\n\nAday: ${candidate.name}\nHedef Pozisyon: ${candidate.targetPosition || candidate.departmentName}\nYetkinlik Skoru: ${candidate.competencyScore}/100\nŞehir: ${candidate.city}\nTamamlanan Eğitim Sayısı: ${completedCourses.length}\n`)}`}
+              download={`${(candidate.name || 'Aday').replace(/\s+/g, '_')}_Yetkinlik_Pasaportu.txt`}
+              className="w-full sm:w-auto px-6 py-3 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all text-center flex items-center justify-center space-x-2"
+            >
+              <Download className="w-4 h-4" />
+              <span>Yetkinlik Pasaportu İndir</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

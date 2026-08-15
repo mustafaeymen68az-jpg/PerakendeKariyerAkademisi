@@ -605,6 +605,119 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       { phase: '2. Ay (Ağustos 2026)', action: 'Lojistik Müdürü koçluğunda haftalık sevkiyat planlama.', targetDate: '20 Ağustos 2026' },
       { phase: '3. Ay (Eylül 2026)', action: 'Depo & Lojistik Şefi pozisyonuna terfi.', targetDate: '10 Eylül 2026' }
     ]
+  },
+  {
+    id: 'emp_5',
+    name: 'Ahmet Kaya',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
+    currentRole: 'Mağaza Müdür Yardımcısı',
+    recommendedRole: 'Mağaza Müdürü (İzmir Alsancak)',
+    matchPercentage: 94,
+    competencyScore: 88,
+    city: 'İzmir',
+    experienceYears: 5,
+    startDate: '10 Nisan 2021',
+    tenure: '5 Yıl 4 Ay',
+    previousExperiences: [
+      {
+        companyName: 'BİM A.Ş.',
+        role: 'Kasa Şefi',
+        duration: '2 Yıl',
+        yearsRange: '2019–2021'
+      }
+    ],
+    priorTrainings: [
+      {
+        title: 'Mağaza İçi Vardiya Yönetimi',
+        institution: 'MEB Sertifika Programı',
+        instructorName: 'Kemal Sunal',
+        companyWhereTaken: 'BİM A.Ş. Dönemi',
+        durationHours: 30,
+        year: '2019'
+      }
+    ],
+    completedTrainings: [
+      {
+        courseTitle: 'Mağaza Müdürlüğü Terfi Hazırlık Programı',
+        duration: '24 Saat',
+        durationHours: 24,
+        completedDate: '15 Mayıs 2026',
+        instructorName: 'Prof. Dr. Ahmet Çelik',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
+        score: 88,
+        gradeStatus: 'Pek İyi',
+        certificateId: 'PKA-2026-MUD-088'
+      }
+    ],
+    evaluations: {
+      managerReview: {
+        author: 'Mehmet Yılmaz',
+        role: 'Mağaza Müdürü (Üst Yönetici)',
+        rating: 4.8,
+        comment: 'Ahmet Kaya BeyAlsancak mağazamızda 1. yedek olarak harika bir performans gösteriyor. Mağaza boşaldığında göreve hazırdır.',
+        date: '10 Mayıs 2026'
+      },
+      subordinateReview: {
+        author: 'Burak Çetin',
+        role: 'Baş Kasiyer (Ekip Çalışanı)',
+        rating: 4.7,
+        comment: 'Ekibe her zaman destek veriyor, vardiya dağılımlarında adil.',
+        date: '02 Mayıs 2026'
+      },
+      hrReview: {
+        author: 'Ahmet Çelik',
+        role: 'İnsan Kaynakları Direktörü (İK Yönetimi)',
+        rating: 4.9,
+        comment: 'Ahmet Kaya 88 puan yetkinlik skoruyla İzmir Alsancak Mağaza Müdürlüğü için onaylanmış 1. yedektir.',
+        date: '14 Mayıs 2026'
+      }
+    },
+    swot: {
+      strengths: ['Saha liderliği ve ciro takibi', 'Vardiya sevk yönetimi'],
+      weaknesses: ['İleri Finansal P&L analizleri'],
+      opportunities: ['İzmir Alsancak Mağaza Müdürlüğü terfisi'],
+      threats: ['Yoğun vardiya temposu']
+    },
+    developmentAreas: ['P&L Finansal Bütçe Yönetimi'],
+    careerAdvice: [
+      { phase: '1. Ay (Temmuz 2026)', action: 'Terfi onayı tebliği.', targetDate: '15 Temmuz 2026' }
+    ]
+  },
+  {
+    id: 'emp_6',
+    name: 'Caner Şahin',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
+    currentRole: 'Baş Kasiyer',
+    recommendedRole: 'Kasa Operasyon Şefi (İstanbul Kuleli)',
+    matchPercentage: 96,
+    competencyScore: 92,
+    city: 'İstanbul',
+    experienceYears: 4,
+    startDate: '01 Şubat 2022',
+    tenure: '4 Yıl 6 Ay',
+    previousExperiences: [
+      { companyName: 'Migros', role: 'Kasiyer', duration: '2 Yıl', yearsRange: '2020–2022' }
+    ],
+    priorTrainings: [
+      { title: 'Kasa Hijyen ve Hızlı Geçiş', institution: 'Halk Eğitim', instructorName: 'Seda Yılmaz', companyWhereTaken: 'Migros', durationHours: 20, year: '2020' }
+    ],
+    completedTrainings: [
+      { courseTitle: 'Kasa Operasyon Şefliği Master Programı', duration: '18 Saat', durationHours: 18, completedDate: '20 Nisan 2026', instructorName: 'Prof. Dr. Ahmet Çelik', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 92, gradeStatus: 'Pek İyi', certificateId: 'PKA-2026-KAS-092' }
+    ],
+    evaluations: {
+      managerReview: { author: 'Selin Özer', role: 'Kasa Şefi', rating: 4.9, comment: 'Caner Kuleli mağazasında 1. yedek olarak %92 başarı göstermiştir.', date: '12 Mayıs 2026' },
+      subordinateReview: { author: 'Merve Öztürk', role: 'Kasiyer', rating: 4.8, comment: 'Hızlı ve yardımsever.', date: '10 Mayıs 2026' },
+      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 5.0, comment: 'Kasa Şefliği 1. yedek adayı.', date: '15 Mayıs 2026' }
+    },
+    swot: {
+      strengths: ['Hızlı kasa ve Z-Raporu hatasızlığı'],
+      weaknesses: ['Stok devir takibi'],
+      opportunities: ['Kasa Şefliği terfisi'],
+      threats: ['Yoğun kasa sırası']
+    },
+    developmentAreas: ['Stok ve Reyon Yönetimi'],
+    careerAdvice: [{ phase: '1. Ay', action: 'Kasa Şefliği ataması', targetDate: '01 Ağustos 2026' }]
   }
 ];
 

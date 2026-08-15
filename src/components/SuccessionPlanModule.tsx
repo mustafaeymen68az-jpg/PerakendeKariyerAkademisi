@@ -419,6 +419,14 @@ export default function SuccessionPlanModule() {
                         <span className="px-2.5 py-1 bg-emerald-500 text-white rounded-lg text-xs font-black group-hover:bg-emerald-400 transition-colors">
                           {succ.score} Puan
                         </span>
+                        
+                        <a
+                          href={`/ik-cozumlari/calisan-kariyer-planlamasi?name=${encodeURIComponent(succ.name.replace(/\(.*\)/, '').trim())}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-2.5 py-1 bg-[#087F96] hover:bg-[#056B80] text-white rounded-lg text-[10px] font-bold transition-colors flex items-center space-x-1"
+                        >
+                          <span>Kariyer Planı ↗</span>
+                        </a>
                       </div>
                     </div>
                   ))}
