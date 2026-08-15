@@ -99,11 +99,6 @@ export default function LeftSidebarNav() {
               <X className="h-5 w-5" />
             </button>
           </div>
-          
-          <div className="flex items-center space-x-2 text-[10px] text-emerald-400 font-mono font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
-            <ShieldCheck className="h-3.5 w-3.5 flex-shrink-0" />
-            <span className="truncate">Perakende Kariyer Akademisi</span>
-          </div>
         </div>
 
         {/* MIDDLE VERTICAL MENU (TOP TO BOTTOM STACKED / YUKARIDAN AŞAĞIYA) */}
