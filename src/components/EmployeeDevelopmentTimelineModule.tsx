@@ -203,6 +203,13 @@ function generate1000TimelineEmployeesData(): EmployeeCareerRecord[] {
             department: dept
           }
         ]
+      },
+      personalCareerGoal: {
+        targetRole: deptConfig.target,
+        targetDate: '1. Çeyrek 2027',
+        description: `Kariyerimi Planlıyorum Modülü: 2027 hedeflerim doğrultusunda ${deptConfig.target} pozisyonuna terfi etmek ve Perakende Akademi liderlik sertifikasyonunu %90+ puanla tamamlamak.`,
+        savedAt: `${(i % 25) + 1} Ağustos 2026`,
+        status: score >= 90 ? 'Hedefe Ulaşıldı' : score >= 80 ? 'Aktif Planlama' : 'Onay Bekliyor'
       }
     });
   }
@@ -496,6 +503,40 @@ export default function EmployeeDevelopmentTimelineModule() {
                 </div>
               );
             })()}
+          </div>
+
+          {/* PERSONAL CAREER GOAL CARD (KARİYERİMİ PLANLIYORUM) */}
+          <div className="bg-gradient-to-r from-amber-500/10 via-amber-50 to-orange-50 p-5 rounded-2xl border-2 border-amber-300 shadow-sm space-y-3 mt-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-amber-200/60 pb-2">
+              <div className="flex items-center space-x-2">
+                <Target className="w-5 h-5 text-amber-600 shrink-0" />
+                <h4 className="font-black text-sm text-[#0B2A4A]">
+                  🎯 Kayıtlı Kişisel Kariyer Hedefi (Kariyerimi Planlıyorum Modülü)
+                </h4>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-[10px] font-mono font-black px-2.5 py-1 bg-amber-200 text-amber-900 rounded-lg border border-amber-400">
+                  Durum: {activeEmployee.personalCareerGoal.status}
+                </span>
+                <span className="text-[10px] font-mono text-gray-600">
+                  Kayıt Tarihi: {activeEmployee.personalCareerGoal.savedAt}
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-xl border border-amber-200 space-y-2 shadow-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-2">
+                <span className="text-xs font-black text-[#0B2A4A]">
+                  Kişinin Kendi Belirlediği Hedef Pozisyon: <span className="text-emerald-700 font-black">{activeEmployee.personalCareerGoal.targetRole}</span>
+                </span>
+                <span className="text-[11px] font-mono font-bold text-amber-900 bg-amber-100 px-3 py-0.5 rounded-md border border-amber-300">
+                  🎯 Hedef Zaman: {activeEmployee.personalCareerGoal.targetDate}
+                </span>
+              </div>
+              <p className="text-xs text-gray-800 italic font-medium bg-amber-50/60 p-3 rounded-lg border border-amber-100/80 leading-relaxed">
+                "{activeEmployee.personalCareerGoal.description}"
+              </p>
+            </div>
           </div>
 
         </div>
