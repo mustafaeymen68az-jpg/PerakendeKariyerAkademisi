@@ -23,12 +23,12 @@ import {
   UserCheck,
   User,
   GraduationCap,
-  Crown
+  Crown,
+  CreditCard
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
 const HR_SUBMENU = [
-  { name: '💰 Kurumsal Ücretlendirme', path: '/kurumsal-fiyatlandirma' },
   { name: '🎓 İç Eğitmen Yetiştirme', path: '/kurumsal-cozumler#ic-egitmen' },
   { name: 'Çalışan Özgeçmiş & Deneyim ve Eğitim Karnesi', path: '/ik-cozumlari/calisan-ozgecmis-egitim-karnesi' },
   { name: 'Çalışan Kariyer Planlaması', path: '/ik-cozumlari/calisan-kariyer-planlamasi' },
@@ -50,11 +50,12 @@ const INSTRUCTORS_SUBMENU = [
   { name: 'Can Demirel (Lojistik & Stok Müdürü)', path: '/egitmenler/can-demirel' }
 ];
 
-// Removed 'Admin Paneli' from sidebar items as requested
+// Main sidebar menu items - Kurumsal Ücretlendirme is now a standalone main item
 const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/', icon: Home },
   { name: 'Eğitim Kataloğu', path: '/egitimler', icon: BookOpen },
   { name: 'Kurumsal Akademi', path: '/kurumsal-cozumler', icon: Building2 },
+  { name: 'Kurumsal Ücretlendirme', path: '/kurumsal-fiyatlandirma', icon: CreditCard },
   { name: 'İK Çözümleri', path: '/ik-cozumlari', icon: Briefcase, isDropdown: true },
   { name: 'Kariyer Haritası', path: '/kariyer-yollari', icon: Map },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', icon: Target },
