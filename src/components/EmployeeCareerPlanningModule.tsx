@@ -22,7 +22,12 @@ import {
   BookOpen,
   GraduationCap,
   Calendar,
-  Clock
+  Clock,
+  MessageSquare,
+  Star,
+  User,
+  Send,
+  Check
 } from 'lucide-react';
 
 export interface CompletedTrainingRecord {
@@ -32,6 +37,20 @@ export interface CompletedTrainingRecord {
   score: number;
   gradeStatus: 'Üstün Başarı' | 'Pek İyi' | 'Başarılı';
   certificateId: string;
+}
+
+export interface EvaluationItem {
+  author: string;
+  role: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
+export interface EmployeeEvaluations {
+  managerReview: EvaluationItem;
+  subordinateReview: EvaluationItem;
+  hrReview: EvaluationItem;
 }
 
 export interface EmployeeCareerRecord {
@@ -45,6 +64,7 @@ export interface EmployeeCareerRecord {
   city: string;
   experienceYears: number;
   completedTrainings: CompletedTrainingRecord[];
+  evaluations: EmployeeEvaluations;
   swot: {
     strengths: string[];
     weaknesses: string[];
@@ -59,7 +79,7 @@ export interface EmployeeCareerRecord {
   }[];
 }
 
-const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
+const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
   {
     id: 'emp_1',
     name: 'Ahmet Çelik',
@@ -104,6 +124,29 @@ const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         certificateId: 'PKA-2026-STK-090'
       }
     ],
+    evaluations: {
+      managerReview: {
+        author: 'Murat Yıldırım',
+        role: 'Mağaza Müdürü (Üst Yönetici)',
+        rating: 4.9,
+        comment: 'Ahmet Bey kasa operasyonlarında, Z-raporu alımında ve yoğun saatlerdeki vardiya yönetiminde mükemmel performans gösteriyor. P&L bütçe eğitimini tamamladığında Mağaza Müdür Yardımcılığı görevine %100 hazırdır.',
+        date: '10 Haziran 2026'
+      },
+      subordinateReview: {
+        author: 'Selin Demir',
+        role: 'Kasiyer (Ekip Çalışanı / Alt Kadro)',
+        rating: 4.8,
+        comment: 'Kasa yoğunluğu arttığında hemen kasaya girip bize destek veriyor. Müşteri şikayetlerinde çok sakin ve çözüm odaklı. Vardiya çizelgesinde adil ve duyarlı.',
+        date: '02 Haziran 2026'
+      },
+      hrReview: {
+        author: 'Ahmet Çelik',
+        role: 'İnsan Kaynakları Direktörü (İK Yönetimi)',
+        rating: 5.0,
+        comment: 'Aday yetkinlik pasaportu sınavlarında 94 puanla şirketimizin iç terfi havuzunda 1. sıradadır. Liderlik ve analitik becerileri terfi kriterlerini karşılamaktadır.',
+        date: '14 Haziran 2026'
+      }
+    },
     swot: {
       strengths: [
         'Kasa işlem hızı ve hatasız Z-Raporu alımında şirket 1.si (%99.2)',
@@ -170,6 +213,29 @@ const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         certificateId: 'PKA-2026-TED-088'
       }
     ],
+    evaluations: {
+      managerReview: {
+        author: 'Caner Şahin',
+        role: 'Bölge Mağaza Müdürü (Üst Yönetici)',
+        rating: 4.8,
+        comment: 'Reyon düzeni ve SKT sıfır kayıp performansıyla Ankara mağazalarımızda öne çıkıyor. Kategori yönetimi ve pazarlık modülünü tamamladığında Merkeze geçişe hazırdır.',
+        date: '08 Mayıs 2026'
+      },
+      subordinateReview: {
+        author: 'Emre Aksoy',
+        role: 'Reyon Elemanı (Ekip Çalışanı)',
+        rating: 4.7,
+        comment: 'Reyon dizilimlerini çok açık şekilde öğretiyor. Ekip içinde disiplinli ama her zaman yapıcı.',
+        date: '12 Mayıs 2026'
+      },
+      hrReview: {
+        author: 'Ahmet Çelik',
+        role: 'İnsan Kaynakları Direktörü (İK Yönetimi)',
+        rating: 4.9,
+        comment: 'Zeynep Hanım 91 puan yetkinlik skoruyla Satın Alma & Kategori birimimiz için yüksek potansiyelli aday olarak değerlendirilmiştir.',
+        date: '01 Haziran 2026'
+      }
+    },
     swot: {
       strengths: [
         'Reyon teşhir (Planogram) ve 5S düzeninde mükemmel uygulama',
@@ -235,6 +301,29 @@ const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         certificateId: 'PKA-2026-ISG-094'
       }
     ],
+    evaluations: {
+      managerReview: {
+        author: 'Oğuzhan Kaya',
+        role: 'Genel Müdür Yardımcısı (Üst Yönetici)',
+        rating: 5.0,
+        comment: 'Mehmet Bey Ege bölgesinde hedeflerini %118 oranında aşmış, 4 yeni Mağaza Müdürü yetiştirmiştir. Bölge Müdürlüğü pozisyonunda yüksek başarı gösterecektir.',
+        date: '20 Mayıs 2026'
+      },
+      subordinateReview: {
+        author: 'Gamze Tekin',
+        role: 'Mağaza Müdür Yardımcısı (Ekip Çalışanı)',
+        rating: 4.9,
+        comment: 'Bizim kariyer gelişimimize birebir koçluk yapıyor. Mağazadaki her sorunda arkamızda duran gerçek bir lider.',
+        date: '18 Mayıs 2026'
+      },
+      hrReview: {
+        author: 'Ahmet Çelik',
+        role: 'İnsan Kaynakları Direktörü (İK Yönetimi)',
+        rating: 5.0,
+        comment: 'Kıdemli Mağaza Müdürümüz Mehmet Yılmaz 96 puanla Ege Bölge Müdürlüğü aday listesinde 1. sıradadır.',
+        date: '02 Haziran 2026'
+      }
+    },
     swot: {
       strengths: [
         '8 mağazalık bölge ciro hedefini %118 oranında aşma başarısı',
@@ -292,6 +381,29 @@ const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         certificateId: 'PKA-2026-ROT-086'
       }
     ],
+    evaluations: {
+      managerReview: {
+        author: 'Hakan Erdem',
+        role: 'Lojistik Müdürü (Üst Yönetici)',
+        rating: 4.6,
+        comment: 'Ayşe Hanım WMS yazılımını çok etkin kullanıyor, depo hatasızlık oranı %98.5 seviyesindedir. Soğuk zincir lojistiği eğitiminden sonra Şef kadrosuna terfi edecektir.',
+        date: '02 Nisan 2026'
+      },
+      subordinateReview: {
+        author: 'Tarık Yıldız',
+        role: 'Depo Elemanı (Ekip Çalışanı)',
+        rating: 4.5,
+        comment: 'Araç yükleme ve mal kabul çizelgelerini eksiksiz yönetiyor. Ekip arkadaşlarına karşı nazik.',
+        date: '10 Nisan 2026'
+      },
+      hrReview: {
+        author: 'Ahmet Çelik',
+        role: 'İnsan Kaynakları Direktörü (İK Yönetimi)',
+        rating: 4.7,
+        comment: 'Bursa Lojistik Merkezi genişleme projemizde Depo Şefliği adayları arasında 86 puan yetkinlik skoruyla öne çıkmaktadır.',
+        date: '15 Nisan 2026'
+      }
+    },
     swot: {
       strengths: [
         'Depo kabul ve sevkiyat hatasızlık oranı %98.5',
@@ -323,12 +435,19 @@ const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
 ];
 
 export default function EmployeeCareerPlanningModule() {
-  const [selectedEmpId, setSelectedEmpId] = useState<string>(EMPLOYEES_CAREER_DATA[0].id);
+  const [employeesData, setEmployeesData] = useState<EmployeeCareerRecord[]>(INITIAL_EMPLOYEES_CAREER_DATA);
+  const [selectedEmpId, setSelectedEmpId] = useState<string>(INITIAL_EMPLOYEES_CAREER_DATA[0].id);
   const [minScoreFilter, setMinScoreFilter] = useState<number>(80);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  // Local state for editing reviews dynamically
+  const [managerInput, setManagerInput] = useState<string>('');
+  const [subordinateInput, setSubordinateInput] = useState<string>('');
+  const [hrInput, setHrInput] = useState<string>('');
+  const [savedSuccessMsg, setSavedSuccessMsg] = useState<string | null>(null);
+
   const filteredEmployees = useMemo(() => {
-    return EMPLOYEES_CAREER_DATA.filter(emp => {
+    return employeesData.filter(emp => {
       const matchesScore = emp.competencyScore >= minScoreFilter;
       const matchesSearch = searchQuery === '' || 
         emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -336,11 +455,56 @@ export default function EmployeeCareerPlanningModule() {
         emp.recommendedRole.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesScore && matchesSearch;
     });
-  }, [minScoreFilter, searchQuery]);
+  }, [employeesData, minScoreFilter, searchQuery]);
 
   const activeEmployee = useMemo(() => {
-    return EMPLOYEES_CAREER_DATA.find(e => e.id === selectedEmpId) || EMPLOYEES_CAREER_DATA[0];
-  }, [selectedEmpId]);
+    return employeesData.find(e => e.id === selectedEmpId) || employeesData[0];
+  }, [employeesData, selectedEmpId]);
+
+  // Handler to update evaluation note dynamically
+  const handleSaveEvaluation = (targetType: 'manager' | 'subordinate' | 'hr') => {
+    let newComment = '';
+    if (targetType === 'manager') newComment = managerInput;
+    if (targetType === 'subordinate') newComment = subordinateInput;
+    if (targetType === 'hr') newComment = hrInput;
+
+    if (!newComment.trim()) return;
+
+    setEmployeesData(prev => prev.map(emp => {
+      if (emp.id !== activeEmployee.id) return emp;
+      const updated = { ...emp };
+      const todayStr = new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      if (targetType === 'manager') {
+        updated.evaluations.managerReview = {
+          ...updated.evaluations.managerReview,
+          comment: newComment,
+          date: todayStr
+        };
+      } else if (targetType === 'subordinate') {
+        updated.evaluations.subordinateReview = {
+          ...updated.evaluations.subordinateReview,
+          comment: newComment,
+          date: todayStr
+        };
+      } else if (targetType === 'hr') {
+        updated.evaluations.hrReview = {
+          ...updated.evaluations.hrReview,
+          comment: newComment,
+          date: todayStr
+        };
+      }
+
+      return updated;
+    }));
+
+    if (targetType === 'manager') setManagerInput('');
+    if (targetType === 'subordinate') setSubordinateInput('');
+    if (targetType === 'hr') setHrInput('');
+
+    setSavedSuccessMsg('Değerlendirme başarıyla güncellendi ve sisteme kaydedildi!');
+    setTimeout(() => setSavedSuccessMsg(null), 3500);
+  };
 
   return (
     <div className="space-y-8">
@@ -351,9 +515,9 @@ export default function EmployeeCareerPlanningModule() {
           <BrainCircuit className="w-4 h-4 text-emerald-400" />
           <span>İK KARAR DESTEK & AKILLI KARİYER PLANLAMA MOTORU</span>
         </div>
-        <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Kariyer Planlaması & Gelişim Paneli</h2>
+        <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Kariyer Planlaması & 360° Değerlendirme</h2>
         <p className="text-xs sm:text-sm text-gray-200 font-light max-w-3xl leading-relaxed">
-          Çalışanları yetkinlik puanlarına göre sıralayın; her çalışan için <strong>tamamlanan eğitimleri & sınav puanlarını</strong>, <strong>SWOT Analizini</strong>, <strong>Hedef Pozisyon Önerisini</strong> ve <strong>90 Günlük Bireysel Kariyer Planını</strong> inceleyin.
+          Çalışanları yetkinlik puanlarına göre sıralayın; her çalışan için <strong>360° Üst Yönetici, Alt Çalışan ve İK Değerlendirmelerini</strong>, <strong>Aldığı Eğitimleri</strong>, <strong>SWOT Analizini</strong> ve <strong>90 Günlük Bireysel Kariyer Planını</strong> inceleyin.
         </p>
       </div>
 
@@ -384,7 +548,15 @@ export default function EmployeeCareerPlanningModule() {
         </div>
       </div>
 
-      {/* Main Two-Column Layout: Employee List + Detailed SWOT & Completed Trainings */}
+      {/* Success Alert */}
+      {savedSuccessMsg && (
+        <div className="p-4 bg-emerald-50 border-2 border-emerald-300 rounded-2xl text-xs font-bold text-emerald-900 flex items-center space-x-2 shadow-md animate-in fade-in duration-200">
+          <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+          <span>{savedSuccessMsg}</span>
+        </div>
+      )}
+
+      {/* Main Two-Column Layout: Employee List + Detailed SWOT, 360 Reviews & Completed Trainings */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left Column: Sorted Employee List */}
@@ -439,7 +611,7 @@ export default function EmployeeCareerPlanningModule() {
           </div>
         </div>
 
-        {/* Right Column: Active Employee Details, Completed Trainings & SWOT */}
+        {/* Right Column: Active Employee Details, 360 Reviews, Completed Trainings & SWOT */}
         <div className="lg:col-span-2 space-y-6">
           
           {/* Employee Header Overview */}
@@ -483,7 +655,141 @@ export default function EmployeeCareerPlanningModule() {
             </div>
           </div>
 
-          {/* COMPLETED TRAININGS & EXAM SCORES TABLE (ÇALIŞANIN ALDIĞI EĞİTİMLER VE PUANLAR) */}
+          {/* 360-DEGREE EVALUATION & REVIEW PANEL (ÜST YÖNETİCİ, ALT ÇALIŞAN & İK DEĞERLENDİRMELERİ) */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-6">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2">
+                <MessageSquare className="w-5 h-5 text-[#087F96]" />
+                <span>360° Yönetici, Ekip ve İK Değerlendirmeleri</span>
+              </h3>
+              <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-200">
+                Resmi Değerlendirme Kayıtları
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6">
+              
+              {/* 1. ÜST YÖNETİCİ DEĞERLENDİRMESİ */}
+              <div className="bg-gradient-to-br from-slate-50 to-blue-50/50 p-5 rounded-2xl border border-blue-200 space-y-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-blue-100 pb-2">
+                  <div className="flex items-center space-x-2">
+                    <UserCheck className="w-4 h-4 text-[#087F96]" />
+                    <h4 className="font-extrabold text-xs text-[#0B2A4A]">1. Üst Yönetici Değerlendirmesi</h4>
+                  </div>
+                  <div className="flex items-center space-x-2 text-[10px] text-gray-500 font-mono">
+                    <span className="font-bold text-gray-700">{activeEmployee.evaluations.managerReview.author} ({activeEmployee.evaluations.managerReview.role})</span>
+                    <span>• {activeEmployee.evaluations.managerReview.date}</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-700 font-medium leading-relaxed italic bg-white p-3 rounded-xl border border-blue-100">
+                  "{activeEmployee.evaluations.managerReview.comment}"
+                </p>
+
+                {/* Edit / Add Manager Review Note Form */}
+                <div className="pt-2 space-y-2">
+                  <label className="block text-[10px] font-bold text-[#0B2A4A] uppercase">Yönetici Görüşünü Güncelle / Not Ekle:</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Üst yönetici değerlendirme notunu yazın..."
+                      value={managerInput}
+                      onChange={(e) => setManagerInput(e.target.value)}
+                      className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#087F96]"
+                    />
+                    <button
+                      onClick={() => handleSaveEvaluation('manager')}
+                      className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl text-xs transition-colors flex items-center space-x-1 whitespace-nowrap"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Kaydet</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. ALT ÇALIŞAN / EKİP GERİ BİLDİRİMİ */}
+              <div className="bg-gradient-to-br from-slate-50 to-emerald-50/50 p-5 rounded-2xl border border-emerald-200 space-y-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-emerald-100 pb-2">
+                  <div className="flex items-center space-x-2">
+                    <Users className="w-4 h-4 text-emerald-600" />
+                    <h4 className="font-extrabold text-xs text-[#0B2A4A]">2. Alt Çalışan / Ekip Geri Bildirimi</h4>
+                  </div>
+                  <div className="flex items-center space-x-2 text-[10px] text-gray-500 font-mono">
+                    <span className="font-bold text-gray-700">{activeEmployee.evaluations.subordinateReview.author} ({activeEmployee.evaluations.subordinateReview.role})</span>
+                    <span>• {activeEmployee.evaluations.subordinateReview.date}</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-700 font-medium leading-relaxed italic bg-white p-3 rounded-xl border border-emerald-100">
+                  "{activeEmployee.evaluations.subordinateReview.comment}"
+                </p>
+
+                {/* Edit / Add Subordinate Feedback Note Form */}
+                <div className="pt-2 space-y-2">
+                  <label className="block text-[10px] font-bold text-[#0B2A4A] uppercase">Ekip Geri Bildirimini Güncelle / Not Ekle:</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Ekip üyesi geri bildirim notunu yazın..."
+                      value={subordinateInput}
+                      onChange={(e) => setSubordinateInput(e.target.value)}
+                      className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                    />
+                    <button
+                      onClick={() => handleSaveEvaluation('subordinate')}
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center space-x-1 whitespace-nowrap"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Kaydet</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. İK YÖNETİCİSİ DEĞERLENDİRMESİ */}
+              <div className="bg-gradient-to-br from-slate-50 to-purple-50/50 p-5 rounded-2xl border border-purple-200 space-y-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-purple-100 pb-2">
+                  <div className="flex items-center space-x-2">
+                    <ShieldCheck className="w-4 h-4 text-purple-600" />
+                    <h4 className="font-extrabold text-xs text-[#0B2A4A]">3. İK Yöneticisi Değerlendirmesi</h4>
+                  </div>
+                  <div className="flex items-center space-x-2 text-[10px] text-gray-500 font-mono">
+                    <span className="font-bold text-gray-700">{activeEmployee.evaluations.hrReview.author} ({activeEmployee.evaluations.hrReview.role})</span>
+                    <span>• {activeEmployee.evaluations.hrReview.date}</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-700 font-medium leading-relaxed italic bg-white p-3 rounded-xl border border-purple-100">
+                  "{activeEmployee.evaluations.hrReview.comment}"
+                </p>
+
+                {/* Edit / Add HR Review Note Form */}
+                <div className="pt-2 space-y-2">
+                  <label className="block text-[10px] font-bold text-[#0B2A4A] uppercase">İK Değerlendirme Notunu Güncelle / Not Ekle:</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="İnsan Kaynakları direktör notunu yazın..."
+                      value={hrInput}
+                      onChange={(e) => setHrInput(e.target.value)}
+                      className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-purple-600"
+                    />
+                    <button
+                      onClick={() => handleSaveEvaluation('hr')}
+                      className="px-4 py-2 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-xl text-xs transition-colors flex items-center space-x-1 whitespace-nowrap"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Kaydet</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* COMPLETED TRAININGS & EXAM SCORES TABLE */}
           <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md space-y-4">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <h3 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2">
