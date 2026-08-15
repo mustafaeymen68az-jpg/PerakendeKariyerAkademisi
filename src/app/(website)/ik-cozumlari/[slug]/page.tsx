@@ -23,6 +23,7 @@ import SuccessionPlanModule from '@/components/SuccessionPlanModule';
 import EnterpriseROICalculator from '@/components/EnterpriseROICalculator';
 import EmployeeCareerPlanningModule from '@/components/EmployeeCareerPlanningModule';
 import EmployeeDevelopmentTimelineModule from '@/components/EmployeeDevelopmentTimelineModule';
+import EmployeePerformanceKPIModule from '@/components/EmployeePerformanceKPIModule';
 
 interface HRDetailData {
   slug: string;
@@ -234,6 +235,7 @@ export default async function HRSolutionDetailPage({ params }: { params: Promise
         {data.slug === 'terfi-yonetimi' && <PromotionReadinessModule />}
         {data.slug === 'yedekleme-plani' && <SuccessionPlanModule />}
         {data.slug === 'yetkinlik-matrisi' && <EnterpriseROICalculator />}
+        {data.slug === 'performans-kpi' && <EmployeePerformanceKPIModule />}
 
       </div>
     </div>
