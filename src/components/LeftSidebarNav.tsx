@@ -20,7 +20,9 @@ import {
   Award,
   Layers,
   ChevronRight,
-  UserCheck
+  UserCheck,
+  User,
+  GraduationCap
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
@@ -183,7 +185,25 @@ export default function LeftSidebarNav() {
 
         {/* BOTTOM ACTION BUTTONS */}
         <div className="p-4 border-t border-white/10 space-y-2 flex-shrink-0 bg-[#0B2A4A]/80">
+          <button
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new Event('open_visitor_profile_modal'));
+              }
+            }}
+            className="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 border border-blue-400/40 cursor-pointer"
+          >
+            <User className="h-3.5 w-3.5 text-white" />
+            <span>👤 Çalışan Girişi</span>
+          </button>
 
+          <Link
+            href="/ik-cozumlari/egitim-yonetimi"
+            className="w-full py-2 px-3 bg-purple-700 hover:bg-purple-800 text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 border border-purple-400/40"
+          >
+            <Award className="h-3.5 w-3.5 text-purple-200" />
+            <span>🎓 Eğitmen Girişi</span>
+          </Link>
 
           <Link
             href="/kurumsal-cozumler"

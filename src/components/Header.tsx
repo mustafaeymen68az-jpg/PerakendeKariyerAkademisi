@@ -115,14 +115,34 @@ export default function Header() {
             <span className="text-gray-300">Perakende Sektörünün Kariyer, Yetkinlik ve Yönetici Yetiştirme Platformu</span>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new Event('open_visitor_profile_modal'));
+                }
+              }}
+              className="text-[#DDF4F7] hover:text-white font-extrabold flex items-center space-x-1 cursor-pointer"
+            >
+              <User className="h-3.5 w-3.5 text-blue-300" />
+              <span>👤 Çalışan Girişi</span>
+            </button>
+
+            <span className="text-white/30">|</span>
+
+            <Link
+              href="/ik-cozumlari/egitim-yonetimi"
+              className="text-purple-300 hover:text-purple-200 font-extrabold flex items-center space-x-1"
+            >
+              <GraduationCap className="h-3.5 w-3.5 text-purple-400" />
+              <span>🎓 Eğitmen Girişi</span>
+            </Link>
+
+            <span className="text-white/30">|</span>
+
             <Link href="/kurumsal-demo" className="text-amber-300 hover:text-amber-200 font-extrabold flex items-center space-x-1">
               <Sparkles className="h-3 w-3" />
               <span>Kurumsal Demo Talep Et</span>
-            </Link>
-            <span className="text-white/30">|</span>
-            <Link href="/kariyer-seviyeni-ogren" className="text-emerald-300 hover:text-emerald-200 font-bold">
-              Kariyer Seviyeni Öğren Testi
             </Link>
           </div>
         </div>
@@ -209,21 +229,33 @@ export default function Header() {
             </nav>
           </div>
 
-          {/* RIGHT SECTION: Standardized CTA Buttons & Profile Button */}
+          {/* RIGHT SECTION: Portal Login Buttons (Eğitmen Girişi & Çalışan Girişi) */}
           <div className="hidden lg:flex items-center space-x-2 shrink-0 ml-4">
+            {/* Çalışan Girişi Button */}
             <button
               onClick={() => {
                 if (typeof window !== 'undefined') {
                   window.dispatchEvent(new Event('open_visitor_profile_modal'));
                 }
               }}
-              className="h-9 px-3 bg-white/10 hover:bg-white/20 text-white font-extrabold rounded-xl text-xs flex items-center space-x-1.5 border border-white/20 transition-all cursor-pointer whitespace-nowrap"
-              title="Profil Bilgileriniz"
+              className="h-9 px-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs flex items-center space-x-1.5 shadow-md transition-all cursor-pointer whitespace-nowrap border border-blue-400/40"
+              title="Çalışan Girişi & Profilim"
             >
-              <User className="h-4 w-4 text-emerald-400" />
-              <span>{visitorProfile ? `${visitorProfile.firstName} ${visitorProfile.lastName ? visitorProfile.lastName[0] + '.' : ''}` : 'Giriş / Profil'}</span>
+              <User className="h-4 w-4 text-white" />
+              <span>{visitorProfile ? `${visitorProfile.firstName} ${visitorProfile.lastName ? visitorProfile.lastName[0] + '.' : ''}` : '👤 Çalışan Girişi'}</span>
             </button>
 
+            {/* Eğitmen Girişi Button */}
+            <Link
+              href="/ik-cozumlari/egitim-yonetimi"
+              className="h-9 px-3 bg-purple-700 hover:bg-purple-800 text-white font-extrabold rounded-xl text-xs flex items-center space-x-1.5 shadow-md transition-all whitespace-nowrap border border-purple-400/40"
+              title="İç Eğitmen & Akademi Portalı Girişi"
+            >
+              <GraduationCap className="h-4 w-4 text-purple-200" />
+              <span>🎓 Eğitmen Girişi</span>
+            </Link>
+
+            {/* Kurumsal Solutions */}
             <Link
               href="/kurumsal-cozumler"
               className="h-9 px-3.5 bg-[#E11D48] hover:bg-[#BE123C] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5 whitespace-nowrap"
@@ -270,6 +302,27 @@ export default function Header() {
             ))}
 
             <div className="pt-4 border-t border-white/10 space-y-2">
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new Event('open_visitor_profile_modal'));
+                  }
+                }}
+                className="w-full py-2.5 bg-blue-600 text-white font-extrabold rounded-xl text-center text-xs flex items-center justify-center space-x-2"
+              >
+                <User className="h-4 w-4" />
+                <span>👤 Çalışan Girişi & Profilim</span>
+              </button>
+
+              <Link
+                href="/ik-cozumlari/egitim-yonetimi"
+                onClick={() => setIsOpen(false)}
+                className="w-full py-2.5 bg-purple-700 text-white font-extrabold rounded-xl text-center text-xs flex items-center justify-center space-x-2"
+              >
+                <GraduationCap className="h-4 w-4" />
+                <span>🎓 Eğitmen Girişi</span>
+              </Link>
 
               <Link
                 href="/kurumsal-cozumler"
