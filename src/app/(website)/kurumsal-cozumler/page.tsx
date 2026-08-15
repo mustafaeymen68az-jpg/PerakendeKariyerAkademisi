@@ -204,7 +204,7 @@ export default function KurumsalCozumlerPage() {
             </div>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/talep-olustur"
               className="px-8 py-4 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-2xl shadow-xl transition-all inline-flex items-center space-x-2 text-sm border border-amber-300 scale-105 hover:scale-110"
@@ -212,6 +212,14 @@ export default function KurumsalCozumlerPage() {
               <Building2 className="h-5 w-5" />
               <span>Kurumsal Demo ve Teklif Formu</span>
               <ArrowRight className="h-5 w-5" />
+            </Link>
+
+            <Link
+              href="/kurumsal-fiyatlandirma"
+              className="px-6 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl transition-all inline-flex items-center space-x-2 text-sm border border-white/20"
+            >
+              <DollarSign className="h-5 w-5 text-amber-300" />
+              <span>Kurumsal Fiyatlandırmayı İncele</span>
             </Link>
           </div>
         </div>

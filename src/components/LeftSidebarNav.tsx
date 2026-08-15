@@ -28,6 +28,7 @@ import {
 import Logo from '@/components/Logo';
 
 const HR_SUBMENU = [
+  { name: '💰 Kurumsal Ücretlendirme', path: '/kurumsal-fiyatlandirma' },
   { name: 'Çalışan Özgeçmiş & Deneyim ve Eğitim Karnesi', path: '/ik-cozumlari/calisan-ozgecmis-egitim-karnesi' },
   { name: 'Çalışan Kariyer Planlaması', path: '/ik-cozumlari/calisan-kariyer-planlamasi' },
   { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari/yetkinlik-matrisi' },
