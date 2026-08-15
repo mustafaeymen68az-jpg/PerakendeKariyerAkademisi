@@ -643,6 +643,83 @@ export default function EmployeeDevelopmentTimelineModule() {
             );
           })()}
 
+          {/* 👑 6 KADEMELİ KURUMSAL RAPORLAMA ZİNCİRİ (CEO'YA KADAR RAPORLAMA KART GRİDİ) */}
+          <div className="bg-gradient-to-r from-slate-900 via-[#0B2A4A] to-slate-900 text-white p-5 rounded-2xl border-2 border-amber-400/80 shadow-lg space-y-3 mt-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-amber-400/30 pb-2.5">
+              <h4 className="font-black text-sm text-white flex items-center space-x-2">
+                <Crown className="w-5 h-5 text-amber-400 shrink-0" />
+                <span>👑 {activeEmployee.name}'in 6 Kademeli Kurumsal Raporlama Zinciri (CEO'ya Kadar)</span>
+              </h4>
+              <span className="text-[10px] font-mono font-black text-amber-300 bg-amber-400/20 px-3 py-1 rounded-lg border border-amber-400/40 whitespace-nowrap">
+                Tam Kurumsal Hiyerarşi Kartı 🌳
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+              {/* 1. CEO */}
+              <div className="p-3 bg-amber-950/50 border border-amber-400/50 rounded-xl flex items-center space-x-3 shadow-xs">
+                <img src={activeEmployee.hierarchy.ceoChain[0].avatar} alt={activeEmployee.hierarchy.ceoChain[0].name} className="w-10 h-10 rounded-lg object-cover border-2 border-amber-400 shrink-0" />
+                <div className="truncate">
+                  <span className="text-[9px] font-mono font-black text-amber-300 uppercase block">1. Kademe: Genel Müdür & CEO</span>
+                  <h5 className="font-black text-xs text-white truncate">{activeEmployee.hierarchy.ceoChain[0].name}</h5>
+                  <p className="text-[10px] text-gray-300 truncate">{activeEmployee.hierarchy.ceoChain[0].role}</p>
+                </div>
+              </div>
+
+              {/* 2. GMY */}
+              <div className="p-3 bg-slate-800/80 border border-blue-400/40 rounded-xl flex items-center space-x-3 shadow-xs">
+                <img src={activeEmployee.hierarchy.ceoChain[1].avatar} alt={activeEmployee.hierarchy.ceoChain[1].name} className="w-10 h-10 rounded-lg object-cover border border-blue-400 shrink-0" />
+                <div className="truncate">
+                  <span className="text-[9px] font-mono font-black text-emerald-300 uppercase block">2. Kademe: Operasyon Direktörü (GMY)</span>
+                  <h5 className="font-black text-xs text-white truncate">{activeEmployee.hierarchy.ceoChain[1].name}</h5>
+                  <p className="text-[10px] text-gray-300 truncate">{activeEmployee.hierarchy.ceoChain[1].role}</p>
+                </div>
+              </div>
+
+              {/* 3. Bölge Müdürü */}
+              <div className="p-3 bg-slate-800/80 border border-indigo-400/40 rounded-xl flex items-center space-x-3 shadow-xs">
+                <img src={activeEmployee.hierarchy.ceoChain[2].avatar} alt={activeEmployee.hierarchy.ceoChain[2].name} className="w-10 h-10 rounded-lg object-cover border border-indigo-400 shrink-0" />
+                <div className="truncate">
+                  <span className="text-[9px] font-mono font-black text-emerald-300 uppercase block">3. Kademe: Bölge Operasyon Müdürü</span>
+                  <h5 className="font-black text-xs text-white truncate">{activeEmployee.hierarchy.ceoChain[2].name}</h5>
+                  <p className="text-[10px] text-gray-300 truncate">{activeEmployee.hierarchy.ceoChain[2].role}</p>
+                </div>
+              </div>
+
+              {/* 4. Doğrudan Amir */}
+              <div className="p-3 bg-slate-800/80 border border-slate-400/40 rounded-xl flex items-center space-x-3 shadow-xs">
+                <img src={activeEmployee.hierarchy.ceoChain[3].avatar} alt={activeEmployee.hierarchy.ceoChain[3].name} className="w-10 h-10 rounded-lg object-cover border border-slate-400 shrink-0" />
+                <div className="truncate">
+                  <span className="text-[9px] font-mono font-black text-emerald-300 uppercase block">4. Kademe: Doğrudan Mağaza Amiri</span>
+                  <h5 className="font-black text-xs text-white truncate">{activeEmployee.hierarchy.ceoChain[3].name}</h5>
+                  <p className="text-[10px] text-gray-300 truncate">{activeEmployee.hierarchy.ceoChain[3].role}</p>
+                </div>
+              </div>
+
+              {/* 5. Mevcut Çalışan (Aktif) */}
+              <div className="p-3 bg-emerald-900/60 border-2 border-emerald-400 rounded-xl flex items-center space-x-3 shadow-xs">
+                <img src={activeEmployee.avatar} alt={activeEmployee.name} className="w-10 h-10 rounded-lg object-cover border-2 border-emerald-400 shrink-0" />
+                <div className="truncate">
+                  <span className="text-[9px] font-mono font-black text-emerald-300 uppercase block">5. Kademe: Mevcut Çalışan (Aktif)</span>
+                  <h5 className="font-black text-xs text-white truncate">{activeEmployee.name}</h5>
+                  <p className="text-[10px] text-emerald-200 font-bold truncate">{activeEmployee.currentRole} • %{activeEmployee.competencyScore}p</p>
+                </div>
+              </div>
+
+              {/* 6. Alt Çalışanlar */}
+              <div className="p-3 bg-blue-950/60 border border-blue-400/40 rounded-xl flex items-center space-x-3 shadow-xs">
+                <div className="w-10 h-10 rounded-lg bg-blue-500/30 border border-blue-400 flex items-center justify-center text-amber-300 font-black text-xs shrink-0">
+                  {activeEmployee.hierarchy.subordinates.length} Personel
+                </div>
+                <div className="truncate">
+                  <span className="text-[9px] font-mono font-black text-emerald-300 uppercase block">6. Kademe: Alt Ekip Üyeleri</span>
+                  <h5 className="font-black text-xs text-white truncate">{activeEmployee.hierarchy.subordinates.map(s => s.name).slice(0, 2).join(', ')}...</h5>
+                  <p className="text-[10px] text-gray-300 truncate">Doğrudan Raporlayan Kadro ({activeEmployee.hierarchy.subordinates.length} Personel)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* ORGANİZASYON HİYERARŞİSİ & YÖNETİM AĞACI CARD (CEO'YA KADAR TAM ZİNCİR) */}
