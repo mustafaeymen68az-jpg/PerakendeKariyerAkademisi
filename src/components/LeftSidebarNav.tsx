@@ -65,7 +65,7 @@ export default function LeftSidebarNav() {
   const pathname = usePathname();
   const [isOpenMobile, setIsOpenMobile] = useState(false);
   const [isHrOpen, setIsHrOpen] = useState(false);
-  const [isInstructorsOpen, setIsInstructorsOpen] = useState(true);
+  const [isInstructorsOpen, setIsInstructorsOpen] = useState(false);
 
   // Close mobile drawer on route change
   useEffect(() => {
