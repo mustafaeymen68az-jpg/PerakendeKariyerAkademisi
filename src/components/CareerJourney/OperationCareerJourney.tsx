@@ -86,6 +86,7 @@ export default function OperationCareerJourney() {
   };
 
   // Step click handler (interactively updates level & top calculations & detail panel)
+  // Clicking any step makes ONLY that step active (no dual active highlight)
   const handleStepClick = (step: CareerStep15) => {
     setUserCurrentLevelId(step.id);
     setSelectedStep(step);
@@ -232,7 +233,7 @@ export default function OperationCareerJourney() {
                 {activeTrack.headline}
               </h2>
               <p className="text-gray-500 text-xs sm:text-sm mt-1">
-                Aşağıdaki basamaklara tıklayarak seçtiğiniz pozisyondan zirveye kalan süreyi ve terfi için gereken eğitimleri anında inceleyebilirsiniz.
+                Tıkladığınız pozisyon aktif olur; zirveye kalan süre ve hedef tarih anında interaktif olarak güncellenir.
               </p>
             </div>
 
@@ -244,11 +245,7 @@ export default function OperationCareerJourney() {
               </div>
               <div className="flex items-center space-x-1 bg-[#087F96] text-white px-3 py-1.5 rounded-xl font-extrabold shadow-sm">
                 <div className="w-2 h-2 rounded-full bg-amber-300 animate-ping" />
-                <span>Mevcut Seçim</span>
-              </div>
-              <div className="flex items-center space-x-1 bg-slate-900 text-white px-3 py-1.5 rounded-xl font-bold">
-                <ArrowUp className="w-3.5 h-3.5 text-amber-300" />
-                <span>Hedef Rol</span>
+                <span>Seçilen Pozisyon</span>
               </div>
             </div>
           </div>
@@ -295,9 +292,9 @@ export default function OperationCareerJourney() {
             </div>
           </div>
 
-          {/* FLUID STAIRCASE DISPLAY (NO HORIZONTAL SCROLLBAR, FULL VISIBILITY) */}
+          {/* FLUID STAIRCASE DISPLAY (SINGLE ACTIVE SELECTION, PROMINENT DURATION BADGES AT TOP) */}
           {activeView === 'staircase' ? (
-            <div className="w-full pt-10 pb-12 px-2 relative min-h-[540px]">
+            <div className="w-full pt-10 pb-12 px-2 relative min-h-[560px]">
               
               {/* Horizontal Baseline */}
               <div className="absolute bottom-6 left-0 right-0 h-3 bg-gradient-to-r from-gray-200 via-[#087F96]/40 to-[#0B2A4A] rounded-full" />
@@ -305,53 +302,58 @@ export default function OperationCareerJourney() {
               <div className="w-full flex items-end justify-between gap-1 sm:gap-2">
                 {activeTrack.steps.map((step, idx) => {
                   const isCurrent = step.id === userCurrentLevelId;
-                  const isCompleted = step.id < userCurrentLevelId;
-                  const isNextTarget = step.id === userCurrentLevelId + 1;
+                  const isCompleted = idx < effectiveCurrentIndex;
                   const isPeak = idx === totalStepsInTrack - 1;
 
                   // Fluid staircase height calculation with ample space for details & buttons
-                  const stepHeight = 180 + Math.round((idx / (totalStepsInTrack - 1)) * 300);
+                  const stepHeight = 200 + Math.round((idx / (totalStepsInTrack - 1)) * 300);
 
                   return (
                     <div
                       key={step.id}
                       onClick={() => handleStepClick(step)}
                       style={{ height: `${stepHeight}px` }}
-                      className={`relative flex-1 rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between cursor-pointer transition-all duration-300 group border-2 ${
+                      className={`relative flex-1 rounded-2xl p-2 sm:p-2.5 flex flex-col justify-between cursor-pointer transition-all duration-300 group border-2 ${
                         isCurrent
-                          ? 'bg-[#087F96] text-white border-white ring-4 ring-[#087F96]/40 shadow-2xl scale-105 z-20'
-                          : isNextTarget
-                          ? 'bg-slate-900 text-white border-amber-400 shadow-xl z-10 hover:scale-105'
+                          ? 'bg-gradient-to-b from-[#087F96] to-[#061B33] text-white border-white ring-4 ring-[#087F96]/40 shadow-2xl scale-105 z-20'
                           : isCompleted
-                          ? 'bg-emerald-50 text-emerald-950 border-emerald-300 hover:bg-emerald-100'
+                          ? 'bg-emerald-50/90 text-emerald-950 border-emerald-300 hover:bg-emerald-100/90 hover:scale-105'
                           : isPeak
-                          ? 'bg-gradient-to-t from-[#0B2A4A] to-slate-900 text-white border-amber-400 shadow-2xl hover:scale-105'
-                          : 'bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100 hover:border-gray-300'
+                          ? 'bg-gradient-to-b from-slate-900 to-[#0B2A4A] text-white border-amber-400/80 shadow-lg hover:scale-105'
+                          : 'bg-white text-gray-800 border-gray-200 hover:bg-gray-50 hover:border-[#087F96]/60 shadow-xs hover:scale-105'
                       }`}
                     >
-                      {/* Step Number Badge */}
-                      <div className="flex items-center justify-between text-[10px] font-mono font-bold">
+                      {/* PROMINENT DURATION BADGE AT THE VERY TOP OF EACH COLUMN */}
+                      <div className={`text-[9px] sm:text-[10px] font-mono font-black text-center py-1 px-1 rounded-xl mb-1 border shadow-xs leading-none ${
+                        isCurrent 
+                          ? 'bg-amber-400 text-slate-950 border-amber-300' 
+                          : isCompleted 
+                          ? 'bg-emerald-200/80 text-emerald-900 border-emerald-300' 
+                          : isPeak
+                          ? 'bg-amber-500 text-slate-950 border-amber-400'
+                          : 'bg-gray-100 text-gray-700 border-gray-200'
+                      }`}>
+                        ⏱️ {step.recommendedDuration}
+                      </div>
+
+                      {/* Step Number & Crown */}
+                      <div className="flex items-center justify-between text-[10px] font-mono font-bold px-0.5">
                         <span className={`px-2 py-0.5 rounded-full ${
-                          isCurrent ? 'bg-white text-[#0B2A4A]' : 'bg-black/20 text-white'
+                          isCurrent ? 'bg-white text-[#0B2A4A]' : 'bg-black/10 text-gray-700 font-bold'
                         }`}>
-                          {idx + 1}. Basamak ↑
+                          {idx + 1}. Basamak
                         </span>
 
                         {isPeak && (
-                          <Crown className="w-4 h-4 text-amber-300 animate-bounce" />
+                          <Crown className="w-3.5 h-3.5 text-amber-300 animate-bounce" />
                         )}
                       </div>
 
-                      {/* Title & Duration */}
+                      {/* Title */}
                       <div className="my-auto space-y-1 text-center py-2">
                         <h3 className="font-extrabold text-[11px] sm:text-xs leading-snug line-clamp-2">
                           {step.title}
                         </h3>
-                        <span className={`text-[9px] font-mono block font-bold ${
-                          isCurrent ? 'text-amber-200' : 'text-gray-500'
-                        }`}>
-                          ⏱️ {step.recommendedDuration}
-                        </span>
                       </div>
 
                       {/* Action Button (100% visible at the bottom) */}
@@ -363,10 +365,10 @@ export default function OperationCareerJourney() {
                         className={`w-full py-1.5 rounded-xl text-[10px] font-black transition-all shadow-xs ${
                           isCurrent 
                             ? 'bg-amber-400 text-slate-950 hover:bg-amber-300'
-                            : 'bg-white/20 text-white hover:bg-white/30'
+                            : 'bg-[#087F96]/10 text-[#087F96] hover:bg-[#087F96] hover:text-white'
                         }`}
                       >
-                        Detay
+                        {isCurrent ? 'Seçildi ✓' : 'Seç'}
                       </button>
                     </div>
                   );
@@ -390,7 +392,7 @@ export default function OperationCareerJourney() {
                       <span className="text-xs font-mono font-bold text-[#087F96] bg-[#DDF4F7] px-2.5 py-0.5 rounded-full">
                         {idx + 1}. Basamak
                       </span>
-                      <span className="text-xs font-mono text-gray-500">⏱️ {step.recommendedDuration}</span>
+                      <span className="text-xs font-mono font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-300">⏱️ {step.recommendedDuration}</span>
                     </div>
                     <h3 className="font-extrabold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors">
                       {step.title}
@@ -399,7 +401,7 @@ export default function OperationCareerJourney() {
                   </div>
 
                   <button className="w-full py-2 bg-[#087F96] text-white font-bold rounded-xl text-xs hover:bg-[#056B80]">
-                    Ders & Yetkinlikleri Göster
+                    Seç ve Detayı Gör
                   </button>
                 </div>
               ))}
@@ -422,7 +424,7 @@ export default function OperationCareerJourney() {
                 {selectedStep.title}
               </h3>
               <p className="text-xs text-gray-600">
-                Önerilen Pozisyon Süresi: <strong>{selectedStep.recommendedDuration}</strong> • Amac: {selectedStep.purpose}
+                Önerilen Pozisyon Süresi: <strong>{selectedStep.recommendedDuration}</strong> • Amaç: {selectedStep.purpose}
               </p>
             </div>
 
