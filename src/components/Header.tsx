@@ -53,8 +53,27 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHrDropdownOpen, setIsHrDropdownOpen] = useState(false);
+  const [visitorProfile, setVisitorProfile] = useState<{ firstName?: string; lastName?: string; companyName?: string; city?: string } | null>(null);
   const hrRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const loadProfile = () => {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('pka_visitor_profile');
+        if (saved) {
+          try {
+            setVisitorProfile(JSON.parse(saved));
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+    };
+    loadProfile();
+    window.addEventListener('pka_profile_updated', loadProfile);
+    return () => window.removeEventListener('pka_profile_updated', loadProfile);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -190,9 +209,20 @@ export default function Header() {
             </nav>
           </div>
 
-          {/* RIGHT SECTION: Standardized CTA Buttons */}
+          {/* RIGHT SECTION: Standardized CTA Buttons & Profile Button */}
           <div className="hidden lg:flex items-center space-x-2 shrink-0 ml-4">
-
+            <button
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new Event('open_visitor_profile_modal'));
+                }
+              }}
+              className="h-9 px-3 bg-white/10 hover:bg-white/20 text-white font-extrabold rounded-xl text-xs flex items-center space-x-1.5 border border-white/20 transition-all cursor-pointer whitespace-nowrap"
+              title="Profil Bilgileriniz"
+            >
+              <User className="h-4 w-4 text-emerald-400" />
+              <span>{visitorProfile ? `${visitorProfile.firstName} ${visitorProfile.lastName ? visitorProfile.lastName[0] + '.' : ''}` : 'Giriş / Profil'}</span>
+            </button>
 
             <Link
               href="/kurumsal-cozumler"

@@ -1,6 +1,7 @@
 import React from 'react';
 import LeftSidebarNav from '@/components/LeftSidebarNav';
 import Footer from '@/components/Footer';
+import VisitorOnboardingModal from '@/components/VisitorOnboardingModal';
 
 export default function WebsiteLayout({
   children,
@@ -9,6 +10,9 @@ export default function WebsiteLayout({
 }) {
   return (
     <div className="min-h-screen bg-[#F4F7F9] flex flex-col">
+      {/* First-time Visitor Onboarding Entry Modal */}
+      <VisitorOnboardingModal />
+
       {/* Left Vertical Navigation Menu (Stacked Top to Bottom on Far Left) */}
       <LeftSidebarNav />
 
