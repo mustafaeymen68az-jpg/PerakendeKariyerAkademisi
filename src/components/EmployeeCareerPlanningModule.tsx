@@ -601,8 +601,8 @@ export default function EmployeeCareerPlanningModule() {
 
   const [showAllSubDepts, setShowAllSubDepts] = useState<boolean>(false);
 
-  // Auto-expand sub-departments when a main group is selected
-  const isSubDeptsExpanded = selectedGroupFilter !== 'all' || showAllSubDepts;
+  // Auto-expand sub-departments when a main group or performance score filter is active
+  const isSubDeptsExpanded = selectedGroupFilter !== 'all' || scoreFilterCategory !== 'all' || showAllSubDepts;
 
   // Dynamically calculate score tier counts for top Summary Dashboard (filtered dynamically by selected Group or Department)
   const scoreCounts = useMemo(() => {
@@ -650,7 +650,7 @@ export default function EmployeeCareerPlanningModule() {
     };
   }, [employeesData, selectedGroupFilter, selectedDepartmentFilter]);
 
-  // Dynamically calculate stats for the 6 Main Department Groups
+  // Dynamically calculate stats for the 6 Main Department Groups (filtered by scoreFilterCategory)
   const groupAnalytics = useMemo(() => {
     return MAIN_DEPARTMENT_GROUPS.map(grp => {
       let count = 0;
@@ -660,7 +660,14 @@ export default function EmployeeCareerPlanningModule() {
       let needsImprovement = 0;
 
       employeesData.forEach(emp => {
-        if (grp.departments.includes(emp.department)) {
+        let matchesScore = true;
+        if (scoreFilterCategory === '91-100') matchesScore = emp.competencyScore >= 91 && emp.competencyScore <= 100;
+        else if (scoreFilterCategory === '81-90') matchesScore = emp.competencyScore >= 81 && emp.competencyScore <= 90;
+        else if (scoreFilterCategory === '71-80') matchesScore = emp.competencyScore >= 71 && emp.competencyScore <= 80;
+        else if (scoreFilterCategory === '51-70') matchesScore = emp.competencyScore >= 51 && emp.competencyScore <= 70;
+        else if (scoreFilterCategory === '0-50') matchesScore = emp.competencyScore <= 50;
+
+        if (matchesScore && grp.departments.includes(emp.department)) {
           count++;
           totalScore += emp.competencyScore;
           if (emp.competencyScore >= 91) promotable++;
@@ -680,9 +687,9 @@ export default function EmployeeCareerPlanningModule() {
         needsImprovement
       };
     });
-  }, [employeesData]);
+  }, [employeesData, scoreFilterCategory]);
 
-  // Dynamically calculate department success & headcount stats for all 26 sub-departments
+  // Dynamically calculate department success & headcount stats for all 26 sub-departments (filtered by scoreFilterCategory)
   const departmentAnalytics = useMemo(() => {
     const deptsMap: Record<DepartmentType, {
       name: DepartmentType;
@@ -711,8 +718,15 @@ export default function EmployeeCareerPlanningModule() {
     });
 
     employeesData.forEach(emp => {
+      let matchesScore = true;
+      if (scoreFilterCategory === '91-100') matchesScore = emp.competencyScore >= 91 && emp.competencyScore <= 100;
+      else if (scoreFilterCategory === '81-90') matchesScore = emp.competencyScore >= 81 && emp.competencyScore <= 90;
+      else if (scoreFilterCategory === '71-80') matchesScore = emp.competencyScore >= 71 && emp.competencyScore <= 80;
+      else if (scoreFilterCategory === '51-70') matchesScore = emp.competencyScore >= 51 && emp.competencyScore <= 70;
+      else if (scoreFilterCategory === '0-50') matchesScore = emp.competencyScore <= 50;
+
       const dept = emp.department || 'Reyon Satış Elemanları';
-      if (deptsMap[dept]) {
+      if (matchesScore && deptsMap[dept]) {
         deptsMap[dept].count += 1;
         deptsMap[dept].totalScore += emp.competencyScore;
         if (emp.competencyScore >= 91) deptsMap[dept].promotable += 1;
@@ -726,7 +740,7 @@ export default function EmployeeCareerPlanningModule() {
     });
 
     return Object.values(deptsMap);
-  }, [employeesData]);
+  }, [employeesData, scoreFilterCategory]);
 
   const filteredEmployees = useMemo(() => {
     return employeesData.filter(emp => {
@@ -955,7 +969,7 @@ export default function EmployeeCareerPlanningModule() {
               onClick={() => { setScoreFilterCategory('all'); setSelectedGroupFilter('all'); setSelectedDepartmentFilter('all'); }}
               className={`p-3.5 rounded-2xl border transition-all cursor-pointer text-center group hover:scale-105 ${
                 scoreFilterCategory === 'all' && selectedGroupFilter === 'all' && selectedDepartmentFilter === 'all'
-                  ? 'bg-white text-[#0B2A4A] border-white shadow-lg font-black'
+                  ? 'bg-white text-[#0B2A4A] border-white shadow-lg font-black ring-4 ring-white/30'
                   : 'bg-white/10 hover:bg-white/20 border-white/15 text-white'
               }`}
             >
@@ -965,10 +979,10 @@ export default function EmployeeCareerPlanningModule() {
             </div>
 
             <div
-              onClick={() => setScoreFilterCategory('91-100')}
+              onClick={() => setScoreFilterCategory(prev => prev === '91-100' ? 'all' : '91-100')}
               className={`p-3.5 rounded-2xl border transition-all cursor-pointer text-center group hover:scale-105 ${
                 scoreFilterCategory === '91-100'
-                  ? 'bg-emerald-500 text-white border-emerald-300 shadow-lg font-black'
+                  ? 'bg-emerald-500 text-white border-emerald-200 shadow-xl font-black ring-4 ring-emerald-400/50 scale-105'
                   : 'bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/40 text-emerald-200'
               }`}
             >
@@ -978,10 +992,10 @@ export default function EmployeeCareerPlanningModule() {
             </div>
 
             <div
-              onClick={() => setScoreFilterCategory('81-90')}
+              onClick={() => setScoreFilterCategory(prev => prev === '81-90' ? 'all' : '81-90')}
               className={`p-3.5 rounded-2xl border transition-all cursor-pointer text-center group hover:scale-105 ${
                 scoreFilterCategory === '81-90'
-                  ? 'bg-blue-600 text-white border-blue-300 shadow-lg font-black'
+                  ? 'bg-blue-600 text-white border-blue-200 shadow-xl font-black ring-4 ring-blue-400/50 scale-105'
                   : 'bg-blue-500/20 hover:bg-blue-500/30 border-blue-500/40 text-blue-200'
               }`}
             >
@@ -991,10 +1005,10 @@ export default function EmployeeCareerPlanningModule() {
             </div>
 
             <div
-              onClick={() => setScoreFilterCategory('71-80')}
+              onClick={() => setScoreFilterCategory(prev => prev === '71-80' ? 'all' : '71-80')}
               className={`p-3.5 rounded-2xl border transition-all cursor-pointer text-center group hover:scale-105 ${
                 scoreFilterCategory === '71-80'
-                  ? 'bg-amber-500 text-slate-950 border-amber-300 shadow-lg font-black'
+                  ? 'bg-amber-500 text-slate-950 border-amber-200 shadow-xl font-black ring-4 ring-amber-400/50 scale-105'
                   : 'bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/40 text-amber-200'
               }`}
             >
@@ -1004,10 +1018,10 @@ export default function EmployeeCareerPlanningModule() {
             </div>
 
             <div
-              onClick={() => setScoreFilterCategory('51-70')}
+              onClick={() => setScoreFilterCategory(prev => prev === '51-70' ? 'all' : '51-70')}
               className={`p-3.5 rounded-2xl border transition-all cursor-pointer text-center group hover:scale-105 ${
                 scoreFilterCategory === '51-70'
-                  ? 'bg-orange-500 text-white border-orange-300 shadow-lg font-black'
+                  ? 'bg-orange-500 text-white border-orange-200 shadow-xl font-black ring-4 ring-orange-400/50 scale-105'
                   : 'bg-orange-500/20 hover:bg-orange-500/30 border-orange-500/40 text-orange-200'
               }`}
             >
@@ -1017,10 +1031,10 @@ export default function EmployeeCareerPlanningModule() {
             </div>
 
             <div
-              onClick={() => setScoreFilterCategory('0-50')}
+              onClick={() => setScoreFilterCategory(prev => prev === '0-50' ? 'all' : '0-50')}
               className={`p-3.5 rounded-2xl border transition-all cursor-pointer text-center group hover:scale-105 ${
                 scoreFilterCategory === '0-50'
-                  ? 'bg-rose-600 text-white border-rose-300 shadow-lg font-black'
+                  ? 'bg-rose-600 text-white border-rose-200 shadow-xl font-black ring-4 ring-rose-400/50 scale-105'
                   : 'bg-rose-500/20 hover:bg-rose-500/30 border-rose-500/40 text-rose-200'
               }`}
             >
@@ -1032,12 +1046,41 @@ export default function EmployeeCareerPlanningModule() {
           </div>
         </div>
 
+        {/* ACTIVE SCORE FILTER BANNER NOTIFICATION */}
+        {scoreFilterCategory !== 'all' && (
+          <div className="bg-amber-400 text-slate-950 p-3.5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg border border-amber-300 animate-in fade-in duration-200">
+            <div className="flex items-center space-x-2 font-black text-xs">
+              <Sparkles className="w-4 h-4 text-slate-950 shrink-0" />
+              <span>
+                🎯 SEÇİLİ FİLTRE AKTİF: {' '}
+                <u className="font-extrabold uppercase">
+                  {scoreFilterCategory === '91-100' && '🟢 Terfi Edebilir (91-100 Puan)'}
+                  {scoreFilterCategory === '81-90' && '🔵 Başarılı (81-90 Puan)'}
+                  {scoreFilterCategory === '71-80' && '🟡 Geliştirilebilir (71-80 Puan)'}
+                  {scoreFilterCategory === '51-70' && '🟠 Orta Performans (51-70 Puan)'}
+                  {scoreFilterCategory === '0-50' && '🔴 Zayıf Performans (0-50 Puan)'}
+                </u>
+                {' '}— Toplam {filteredEmployees.length} Personel Dağılımı Aşağıdaki Ana ve Alt Departmanlarda Gösteriliyor!
+              </span>
+            </div>
+
+            <button
+              onClick={() => setScoreFilterCategory('all')}
+              className="px-3.5 py-1.5 bg-slate-950 text-white rounded-xl text-xs font-bold hover:bg-slate-900 transition-colors shrink-0"
+            >
+              ✖ Filtreyi Temizle (Tüm 1.000 Personeli Göster)
+            </button>
+          </div>
+        )}
+
         {/* SECTION 2: ANA DEPARTMAN GRUPLARI KARNESİ (6 ANA BAŞLIK) */}
         <div className="space-y-3 pt-2 border-t border-white/15">
           <div className="flex items-center justify-between">
             <h4 className="font-black text-xs uppercase tracking-wider text-amber-300 flex items-center space-x-2">
               <Building className="w-4 h-4 text-amber-300" />
-              <span>Ana Departman Grupları Karnesi (Alt Birimleri Açmak İçin Tıklayın)</span>
+              <span>
+                Ana Departman Grupları Karnesi {scoreFilterCategory !== 'all' && `(${filteredEmployees.length} Kişi Dağılımı)`}
+              </span>
             </h4>
             <span className="text-[10px] font-mono text-gray-300">6 Ana Departman Grubu</span>
           </div>
