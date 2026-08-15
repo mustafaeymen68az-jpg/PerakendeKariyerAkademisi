@@ -66,9 +66,12 @@ export interface HierarchyMember {
   avatar: string;
   role: string;
   department: string;
+  levelTitle?: string;
+  isCeo?: boolean;
 }
 
 export interface EmployeeHierarchy {
+  ceoChain: HierarchyMember[];
   manager: HierarchyMember;
   subordinates: HierarchyMember[];
 }
@@ -460,12 +463,48 @@ function generate1000EmployeesData(): EmployeeCareerRecord[] {
         { phase: '1. Ay (Ağustos 2026)', action: 'Terfi ve gelişim modülleri başlanacak.', targetDate: '15 Ağustos 2026' }
       ],
       hierarchy: {
+        ceoChain: [
+          {
+            id: 'ceo_1',
+            name: 'Prof. Dr. Ahmet Çelik',
+            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
+            role: 'Genel Müdür & CEO (Chief Executive Officer)',
+            department: 'Genel Merkez Yönetim Kurulu',
+            levelTitle: '👑 1. KADEME: GENEL MÜDÜR & CEO',
+            isCeo: true
+          },
+          {
+            id: `gmy_${i}`,
+            name: i % 2 === 0 ? 'Fatih Şimşek' : 'Dr. Mehmet Yılmaz',
+            avatar: avatars[(i + 6) % avatars.length],
+            role: 'Operasyon & Satış Direktörü (GMY)',
+            department: 'Genel Merkez İcra Kurulu',
+            levelTitle: '👔 2. KADEME: DİREKTÖR / GENEL MÜDÜR YRD.'
+          },
+          {
+            id: `bm_${i}`,
+            name: i % 3 === 0 ? 'Murat Yıldırım' : i % 3 === 1 ? 'Hakan Arslan' : 'Volkan Kaya',
+            avatar: avatars[(i + 3) % avatars.length],
+            role: 'Bölge Operasyon Müdürü (Area Manager)',
+            department: deptConfig.groupName,
+            levelTitle: '🏬 3. KADEME: BÖLGE MÜDÜRÜ'
+          },
+          {
+            id: `mgr_${i}`,
+            name: i % 3 === 0 ? 'Seda Yılmaz' : i % 3 === 1 ? 'Gamze Öztürk' : 'Caner Şahin',
+            avatar: avatars[(i + 4) % avatars.length],
+            role: 'Mağaza Müdürü / Birim Amiri',
+            department: deptConfig.name,
+            levelTitle: '🏪 4. KADEME: DOĞRUDAN MAĞAZA AMİRİ'
+          }
+        ],
         manager: {
           id: `mgr_${i}`,
-          name: i % 3 === 0 ? 'Murat Yıldırım' : i % 3 === 1 ? 'Seda Yılmaz' : 'Fatih Şimşek',
-          avatar: avatars[(i + 3) % avatars.length],
-          role: i % 3 === 0 ? 'Bölge Müdürü (Area Manager)' : i % 3 === 1 ? 'Mağaza Müdürü' : 'Satış & Operasyon Direktörü',
-          department: deptConfig.groupName
+          name: i % 3 === 0 ? 'Seda Yılmaz' : i % 3 === 1 ? 'Gamze Öztürk' : 'Caner Şahin',
+          avatar: avatars[(i + 4) % avatars.length],
+          role: 'Mağaza Müdürü / Birim Amiri',
+          department: deptConfig.name,
+          levelTitle: '🏪 DOĞRUDAN MAĞAZA AMİRİ'
         },
         subordinates: [
           {
@@ -1484,57 +1523,82 @@ export default function EmployeeCareerPlanningModule() {
             })()}
           </div>
 
-          {/* ORGANİZASYON HİYERARŞİSİ & YÖNETİM AĞACI CARD */}
+          {/* ORGANİZASYON HİYERARŞİSİ & YÖNETİM AĞACI CARD (CEO'YA KADAR TAM ZİNCİR) */}
           <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md space-y-5">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
               <h3 className="font-extrabold text-sm text-[#0B2A4A] flex items-center space-x-2">
                 <GitFork className="w-5 h-5 text-[#087F96]" />
-                <span>Organizasyon Hiyerarşisi & Yönetim Ağacı (Chain of Command)</span>
+                <span>Organizasyon Hiyerarşisi (CEO'ya Kadar Tüm Raporlama Zinciri)</span>
               </h3>
-              <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
-                Ekip Hiyerarşisi Aktif 🌳
+              <span className="text-[10px] font-mono font-black text-indigo-900 bg-indigo-100 px-3 py-1 rounded-full border border-indigo-300">
+                👑 CEO'ya Kadar Tam Raporlama Zinciri
               </span>
             </div>
 
-            {/* VISUAL HIERARCHY TREE DIAGRAM */}
+            {/* VISUAL HIERARCHY TREE DIAGRAM - FULL CHAIN FROM CEO TO SUBORDINATES */}
             <div className="flex flex-col items-center space-y-3 py-1">
               
-              {/* 1. KİME BAĞLI OLDUĞU (ÜST YÖNETİCİ / AMİR) */}
-              <div className="w-full bg-gradient-to-r from-slate-900 via-[#0B2A4A] to-slate-900 text-white p-4 rounded-2xl border-2 border-[#087F96] shadow-md flex items-center justify-between gap-3 relative">
-                <div className="flex items-center space-x-3">
-                  <div className="relative shrink-0">
-                    <img
-                      src={activeEmployee.hierarchy.manager.avatar}
-                      alt={activeEmployee.hierarchy.manager.name}
-                      className="w-12 h-12 rounded-xl object-cover border-2 border-amber-400 shadow-xs"
-                    />
-                    <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-slate-950 px-1 py-0.2 rounded-full text-[9px] font-black">
-                      👑
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] font-mono font-black text-amber-300 uppercase tracking-wider block">
-                      ⬆️ Kime Bağlı? (Doğrudan Üst Yönetici)
-                    </span>
-                    <h4 className="font-extrabold text-xs text-white">{activeEmployee.hierarchy.manager.name}</h4>
-                    <p className="text-[11px] text-gray-300 font-medium">
-                      {activeEmployee.hierarchy.manager.role}
-                    </p>
-                  </div>
-                </div>
+              {/* CEO CHAIN NODES (LEVEL 1 -> LEVEL 4) */}
+              {(activeEmployee.hierarchy.ceoChain || []).map((node, index) => {
+                const isCeo = node.isCeo;
+                return (
+                  <React.Fragment key={node.id}>
+                    <div className={`w-full p-4 rounded-2xl shadow-md flex items-center justify-between gap-3 relative border-2 ${
+                      isCeo
+                        ? 'bg-gradient-to-r from-amber-950 via-slate-950 to-amber-950 text-white border-amber-400 ring-2 ring-amber-400/20'
+                        : index === 1
+                        ? 'bg-gradient-to-r from-slate-900 via-[#0B2A4A] to-slate-900 text-white border-[#087F96]'
+                        : index === 2
+                        ? 'bg-gradient-to-r from-blue-900 to-indigo-900 text-white border-blue-400'
+                        : 'bg-gradient-to-r from-slate-800 to-slate-900 text-white border-slate-400'
+                    }`}>
+                      <div className="flex items-center space-x-3">
+                        <div className="relative shrink-0">
+                          <img
+                            src={node.avatar}
+                            alt={node.name}
+                            className={`w-12 h-12 rounded-xl object-cover border-2 shadow-xs ${
+                              isCeo ? 'border-amber-400 ring-1 ring-amber-300' : 'border-blue-300'
+                            }`}
+                          />
+                          {isCeo && (
+                            <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-slate-950 px-1 py-0.2 rounded-full text-[9px] font-black">
+                              👑 CEO
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <span className={`text-[9px] font-mono font-black uppercase tracking-wider block ${
+                            isCeo ? 'text-amber-300' : 'text-emerald-300'
+                          }`}>
+                            {node.levelTitle || `Üst Yönetici Kademe ${index + 1}`}
+                          </span>
+                          <h4 className="font-extrabold text-xs text-white">{node.name}</h4>
+                          <p className="text-[11px] text-gray-300 font-medium">
+                            {node.role} • {node.department}
+                          </p>
+                        </div>
+                      </div>
 
-                <span className="text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/30 whitespace-nowrap">
-                  Doğrudan Amir 👔
-                </span>
-              </div>
+                      <span className={`text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-lg border whitespace-nowrap ${
+                        isCeo
+                          ? 'bg-amber-400/20 text-amber-300 border-amber-400/40'
+                          : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                      }`}>
+                        {isCeo ? 'Yönetim Kurulu Zirvesi 👑' : index === 3 ? 'Doğrudan Amir 👔' : 'Üst Yönetici Kadro 🏢'}
+                      </span>
+                    </div>
 
-              {/* CONNECTING ARROW DOWN */}
-              <div className="flex flex-col items-center space-y-0.5 my-0.5">
-                <div className="w-0.5 h-4 bg-[#087F96]" />
-                <ArrowDown className="w-3.5 h-3.5 text-[#087F96]" />
-              </div>
+                    {/* CONNECTING ARROW DOWN */}
+                    <div className="flex flex-col items-center space-y-0.5 my-0.5">
+                      <div className="w-0.5 h-4 bg-[#087F96]" />
+                      <ArrowDown className="w-3.5 h-3.5 text-[#087F96]" />
+                    </div>
+                  </React.Fragment>
+                );
+              })}
 
-              {/* 2. MEVCUT ÇALIŞAN (İNCELENEN AKTİF PROFİL) */}
+              {/* 5. KADEME: MEVCUT ÇALIŞAN (SEÇİLİ PROFİL) */}
               <div className="w-full bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100 p-4 rounded-2xl border-2 border-emerald-500 shadow-md flex items-center justify-between gap-3 ring-2 ring-emerald-300/40">
                 <div className="flex items-center space-x-3">
                   <img
@@ -1544,7 +1608,7 @@ export default function EmployeeCareerPlanningModule() {
                   />
                   <div>
                     <span className="text-[9px] font-mono font-black text-emerald-900 uppercase tracking-wider block">
-                      📍 Mevcut Çalışan (Seçili Profil)
+                      📍 5. Kademe: Mevcut Çalışan (Seçili Profil)
                     </span>
                     <h4 className="font-extrabold text-sm text-[#0B2A4A]">{activeEmployee.name}</h4>
                     <p className="text-[11px] text-gray-700 font-bold">{activeEmployee.currentRole}</p>
@@ -1567,12 +1631,12 @@ export default function EmployeeCareerPlanningModule() {
                 <ArrowDown className="w-3.5 h-3.5 text-[#087F96]" />
               </div>
 
-              {/* 3. KENDİSİNE BAĞLI ÇALIŞANLAR (ALT EKİP ÜYELERİ) */}
+              {/* 6. KADEME: KENDİSİNE BAĞLI ÇALIŞANLAR (ALT EKİP ÜYELERİ) */}
               <div className="w-full space-y-2">
                 <div className="flex items-center justify-between">
                   <h4 className="font-extrabold text-[11px] text-[#0B2A4A] uppercase tracking-wider flex items-center space-x-1.5">
                     <Users className="w-3.5 h-3.5 text-[#087F96]" />
-                    <span>⬇️ Kendisine Bağlı Alt Çalışanlar ({activeEmployee.hierarchy.subordinates.length} Personel)</span>
+                    <span>⬇️ 6. Kademe: Kendisine Bağlı Alt Çalışanlar ({activeEmployee.hierarchy.subordinates.length} Personel)</span>
                   </h4>
                   <span className="text-[9px] font-mono text-gray-500">Ekip Üyeleri</span>
                 </div>
