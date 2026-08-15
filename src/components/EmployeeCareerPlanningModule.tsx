@@ -86,33 +86,122 @@ export type DepartmentType =
   | 'CEO / Genel Müdür / İşletme Sahibi'
   | 'Tüm Çalışanlar';
 
-export const DEPARTMENTS_CONFIG: { name: DepartmentType; icon: any; role: string; target: string }[] = [
-  { name: 'Kasiyer', icon: ShoppingCart, role: 'Kasiyer & Kasa Görevlisi', target: 'Baş Kasiyer' },
-  { name: 'Reyon Satış Elemanları', icon: Package, role: 'Reyon Satış Elemanı', target: 'Reyon Şefi' },
-  { name: 'Meyve Sebze Reyonu Satış Elemanı', icon: Apple, role: 'Manav Reyon Görevlisi', target: 'Manav Şefi' },
-  { name: 'Açık Şarküteri Reyonu Satış Elemanı', icon: Store, role: 'Şarküteri Satış Elemanı', target: 'Şarküteri Şefi' },
-  { name: 'Kasap Reyonu Satış Elemanı', icon: AlertCircle, role: 'Kasap Çırağı & Görevlisi', target: 'Usta Kasap Şefi' },
-  { name: 'Kuruyemiş Reyonu Satış Elemanı', icon: Zap, role: 'Kuruyemiş Reyon Elemanı', target: 'Taze Gıda Şefi' },
-  { name: 'Taze Gıda Reyonları Yönetimi', icon: Layers, role: 'Taze Gıda Reyon Müdürü', target: 'Kategori Yöneticisi' },
-  { name: 'Unlu Mamuller ve Hazır Yemek Reyonu', icon: Briefcase, role: 'Unlu Mamuller Elemanı', target: 'Fırın & Üretim Şefi' },
-  { name: 'Mağaza Müdür Yardımcıları', icon: UserCheck, role: 'Mağaza Müdür Yardımcısı', target: 'Mağaza Müdürü' },
-  { name: 'Mağaza Müdürleri', icon: Store, role: 'Mağaza Müdürü', target: 'Bölge Müdürü (Area Manager)' },
-  { name: 'Bölge Müdürleri', icon: Target, role: 'Bölge Müdürü (Area Manager)', target: 'Satış & Operasyon Direktörü' },
-  { name: 'Satınalma ve Kategori Yönetimi', icon: BriefcaseBusiness, role: 'Kategori Yöneticisi', target: 'Satın Alma Direktörü' },
-  { name: 'Lojistik ve Depo', icon: Truck, role: 'Depo & Lojistik Şefi', target: 'Tedarik Zinciri Müdürü' },
-  { name: 'Finans', icon: BarChart3, role: 'Finansal Analist & Uzman', target: 'Finans Müdürü' },
-  { name: 'Muhasebe', icon: FileText, role: 'Muhasebe Uzmanı', target: 'Mali İşler Müdürü' },
-  { name: 'İnsan Kaynakları', icon: Users, role: 'İnsan Kaynakları Uzmanı', target: 'İK Müdürü' },
-  { name: 'Bilgi İşlem (IT)', icon: BrainCircuit, role: 'Sistem & Ağ Uzmanı', target: 'IT Direktörü' },
-  { name: 'Rapor Analiz / BI', icon: TrendingUp, role: 'İş Zekası & Raporlama Uzmanı', target: 'BI & Analitik Müdürü' },
-  { name: 'Pazarlama ve CRM', icon: Sparkles, role: 'Pazarlama & CRM Uzmanı', target: 'Pazarlama Müdürü' },
-  { name: 'E-Ticaret ve Online Sipariş', icon: ShoppingBag, role: 'E-Ticaret Operasyon Sorumlusu', target: 'E-Ticaret Müdürü' },
-  { name: 'Müşteri Hizmetleri ve Danışma', icon: Headphones, role: 'Müşteri Hizmetleri Temsilcisi', target: 'Müşteri Deneyimi Müdürü' },
-  { name: 'Güvenlik ve Kayıp Önleme', icon: ShieldCheck, role: 'Güvenlik & Kayıp Önleme Görevlisi', target: 'Kayıp Önleme Müdürü' },
-  { name: 'Teknik Bakım ve İdari İşler', icon: Building, role: 'Teknik Bakım Görevlisi', target: 'İdari İşler Müdürü' },
-  { name: 'Temizlik ve Destek Hizmetleri', icon: CheckSquare, role: 'Temizlik ve Saha Düzen Görevlisi', target: 'Saha Destek Şefi' },
-  { name: 'CEO / Genel Müdür / İşletme Sahibi', icon: Crown, role: 'Genel Müdür / İcra Kurulu Üyesi', target: 'Yönetim Kurulu Başkanı' },
-  { name: 'Tüm Çalışanlar', icon: Users, role: 'Genel Operasyon Görevlisi', target: 'Kıdemli Operasyon Uzmanı' }
+export interface DepartmentGroupConfig {
+  id: string;
+  name: string;
+  icon: any;
+  departments: DepartmentType[];
+}
+
+export const MAIN_DEPARTMENT_GROUPS: DepartmentGroupConfig[] = [
+  {
+    id: 'taze-gida',
+    name: '🥦 Taze Gıda & Şarküteri',
+    icon: Apple,
+    departments: [
+      'Meyve Sebze Reyonu Satış Elemanı',
+      'Açık Şarküteri Reyonu Satış Elemanı',
+      'Kasap Reyonu Satış Elemanı',
+      'Kuruyemiş Reyonu Satış Elemanı',
+      'Taze Gıda Reyonları Yönetimi',
+      'Unlu Mamuller ve Hazır Yemek Reyonu'
+    ]
+  },
+  {
+    id: 'magaza-saha',
+    name: '🏬 Mağaza & Saha Yönetimi',
+    icon: Store,
+    departments: [
+      'Mağaza Müdürleri',
+      'Mağaza Müdür Yardımcıları',
+      'Bölge Müdürleri',
+      'CEO / Genel Müdür / İşletme Sahibi',
+      'Tüm Çalışanlar'
+    ]
+  },
+  {
+    id: 'satinalma-lojistik',
+    name: '📦 Satınalma & Lojistik',
+    icon: Truck,
+    departments: [
+      'Satınalma ve Kategori Yönetimi',
+      'Lojistik ve Depo',
+      'E-Ticaret ve Online Sipariş'
+    ]
+  },
+  {
+    id: 'kasa-operasyon',
+    name: '💳 Kasa, Reyon & Müşteri',
+    icon: ShoppingCart,
+    departments: [
+      'Kasiyer',
+      'Reyon Satış Elemanları',
+      'Müşteri Hizmetleri ve Danışma'
+    ]
+  },
+  {
+    id: 'genel-merkez',
+    name: '💼 Genel Merkez, İK & Finans',
+    icon: BriefcaseBusiness,
+    departments: [
+      'İnsan Kaynakları',
+      'Finans',
+      'Muhasebe',
+      'Bilgi İşlem (IT)',
+      'Rapor Analiz / BI',
+      'Pazarlama ve CRM'
+    ]
+  },
+  {
+    id: 'saha-destek',
+    name: '🛡️ Saha Destek & Güvenlik',
+    icon: ShieldCheck,
+    departments: [
+      'Güvenlik ve Kayıp Önleme',
+      'Teknik Bakım ve İdari İşler',
+      'Temizlik ve Destek Hizmetleri'
+    ]
+  }
+];
+
+export const DEPARTMENTS_CONFIG: { name: DepartmentType; groupName: string; icon: any; role: string; target: string }[] = [
+  // Taze Gıda
+  { name: 'Meyve Sebze Reyonu Satış Elemanı', groupName: '🥦 Taze Gıda & Şarküteri', icon: Apple, role: 'Manav Reyon Görevlisi', target: 'Manav Şefi' },
+  { name: 'Açık Şarküteri Reyonu Satış Elemanı', groupName: '🥦 Taze Gıda & Şarküteri', icon: Store, role: 'Şarküteri Satış Elemanı', target: 'Şarküteri Şefi' },
+  { name: 'Kasap Reyonu Satış Elemanı', groupName: '🥦 Taze Gıda & Şarküteri', icon: AlertCircle, role: 'Kasap Çırağı & Görevlisi', target: 'Usta Kasap Şefi' },
+  { name: 'Kuruyemiş Reyonu Satış Elemanı', groupName: '🥦 Taze Gıda & Şarküteri', icon: Zap, role: 'Kuruyemiş Reyon Elemanı', target: 'Taze Gıda Şefi' },
+  { name: 'Taze Gıda Reyonları Yönetimi', groupName: '🥦 Taze Gıda & Şarküteri', icon: Layers, role: 'Taze Gıda Reyon Müdürü', target: 'Kategori Yöneticisi' },
+  { name: 'Unlu Mamuller ve Hazır Yemek Reyonu', groupName: '🥦 Taze Gıda & Şarküteri', icon: Briefcase, role: 'Unlu Mamuller Elemanı', target: 'Fırın & Üretim Şefi' },
+
+  // Mağaza & Saha Yönetimi
+  { name: 'Mağaza Müdürleri', groupName: '🏬 Mağaza & Saha Yönetimi', icon: Store, role: 'Mağaza Müdürü', target: 'Bölge Müdürü (Area Manager)' },
+  { name: 'Mağaza Müdür Yardımcıları', groupName: '🏬 Mağaza & Saha Yönetimi', icon: UserCheck, role: 'Mağaza Müdür Yardımcısı', target: 'Mağaza Müdürü' },
+  { name: 'Bölge Müdürleri', groupName: '🏬 Mağaza & Saha Yönetimi', icon: Target, role: 'Bölge Müdürü (Area Manager)', target: 'Satış & Operasyon Direktörü' },
+  { name: 'CEO / Genel Müdür / İşletme Sahibi', groupName: '🏬 Mağaza & Saha Yönetimi', icon: Crown, role: 'Genel Müdür / İcra Kurulu Üyesi', target: 'Yönetim Kurulu Başkanı' },
+  { name: 'Tüm Çalışanlar', groupName: '🏬 Mağaza & Saha Yönetimi', icon: Users, role: 'Genel Operasyon Görevlisi', target: 'Kıdemli Operasyon Uzmanı' },
+
+  // Satınalma & Lojistik
+  { name: 'Satınalma ve Kategori Yönetimi', groupName: '📦 Satınalma & Lojistik', icon: BriefcaseBusiness, role: 'Kategori Yöneticisi', target: 'Satın Alma Direktörü' },
+  { name: 'Lojistik ve Depo', groupName: '📦 Satınalma & Lojistik', icon: Truck, role: 'Depo & Lojistik Şefi', target: 'Tedarik Zinciri Müdürü' },
+  { name: 'E-Ticaret ve Online Sipariş', groupName: '📦 Satınalma & Lojistik', icon: ShoppingBag, role: 'E-Ticaret Operasyon Sorumlusu', target: 'E-Ticaret Müdürü' },
+
+  // Kasa, Reyon & Müşteri
+  { name: 'Kasiyer', groupName: '💳 Kasa, Reyon & Müşteri', icon: ShoppingCart, role: 'Kasiyer & Kasa Görevlisi', target: 'Baş Kasiyer' },
+  { name: 'Reyon Satış Elemanları', groupName: '💳 Kasa, Reyon & Müşteri', icon: Package, role: 'Reyon Satış Elemanı', target: 'Reyon Şefi' },
+  { name: 'Müşteri Hizmetleri ve Danışma', groupName: '💳 Kasa, Reyon & Müşteri', icon: Headphones, role: 'Müşteri Hizmetleri Temsilcisi', target: 'Müşteri Deneyimi Müdürü' },
+
+  // Genel Merkez, İK & Finans
+  { name: 'İnsan Kaynakları', groupName: '💼 Genel Merkez, İK & Finans', icon: Users, role: 'İnsan Kaynakları Uzmanı', target: 'İK Müdürü' },
+  { name: 'Finans', groupName: '💼 Genel Merkez, İK & Finans', icon: BarChart3, role: 'Finansal Analist & Uzman', target: 'Finans Müdürü' },
+  { name: 'Muhasebe', groupName: '💼 Genel Merkez, İK & Finans', icon: FileText, role: 'Muhasebe Uzmanı', target: 'Mali İşler Müdürü' },
+  { name: 'Bilgi İşlem (IT)', groupName: '💼 Genel Merkez, İK & Finans', icon: BrainCircuit, role: 'Sistem & Ağ Uzmanı', target: 'IT Direktörü' },
+  { name: 'Rapor Analiz / BI', groupName: '💼 Genel Merkez, İK & Finans', icon: TrendingUp, role: 'İş Zekası & Raporlama Uzmanı', target: 'BI & Analitik Müdürü' },
+  { name: 'Pazarlama ve CRM', groupName: '💼 Genel Merkez, İK & Finans', icon: Sparkles, role: 'Pazarlama & CRM Uzmanı', target: 'Pazarlama Müdürü' },
+
+  // Saha Destek & Güvenlik
+  { name: 'Güvenlik ve Kayıp Önleme', groupName: '🛡️ Saha Destek & Güvenlik', icon: ShieldCheck, role: 'Güvenlik & Kayıp Önleme Görevlisi', target: 'Kayıp Önleme Müdürü' },
+  { name: 'Teknik Bakım ve İdari İşler', groupName: '🛡️ Saha Destek & Güvenlik', icon: Building, role: 'Teknik Bakım Görevlisi', target: 'İdari İşler Müdürü' },
+  { name: 'Temizlik ve Destek Hizmetleri', groupName: '🛡️ Saha Destek & Güvenlik', icon: CheckSquare, role: 'Temizlik ve Saha Düzen Görevlisi', target: 'Saha Destek Şefi' }
 ];
 
 export interface CompletedTrainingRecord {
@@ -263,11 +352,6 @@ function generate1000EmployeesData(): EmployeeCareerRecord[] {
     if (i === 3) name = 'Caner Şahin';
 
     // Score distribution:
-    // 0..179 (180 headcount = 18%): 91-99 (Terfi Edebilir)
-    // 180..499 (320 headcount = 32%): 81-90 (Başarılı)
-    // 500..779 (280 headcount = 28%): 71-80 (Geliştirilebilir)
-    // 780..929 (150 headcount = 15%): 51-70 (Orta Performans)
-    // 930..999 (70 headcount = 7%): 35-50 (Zayıf Performans)
     let score = 85;
     if (i < 180) score = 91 + (i % 9);
     else if (i < 500) score = 81 + (i % 10);
@@ -360,6 +444,7 @@ export default function EmployeeCareerPlanningModule() {
   const [employeesData, setEmployeesData] = useState<EmployeeCareerRecord[]>(INITIAL_EMPLOYEES_CAREER_DATA);
   const [selectedEmpId, setSelectedEmpId] = useState<string>(INITIAL_EMPLOYEES_CAREER_DATA[0].id);
   const [scoreFilterCategory, setScoreFilterCategory] = useState<string>('all');
+  const [selectedGroupFilter, setSelectedGroupFilter] = useState<string>('all');
   const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [displayLimit, setDisplayLimit] = useState<number>(50);
@@ -384,6 +469,7 @@ export default function EmployeeCareerPlanningModule() {
         if (matched) {
           setSelectedEmpId(matched.id);
           setScoreFilterCategory('all');
+          setSelectedGroupFilter('all');
           setSelectedDepartmentFilter('all');
         } else {
           setSearchQuery(nameParam);
@@ -395,9 +481,9 @@ export default function EmployeeCareerPlanningModule() {
   // Reset display limit when filter conditions change
   React.useEffect(() => {
     setDisplayLimit(50);
-  }, [scoreFilterCategory, selectedDepartmentFilter, searchQuery]);
+  }, [scoreFilterCategory, selectedGroupFilter, selectedDepartmentFilter, searchQuery]);
 
-  // Dynamically calculate score tier counts for top Summary Dashboard (filtered dynamically by selected Department)
+  // Dynamically calculate score tier counts for top Summary Dashboard (filtered dynamically by selected Group or Department)
   const scoreCounts = useMemo(() => {
     let tier91_100 = 0;
     let tier81_90 = 0;
@@ -405,12 +491,20 @@ export default function EmployeeCareerPlanningModule() {
     let tier51_70 = 0;
     let tier0_50 = 0;
 
-    const filteredForDept = employeesData.filter(e => {
-      if (selectedDepartmentFilter === 'all') return true;
-      return e.department === selectedDepartmentFilter;
+    const filtered = employeesData.filter(e => {
+      let matchesGrp = true;
+      if (selectedGroupFilter !== 'all') {
+        const grp = MAIN_DEPARTMENT_GROUPS.find(g => g.id === selectedGroupFilter);
+        if (grp) matchesGrp = grp.departments.includes(e.department);
+      }
+      let matchesDept = true;
+      if (selectedDepartmentFilter !== 'all') {
+        matchesDept = e.department === selectedDepartmentFilter;
+      }
+      return matchesGrp && matchesDept;
     });
 
-    filteredForDept.forEach(e => {
+    filtered.forEach(e => {
       if (e.competencyScore >= 91) tier91_100++;
       else if (e.competencyScore >= 81) tier81_90++;
       else if (e.competencyScore >= 71) tier71_80++;
@@ -418,7 +512,7 @@ export default function EmployeeCareerPlanningModule() {
       else tier0_50++;
     });
 
-    const total = filteredForDept.length;
+    const total = filtered.length;
 
     return {
       total,
@@ -433,12 +527,45 @@ export default function EmployeeCareerPlanningModule() {
       pct51_70: total > 0 ? Math.round((tier51_70 / total) * 100) : 0,
       pct0_50: total > 0 ? Math.round((tier0_50 / total) * 100) : 0,
     };
-  }, [employeesData, selectedDepartmentFilter]);
+  }, [employeesData, selectedGroupFilter, selectedDepartmentFilter]);
 
-  // Dynamically calculate department success & headcount stats for all 26 departments
+  // Dynamically calculate stats for the 6 Main Department Groups
+  const groupAnalytics = useMemo(() => {
+    return MAIN_DEPARTMENT_GROUPS.map(grp => {
+      let count = 0;
+      let totalScore = 0;
+      let promotable = 0;
+      let successful = 0;
+      let needsImprovement = 0;
+
+      employeesData.forEach(emp => {
+        if (grp.departments.includes(emp.department)) {
+          count++;
+          totalScore += emp.competencyScore;
+          if (emp.competencyScore >= 91) promotable++;
+          else if (emp.competencyScore >= 81) successful++;
+          else needsImprovement++;
+        }
+      });
+
+      const avgScore = count > 0 ? Number((totalScore / count).toFixed(1)) : 0;
+
+      return {
+        ...grp,
+        count,
+        avgScore,
+        promotable,
+        successful,
+        needsImprovement
+      };
+    });
+  }, [employeesData]);
+
+  // Dynamically calculate department success & headcount stats for all 26 sub-departments
   const departmentAnalytics = useMemo(() => {
     const deptsMap: Record<DepartmentType, {
       name: DepartmentType;
+      groupName: string;
       icon: any;
       count: number;
       totalScore: number;
@@ -451,6 +578,7 @@ export default function EmployeeCareerPlanningModule() {
     DEPARTMENTS_CONFIG.forEach(d => {
       deptsMap[d.name] = {
         name: d.name,
+        groupName: d.groupName,
         icon: d.icon,
         count: 0,
         totalScore: 0,
@@ -488,6 +616,12 @@ export default function EmployeeCareerPlanningModule() {
       else if (scoreFilterCategory === '51-70') matchesScore = emp.competencyScore >= 51 && emp.competencyScore <= 70;
       else if (scoreFilterCategory === '0-50') matchesScore = emp.competencyScore <= 50;
 
+      let matchesGrp = true;
+      if (selectedGroupFilter !== 'all') {
+        const grp = MAIN_DEPARTMENT_GROUPS.find(g => g.id === selectedGroupFilter);
+        if (grp) matchesGrp = grp.departments.includes(emp.department);
+      }
+
       let matchesDept = true;
       if (selectedDepartmentFilter !== 'all') {
         matchesDept = emp.department === selectedDepartmentFilter;
@@ -499,9 +633,9 @@ export default function EmployeeCareerPlanningModule() {
         emp.recommendedRole.toLowerCase().includes(searchQuery.toLowerCase()) ||
         emp.department.toLowerCase().includes(searchQuery.toLowerCase());
 
-      return matchesScore && matchesDept && matchesSearch;
+      return matchesScore && matchesGrp && matchesDept && matchesSearch;
     });
-  }, [employeesData, scoreFilterCategory, selectedDepartmentFilter, searchQuery]);
+  }, [employeesData, scoreFilterCategory, selectedGroupFilter, selectedDepartmentFilter, searchQuery]);
 
   const visibleEmployees = useMemo(() => {
     return filteredEmployees.slice(0, displayLimit);
@@ -644,7 +778,7 @@ export default function EmployeeCareerPlanningModule() {
           </div>
           <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Özgeçmiş, Deneyim ve Eğitim Karnesi</h2>
           <p className="text-xs sm:text-sm text-gray-200 font-light max-w-3xl leading-relaxed">
-            Eğitim özet kartlarına ve <strong>26 Farklı Perakende Departmanı</strong> analiz butonlarına tıklayarak 1.000 kişilik organizasyonda kimin ne durumda olduğunu, eğitmen ve kurum detaylarını, ödülleri ve sicil durumlarını inceleyebilirsiniz.
+            Ana departman başlıklarına (<strong>Taze Gıda, Mağaza ve Saha Yönetimi, Satınalma & Lojistik</strong>) tıklayarak gruplandırılmış kadro analizini yapabilir, 26 alt departman detayında eğitimi ve başarı skorlarını inceleyebilirsiniz.
           </p>
         </div>
 
@@ -684,19 +818,22 @@ export default function EmployeeCareerPlanningModule() {
                 {selectedDepartmentFilter !== 'all' && (
                   <span className="text-amber-300 ml-2">— {selectedDepartmentFilter} ({scoreCounts.total} Personel)</span>
                 )}
+                {selectedGroupFilter !== 'all' && selectedDepartmentFilter === 'all' && (
+                  <span className="text-amber-300 ml-2">— {MAIN_DEPARTMENT_GROUPS.find(g => g.id === selectedGroupFilter)?.name} ({scoreCounts.total} Personel)</span>
+                )}
               </h3>
             </div>
             <span className="text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
-              {selectedDepartmentFilter === 'all' ? 'Canlı 1.000 Personel Analizi ⚡' : `Canlı ${selectedDepartmentFilter} (${scoreCounts.total} Personel) ⚡`}
+              Canlı {scoreCounts.total} Personel Analizi ⚡
             </span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
             
             <div
-              onClick={() => { setScoreFilterCategory('all'); setSelectedDepartmentFilter('all'); }}
+              onClick={() => { setScoreFilterCategory('all'); setSelectedGroupFilter('all'); setSelectedDepartmentFilter('all'); }}
               className={`p-3.5 rounded-2xl border transition-all cursor-pointer text-center group hover:scale-105 ${
-                scoreFilterCategory === 'all' && selectedDepartmentFilter === 'all'
+                scoreFilterCategory === 'all' && selectedGroupFilter === 'all' && selectedDepartmentFilter === 'all'
                   ? 'bg-white text-[#0B2A4A] border-white shadow-lg font-black'
                   : 'bg-white/10 hover:bg-white/20 border-white/15 text-white'
               }`}
@@ -774,70 +911,152 @@ export default function EmployeeCareerPlanningModule() {
           </div>
         </div>
 
-        {/* SECTION 2: 26 DEPARTMAN BAZLI BAŞARI & KİŞİ SAYISI KARNESİ */}
+        {/* SECTION 2: ANA DEPARTMAN GRUPLARI KARNESİ (6 ANA BAŞLIK) */}
         <div className="space-y-3 pt-2 border-t border-white/15">
           <div className="flex items-center justify-between">
             <h4 className="font-black text-xs uppercase tracking-wider text-amber-300 flex items-center space-x-2">
               <Building className="w-4 h-4 text-amber-300" />
-              <span>26 Perakende Departmanı Bazlı Başarı Karnesi (Filtrelemek İçin Tıklayın)</span>
+              <span>Ana Departman Grupları Karnesi (Filtrelemek İçin Tıklayın)</span>
             </h4>
-            <span className="text-[10px] font-mono text-gray-300">26 Departman Canlı Analizi</span>
+            <span className="text-[10px] font-mono text-gray-300">6 Ana Departman Grubu</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 max-h-[480px] overflow-y-auto pr-1">
-            {departmentAnalytics.map((dept) => {
-              const IconComp = dept.icon;
-              const isDeptSelected = selectedDepartmentFilter === dept.name;
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {groupAnalytics.map((grp) => {
+              const IconComp = grp.icon;
+              const isGroupSelected = selectedGroupFilter === grp.id;
               return (
                 <div
-                  key={dept.name}
+                  key={grp.id}
                   onClick={() => {
-                    if (isDeptSelected) setSelectedDepartmentFilter('all');
-                    else setSelectedDepartmentFilter(dept.name);
+                    if (isGroupSelected) {
+                      setSelectedGroupFilter('all');
+                      setSelectedDepartmentFilter('all');
+                    } else {
+                      setSelectedGroupFilter(grp.id);
+                      setSelectedDepartmentFilter('all');
+                    }
                   }}
-                  className={`p-3 rounded-2xl border transition-all cursor-pointer space-y-1.5 group hover:scale-105 ${
-                    isDeptSelected
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer space-y-2 group hover:scale-105 ${
+                    isGroupSelected
                       ? 'bg-amber-400 text-slate-950 border-amber-200 shadow-xl font-extrabold'
                       : 'bg-white/10 hover:bg-white/20 border-white/15 text-white'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="p-1 rounded-lg bg-white/15 text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
-                      <IconComp className="w-3.5 h-3.5" />
+                    <div className="p-1.5 rounded-xl bg-white/15 text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+                      <IconComp className="w-4 h-4" />
                     </div>
-                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                      isDeptSelected ? 'bg-slate-900 text-amber-300' : 'bg-white/15 text-emerald-300'
+                    <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md ${
+                      isGroupSelected ? 'bg-slate-900 text-amber-300' : 'bg-white/15 text-emerald-300'
                     }`}>
-                      Ort %{dept.avgScore}
+                      Ort %{grp.avgScore}
                     </span>
                   </div>
 
                   <div>
-                    <h5 className="font-extrabold text-[11px] truncate" title={dept.name}>{dept.name}</h5>
-                    <div className="text-[10px] font-black font-mono mt-0.5">
-                      {dept.count} Çalışan
+                    <h5 className="font-extrabold text-xs truncate" title={grp.name}>{grp.name}</h5>
+                    <div className="text-[11px] font-black font-mono mt-0.5">
+                      {grp.count} Çalışan
                     </div>
                   </div>
 
-                  <div className={`text-[8.5px] font-mono font-bold space-y-0.5 pt-1 border-t ${
-                    isDeptSelected ? 'border-slate-950/20 text-slate-900' : 'border-white/10 text-gray-300'
+                  <div className={`text-[9px] font-mono font-bold space-y-0.5 pt-1.5 border-t ${
+                    isGroupSelected ? 'border-slate-950/20 text-slate-900' : 'border-white/10 text-gray-300'
                   }`}>
                     <div className="flex justify-between">
                       <span>🟢 Terfiye Hazır:</span>
-                      <strong className={isDeptSelected ? 'text-slate-950' : 'text-emerald-300'}>{dept.promotable}</strong>
+                      <strong className={isGroupSelected ? 'text-slate-950' : 'text-emerald-300'}>{grp.promotable}</strong>
                     </div>
                     <div className="flex justify-between">
                       <span>🔵 Başarılı:</span>
-                      <strong className={isDeptSelected ? 'text-slate-950' : 'text-blue-200'}>{dept.successful}</strong>
+                      <strong className={isGroupSelected ? 'text-slate-950' : 'text-blue-200'}>{grp.successful}</strong>
                     </div>
                     <div className="flex justify-between">
                       <span>🟡 Gelişime Açık:</span>
-                      <strong className={isDeptSelected ? 'text-slate-950' : 'text-amber-200'}>{dept.needsImprovement}</strong>
+                      <strong className={isGroupSelected ? 'text-slate-950' : 'text-amber-200'}>{grp.needsImprovement}</strong>
                     </div>
                   </div>
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* SECTION 3: ALT DEPARTMAN DETAYLARI (26 ALT DEPARTMAN) */}
+        <div className="space-y-3 pt-2 border-t border-white/15">
+          <div className="flex items-center justify-between">
+            <h4 className="font-black text-xs uppercase tracking-wider text-amber-300 flex items-center space-x-2">
+              <Layers className="w-4 h-4 text-amber-300" />
+              <span>
+                {selectedGroupFilter === 'all'
+                  ? '26 Alt Departman Karnesi (Tüm Listeyi Filtreleyin)'
+                  : `${MAIN_DEPARTMENT_GROUPS.find(g => g.id === selectedGroupFilter)?.name} Alt Departmanları`}
+              </span>
+            </h4>
+            <span className="text-[10px] font-mono text-gray-300">Detaylı Birim Filtresi</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 max-h-[360px] overflow-y-auto pr-1">
+            {departmentAnalytics
+              .filter(d => {
+                if (selectedGroupFilter === 'all') return true;
+                const activeGrp = MAIN_DEPARTMENT_GROUPS.find(g => g.id === selectedGroupFilter);
+                return activeGrp ? activeGrp.departments.includes(d.name) : true;
+              })
+              .map((dept) => {
+                const IconComp = dept.icon;
+                const isDeptSelected = selectedDepartmentFilter === dept.name;
+                return (
+                  <div
+                    key={dept.name}
+                    onClick={() => {
+                      if (isDeptSelected) setSelectedDepartmentFilter('all');
+                      else setSelectedDepartmentFilter(dept.name);
+                    }}
+                    className={`p-3 rounded-2xl border transition-all cursor-pointer space-y-1.5 group hover:scale-105 ${
+                      isDeptSelected
+                        ? 'bg-amber-400 text-slate-950 border-amber-200 shadow-xl font-extrabold'
+                        : 'bg-white/10 hover:bg-white/20 border-white/15 text-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="p-1 rounded-lg bg-white/15 text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+                        <IconComp className="w-3.5 h-3.5" />
+                      </div>
+                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                        isDeptSelected ? 'bg-slate-900 text-amber-300' : 'bg-white/15 text-emerald-300'
+                      }`}>
+                        Ort %{dept.avgScore}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h5 className="font-extrabold text-[11px] truncate" title={dept.name}>{dept.name}</h5>
+                      <div className="text-[10px] font-black font-mono mt-0.5">
+                        {dept.count} Çalışan
+                      </div>
+                    </div>
+
+                    <div className={`text-[8.5px] font-mono font-bold space-y-0.5 pt-1 border-t ${
+                      isDeptSelected ? 'border-slate-950/20 text-slate-900' : 'border-white/10 text-gray-300'
+                    }`}>
+                      <div className="flex justify-between">
+                        <span>🟢 Terfiye Hazır:</span>
+                        <strong className={isDeptSelected ? 'text-slate-950' : 'text-emerald-300'}>{dept.promotable}</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>🔵 Başarılı:</span>
+                        <strong className={isDeptSelected ? 'text-slate-950' : 'text-blue-200'}>{dept.successful}</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>🟡 Gelişime Açık:</span>
+                        <strong className={isDeptSelected ? 'text-slate-950' : 'text-amber-200'}>{dept.needsImprovement}</strong>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         </div>
 
@@ -857,19 +1076,46 @@ export default function EmployeeCareerPlanningModule() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 text-xs w-full md:w-auto">
-          {/* DEPARTMAN FİLTRESİ (26 DEPARTMAN) */}
+          {/* ANA GRUP FİLTRESİ */}
           <div className="flex items-center space-x-2">
-            <span className="text-gray-500 font-bold whitespace-nowrap">Departman:</span>
+            <span className="text-gray-500 font-bold whitespace-nowrap">Ana Grup:</span>
+            <select
+              value={selectedGroupFilter}
+              onChange={(e) => {
+                setSelectedGroupFilter(e.target.value);
+                setSelectedDepartmentFilter('all');
+              }}
+              className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-extrabold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-[#087F96]"
+            >
+              <option value="all">Tüm Ana Departman Grupları (1.000 Personel)</option>
+              {groupAnalytics.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.name} ({g.count} Personel)
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* ALT DEPARTMAN FİLTRESİ */}
+          <div className="flex items-center space-x-2">
+            <span className="text-gray-500 font-bold whitespace-nowrap">Alt Birim:</span>
             <select
               value={selectedDepartmentFilter}
               onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
               className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-extrabold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-[#087F96]"
             >
-              <option value="all">Tüm 26 Departman (1.000 Personel)</option>
-              {departmentAnalytics.map((d) => (
-                <option key={d.name} value={d.name}>
-                  {d.name} ({d.count} Personel)
-                </option>
+              <option value="all">Tüm Alt Birimler</option>
+              {MAIN_DEPARTMENT_GROUPS.map((grp) => (
+                <optgroup key={grp.id} label={grp.name}>
+                  {grp.departments.map((deptName) => {
+                    const deptData = departmentAnalytics.find(d => d.name === deptName);
+                    return (
+                      <option key={deptName} value={deptName}>
+                        {deptName} ({deptData?.count || 0} Personel)
+                      </option>
+                    );
+                  })}
+                </optgroup>
               ))}
             </select>
           </div>
