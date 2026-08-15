@@ -104,17 +104,19 @@ function generate1000TimelineEmployeesData(): EmployeeCareerRecord[] {
     else if (i < 500) score = 81 + (i % 10);
     else if (i < 780) score = 71 + (i % 10);
     else if (i < 930) score = 51 + (i % 20);
-    else score = 35 + (i % 16);
-
     const deptConfig = DEPARTMENTS_CONFIG[i % DEPARTMENTS_CONFIG.length];
     const dept = deptConfig.name;
 
     const match = Math.min(99, Math.max(45, score + (i % 5) - 2));
     const avatar = avatars[i % avatars.length];
     const city = cities[i % cities.length];
-    const tenureYears = Math.floor(score / 15) + 1;
-    const tenure = `${tenureYears} Yıl ${(i * 3) % 12} Ay`;
-    const startDate = `${(i % 28) + 1} ${['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'][i % 12]} 202${2 + (i % 4)}`;
+    
+    // Mathematically consistent startYear and tenure calculation
+    const startYear = 2021 + (i % 4); // 2021, 2022, 2023, 2024
+    const tenureYears = 2026 - startYear;
+    const tenureMonths = (i * 3) % 12;
+    const tenure = `${tenureYears} Yıl ${tenureMonths} Ay`;
+    const startDate = `${(i % 28) + 1} ${['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylülü', 'Ekim', 'Kasım', 'Aralık'][i % 12]} ${startYear}`;
 
     list.push({
       id: `emp_${i + 1}`,
@@ -126,14 +128,14 @@ function generate1000TimelineEmployeesData(): EmployeeCareerRecord[] {
       matchPercentage: match,
       competencyScore: score,
       city,
-      experienceYears: tenureYears,
+      experienceYears: tenureYears + 2,
       startDate,
       tenure,
       previousExperiences: [
-        { companyName: 'BİM A.Ş. / Migros', role: 'Saha Görevlisi', duration: '2 Yıl', yearsRange: '2020–2022' }
+        { companyName: 'BİM A.Ş. / Migros', role: 'Saha Görevlisi', duration: '2 Yıl', yearsRange: `${startYear - 2}–${startYear}` }
       ],
       priorTrainings: [
-        { title: 'Temel Perakendecilik Sertifikası', institution: 'MEB Sertifika', instructorName: 'Seda Yılmaz', companyWhereTaken: 'Harici Kurum', durationHours: 24, year: '2020' }
+        { title: 'Temel Perakendecilik Sertifikası', institution: 'MEB Sertifika', instructorName: 'Seda Yılmaz', companyWhereTaken: 'Harici Kurum', durationHours: 24, year: `${startYear - 2}` }
       ],
       completedTrainings: [
         { courseTitle: `${deptConfig.role} Master Sertifika Programı`, duration: '16 Saat', durationHours: 16, completedDate: '10 Mayıs 2026', instructorName: 'Prof. Dr. Ahmet Çelik', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score, gradeStatus: score >= 90 ? 'Üstün Başarı' : score >= 80 ? 'Pek İyi' : 'Başarılı', certificateId: `PKA-2026-${i + 1}-001` }
@@ -142,7 +144,7 @@ function generate1000TimelineEmployeesData(): EmployeeCareerRecord[] {
         { title: `2025 Yılı ${city} Perakende Başarı Ödülü`, category: 'Ödül', givenDate: '15 Aralık 2025', organization: 'Perakende Kariyer Akademisi', reason: `%${score} Üstün Başarı Skoru` }
       ] : [],
       promotions: score >= 80 ? [
-        { fromRole: 'Stajyer / Görevli', toRole: deptConfig.role, promotionDate: '15 Mart 2023', approvedBy: 'Ahmet Çelik (İK Direktörü)', note: 'Yüksek başarı puanı ile terfi.' }
+        { fromRole: 'Stajyer / Görevli', toRole: deptConfig.role, promotionDate: `15 Mart ${startYear + 1}`, approvedBy: 'Ahmet Çelik (İK Direktörü)', note: 'Yüksek başarı puanı ile terfi.' }
       ] : [],
       warnings: [],
       penalties: [],
@@ -202,7 +204,7 @@ export default function EmployeeDevelopmentTimelineModule() {
 
   // Construct Chronological Career Timeline Milestones for Active Employee
   const careerTimelineMilestones = useMemo(() => {
-    const startYear = parseInt(activeEmployee.startDate.split(' ').pop() || '2022', 10);
+    const startYear = parseInt(activeEmployee.startDate.split(' ').pop() || '2023', 10);
     const score = activeEmployee.competencyScore;
 
     return [
@@ -441,13 +443,18 @@ export default function EmployeeDevelopmentTimelineModule() {
               </div>
             </div>
 
-            <div className="flex justify-between text-xs font-mono text-gray-500 pt-0.5">
-              <span>2020: Stajyer (%60)</span>
-              <span>2022: Şirkete Giriş (%78)</span>
-              <span className="font-bold text-emerald-700">2026: Mevcut (%{activeEmployee.competencyScore})</span>
-              <span className="font-bold text-blue-700">2027: Hedef Terfi (%{Math.min(100, activeEmployee.competencyScore + 6)})</span>
-              <span>2028+: Vizyon (%98)</span>
-            </div>
+            {(() => {
+              const activeStartYear = parseInt(activeEmployee.startDate.split(' ').pop() || '2023', 10);
+              return (
+                <div className="flex justify-between text-xs font-mono text-gray-500 pt-0.5">
+                  <span>{activeStartYear - 2}: Stajyer (%60)</span>
+                  <span>{activeStartYear}: Şirkete Giriş (%78)</span>
+                  <span className="font-bold text-emerald-700">2026: Mevcut (%{activeEmployee.competencyScore})</span>
+                  <span className="font-bold text-blue-700">2027: Hedef Terfi (%{Math.min(100, activeEmployee.competencyScore + 6)})</span>
+                  <span>2028+: Vizyon (%98)</span>
+                </div>
+              );
+            })()}
           </div>
 
         </div>

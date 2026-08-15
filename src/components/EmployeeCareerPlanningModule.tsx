@@ -366,9 +366,11 @@ function generate1000EmployeesData(): EmployeeCareerRecord[] {
     const match = Math.min(99, Math.max(45, score + (i % 5) - 2));
     const avatar = avatars[i % avatars.length];
     const city = cities[i % cities.length];
-    const tenureYears = Math.floor(score / 15) + 1;
-    const tenure = `${tenureYears} Yıl ${(i * 3) % 12} Ay`;
-    const startDate = `${(i % 28) + 1} ${['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'][i % 12]} 202${2 + (i % 4)}`;
+    const startYear = 2021 + (i % 4); // 2021, 2022, 2023, 2024
+    const tenureYears = 2026 - startYear;
+    const tenureMonths = (i * 3) % 12;
+    const tenure = `${tenureYears} Yıl ${tenureMonths} Ay`;
+    const startDate = `${(i % 28) + 1} ${['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'][i % 12]} ${startYear}`;
 
     const awards: AwardRecord[] = score >= 90 ? [
       { title: `2025 Yılı ${city} Perakende Yıldızı Ödülü`, category: 'Ödül', givenDate: '15 Aralık 2025', organization: 'Perakende Kariyer Akademisi', reason: `%${score} Üstün Başarı Skoru` },
