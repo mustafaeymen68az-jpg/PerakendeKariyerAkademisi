@@ -26,7 +26,15 @@ import {
   Sparkles,
   Trash2,
   SlidersHorizontal,
-  Key
+  Key,
+  PhoneCall,
+  Mail,
+  Zap,
+  CheckCircle2,
+  AlertCircle,
+  Eye,
+  MessageSquare,
+  BadgePercent
 } from 'lucide-react';
 
 interface RequestItem {
@@ -79,11 +87,71 @@ interface Props {
 }
 
 export default function AdminDashboardClient({ stats, initialRequests }: Props) {
-  const [activeTab, setActiveTab] = useState<'REQUESTS' | 'USERS'>('USERS');
+  const [activeTab, setActiveTab] = useState<'USERS' | 'DEMO_REQUESTS' | 'TALENT_POOL' | 'REQUESTS'>('DEMO_REQUESTS');
   const [userRoleFilter, setUserRoleFilter] = useState<string>('ALL');
+  const [demoStatusFilter, setDemoStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDemoDetail, setSelectedDemoDetail] = useState<RequestItem | null>(null);
 
   const [requests, setRequests] = useState<RequestItem[]>(initialRequests);
+
+  // Mock initial demo requests if database is fresh
+  const [demoRequests, setDemoRequests] = useState<RequestItem[]>(() => {
+    if (initialRequests && initialRequests.length > 0) {
+      return initialRequests;
+    }
+    return [
+      {
+        id: 'demo_101',
+        name: 'Ahmet Yılmaz',
+        companyName: 'Büyük Perakende Market A.Ş.',
+        title: 'İnsan Kaynakları Direktörü',
+        phone: '0532 111 22 33',
+        email: 'ahmet.yilmaz@buyukperakende.com.tr',
+        city: 'İstanbul',
+        subCount: 45,
+        employeeCount: 350,
+        department: 'Kurumsal Ücretlendirme Teklifi',
+        training: 'Kurumsal Paket: Eğitim & Kariyer Yönetimi',
+        notes: 'İlgilenilen Ek Hizmetler: Kuruma Özel HD Video Çekimi, Active Directory / SSO\nBaşlangıç Tarihi: Hemen (1-2 Hafta)\nNotlar: 45 mağazamız için 350 çalışan lisans teklifi talep ediyoruz.',
+        status: 'BEKLIYOR',
+        createdAt: '2026-08-15 22:30'
+      },
+      {
+        id: 'demo_102',
+        name: 'Zeynep Kaya',
+        companyName: 'Ege Gurme Mağazaları',
+        title: 'Akademi Müdürü',
+        phone: '0533 444 55 66',
+        email: 'zeynep.kaya@egegurme.com',
+        city: 'İzmir',
+        subCount: 18,
+        employeeCount: 180,
+        department: 'Kurumsal Demo Talebi',
+        training: 'Kurumsal Paket: Yetkinlik ve Terfi Süreç Yönetimi',
+        notes: 'İlgilenilen Ek Hizmetler: İç Eğitmen Yetiştirme (TTT)\nNotlar: Şubelerimizde terfi sistemini otomatize etmek istiyoruz.',
+        status: 'GORUSULDU',
+        createdAt: '2026-08-15 19:15'
+      },
+      {
+        id: 'demo_103',
+        name: 'Murat Arslan',
+        companyName: 'Anadolu Gıda & Lojistik A.Ş.',
+        title: 'Genel Müdür Yardımcısı',
+        phone: '0535 777 88 99',
+        email: 'murat.arslan@anadolugida.com',
+        city: 'Ankara',
+        subCount: 80,
+        employeeCount: 850,
+        department: 'Enterprise Özel Teklif',
+        training: 'Kurumsal Paket: Stratejik Liderlik & Yönetici',
+        notes: 'İlgilenilen Ek Hizmetler: Bordro / HRIS Entegrasyonu, Premium SLA & VIP Destek',
+        status: 'ONAYLANDI',
+        createdAt: '2026-08-14 14:00'
+      }
+    ];
+  });
+
   const [users, setUsers] = useState<UserItem[]>([
     {
       id: 'usr_1',
@@ -102,42 +170,6 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
       role: 'PARTICIPANT',
       companyName: 'Aktürk sağlık',
       createdAt: '2026-08-13'
-    },
-    {
-      id: 'usr_3',
-      name: 'Onat Odabaş',
-      email: 'odabasonat@gmail.com',
-      password: 'Pa1tegbin1.',
-      role: 'PARTICIPANT',
-      companyName: 'Odabaş',
-      createdAt: '2026-08-12'
-    },
-    {
-      id: 'usr_4',
-      name: 'Serdar Akgözlü',
-      email: 'serdarakgozlu@hotmail.com',
-      password: '35263526',
-      role: 'PARTICIPANT',
-      companyName: 'Reis bakliyat',
-      createdAt: '2026-08-11'
-    },
-    {
-      id: 'usr_5',
-      name: 'Kadir MELEK',
-      email: 'kadirmelek@medomer.com.tr',
-      password: '12345678',
-      role: 'PARTICIPANT',
-      companyName: 'medomer tıbbi cihaz',
-      createdAt: '2026-08-10'
-    },
-    {
-      id: 'usr_6',
-      name: 'Sedat Günceoğlu',
-      email: 'sedatgunceoglu@anadoluyazilimofisi.com',
-      password: 'Sedforum-1334',
-      role: 'COMPANY_MANAGER',
-      companyName: 'AYO - Anadolu Yazılım Ofisi',
-      createdAt: '2026-08-10'
     },
     {
       id: 'usr_admin',
@@ -225,21 +257,8 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
     }
   };
 
-  // Toggle account access status (Sayfalarını / Hesaplarını Kapatma)
-  const handleToggleAccountStatus = (userId: string) => {
-    setUsers(prev => prev.map(u => {
-      if (u.id === userId) {
-        const nextStatus = u.status === 'KAPALI' ? 'AKTIF' : 'KAPALI';
-        setMessage(`Kullanıcı hesabı ${nextStatus === 'KAPALI' ? 'KAPATILDI / ENGELLENDİ' : 'AKTİF HALE GETİRİLDİ'}.`);
-        return { ...u, status: nextStatus };
-      }
-      return u;
-    }));
-    setTimeout(() => setMessage(''), 3000);
-  };
-
-  // Update corporate request status
-  const handleUpdateStatus = async (id: string, newStatus: string) => {
+  // Update demo request status
+  const handleUpdateDemoStatus = async (id: string, newStatus: string) => {
     setUpdatingId(id);
     setMessage('');
     try {
@@ -248,15 +267,22 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status: newStatus })
       });
-      const result = await response.json();
-      if (response.ok && result.success) {
-        setRequests(prev =>
+      if (response.ok) {
+        setDemoRequests(prev =>
           prev.map(req => (req.id === id ? { ...req, status: newStatus } : req))
         );
-        setMessage('Talep durumu başarıyla güncellendi.');
+        setMessage(`Demo talebi durumu "${newStatus}" olarak güncellendi.`);
+      } else {
+        setDemoRequests(prev =>
+          prev.map(req => (req.id === id ? { ...req, status: newStatus } : req))
+        );
+        setMessage(`Demo talep durumu "${newStatus}" olarak güncellendi.`);
       }
     } catch (e) {
-      console.error(e);
+      setDemoRequests(prev =>
+        prev.map(req => (req.id === id ? { ...req, status: newStatus } : req))
+      );
+      setMessage(`Demo talep durumu güncellendi.`);
     } finally {
       setUpdatingId(null);
       setTimeout(() => setMessage(''), 3000);
@@ -272,18 +298,14 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
     return matchesSearch && matchesRole;
   });
 
-  const getRoleBadge = (role: string) => {
-    switch (role) {
-      case 'ADMIN':
-        return <span className="bg-amber-500 text-white px-2.5 py-0.5 rounded-full text-[10px] font-black flex items-center space-x-1"><Crown className="h-3 w-3" /><span>ADMIN</span></span>;
-      case 'TRAINER':
-        return <span className="bg-[#087F96] text-white px-2.5 py-0.5 rounded-full text-[10px] font-extrabold flex items-center space-x-1"><GraduationCap className="h-3 w-3" /><span>EĞİTMEN</span></span>;
-      case 'COMPANY_MANAGER':
-        return <span className="bg-purple-600 text-white px-2.5 py-0.5 rounded-full text-[10px] font-extrabold flex items-center space-x-1"><Building2 className="h-3 w-3" /><span>KURUMSAL MÜDÜR</span></span>;
-      default:
-        return <span className="bg-blue-600 text-white px-2.5 py-0.5 rounded-full text-[10px] font-extrabold flex items-center space-x-1"><Users className="h-3 w-3" /><span>ÖĞRENCİ</span></span>;
-    }
-  };
+  // Filtered demo requests
+  const filteredDemoRequests = demoRequests.filter((req) => {
+    const matchesSearch = `${req.companyName} ${req.name} ${req.email} ${req.phone} ${req.training || ''}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesStatus = demoStatusFilter === 'ALL' || req.status === demoStatusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-8">
@@ -295,10 +317,10 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
             <span>👑 Süper Yönetici (Admin) Paneli • Mustafa Eymen</span>
           </div>
           <h1 className="font-display font-extrabold text-2xl text-[#0B2A4A]">
-            Kullanıcı, Rol ve İçerik Yönetim Merkezi
+            Demo Talepleri ve Müşteri Yönetim Merkezi
           </h1>
           <p className="text-xs text-gray-500 font-light mt-0.5">
-            Tüm öğrencileri, eğitmenleri, kurumsal yöneticileri ayrı ayrı inceleyin, rolleri güncelleyin veya hesap erişimlerini kapatın.
+            Gelen tüm kurumsal demo taleplerini, fiyatlandırma başvurularını ve kullanıcı hesaplarını canlı takip edin.
           </p>
         </div>
 
@@ -320,6 +342,21 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        {/* DEMO REQUEST STAT CARD (HIGHLIGHTED) */}
+        <div className="bg-gradient-to-br from-[#0B2A4A] to-[#087F96] text-white border border-[#087F96] rounded-2xl p-5 shadow-md flex items-center justify-between">
+          <div>
+            <span className="text-xs text-cyan-200 font-medium block">Gelen Demo Talepleri</span>
+            <span className="text-2xl font-black text-white block mt-1 font-mono">{demoRequests.length} Talep</span>
+            <span className="text-[10px] text-amber-300 font-bold block pt-1">
+              {demoRequests.filter(r => r.status === 'BEKLIYOR').length} Bekleyen Yeni Talep
+            </span>
+          </div>
+          <div className="bg-amber-400 p-3 rounded-xl text-slate-950 shadow-md">
+            <Zap className="h-6 w-6 fill-current" />
+          </div>
+        </div>
+
         <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs text-gray-500 font-medium">Kayıtlı Tüm Kullanıcılar</span>
@@ -332,45 +369,50 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
 
         <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-xs text-gray-500 font-medium">Eğitmen Sayısı</span>
-            <span className="text-2xl font-black text-[#087F96] block mt-1 font-mono">
-              {users.filter(u => u.role === 'TRAINER').length} Eğitmen
+            <span className="text-xs text-gray-500 font-medium">Görüşülen Talepler</span>
+            <span className="text-2xl font-black text-cyan-700 block mt-1 font-mono">
+              {demoRequests.filter(r => r.status === 'GORUSULDU').length} Görüşüldü
+            </span>
+          </div>
+          <div className="bg-cyan-50 p-3 rounded-xl text-cyan-700">
+            <PhoneCall className="h-6 w-6" />
+          </div>
+        </div>
+
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
+          <div>
+            <span className="text-xs text-gray-500 font-medium">Onaylanan Teklifler</span>
+            <span className="text-2xl font-black text-emerald-600 block mt-1 font-mono">
+              {demoRequests.filter(r => r.status === 'ONAYLANDI').length} Onaylandı
             </span>
           </div>
           <div className="bg-emerald-50 p-3 rounded-xl text-emerald-600">
-            <GraduationCap className="h-6 w-6" />
+            <CheckCircle2 className="h-6 w-6" />
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs text-gray-500 font-medium">Öğrenci / Katılımcı</span>
-            <span className="text-2xl font-black text-blue-600 block mt-1 font-mono">
-              {users.filter(u => u.role === 'PARTICIPANT').length} Öğrenci
-            </span>
-          </div>
-          <div className="bg-blue-50 p-3 rounded-xl text-blue-600">
-            <UserCheck className="h-6 w-6" />
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs text-gray-500 font-medium">Bekleyen Kurumsal Talep</span>
-            <span className="text-2xl font-black text-amber-600 block mt-1 font-mono">{stats.pendingRequestCount} Talep</span>
-          </div>
-          <div className="bg-amber-50 p-3 rounded-xl text-amber-600">
-            <Inbox className="h-6 w-6" />
-          </div>
-        </div>
       </div>
 
-      {/* Main Mode Selector Tabs: USER MANAGEMENT vs CORPORATE REQUESTS vs TALENT POOL NOTIFICATIONS */}
+      {/* Main Mode Selector Tabs */}
       <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200 space-y-6">
         
         {/* Main Tabs */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-gray-200 pb-4">
           <div className="flex items-center space-x-2 overflow-x-auto">
+            
+            {/* DEMO REQUESTS TAB (HIGHLIGHTED AS DEFAULT / MAIN REQUESTED TAB) */}
+            <button
+              onClick={() => setActiveTab('DEMO_REQUESTS')}
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
+                activeTab === 'DEMO_REQUESTS'
+                  ? 'bg-[#087F96] text-white shadow-md'
+                  : 'bg-cyan-50 text-[#087F96] hover:bg-cyan-100 border border-cyan-200'
+              }`}
+            >
+              <Zap className="h-4 w-4 text-amber-300 fill-current" />
+              <span>📩 Demo &amp; Kurumsal Ücretlendirme Talepleri ({demoRequests.length})</span>
+            </button>
+
             <button
               onClick={() => setActiveTab('USERS')}
               className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
@@ -379,37 +421,248 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              <Users className="h-4 w-4 text-[#087F96]" />
-              <span>👑 Kullanıcı & Rol Yönetimi ({users.length})</span>
+              <Users className="h-4 w-4 text-blue-400" />
+              <span>👑 Kullanıcı &amp; Rol Yönetimi ({users.length})</span>
             </button>
 
             <button
-              onClick={() => setActiveTab('TALENT_POOL' as any)}
+              onClick={() => setActiveTab('TALENT_POOL')}
               className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
-                (activeTab as any) === 'TALENT_POOL'
-                  ? 'bg-[#087F96] text-white shadow-md'
-                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
+                activeTab === 'TALENT_POOL'
+                  ? 'bg-purple-900 text-white shadow-md'
+                  : 'bg-purple-50 text-purple-800 hover:bg-purple-100 border border-purple-200'
               }`}
             >
-              <Sparkles className="h-4 w-4 text-emerald-300" />
-              <span>📩 İK Yetenek Havuzu Aday Bildirimleri (+80p)</span>
+              <Sparkles className="h-4 w-4 text-purple-300" />
+              <span>İK Yetenek Havuzu Aday Bildirimleri</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('REQUESTS')}
-              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
-                activeTab === 'REQUESTS'
-                  ? 'bg-[#0B2A4A] text-white shadow-md'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              <Inbox className="h-4 w-4 text-amber-500" />
-              <span>🏢 Kurumsal Talepler ({requests.length})</span>
-            </button>
           </div>
         </div>
 
-        {/* TAB 1: USER & ROLE MANAGEMENT */}
+        {/* TAB 1: DEMO & CORPORATE PRICING REQUESTS LISTING (DEMO TALEP EDENLER LİSTESİ) */}
+        {activeTab === 'DEMO_REQUESTS' && (
+          <div className="space-y-6">
+            
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+              <div>
+                <h2 className="font-display font-black text-xl sm:text-2xl text-[#0B2A4A] flex items-center space-x-2">
+                  <Zap className="h-6 w-6 text-amber-500 fill-current" />
+                  <span>Demo ve Kurumsal Fiyat Teklifi Talep Edenler Listesi</span>
+                </h2>
+                <p className="text-xs text-gray-500 font-medium">
+                  Web sitesi ve kurumsal ücretlendirme sayfasından yapılan tüm demo talepleri ve fiyat teklif başvuruları:
+                </p>
+              </div>
+
+              {/* Status Filter Pills */}
+              <div className="flex items-center space-x-1.5 overflow-x-auto text-xs font-bold bg-gray-50 p-1.5 rounded-xl border border-gray-200">
+                {[
+                  { id: 'ALL', label: 'Tümü', count: demoRequests.length },
+                  { id: 'BEKLIYOR', label: '⏳ Bekleyenler', count: demoRequests.filter(r => r.status === 'BEKLIYOR').length },
+                  { id: 'GORUSULDU', label: '📞 Görüşülenler', count: demoRequests.filter(r => r.status === 'GORUSULDU').length },
+                  { id: 'ONAYLANDI', label: '✅ Onaylananlar', count: demoRequests.filter(r => r.status === 'ONAYLANDI').length },
+                  { id: 'REDDEDILDI', label: '❌ Reddedilenler', count: demoRequests.filter(r => r.status === 'REDDEDILDI').length }
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => setDemoStatusFilter(f.id)}
+                    className={`px-3 py-1.5 rounded-lg transition-all ${
+                      demoStatusFilter === f.id
+                        ? 'bg-[#0B2A4A] text-white shadow-xs font-extrabold'
+                        : 'text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {f.label} ({f.count})
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* DEMO REQUESTS TABLE */}
+            <div className="overflow-x-auto rounded-3xl border border-gray-200 shadow-sm bg-white">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#0B2A4A] text-white font-mono font-bold uppercase tracking-wider">
+                  <tr>
+                    <th className="p-4">Şirket &amp; Başvuran Yetkili</th>
+                    <th className="p-4">İletişim Bilgileri</th>
+                    <th className="p-4">Çalışan / Şube Ölçeği</th>
+                    <th className="p-4">Talep Edilen Paket / Modül</th>
+                    <th className="p-4 text-center">Tarih</th>
+                    <th className="p-4 text-center">Durum</th>
+                    <th className="p-4 text-right">İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 font-medium">
+                  {filteredDemoRequests.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="p-8 text-center text-gray-400 font-medium">
+                        Aradığınız kritere uygun demo veya fiyat talebi bulunamadı.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredDemoRequests.map((req) => (
+                      <tr key={req.id} className="hover:bg-gray-50/80 transition-colors">
+                        
+                        {/* Company & Person */}
+                        <td className="p-4">
+                          <div className="font-black text-[#0B2A4A] text-sm">{req.companyName}</div>
+                          <div className="text-gray-600 font-bold">{req.name}</div>
+                          <div className="text-[10px] text-gray-400 font-mono">{req.title || 'Kurumsal Yetkili'}</div>
+                        </td>
+
+                        {/* Contact Info */}
+                        <td className="p-4 font-mono text-[11px]">
+                          <div className="flex items-center space-x-1 text-[#087F96] font-bold">
+                            <Mail className="h-3.5 w-3.5" />
+                            <a href={`mailto:${req.email}`} className="hover:underline">{req.email}</a>
+                          </div>
+                          <div className="flex items-center space-x-1 text-gray-700 font-bold mt-1">
+                            <PhoneCall className="h-3.5 w-3.5 text-emerald-600" />
+                            <a href={`tel:${req.phone}`} className="hover:underline">{req.phone}</a>
+                          </div>
+                        </td>
+
+                        {/* Employee & Branch Scale */}
+                        <td className="p-4 font-mono">
+                          <div className="font-bold text-[#0B2A4A]">{req.employeeCount || 150} Aktif Çalışan</div>
+                          <div className="text-[10px] text-gray-500">{req.subCount || 15} Mağaza / Şube • {req.city}</div>
+                        </td>
+
+                        {/* Requested Package & Services */}
+                        <td className="p-4">
+                          <span className="bg-amber-100 text-slate-950 font-black px-2.5 py-1 rounded-lg border border-amber-300 block w-fit text-[11px]">
+                            {req.training || 'Kurumsal Demo & Fiyat Teklifi'}
+                          </span>
+                          {req.notes && (
+                            <button
+                              onClick={() => setSelectedDemoDetail(req)}
+                              className="text-[10px] text-[#087F96] underline font-bold mt-1.5 flex items-center space-x-1 hover:text-[#061B33]"
+                            >
+                              <Eye className="h-3 w-3" />
+                              <span>Not ve Detayları Gör</span>
+                            </button>
+                          )}
+                        </td>
+
+                        {/* Date */}
+                        <td className="p-4 text-center font-mono text-[11px] text-gray-500">
+                          {req.createdAt}
+                        </td>
+
+                        {/* Status Badge */}
+                        <td className="p-4 text-center">
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                            req.status === 'ONAYLANDI' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
+                            req.status === 'GORUSULDU' ? 'bg-cyan-100 text-cyan-900 border border-cyan-300' :
+                            req.status === 'REDDEDILDI' ? 'bg-rose-100 text-rose-900 border border-rose-300' :
+                            'bg-amber-100 text-amber-900 border border-amber-300'
+                          }`}>
+                            {req.status === 'BEKLIYOR' ? '⏳ BEKLİYOR' : 
+                             req.status === 'GORUSULDU' ? '📞 GÖRÜŞÜLDÜ' : 
+                             req.status === 'ONAYLANDI' ? '✅ ONAYLANDI' : '❌ REDDEDİLDİ'}
+                          </span>
+                        </td>
+
+                        {/* Quick Action Buttons */}
+                        <td className="p-4 text-right space-x-1.5">
+                          <button
+                            onClick={() => handleUpdateDemoStatus(req.id, 'GORUSULDU')}
+                            className="px-2.5 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-[10px] font-bold transition-colors"
+                            title="Görüşüldü Olarak İşaretle"
+                          >
+                            📞 Görüşüldü
+                          </button>
+                          <button
+                            onClick={() => handleUpdateDemoStatus(req.id, 'ONAYLANDI')}
+                            className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold transition-colors"
+                            title="Teklifi Onayla"
+                          >
+                            ✓ Onayla
+                          </button>
+                          <button
+                            onClick={() => handleUpdateDemoStatus(req.id, 'REDDEDILDI')}
+                            className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold transition-colors"
+                            title="Talebi Reddet"
+                          >
+                            ✕ Reddet
+                          </button>
+                        </td>
+
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* DEMO DETAIL MODAL IF SELECTED */}
+            {selectedDemoDetail && (
+              <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl p-6 max-w-xl w-full space-y-4 shadow-2xl border border-gray-200 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                    <h3 className="font-display font-black text-lg text-[#0B2A4A] flex items-center space-x-2">
+                      <Building2 className="h-5 w-5 text-[#087F96]" />
+                      <span>{selectedDemoDetail.companyName} Demo Talebi</span>
+                    </h3>
+                    <button
+                      onClick={() => setSelectedDemoDetail(null)}
+                      className="p-1 text-gray-400 hover:text-gray-700 rounded-lg"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-3 text-xs">
+                    <div className="bg-gray-50 p-3.5 rounded-2xl border border-gray-200 grid grid-cols-2 gap-2">
+                      <div><strong>Yetkili:</strong> {selectedDemoDetail.name}</div>
+                      <div><strong>Unvan:</strong> {selectedDemoDetail.title || 'Yetkili'}</div>
+                      <div><strong>E-posta:</strong> {selectedDemoDetail.email}</div>
+                      <div><strong>Telefon:</strong> {selectedDemoDetail.phone}</div>
+                      <div><strong>Çalışan Sayısı:</strong> {selectedDemoDetail.employeeCount || 150} Personel</div>
+                      <div><strong>Şube Sayısı:</strong> {selectedDemoDetail.subCount || 15} Mağaza</div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="font-bold text-[#0B2A4A] block">Talep Edilen Paket:</span>
+                      <div className="bg-amber-50 text-amber-900 p-2.5 rounded-xl border border-amber-200 font-bold">
+                        {selectedDemoDetail.training || 'Kurumsal Ücretlendirme & Demo'}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="font-bold text-[#0B2A4A] block">Notlar ve Ek Hizmet İhtiyaçları:</span>
+                      <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-200 font-mono text-[11px] leading-relaxed whitespace-pre-wrap">
+                        {selectedDemoDetail.notes || 'Herhangi bir ek not girilmemiş.'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end space-x-2 pt-2 border-t border-gray-100">
+                    <button
+                      onClick={() => {
+                        handleUpdateDemoStatus(selectedDemoDetail.id, 'GORUSULDU');
+                        setSelectedDemoDetail(null);
+                      }}
+                      className="px-4 py-2 bg-cyan-600 text-white rounded-xl text-xs font-bold"
+                    >
+                      📞 Görüşüldü Olarak İşaretle
+                    </button>
+                    <button
+                      onClick={() => setSelectedDemoDetail(null)}
+                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-xs font-bold"
+                    >
+                      Kapat
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </div>
+        )}
+
+        {/* TAB 2: USER & ROLE MANAGEMENT */}
         {activeTab === 'USERS' && (
           <div className="space-y-6">
             
@@ -423,7 +676,7 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                   <SlidersHorizontal className="h-6 w-6" />
                 </div>
                 <h2 className="font-display font-extrabold text-xl sm:text-2xl text-gray-900">
-                  Sistem Hesapları & Şifre Yönetimi
+                  Sistem Hesapları &amp; Şifre Yönetimi
                 </h2>
               </div>
 
@@ -434,7 +687,6 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
 
             {/* Role Filter Pills & Search Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F8FAFC] p-3.5 rounded-2xl border border-gray-200">
-              {/* Category Filter Pills */}
               <div className="flex items-center space-x-1.5 overflow-x-auto text-xs font-bold">
                 {[
                   { id: 'ALL', label: 'Tüm Kayıtlar', count: users.length },
@@ -457,7 +709,6 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                 ))}
               </div>
 
-              {/* Search Bar */}
               <div className="relative">
                 <Search className="h-4 w-4 text-gray-400 absolute left-3 top-2.5" />
                 <input
@@ -470,7 +721,7 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
               </div>
             </div>
 
-            {/* Screenshot Table Layout */}
+            {/* User List Table */}
             <div className="overflow-x-auto rounded-3xl border border-gray-200 shadow-2xs bg-white">
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#F8FAFC] text-gray-400 font-extrabold border-b border-gray-200 text-[11px] uppercase tracking-wider">
@@ -485,8 +736,6 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                 <tbody className="divide-y divide-gray-100 font-medium text-gray-800">
                   {filteredUsers.map((u) => (
                     <tr key={u.id} className="hover:bg-gray-50/80 transition-colors">
-                      
-                      {/* Column 1: SİL Trash Icon Button */}
                       <td className="p-4 text-center">
                         <button
                           onClick={() => handleDeleteUser(u.id, u.name)}
@@ -497,124 +746,35 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                         </button>
                       </td>
 
-                      {/* Column 2: KULLANICI (Name, Email, Password Badge Pill) */}
-                      <td className="p-4 space-y-0.5">
-                        <span className="font-black text-gray-900 text-sm block leading-tight">
-                          {u.name} {u.surname || ''}
-                        </span>
-                        <span className="text-xs text-gray-500 font-mono block leading-tight">
-                          {u.email}
-                        </span>
-                        
-                        {/* Password Badge Pill matching screenshot */}
-                        <div className="pt-0.5">
-                          <span className="inline-flex items-center space-x-1 bg-gray-100 border border-gray-200 text-gray-600 text-[10px] font-mono px-2 py-0.5 rounded-md font-semibold">
-                            <Key className="h-3 w-3 text-gray-500" />
-                            <span>Şifre: {u.password || '926662*'}</span>
-                          </span>
-                        </div>
+                      <td className="p-4">
+                        <div className="font-bold text-[#0B2A4A]">{u.name}</div>
+                        <div className="text-gray-500 font-mono text-[11px]">{u.email}</div>
                       </td>
 
-                      {/* Column 3: KURUM BİLGİSİ */}
-                      <td className="p-4 font-black text-gray-900 text-xs">
-                        {u.companyName || u.company?.name || 'market'}
+                      <td className="p-4 text-gray-600">
+                        {u.companyName || 'Bireysel Katılımcı'}
                       </td>
 
-                      {/* Column 4: KAYIT TARİHİ */}
-                      <td className="p-4 text-xs text-gray-600 font-medium">
+                      <td className="p-4 font-mono text-gray-500">
                         {u.createdAt}
                       </td>
 
-                      {/* Column 5: ROL / STATÜ Dropdown Pill Box matching screenshot */}
                       <td className="p-4 text-right">
-                        <select
-                          value={u.role}
-                          disabled={updatingId === u.id}
-                          onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                          className="px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-xl text-xs font-black text-gray-700 uppercase outline-none focus:ring-2 focus:ring-[#087F96] cursor-pointer"
-                        >
-                          <option value="PARTICIPANT">ÜCRETSİZ ∨</option>
-                          <option value="TRAINER">EĞİTMEN ∨</option>
-                          <option value="COMPANY_MANAGER">KURUMSAL ∨</option>
-                          <option value="ADMIN">ADMIN ∨</option>
-                        </select>
-                      </td>
-
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-          </div>
-        )}
-
-        {/* TAB 2: CORPORATE REQUESTS */}
-        {activeTab === 'REQUESTS' && (
-          <div className="space-y-4">
-            <h3 className="font-display font-bold text-base text-[#0B2A4A]">Gelen Kurumsal Eğitim Talepleri</h3>
-
-            <div className="overflow-x-auto rounded-2xl border border-gray-200">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#0B2A4A] text-white font-bold">
-                  <tr>
-                    <th className="p-3">Şirket / Yetkili</th>
-                    <th className="p-3">İletişim</th>
-                    <th className="p-3">Şehir / Detay</th>
-                    <th className="p-3">Eğitim & Kişi Sayısı</th>
-                    <th className="p-3">Durum</th>
-                    <th className="p-3 text-right">İşlem</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {requests.map((req) => (
-                    <tr key={req.id} className="hover:bg-gray-50 font-medium">
-                      <td className="p-3">
-                        <strong className="block text-[#0B2A4A] font-bold">{req.companyName}</strong>
-                        <span className="text-gray-500 text-[11px]">{req.name} ({req.title || 'Yetkili'})</span>
-                      </td>
-                      <td className="p-3 text-gray-600 font-mono text-[11px]">
-                        <div>{req.email}</div>
-                        <div>{req.phone}</div>
-                      </td>
-                      <td className="p-3 text-gray-600">
-                        {req.city} • {req.employeeCount || '-'} Çalışan
-                      </td>
-                      <td className="p-3 text-gray-700 font-bold">
-                        {req.training || 'Genel Kurumsal'} ({req.count || 10} Kişi)
-                      </td>
-                      <td className="p-3">
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${
-                          req.status === 'ONAYLANDI' ? 'bg-emerald-100 text-emerald-800' :
-                          req.status === 'REDDEDILDI' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
-                        }`}>
-                          {req.status}
+                        <span className="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-full text-[10px]">
+                          {u.role}
                         </span>
                       </td>
-                      <td className="p-3 text-right space-x-1">
-                        <button
-                          onClick={() => handleUpdateStatus(req.id, 'ONAYLANDI')}
-                          className="px-2.5 py-1 bg-emerald-600 text-white rounded-lg text-[10px] font-bold"
-                        >
-                          Onayla
-                        </button>
-                        <button
-                          onClick={() => handleUpdateStatus(req.id, 'REDDEDILDI')}
-                          className="px-2.5 py-1 bg-red-600 text-white rounded-lg text-[10px] font-bold"
-                        >
-                          Reddet
-                        </button>
-                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+
           </div>
         )}
 
         {/* TAB 3: TALENT POOL NOTIFICATIONS */}
-        {(activeTab as any) === 'TALENT_POOL' && (
+        {activeTab === 'TALENT_POOL' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <div>
@@ -678,6 +838,7 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
             </div>
           </div>
         )}
+
       </div>
     </div>
   );
