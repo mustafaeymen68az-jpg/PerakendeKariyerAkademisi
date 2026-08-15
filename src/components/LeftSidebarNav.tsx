@@ -48,10 +48,11 @@ const INSTRUCTORS_SUBMENU = [
   { name: 'Can Demirel (Lojistik & Stok Müdürü)', path: '/egitmenler/can-demirel' }
 ];
 
-// Renamed "Akademi Eğitmen Kadromuz" to "Eğitmenlerimiz" as requested
+// Short & compact menu items to avoid layout breaking
 const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/', icon: Home },
   { name: 'Eğitim Kataloğu', path: '/egitimler', icon: BookOpen },
+  { name: 'Kurumsal Akademi', path: '/kurumsal-cozumler', icon: Building2 },
   { name: 'İK Çözümleri', path: '/ik-cozumlari', icon: Briefcase, isDropdown: true },
   { name: 'Kariyer Haritası', path: '/kariyer-yollari', icon: Map },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', icon: Target },
@@ -213,35 +214,32 @@ export default function LeftSidebarNav() {
               <Link
                 key={item.name}
                 href={item.path}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all group ${
-                  isActive 
-                    ? 'bg-[#087F96] text-white shadow-md' 
+                className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all ${
+                  isActive
+                    ? 'bg-[#087F96] text-white shadow-md'
                     : 'text-gray-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                <div className="flex items-center space-x-3">
-                  <Icon className={`h-4 w-4 transition-transform group-hover:scale-110 ${
-                    isActive ? 'text-white' : 'text-[#087F96]'
-                  }`} />
-                  <span>{item.name}</span>
-                </div>
+                <Icon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-[#087F96]'}`} />
+                <span>{item.name}</span>
               </Link>
             );
           })}
         </div>
 
-        {/* BOTTOM BRANDING FOOTER */}
-        <div className="p-4 border-t border-white/10 space-y-2 flex-shrink-0 bg-[#0B2A4A]/80 text-center">
+        {/* BOTTOM USER/FOOTER ACTION */}
+        <div className="p-4 border-t border-white/10 space-y-2 flex-shrink-0 bg-[#0B2A4A]/60">
           <Link
-            href="/kurumsal-cozumler"
-            className="w-full py-2 px-3 bg-[#E11D48] hover:bg-[#BE123C] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center space-x-2"
+            href="/talep-olustur"
+            className="w-full py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black rounded-xl text-xs transition-all flex items-center justify-center space-x-2 shadow-md border border-amber-300"
           >
-            <Building2 className="h-4 w-4" />
-            <span>Kurumsal Çözümler</span>
+            <Sparkles className="h-4 w-4 text-slate-950" />
+            <span>Kurumsal Teklif Al</span>
           </Link>
-          <p className="text-[10px] text-gray-400 font-medium pt-1">
-            Giriş portalları sağ üst menü çubuğuna taşınmıştır.
-          </p>
+
+          <div className="text-[10px] text-center text-gray-400 font-mono pt-1">
+            © 2026 Perakende Akademi
+          </div>
         </div>
 
       </aside>
