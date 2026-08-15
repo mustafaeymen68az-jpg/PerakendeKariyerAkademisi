@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import CareerGPSModule from '@/components/CareerGPSModule';
+import CareerMapInteractive from '@/components/CareerMapInteractive';
 import TalentMatrix9Box from '@/components/TalentMatrix9Box';
 import TurnoverRiskModule from '@/components/TurnoverRiskModule';
 import LearningControlCenter from '@/components/LearningControlCenter';
@@ -342,13 +343,16 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
       {/* -------------------------------------------------- */}
-      {/* 3. PKA CAREER: KARİYER GPS MODÜLÜ */}
+      {/* 3. PKA CAREER: KARİYER GPS & İNTERAKTİF KARİYER HARİTASI */}
       {/* -------------------------------------------------- */}
-      <section className="py-16 bg-[#F4F7F9]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="kariyer-haritasi" className="py-16 bg-[#F4F7F9] space-y-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          {/* Akıllı Kariyer Navigasyonu */}
           <CareerGPSModule />
+
+          {/* 15 Basamaklı Kronolojik İnteraktif Kariyer Haritası */}
+          <CareerMapInteractive />
         </div>
       </section>
 
