@@ -191,13 +191,7 @@ export default function Header() {
 
           {/* RIGHT SECTION: Standardized CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-2 shrink-0 ml-4">
-            <Link
-              href="/kariyerimi-planla"
-              className="h-9 px-3.5 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5 whitespace-nowrap"
-            >
-              <Target className="h-3.5 w-3.5 text-amber-300" />
-              <span>Kariyerimi Planlıyorum</span>
-            </Link>
+
 
             <Link
               href="/kurumsal-cozumler"
@@ -245,14 +239,7 @@ export default function Header() {
             ))}
 
             <div className="pt-4 border-t border-white/10 space-y-2">
-              <Link
-                href="/kariyerimi-planla"
-                onClick={() => setIsOpen(false)}
-                className="w-full py-3 bg-[#087F96] text-white font-extrabold rounded-xl text-center text-xs flex items-center justify-center space-x-2"
-              >
-                <Target className="h-4 w-4 text-amber-300" />
-                <span>Kariyerimi Planlıyorum</span>
-              </Link>
+
               <Link
                 href="/kurumsal-cozumler"
                 onClick={() => setIsOpen(false)}

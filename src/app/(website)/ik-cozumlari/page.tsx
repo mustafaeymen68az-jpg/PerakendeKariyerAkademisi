@@ -59,12 +59,7 @@ export default function HRPage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
 
-            <Link
-              href="/kariyerimi-planla"
-              className="px-6 py-3 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all flex items-center space-x-2"
-            >
-              <span>Kariyerimi Planlıyorum</span>
-            </Link>
+
           </div>
         </div>
       </section>

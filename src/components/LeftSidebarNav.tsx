@@ -187,13 +187,7 @@ export default function LeftSidebarNav() {
 
         {/* BOTTOM ACTION BUTTONS */}
         <div className="p-4 border-t border-white/10 space-y-2 flex-shrink-0 bg-[#0B2A4A]/80">
-          <Link
-            href="/kariyerimi-planla"
-            className="w-full py-2.5 px-3 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center space-x-2"
-          >
-            <Target className="h-4 w-4 text-amber-300" />
-            <span>Kariyerimi Planlıyorum</span>
-          </Link>
+
 
           <Link
             href="/kurumsal-cozumler"
