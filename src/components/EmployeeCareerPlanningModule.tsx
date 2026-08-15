@@ -18,8 +18,21 @@ import {
   ArrowRight,
   UserCheck,
   BrainCircuit,
-  Compass
+  Compass,
+  BookOpen,
+  GraduationCap,
+  Calendar,
+  Clock
 } from 'lucide-react';
+
+export interface CompletedTrainingRecord {
+  courseTitle: string;
+  duration: string;
+  completedDate: string;
+  score: number;
+  gradeStatus: 'Üstün Başarı' | 'Pek İyi' | 'Başarılı';
+  certificateId: string;
+}
 
 export interface EmployeeCareerRecord {
   id: string;
@@ -31,6 +44,7 @@ export interface EmployeeCareerRecord {
   competencyScore: number;
   city: string;
   experienceYears: number;
+  completedTrainings: CompletedTrainingRecord[];
   swot: {
     strengths: string[];
     weaknesses: string[];
@@ -56,6 +70,40 @@ const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     competencyScore: 94,
     city: 'İstanbul',
     experienceYears: 4,
+    completedTrainings: [
+      {
+        courseTitle: 'Kasa Operasyon Sistemleri & Hızlı Geçiş Protokolleri',
+        duration: '16 Saat',
+        completedDate: '12 Şubat 2026',
+        score: 98,
+        gradeStatus: 'Üstün Başarı',
+        certificateId: 'PKA-2026-KAS-098'
+      },
+      {
+        courseTitle: 'Zor Müşteri İkna ve Çatışma Yönetimi',
+        duration: '12 Saat',
+        completedDate: '28 Mart 2026',
+        score: 96,
+        gradeStatus: 'Üstün Başarı',
+        certificateId: 'PKA-2026-IKN-096'
+      },
+      {
+        courseTitle: 'Vardiya Planlama & Mağaza İçi Personel Sevk Yönetimi',
+        duration: '20 Saat',
+        completedDate: '15 Mayıs 2026',
+        score: 92,
+        gradeStatus: 'Pek İyi',
+        certificateId: 'PKA-2026-VAR-092'
+      },
+      {
+        courseTitle: 'Perakendecilikte Stok Devri ve SKT Takip İlkeleri',
+        duration: '14 Saat',
+        completedDate: '10 Haziran 2026',
+        score: 90,
+        gradeStatus: 'Başarılı',
+        certificateId: 'PKA-2026-STK-090'
+      }
+    ],
     swot: {
       strengths: [
         'Kasa işlem hızı ve hatasız Z-Raporu alımında şirket 1.si (%99.2)',
@@ -96,6 +144,32 @@ const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     competencyScore: 91,
     city: 'Ankara',
     experienceYears: 5,
+    completedTrainings: [
+      {
+        courseTitle: 'Reyon Teşhir (Planogram) ve 5S Görsel Standartları',
+        duration: '18 Saat',
+        completedDate: '05 Ocak 2026',
+        score: 95,
+        gradeStatus: 'Üstün Başarı',
+        certificateId: 'PKA-2026-[#087F96]-095'
+      },
+      {
+        courseTitle: 'Fire Minimizasyonu & FIFO Ürün Devir Mantığı',
+        duration: '16 Saat',
+        completedDate: '20 Şubat 2026',
+        score: 92,
+        gradeStatus: 'Pek İyi',
+        certificateId: 'PKA-2026-FIR-092'
+      },
+      {
+        courseTitle: 'Tedarikçi Sipariş Teslimat & Kalite Kabul Protokolleri',
+        duration: '14 Saat',
+        completedDate: '11 Nisan 2026',
+        score: 88,
+        gradeStatus: 'Başarılı',
+        certificateId: 'PKA-2026-TED-088'
+      }
+    ],
     swot: {
       strengths: [
         'Reyon teşhir (Planogram) ve 5S düzeninde mükemmel uygulama',
@@ -135,6 +209,32 @@ const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     competencyScore: 96,
     city: 'İzmir',
     experienceYears: 8,
+    completedTrainings: [
+      {
+        courseTitle: 'Mağaza P&L Finansal Yönetimi & Kar/Zarar Tablosu',
+        duration: '24 Saat',
+        completedDate: '10 Ocak 2026',
+        score: 99,
+        gradeStatus: 'Üstün Başarı',
+        certificateId: 'PKA-2026-PNL-099'
+      },
+      {
+        courseTitle: 'Multi-Store Liderlik ve Bölgesel Ciro Büyütme',
+        duration: '30 Saat',
+        completedDate: '18 Mart 2026',
+        score: 96,
+        gradeStatus: 'Üstün Başarı',
+        certificateId: 'PKA-2026-LID-096'
+      },
+      {
+        courseTitle: 'Resmi Kurum İlişkileri & İSG Saha Denetimleri',
+        duration: '16 Saat',
+        completedDate: '04 Mayıs 2026',
+        score: 94,
+        gradeStatus: 'Pek İyi',
+        certificateId: 'PKA-2026-ISG-094'
+      }
+    ],
     swot: {
       strengths: [
         '8 mağazalık bölge ciro hedefini %118 oranında aşma başarısı',
@@ -174,6 +274,24 @@ const EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     competencyScore: 86,
     city: 'Bursa',
     experienceYears: 4,
+    completedTrainings: [
+      {
+        courseTitle: 'Depo Kabul & WMS Otomasyon Yönetimi',
+        duration: '20 Saat',
+        completedDate: '14 Şubat 2026',
+        score: 90,
+        gradeStatus: 'Başarılı',
+        certificateId: 'PKA-2026-WMS-090'
+      },
+      {
+        courseTitle: 'Araç Filosu & Sevkiyat Rotalama Sistemleri',
+        duration: '16 Saat',
+        completedDate: '22 Nisan 2026',
+        score: 86,
+        gradeStatus: 'Başarılı',
+        certificateId: 'PKA-2026-ROT-086'
+      }
+    ],
     swot: {
       strengths: [
         'Depo kabul ve sevkiyat hatasızlık oranı %98.5',
@@ -233,9 +351,9 @@ export default function EmployeeCareerPlanningModule() {
           <BrainCircuit className="w-4 h-4 text-emerald-400" />
           <span>İK KARAR DESTEK & AKILLI KARİYER PLANLAMA MOTORU</span>
         </div>
-        <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Kariyer Planlaması & SWOT Analizi</h2>
+        <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Kariyer Planlaması & Gelişim Paneli</h2>
         <p className="text-xs sm:text-sm text-gray-200 font-light max-w-3xl leading-relaxed">
-          Çalışanları yetkinlik puanlarına göre sıralayın; her çalışan için otomatik üretilen <strong>SWOT Analizini (Güçlü/Zayıf Yönler, Fırsatlar, Tehditler)</strong>, <strong>En Uygun Pozisyon Önerisini</strong> ve <strong>90 Günlük Bireysel Kariyer Tavsiye Planını</strong> inceleyin.
+          Çalışanları yetkinlik puanlarına göre sıralayın; her çalışan için <strong>tamamlanan eğitimleri & sınav puanlarını</strong>, <strong>SWOT Analizini</strong>, <strong>Hedef Pozisyon Önerisini</strong> ve <strong>90 Günlük Bireysel Kariyer Planını</strong> inceleyin.
         </p>
       </div>
 
@@ -266,7 +384,7 @@ export default function EmployeeCareerPlanningModule() {
         </div>
       </div>
 
-      {/* Main Two-Column Layout: Employee List + Detailed SWOT & Career Plan */}
+      {/* Main Two-Column Layout: Employee List + Detailed SWOT & Completed Trainings */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left Column: Sorted Employee List */}
@@ -321,7 +439,7 @@ export default function EmployeeCareerPlanningModule() {
           </div>
         </div>
 
-        {/* Right Column: Active Employee SWOT & Career Recommendations */}
+        {/* Right Column: Active Employee Details, Completed Trainings & SWOT */}
         <div className="lg:col-span-2 space-y-6">
           
           {/* Employee Header Overview */}
@@ -360,8 +478,61 @@ export default function EmployeeCareerPlanningModule() {
             <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-[#0B2A4A] flex items-center space-x-2">
               <Sparkles className="w-4 h-4 text-[#087F96] flex-shrink-0" />
               <span>
-                <strong>Sistem Önerisi:</strong> {activeEmployee.name}, yetkinlik puanı ve saha performansıyla <strong>{activeEmployee.recommendedRole}</strong> pozisyonu için en yüksek uyuma (%{activeEmployee.matchPercentage}) sahiptir.
+                <strong>Sistem Önerisi:</strong> {activeEmployee.name}, yetkinlik puanı ve aldığı {activeEmployee.completedTrainings.length} sertifikalı eğitimle <strong>{activeEmployee.recommendedRole}</strong> pozisyonu için en yüksek uyuma (%{activeEmployee.matchPercentage}) sahiptir.
               </span>
+            </div>
+          </div>
+
+          {/* COMPLETED TRAININGS & EXAM SCORES TABLE (ÇALIŞANIN ALDIĞI EĞİTİMLER VE PUANLAR) */}
+          <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2">
+                <GraduationCap className="w-5 h-5 text-[#087F96]" />
+                <span>Çalışanın Şu Ana Kadar Aldığı Eğitimler & Sınav Puanları ({activeEmployee.completedTrainings.length} Ders)</span>
+              </h3>
+              <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-200">
+                Onaylı Sertifikalı
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#0B2A4A] text-white font-bold uppercase text-[10px]">
+                  <tr>
+                    <th className="py-3 px-4 rounded-l-xl">Tamamlanan Ders / Eğitim Modülü</th>
+                    <th className="py-3 px-4">Süresi</th>
+                    <th className="py-3 px-4">Tamamlanma Tarihi</th>
+                    <th className="py-3 px-4 text-center">Sınav Puanı</th>
+                    <th className="py-3 px-4 text-right rounded-r-xl">Sertifika Kodu</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
+                  {activeEmployee.completedTrainings.map((tr, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50/80 transition-colors">
+                      <td className="py-3.5 px-4 font-bold text-[#0B2A4A] flex items-center space-x-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                        <span>{tr.courseTitle}</span>
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-gray-500">{tr.duration}</td>
+                      <td className="py-3.5 px-4 font-mono text-gray-500">{tr.completedDate}</td>
+                      <td className="py-3.5 px-4 text-center">
+                        <span className={`inline-block px-2.5 py-1 rounded-lg font-mono font-black text-xs ${
+                          tr.score >= 95 
+                            ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                            : tr.score >= 90
+                            ? 'bg-blue-100 text-blue-900 border border-blue-300'
+                            : 'bg-amber-100 text-amber-900 border border-amber-300'
+                        }`}>
+                          %{tr.score} ({tr.gradeStatus})
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right font-mono text-[10px] text-gray-400 font-bold">
+                        {tr.certificateId}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
 
