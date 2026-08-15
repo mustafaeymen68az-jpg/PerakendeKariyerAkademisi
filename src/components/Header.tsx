@@ -29,24 +29,24 @@ import Logo from '@/components/Logo';
 
 // Added "Çalışan Kariyer Planlaması" under HR_SUBMENU as requested
 const HR_SUBMENU = [
-  { name: 'Çalışan Özgeçmiş & Deneyim ve Eğitim Karnesi', path: '/ik-cozumlari/calisan-ozgecmis-egitim-karnesi', desc: 'İş tecrübesi, eğitimler ve PDF karnesi' },
-  { name: 'Çalışan Kariyer Planlaması', path: '/ik-cozumlari/calisan-kariyer-planlamasi', desc: 'SWOT analizi & pozisyon önerisi' },
-  { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari/yetkinlik-matrisi', desc: 'Saha & merkez yetkinlik haritası' },
+  { name: 'Yetkinlik Matrisi (PKA TALENT)', path: '/ik-cozumlari/yetkinlik-matrisi', desc: 'Saha & merkez 26 pozisyon matrisi' },
+  { name: '3\'lü Yetenek Havuzu', path: '/ik-cozumlari/calisan-kariyer-planlamasi', desc: 'Potansiyel, Terfiye Hazır & Gelişim' },
+  { name: '9 Box Talent Matrix', path: '/ik-cozumlari/calisan-kariyer-planlamasi#9-box', desc: 'Performans vs Potansiyel Matrisi' },
   { name: 'Terfi Yönetimi', path: '/ik-cozumlari/terfi-yonetimi', desc: 'Ağırlıklı %80+ Terfi Skoru' },
-  { name: 'Yedekleme Planı', path: '/ik-cozumlari/yedekleme-plani', desc: 'Kritik pozisyon iş sürekliliği' },
-  { name: 'Eğitim Yönetimi', path: '/ik-cozumlari/egitim-yonetimi', desc: '40 Modül & 160 Mikro Eğitim' },
-  { name: 'Performans & KPI', desc: 'Ciro, fire ve sepet KPI bağlantısı', path: '/ik-cozumlari/performans-kpi' },
-  { name: 'Çalışan Gelişim Karnesi', desc: '90 günlük aksiyon karnesi', path: '/ik-cozumlari/gelisim-karnesi' }
+  { name: 'Kritik Pozisyon Yedekleme', path: '/ik-cozumlari/yedekleme-plani', desc: 'Kritik rol iş sürekliliği & risk' },
+  { name: 'Turnover Risk Analizi', path: '/ik-cozumlari/calisan-kariyer-planlamasi#turnover', desc: 'Çalışan kaybetme risk sinyalleri' },
+  { name: 'Eğitim Kontrol Merkezi (PKA LEARNING)', path: '/ik-cozumlari/egitim-yonetimi', desc: 'Eğitim atama, takip ve ROI' },
+  { name: 'CEO İnsan Sermayesi Dashboard (EXECUTIVE)', path: '/ik-cozumlari/gelisim-karnesi', desc: 'Pipeline & 20 Mağaza Büyüme Analizi' }
 ];
 
 const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/' },
-  { name: 'Eğitim Kataloğu', path: '/egitimler' },
-  { name: 'İK Çözümleri', path: '/ik-cozumlari', isDropdown: true },
-  { name: 'Kariyer Haritası', path: '/#kariyer-haritasi' },
-  { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', badge: '15 Soru' },
-  { name: 'Yapay Zekâ', path: '/yapay-zeka', badge: 'Yeni' },
-  { name: 'Aday & Yetenek Havuzu', path: '/yetkinlik-aday-havuzu', badge: 'Yakında' }
+  { name: 'PKA CAREER (Çalışan)', path: '/kariyerimi-planla' },
+  { name: 'PKA TALENT (İK)', path: '/ik-cozumlari', isDropdown: true },
+  { name: 'PKA LEARNING (Eğitim)', path: '/egitimler' },
+  { name: 'PKA EXECUTIVE (CEO)', path: '/ik-cozumlari/gelisim-karnesi' },
+  { name: 'Kariyer GPS', path: '/kariyer-yollari', badge: 'GPS' },
+  { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', badge: '15 Soru' }
 ];
 
 export default function Header() {

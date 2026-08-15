@@ -224,7 +224,7 @@ export default function SuccessionPlanModule() {
           </p>
         </div>
 
-        {/* 4 INTERACTIVE CLICKABLE RISK SUMMARY CARDS (TIKLANDIĞINDA AKTİF OLUR VE FİLTRELER) */}
+        {/* 4 INTERACTIVE CLICKABLE RISK SUMMARY CARDS (Point 10) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
           {/* CARD 0: TÜM POZİSYONLAR */}
@@ -236,11 +236,10 @@ export default function SuccessionPlanModule() {
                 : 'bg-[#061B33] border-[#087F96]/40 hover:border-[#087F96] hover:scale-102'
             }`}
           >
-            <div className="text-xs text-gray-300 font-bold uppercase tracking-wider">Yedekli Kritik Pozisyon Oranı</div>
-            <div className="text-3xl sm:text-4xl font-black text-emerald-400 mt-1">%78</div>
-            <div className="text-[11px] text-gray-300 font-semibold mt-1 flex items-center justify-center space-x-1">
-              <span>Tüm Pozisyonları Göster ({SUCCESSION_DATA.length})</span>
-              <ChevronRight className="w-3.5 h-3.5 text-amber-300" />
+            <div className="text-xs text-gray-300 font-bold uppercase tracking-wider">Kritik Pozisyon Sayısı</div>
+            <div className="text-3xl sm:text-4xl font-black text-white mt-1">84 Pozisyon</div>
+            <div className="text-[11px] text-[#DDF4F7] font-mono font-extrabold mt-1 flex items-center justify-center space-x-1">
+              <span>Yedekleme Oranı: %75</span>
             </div>
           </div>
 
@@ -253,8 +252,8 @@ export default function SuccessionPlanModule() {
                 : 'bg-[#061B33] border-emerald-500/30 hover:border-emerald-400 hover:scale-102'
             }`}
           >
-            <div className="text-xs text-gray-300 font-bold uppercase tracking-wider">Çift/Çok Yedeği Olan</div>
-            <div className="text-3xl sm:text-4xl font-black text-white mt-1">14 Pozisyon</div>
+            <div className="text-xs text-gray-300 font-bold uppercase tracking-wider">Yedekli Pozisyonlar</div>
+            <div className="text-3xl sm:text-4xl font-black text-emerald-400 mt-1">63 Pozisyon</div>
             <div className="text-[11px] text-emerald-400 font-mono font-extrabold mt-1 flex items-center justify-center space-x-1">
               <span>Düşük Risk Grubu ✓</span>
             </div>
@@ -270,7 +269,7 @@ export default function SuccessionPlanModule() {
             }`}
           >
             <div className="text-xs text-gray-300 font-bold uppercase tracking-wider">Tek Yedeği Olan</div>
-            <div className="text-3xl sm:text-4xl font-black text-amber-400 mt-1">5 Pozisyon</div>
+            <div className="text-3xl sm:text-4xl font-black text-amber-400 mt-1">12 Pozisyon</div>
             <div className="text-[11px] text-amber-300 font-mono font-extrabold mt-1 flex items-center justify-center space-x-1">
               <span>Takip Gerekli ⚠️</span>
             </div>
@@ -281,17 +280,16 @@ export default function SuccessionPlanModule() {
             onClick={() => setRiskFilter('high')}
             className={`p-5 rounded-2xl border transition-all cursor-pointer text-center group ${
               riskFilter === 'high'
-                ? 'bg-rose-950/90 border-rose-500 ring-4 ring-rose-500/40 shadow-2xl scale-105'
-                : 'bg-[#061B33] border-rose-500/40 hover:border-rose-400 hover:scale-102'
+                ? 'bg-rose-950/80 border-rose-400 ring-4 ring-rose-500/40 shadow-2xl scale-105'
+                : 'bg-[#061B33] border-rose-500/30 hover:border-rose-400 hover:scale-102'
             }`}
           >
-            <div className="text-xs text-gray-300 font-bold uppercase tracking-wider">Yedeği Olmayan (Kritik Risk)</div>
-            <div className="text-3xl sm:text-4xl font-black text-rose-400 mt-1">2 Pozisyon</div>
+            <div className="text-xs text-gray-300 font-bold uppercase tracking-wider">Yedeği Olmayan (Yedeksiz)</div>
+            <div className="text-3xl sm:text-4xl font-black text-rose-400 mt-1">21 Pozisyon</div>
             <div className="text-[11px] text-rose-300 font-mono font-extrabold mt-1 flex items-center justify-center space-x-1">
-              <span>Acil Gelişim Planı ⚡</span>
+              <span>⚠️ YEDEKSİZ POZİSYON RİSKİ</span>
             </div>
           </div>
-
         </div>
 
         {/* Filter Info Bar */}

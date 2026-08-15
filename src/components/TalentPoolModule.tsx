@@ -101,13 +101,20 @@ const TALENT_LIST: TalentCandidate[] = [
 export default function TalentPoolModule() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('ALL');
+  const [activePoolTab, setActivePoolTab] = useState<'ALL' | 'HIPO' | 'READY' | 'DEV'>('ALL');
 
   const filteredTalent = TALENT_LIST.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           item.currentRole.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           item.targetRole.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = filterRole === 'ALL' || item.targetRole.includes(filterRole);
-    return matchesSearch && matchesRole;
+    const matchesPool = 
+      activePoolTab === 'ALL' ? true :
+      activePoolTab === 'READY' ? item.readinessStatus === 'Terfiye Hazır' :
+      activePoolTab === 'DEV' ? item.readinessStatus === 'Gelişim Gerekli' || item.readinessStatus === 'Terfiye Yakın' :
+      item.promotionScore >= 80;
+
+    return matchesSearch && matchesRole && matchesPool;
   });
 
   return (
@@ -169,6 +176,53 @@ export default function TalentPoolModule() {
             <div className="text-3xl font-black text-emerald-700 mt-1">%72</div>
             <div className="text-[10px] text-emerald-600 mt-1">Sistem Genelinde</div>
           </div>
+        </div>
+
+        {/* 3 AYRI YETENEK HAVUZU TAB SEÇİMİ (Point 8) */}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 mb-6">
+          <button
+            onClick={() => setActivePoolTab('ALL')}
+            className={`p-3 rounded-2xl font-black text-xs transition-all border text-center ${
+              activePoolTab === 'ALL'
+                ? 'bg-[#0B2A4A] text-white border-[#0B2A4A] shadow-md'
+                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            Tüm Havuzlar ({TALENT_LIST.length})
+          </button>
+
+          <button
+            onClick={() => setActivePoolTab('HIPO')}
+            className={`p-3 rounded-2xl font-black text-xs transition-all border text-center ${
+              activePoolTab === 'HIPO'
+                ? 'bg-purple-700 text-white border-purple-700 shadow-md'
+                : 'bg-purple-50 text-purple-900 border-purple-200 hover:bg-purple-100'
+            }`}
+          >
+            🌟 Yüksek Potansiyel Havuzu (HiPo)
+          </button>
+
+          <button
+            onClick={() => setActivePoolTab('READY')}
+            className={`p-3 rounded-2xl font-black text-xs transition-all border text-center ${
+              activePoolTab === 'READY'
+                ? 'bg-emerald-700 text-white border-emerald-700 shadow-md'
+                : 'bg-emerald-50 text-emerald-900 border-emerald-200 hover:bg-emerald-100'
+            }`}
+          >
+            ✅ Terfiye Hazır Havuzu (%80+)
+          </button>
+
+          <button
+            onClick={() => setActivePoolTab('DEV')}
+            className={`p-3 rounded-2xl font-black text-xs transition-all border text-center ${
+              activePoolTab === 'DEV'
+                ? 'bg-amber-700 text-white border-amber-700 shadow-md'
+                : 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100'
+            }`}
+          >
+            📈 Gelişim Havuzu (90-180 Gün)
+          </button>
         </div>
 
         {/* Filter Controls */}
