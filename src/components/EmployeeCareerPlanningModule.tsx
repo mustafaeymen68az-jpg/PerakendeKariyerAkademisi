@@ -32,7 +32,10 @@ import {
   Briefcase,
   History,
   CheckSquare,
-  Layers
+  Layers,
+  X,
+  ExternalLink,
+  Info
 } from 'lucide-react';
 
 export interface CompletedTrainingRecord {
@@ -40,6 +43,9 @@ export interface CompletedTrainingRecord {
   duration: string;
   durationHours: number;
   completedDate: string;
+  instructorName: string;
+  institution: string;
+  companyWhereTaken: string;
   score: number;
   gradeStatus: 'Üstün Başarı' | 'Pek İyi' | 'Başarılı';
   certificateId: string;
@@ -55,6 +61,8 @@ export interface PreviousWorkExperience {
 export interface PriorTrainingRecord {
   title: string;
   institution: string;
+  instructorName: string;
+  companyWhereTaken: string;
   durationHours: number;
   year: string;
 }
@@ -134,12 +142,16 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         title: 'Temel Perakendecilik & Müşteri İletişimi',
         institution: 'Halk Eğitim Merkezi',
+        instructorName: 'Kemal Sunal (Sertifikalı Eğitmen)',
+        companyWhereTaken: 'CarrefourSA Dönemi',
         durationHours: 40,
         year: '2018'
       },
       {
         title: 'Kasa Bilgisayar Sistemleri Sertifikası',
-        institution: 'MEB Onaylı Kurs',
+        institution: 'MEB Onaylı Perakende Kursu',
+        instructorName: 'Merve Öztürk (Kasa Uzmanı)',
+        companyWhereTaken: 'BİM A.Ş. Dönemi',
         durationHours: 24,
         year: '2019'
       }
@@ -150,6 +162,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '16 Saat',
         durationHours: 16,
         completedDate: '12 Şubat 2026',
+        instructorName: 'Prof. Dr. Ahmet Çelik',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 98,
         gradeStatus: 'Üstün Başarı',
         certificateId: 'PKA-2026-KAS-098'
@@ -159,6 +174,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '12 Saat',
         durationHours: 12,
         completedDate: '28 Mart 2026',
+        instructorName: 'Zeynep Kaya (Kategori Müdürü)',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 96,
         gradeStatus: 'Üstün Başarı',
         certificateId: 'PKA-2026-IKN-096'
@@ -168,6 +186,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '20 Saat',
         durationHours: 20,
         completedDate: '15 Mayıs 2026',
+        instructorName: 'Mustafa Aydın (Saha Lideri)',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 92,
         gradeStatus: 'Pek İyi',
         certificateId: 'PKA-2026-VAR-092'
@@ -177,6 +198,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '14 Saat',
         durationHours: 14,
         completedDate: '10 Haziran 2026',
+        instructorName: 'Hakan Erdem (Stok Denetçisi)',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 90,
         gradeStatus: 'Başarılı',
         certificateId: 'PKA-2026-STK-090'
@@ -259,6 +283,8 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         title: 'Reyon Düzeni & Hijyen Sertifikası',
         institution: 'Tarım İl Müdürlüğü Akademi',
+        instructorName: 'Seda Yılmaz (Gıda Mühendisi)',
+        companyWhereTaken: 'A101 Marketler Dönemi',
         durationHours: 30,
         year: '2019'
       }
@@ -269,6 +295,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '18 Saat',
         durationHours: 18,
         completedDate: '05 Ocak 2026',
+        instructorName: 'Dr. Mehmet Yılmaz',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 95,
         gradeStatus: 'Üstün Başarı',
         certificateId: 'PKA-2026-PLAN-095'
@@ -278,6 +307,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '16 Saat',
         durationHours: 16,
         completedDate: '20 Şubat 2026',
+        instructorName: 'Oğuzhan Kaya (Operasyon Direktörü)',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 92,
         gradeStatus: 'Pek İyi',
         certificateId: 'PKA-2026-FIR-092'
@@ -287,6 +319,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '14 Saat',
         durationHours: 14,
         completedDate: '11 Nisan 2026',
+        instructorName: 'Gamze Tekin (Satın Alma Uzmanı)',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 88,
         gradeStatus: 'Başarılı',
         certificateId: 'PKA-2026-TED-088'
@@ -368,6 +403,8 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         title: 'İleri Mağaza Yönetimi & P&L Eğitimi',
         institution: 'İstanbul Perakende Enstitüsü',
+        instructorName: 'Prof. Dr. Tarık Yıldız',
+        companyWhereTaken: 'Metro Grossmarket Dönemi',
         durationHours: 60,
         year: '2015'
       }
@@ -378,6 +415,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '24 Saat',
         durationHours: 24,
         completedDate: '10 Ocak 2026',
+        instructorName: 'Prof. Dr. Ahmet Çelik',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 99,
         gradeStatus: 'Üstün Başarı',
         certificateId: 'PKA-2026-PNL-099'
@@ -387,6 +427,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '30 Saat',
         durationHours: 30,
         completedDate: '18 Mart 2026',
+        instructorName: 'Oğuzhan Kaya (Genel Müdür Yrd.)',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 96,
         gradeStatus: 'Üstün Başarı',
         certificateId: 'PKA-2026-LID-096'
@@ -396,6 +439,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '16 Saat',
         durationHours: 16,
         completedDate: '04 Mayıs 2026',
+        instructorName: 'Hakan Erdem (İSG Başdenetçisi)',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 94,
         gradeStatus: 'Pek İyi',
         certificateId: 'PKA-2026-ISG-094'
@@ -477,6 +523,8 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         title: 'Depo Yönetimi & İSG Temel Eğitimi',
         institution: 'Lojistik Derneği Akademi',
+        instructorName: 'Mustafa Aydın (Lojistik Şefi)',
+        companyWhereTaken: 'ŞOK Marketler Dönemi',
         durationHours: 32,
         year: '2020'
       }
@@ -487,6 +535,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '20 Saat',
         durationHours: 20,
         completedDate: '14 Şubat 2026',
+        instructorName: 'Caner Şahin (Lojistik Başeğitmeni)',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 90,
         gradeStatus: 'Başarılı',
         certificateId: 'PKA-2026-WMS-090'
@@ -496,6 +547,9 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         duration: '16 Saat',
         durationHours: 16,
         completedDate: '22 Nisan 2026',
+        instructorName: 'Seda Yılmaz (Rotalama Uzmanı)',
+        institution: 'Perakende Kariyer Akademisi',
+        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
         score: 86,
         gradeStatus: 'Başarılı',
         certificateId: 'PKA-2026-ROT-086'
@@ -560,6 +614,10 @@ export default function EmployeeCareerPlanningModule() {
   const [minScoreFilter, setMinScoreFilter] = useState<number>(80);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  // Interactive Training Breakdown Modal State
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalFilterType, setModalFilterType] = useState<'all' | 'hours' | 'post' | 'prior'>('all');
+
   // Local state for editing reviews dynamically
   const [managerInput, setManagerInput] = useState<string>('');
   const [subordinateInput, setSubordinateInput] = useState<string>('');
@@ -597,6 +655,63 @@ export default function EmployeeCareerPlanningModule() {
       priorHours
     };
   }, [activeEmployee]);
+
+  // Combined list of all trainings (Post + Prior) with unified fields for modal
+  const combinedTrainingsList = useMemo(() => {
+    const list: {
+      id: string;
+      title: string;
+      durationHours: number;
+      durationText: string;
+      completedDateOrYear: string;
+      instructorName: string;
+      institution: string;
+      companyWhereTaken: string;
+      scoreOrBadge: string;
+      typeCategory: 'post' | 'prior';
+    }[] = [];
+
+    // Add Post (Corporate) Trainings
+    activeEmployee.completedTrainings.forEach((tr, idx) => {
+      list.push({
+        id: `post_${idx}`,
+        title: tr.courseTitle,
+        durationHours: tr.durationHours,
+        durationText: tr.duration,
+        completedDateOrYear: tr.completedDate,
+        instructorName: tr.instructorName,
+        institution: tr.institution,
+        companyWhereTaken: tr.companyWhereTaken,
+        scoreOrBadge: `%${tr.score} (${tr.gradeStatus})`,
+        typeCategory: 'post'
+      });
+    });
+
+    // Add Prior (External) Trainings
+    activeEmployee.priorTrainings.forEach((pt, idx) => {
+      list.push({
+        id: `prior_${idx}`,
+        title: pt.title,
+        durationHours: pt.durationHours,
+        durationText: `${pt.durationHours} Saat`,
+        completedDateOrYear: pt.year,
+        instructorName: pt.instructorName,
+        institution: pt.institution,
+        companyWhereTaken: pt.companyWhereTaken,
+        scoreOrBadge: 'Sertifikalı Katılım',
+        typeCategory: 'prior'
+      });
+    });
+
+    if (modalFilterType === 'post') return list.filter(t => t.typeCategory === 'post');
+    if (modalFilterType === 'prior') return list.filter(t => t.typeCategory === 'prior');
+    return list;
+  }, [activeEmployee, modalFilterType]);
+
+  const handleOpenSummaryModal = (filter: 'all' | 'hours' | 'post' | 'prior') => {
+    setModalFilterType(filter);
+    setIsModalOpen(true);
+  };
 
   // Handler to update evaluation note dynamically
   const handleSaveEvaluation = (targetType: 'manager' | 'subordinate' | 'hr') => {
@@ -654,7 +769,7 @@ export default function EmployeeCareerPlanningModule() {
         </div>
         <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Özgeçmiş, Deneyim ve Eğitim Karnesi</h2>
         <p className="text-xs sm:text-sm text-gray-200 font-light max-w-3xl leading-relaxed">
-          İşe başlangıç tarihi, geçmiş şirket deneyimleri, iş öncesi ve iş sonrası alınan eğitimlerin süresi, toplam eğitim saati özetleri ve 360° değerlendirmeler.
+          Eğitim özet kartlarına tıklayarak çalışanın <strong>hangi eğitmeni hangi kurumdan</strong> ve <strong>hangi şirkette çalışırken aldığını</strong> detaylı döküm tablosunda inceleyebilirsiniz.
         </p>
       </div>
 
@@ -795,38 +910,69 @@ export default function EmployeeCareerPlanningModule() {
             </div>
           </div>
 
-          {/* TOTAL TRAININGS & DURATION SUMMARY DASHBOARD BANNER */}
+          {/* INTERACTIVE CLICKABLE EĞİTİM ÖZET KARNESİ BANNER */}
           <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-6 rounded-3xl shadow-xl border border-[#087F96]/40 space-y-4">
             <div className="flex items-center justify-between border-b border-white/15 pb-3">
               <h3 className="font-extrabold text-sm text-white flex items-center space-x-2">
                 <BarChart3 className="w-5 h-5 text-amber-300" />
-                <span>Eğitim Sayısı ve Toplam Süre Özet Karnesi</span>
+                <span>Eğitim Sayısı ve Toplam Süre Özet Karnesi (Detay İçin Tıklayın)</span>
               </h3>
               <span className="text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
-                Onaylı Gelişim Karnesi
+                Detaylı İnceleme Aktif 🔍
               </span>
             </div>
 
+            {/* 4 INTERACTIVE CLICKABLE SUMMARY CARDS */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-              <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs">
-                <div className="text-[10px] font-bold text-gray-300 uppercase">Toplam Eğitim Sayısı</div>
-                <div className="text-2xl font-black text-amber-300 font-mono">{trainingSummary.totalCount} Modül</div>
+              
+              <div
+                onClick={() => handleOpenSummaryModal('all')}
+                className="bg-white/10 hover:bg-white/20 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs transition-all cursor-pointer group hover:scale-105"
+              >
+                <div className="text-[10px] font-bold text-gray-300 uppercase flex items-center justify-center space-x-1">
+                  <span>Toplam Eğitim</span>
+                  <ExternalLink className="w-3 h-3 text-amber-300 opacity-80 group-hover:opacity-100" />
+                </div>
+                <div className="text-2xl font-black text-amber-300 font-mono mt-1">{trainingSummary.totalCount} Modül</div>
+                <div className="text-[9px] text-gray-300 mt-1 font-bold">Detayları Gör →</div>
               </div>
 
-              <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs">
-                <div className="text-[10px] font-bold text-gray-300 uppercase">Toplam Eğitim Süresi</div>
-                <div className="text-2xl font-black text-emerald-300 font-mono">{trainingSummary.totalHours} Saat</div>
+              <div
+                onClick={() => handleOpenSummaryModal('hours')}
+                className="bg-white/10 hover:bg-white/20 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs transition-all cursor-pointer group hover:scale-105"
+              >
+                <div className="text-[10px] font-bold text-gray-300 uppercase flex items-center justify-center space-x-1">
+                  <span>Toplam Süre</span>
+                  <ExternalLink className="w-3 h-3 text-emerald-400 opacity-80 group-hover:opacity-100" />
+                </div>
+                <div className="text-2xl font-black text-emerald-300 font-mono mt-1">{trainingSummary.totalHours} Saat</div>
+                <div className="text-[9px] text-gray-300 mt-1 font-bold">Süre Dağılımı →</div>
               </div>
 
-              <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs">
-                <div className="text-[10px] font-bold text-gray-300 uppercase">Şirket İçi Akademi</div>
-                <div className="text-lg font-black text-white font-mono">{trainingSummary.postCount} Ders ({trainingSummary.postHours} Sa)</div>
+              <div
+                onClick={() => handleOpenSummaryModal('post')}
+                className="bg-white/10 hover:bg-white/20 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs transition-all cursor-pointer group hover:scale-105"
+              >
+                <div className="text-[10px] font-bold text-gray-300 uppercase flex items-center justify-center space-x-1">
+                  <span>Şirket İçi Akademi</span>
+                  <ExternalLink className="w-3 h-3 text-white opacity-80 group-hover:opacity-100" />
+                </div>
+                <div className="text-lg font-black text-white font-mono mt-1">{trainingSummary.postCount} Ders ({trainingSummary.postHours} Sa)</div>
+                <div className="text-[9px] text-[#DDF4F7] mt-1 font-bold">Akademi Listesi →</div>
               </div>
 
-              <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs">
-                <div className="text-[10px] font-bold text-gray-300 uppercase">İşe Başlamadan Önce</div>
-                <div className="text-lg font-black text-white font-mono">{trainingSummary.priorCount} Ders ({trainingSummary.priorHours} Sa)</div>
+              <div
+                onClick={() => handleOpenSummaryModal('prior')}
+                className="bg-white/10 hover:bg-white/20 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs transition-all cursor-pointer group hover:scale-105"
+              >
+                <div className="text-[10px] font-bold text-gray-300 uppercase flex items-center justify-center space-x-1">
+                  <span>İşe Başlamadan Önce</span>
+                  <ExternalLink className="w-3 h-3 text-white opacity-80 group-hover:opacity-100" />
+                </div>
+                <div className="text-lg font-black text-white font-mono mt-1">{trainingSummary.priorCount} Ders ({trainingSummary.priorHours} Sa)</div>
+                <div className="text-[9px] text-[#DDF4F7] mt-1 font-bold">Harici Liste →</div>
               </div>
+
             </div>
           </div>
 
@@ -864,15 +1010,21 @@ export default function EmployeeCareerPlanningModule() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {activeEmployee.priorTrainings.map((pt, idx) => (
-                <div key={idx} className="p-4 bg-blue-50/50 border border-blue-200 rounded-2xl space-y-1.5">
+                <div key={idx} className="p-4 bg-blue-50/50 border border-blue-200 rounded-2xl space-y-2">
                   <div className="flex items-center justify-between">
                     <h4 className="font-extrabold text-xs text-[#0B2A4A]">{pt.title}</h4>
                     <span className="text-[10px] font-mono font-bold text-[#087F96] bg-blue-100 px-2 py-0.5 rounded-md">
                       {pt.year}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-600 font-medium">Kurum: {pt.institution}</div>
-                  <div className="text-[11px] text-blue-900 font-mono font-bold">
+                  
+                  <div className="space-y-1 text-xs text-gray-700">
+                    <div>Eğitimi Veren Eğitmen: <strong className="text-[#0B2A4A]">{pt.instructorName}</strong></div>
+                    <div>Veren Kurum / Akademi: <strong className="text-[#087F96]">{pt.institution}</strong></div>
+                    <div>Çalıştığı Şirket: <strong className="text-emerald-800">{pt.companyWhereTaken}</strong></div>
+                  </div>
+
+                  <div className="text-[11px] text-blue-900 font-mono font-bold pt-1 border-t border-blue-100">
                     Eğitim Süresi: {pt.durationHours} Saat
                   </div>
                 </div>
@@ -897,21 +1049,28 @@ export default function EmployeeCareerPlanningModule() {
                 <thead className="bg-[#0B2A4A] text-white font-bold uppercase text-[10px]">
                   <tr>
                     <th className="py-3 px-4 rounded-l-xl">Tamamlanan Ders / Eğitim Modülü</th>
-                    <th className="py-3 px-4">Süresi</th>
-                    <th className="py-3 px-4">Tamamlanma Tarihi</th>
-                    <th className="py-3 px-4 text-center">Sınav Puanı</th>
-                    <th className="py-3 px-4 text-right rounded-r-xl">Sertifika Kodu</th>
+                    <th className="py-3 px-4">Eğitmeni</th>
+                    <th className="py-3 px-4">Kurum / Akademi</th>
+                    <th className="py-3 px-4">Çalıştığı Şirket</th>
+                    <th className="py-3 px-4 font-mono">Süre / Tarih</th>
+                    <th className="py-3 px-4 text-center rounded-r-xl">Sınav Puanı</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
                   {activeEmployee.completedTrainings.map((tr, idx) => (
                     <tr key={idx} className="hover:bg-gray-50/80 transition-colors">
-                      <td className="py-3.5 px-4 font-bold text-[#0B2A4A] flex items-center space-x-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                        <span>{tr.courseTitle}</span>
+                      <td className="py-3.5 px-4 font-bold text-[#0B2A4A]">
+                        <div className="flex items-center space-x-2">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                          <span>{tr.courseTitle}</span>
+                        </div>
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-gray-500">{tr.duration}</td>
-                      <td className="py-3.5 px-4 font-mono text-gray-500">{tr.completedDate}</td>
+                      <td className="py-3.5 px-4 text-gray-800 font-bold">{tr.instructorName}</td>
+                      <td className="py-3.5 px-4 text-[#087F96] font-bold">{tr.institution}</td>
+                      <td className="py-3.5 px-4 text-emerald-800 font-medium">{tr.companyWhereTaken}</td>
+                      <td className="py-3.5 px-4 font-mono text-gray-500">
+                        {tr.duration} • {tr.completedDate}
+                      </td>
                       <td className="py-3.5 px-4 text-center">
                         <span className={`inline-block px-2.5 py-1 rounded-lg font-mono font-black text-xs ${
                           tr.score >= 95 
@@ -920,11 +1079,8 @@ export default function EmployeeCareerPlanningModule() {
                             ? 'bg-blue-100 text-blue-900 border border-blue-300'
                             : 'bg-amber-100 text-amber-900 border border-amber-300'
                         }`}>
-                          %{tr.score} ({tr.gradeStatus})
+                          %{tr.score}
                         </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right font-mono text-[10px] text-gray-400 font-bold">
-                        {tr.certificateId}
                       </td>
                     </tr>
                   ))}
@@ -1171,6 +1327,97 @@ export default function EmployeeCareerPlanningModule() {
         </div>
 
       </div>
+
+      {/* DETAILED TRAINING SUMMARY BREAKDOWN MODAL (ÖZET KARTLARINA TIKLANDIĞINDA AÇILAN DETAY MODALI) */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 overflow-hidden relative animate-in fade-in zoom-in duration-200">
+            
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-6 relative flex-shrink-0 flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <GraduationCap className="w-5 h-5 text-amber-300" />
+                  <h3 className="text-lg font-black text-white">
+                    {activeEmployee.name} — Detaylı Eğitim & Eğitmen Dökümü
+                  </h3>
+                </div>
+                <p className="text-xs text-gray-200">
+                  {modalFilterType === 'post' ? 'Şirket İçi Akademi Eğitimleri' : modalFilterType === 'prior' ? 'İşe Başlamadan Önceki Harici Eğitimler' : 'Tüm Şirket İçi ve Harici Eğitimler'} ({combinedTrainingsList.length} Ders • Toplam {combinedTrainingsList.reduce((s, c) => s + c.durationHours, 0)} Saat)
+                </p>
+              </div>
+
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body Table */}
+            <div className="p-6 overflow-y-auto flex-1 space-y-4">
+              <div className="bg-gray-50 p-3 rounded-2xl border border-gray-200 text-xs text-[#0B2A4A] flex items-center space-x-2">
+                <Info className="w-4 h-4 text-[#087F96] flex-shrink-0" />
+                <span>
+                  Bu listede çalışanın aldığı eğitimin adı, süresi, <strong>eğitimi veren eğitmeni</strong>, <strong>veren kurum/akademi</strong> ve <strong>eğitimin alındığı şirket dönemi</strong> detaylı olarak sunulmuştur.
+                </span>
+              </div>
+
+              <div className="overflow-x-auto rounded-2xl border border-gray-200">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-[#0B2A4A] text-white font-bold uppercase text-[10px]">
+                    <tr>
+                      <th className="py-3 px-4">Eğitim / Ders Adı</th>
+                      <th className="py-3 px-4">Eğitimi Veren Eğitmen</th>
+                      <th className="py-3 px-4">Veren Kurum / Akademi</th>
+                      <th className="py-3 px-4">Alındığı Şirket</th>
+                      <th className="py-3 px-4 font-mono">Süresi</th>
+                      <th className="py-3 px-4 text-center">Durum / Skoru</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
+                    {combinedTrainingsList.map((tr) => (
+                      <tr key={tr.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="py-3.5 px-4 font-bold text-[#0B2A4A]">
+                          <div className="flex items-center space-x-2">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                            <span>{tr.title}</span>
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4 font-bold text-gray-800">{tr.instructorName}</td>
+                        <td className="py-3.5 px-4 font-bold text-[#087F96]">{tr.institution}</td>
+                        <td className="py-3.5 px-4 text-emerald-900 font-bold">{tr.companyWhereTaken}</td>
+                        <td className="py-3.5 px-4 font-mono font-bold text-gray-600">{tr.durationText}</td>
+                        <td className="py-3.5 px-4 text-center">
+                          <span className="px-2.5 py-1 rounded-lg font-mono font-bold text-[10px] bg-emerald-100 text-emerald-900 border border-emerald-300">
+                            {tr.scoreOrBadge}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-gray-50 border-t border-gray-200 p-4 flex items-center justify-between">
+              <span className="text-xs text-gray-500">
+                Toplam gösterilen eğitim: <strong>{combinedTrainingsList.length} Modül</strong>
+              </span>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-6 py-2.5 bg-[#0B2A4A] text-white font-bold rounded-xl text-xs hover:bg-[#061B33]"
+              >
+                Kapat
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
