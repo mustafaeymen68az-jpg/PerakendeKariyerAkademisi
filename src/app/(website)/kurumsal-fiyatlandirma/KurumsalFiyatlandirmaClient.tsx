@@ -44,7 +44,7 @@ export default function KurumsalFiyatlandirmaClient() {
     phone: '',
     employeeCount: '101-250',
     subCount: '10-25',
-    packageSelect: 'PKA LEARNING & CAREER',
+    packageSelect: 'PKA EĞİTİM & KARİYER',
     additionalServices: [] as string[],
     startDate: 'Hemen (1-2 Hafta)',
     notes: '',
@@ -60,7 +60,7 @@ export default function KurumsalFiyatlandirmaClient() {
   const [openFaqs, setOpenFaqs] = useState<Record<number, boolean>>({});
 
   // Active Comparison View Tab for Mobile
-  const [activeMobileTab, setActiveMobileTab] = useState<'learning' | 'career' | 'talent' | 'executive'>('career');
+  const [activeMobileTab, setActiveMobileTab] = useState<'ogrenme' | 'kariyer' | 'yetenek' | 'yonetici'>('kariyer');
 
   const toggleFaq = (idx: number) => {
     setOpenFaqs(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -136,7 +136,7 @@ export default function KurumsalFiyatlandirmaClient() {
         title: formData.title,
         email: formData.email,
         phone: formData.phone,
-        city: 'İstanbul', // Default safe value
+        city: 'İstanbul',
         employeeCount: parseInt(formData.employeeCount) || 150,
         subCount: parseInt(formData.subCount) || 15,
         training: `Kurumsal Paket: ${formData.packageSelect}`,
@@ -190,7 +190,7 @@ export default function KurumsalFiyatlandirmaClient() {
   const faqs = [
     {
       q: 'Kurumsal fiyat nasıl hesaplanır?',
-      a: 'Kurumsal fiyatlarımız; aktif çalışan sayısı, seçilen platform paketi (Learning, Career, Talent, Executive), içerik kütüphanesi kapsamı, entegrasyonlar, kuruma özel geliştirmeler ve destek seviyesine göre belirlenmektedir.'
+      a: 'Kurumsal fiyatlarımız; aktif çalışan sayısı, seçilen platform paketi (Öğrenme, Eğitim & Kariyer, Yetenek, Yönetici), içerik kütüphanesi kapsamı, entegrasyonlar, kuruma özel geliştirmeler ve destek seviyesine göre belirlenmektedir.'
     },
     {
       q: 'Aktif çalışan ne demektir?',
@@ -198,11 +198,11 @@ export default function KurumsalFiyatlandirmaClient() {
     },
     {
       q: 'Yalnızca eğitim modülünü satın alabilir miyiz?',
-      a: 'Evet, temel dijitalleştirme ve eğitim takibi ihtiyaçlarınız için PKA LEARNING paketini tercih edebilirsiniz.'
+      a: 'Evet, temel dijitalleştirme ve eğitim takibi ihtiyaçlarınız için PKA ÖĞRENME paketini tercih edebilirsiniz.'
     },
     {
       q: 'Paketimizi sonradan yükseltebilir miyiz?',
-      a: 'Evet, ihtiyaçlarınız büyüdükçe dilediğiniz zaman bir üst pakete (örn. Career veya Talent) kolayca geçiş yapabilirsiniz. Ücret farkı kalan sözleşme süresine göre hesaplanır.'
+      a: 'Evet, ihtiyaçlarınız büyüdükçe dilediğiniz zaman bir üst pakete (örn. Eğitim & Kariyer veya Yetenek) kolayca geçiş yapabilirsiniz. Ücret farkı kalan sözleşme süresine göre hesaplanır.'
     },
     {
       q: 'İlk kurulum ücretine neler dahildir?',
@@ -230,7 +230,7 @@ export default function KurumsalFiyatlandirmaClient() {
     },
     {
       q: 'SSO veya İK sistemi entegrasyonu dahil midir?',
-      a: 'SAP, Logo, Mikro, HRIS veya Active Directory SSO entegrasyonları Executive paketinde seçeneğe bağlı veya ek entegrasyon hizmeti olarak sunulur.'
+      a: 'SAP, Logo, Mikro, HRIS veya Active Directory SSO entegrasyonları Yönetici paketinde seçeneğe bağlı veya ek entegrasyon hizmeti olarak sunulur.'
     },
     {
       q: 'Çalışan sayımız değişirse ücret nasıl hesaplanır?',
@@ -281,17 +281,17 @@ export default function KurumsalFiyatlandirmaClient() {
           </div>
         </div>
 
-        {/* 2. PACKAGES GRID (4 CARDS) */}
+        {/* 2. PACKAGES GRID (4 CARDS WITH TURKISH TITLES) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           
-          {/* PACKAGE 1: PKA LEARNING */}
+          {/* PACKAGE 1: PKA ÖĞRENME */}
           <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                   DİJİTAL EĞİTİM
                 </span>
-                <h2 className="font-display font-black text-xl text-[#0B2A4A]">PKA LEARNING</h2>
+                <h2 className="font-display font-black text-xl text-[#0B2A4A]">PKA ÖĞRENME</h2>
                 <p className="text-[11px] text-gray-500 font-medium leading-snug">
                   Kurumsal eğitim süreçlerini dijitalleştirmek isteyen işletmeler.
                 </p>
@@ -335,7 +335,7 @@ export default function KurumsalFiyatlandirmaClient() {
 
             <div className="space-y-2 pt-4 border-t border-gray-100">
               <button
-                onClick={() => scrollToForm('PKA LEARNING')}
+                onClick={() => scrollToForm('PKA ÖĞRENME')}
                 className="w-full py-3 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-bold rounded-xl text-xs transition-colors shadow-sm flex items-center justify-center space-x-1"
               >
                 <span>Kurumsal Teklif Al</span>
@@ -350,7 +350,7 @@ export default function KurumsalFiyatlandirmaClient() {
             </div>
           </div>
 
-          {/* PACKAGE 2: PKA LEARNING & CAREER (HIGHLIGHTED / RECOMMENDED) */}
+          {/* PACKAGE 2: PKA EĞİTİM & KARİYER (HIGHLIGHTED / RECOMMENDED) */}
           <div className="bg-white rounded-3xl p-6 border-2 border-[#087F96] shadow-2xl hover:shadow-2xl transition-all flex flex-col justify-between space-y-6 relative scale-102 lg:-translate-y-2">
             
             {/* Recommendation Ribbon */}
@@ -364,7 +364,7 @@ export default function KurumsalFiyatlandirmaClient() {
                 <span className="text-[10px] font-mono font-bold text-[#087F96] uppercase tracking-widest bg-cyan-50 px-2.5 py-0.5 rounded-full border border-cyan-200">
                   EĞİTİM & KARİYER
                 </span>
-                <h2 className="font-display font-black text-xl text-[#0B2A4A]">PKA LEARNING & CAREER</h2>
+                <h2 className="font-display font-black text-xl text-[#0B2A4A]">PKA EĞİTİM & KARİYER</h2>
                 <p className="text-[11px] text-gray-500 font-medium leading-snug">
                   Çalışanların eğitim ve kariyer gelişimini birlikte yönetmek isteyen işletmeler.
                 </p>
@@ -383,10 +383,10 @@ export default function KurumsalFiyatlandirmaClient() {
 
               {/* Feature Checklist */}
               <div className="space-y-2">
-                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">PKA Learning + Ek Özellikler:</span>
+                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">PKA Öğrenme + Ek Özellikler:</span>
                 <ul className="space-y-2 text-xs text-gray-600 font-medium">
                   {[
-                    'PKA Learning paketindeki bütün özellikler',
+                    'PKA Öğrenme paketindeki bütün özellikler',
                     'Kariyer GPS',
                     'Kariyer yolları',
                     'Kariyer seviye testi',
@@ -408,7 +408,7 @@ export default function KurumsalFiyatlandirmaClient() {
 
             <div className="space-y-2 pt-4 border-t border-gray-100">
               <button
-                onClick={() => scrollToForm('PKA LEARNING & CAREER')}
+                onClick={() => scrollToForm('PKA EĞİTİM & KARİYER')}
                 className="w-full py-3.5 bg-[#087F96] hover:bg-[#056B80] text-white font-black rounded-xl text-xs transition-colors shadow-md flex items-center justify-center space-x-1"
               >
                 <span>Kurumsal Teklif Al</span>
@@ -423,14 +423,14 @@ export default function KurumsalFiyatlandirmaClient() {
             </div>
           </div>
 
-          {/* PACKAGE 3: PKA TALENT */}
+          {/* PACKAGE 3: PKA YETENEK */}
           <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-mono font-bold text-purple-700 uppercase tracking-widest bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-200">
                   YETENEK YÖNETİMİ
                 </span>
-                <h2 className="font-display font-black text-xl text-[#0B2A4A]">PKA TALENT</h2>
+                <h2 className="font-display font-black text-xl text-[#0B2A4A]">PKA YETENEK</h2>
                 <p className="text-[11px] text-gray-500 font-medium leading-snug">
                   Yetkinlik, yetenek ve terfi süreçlerini yönetmek isteyen İK ekipleri.
                 </p>
@@ -449,10 +449,10 @@ export default function KurumsalFiyatlandirmaClient() {
 
               {/* Feature Checklist */}
               <div className="space-y-2">
-                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">PKA Career + Ek Özellikler:</span>
+                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">PKA Eğitim & Kariyer + Ekler:</span>
                 <ul className="space-y-2 text-xs text-gray-600 font-medium">
                   {[
-                    'Learning & Career paketindeki bütün özellikler',
+                    'Eğitim & Kariyer paketindeki bütün özellikler',
                     'Yetkinlik matrisi',
                     '9 Box yetenek matrisi',
                     'Yetenek havuzu',
@@ -474,7 +474,7 @@ export default function KurumsalFiyatlandirmaClient() {
 
             <div className="space-y-2 pt-4 border-t border-gray-100">
               <button
-                onClick={() => scrollToForm('PKA TALENT')}
+                onClick={() => scrollToForm('PKA YETENEK')}
                 className="w-full py-3 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-bold rounded-xl text-xs transition-colors shadow-sm flex items-center justify-center space-x-1"
               >
                 <span>Kurumsal Teklif Al</span>
@@ -489,14 +489,14 @@ export default function KurumsalFiyatlandirmaClient() {
             </div>
           </div>
 
-          {/* PACKAGE 4: PKA EXECUTIVE (SPECIAL OFFER HIGHLIGHTED) */}
+          {/* PACKAGE 4: PKA YÖNETİCİ */}
           <div className="bg-gradient-to-b from-[#061B33] to-[#0B2A4A] text-white rounded-3xl p-6 border border-cyan-400/40 shadow-xl flex flex-col justify-between space-y-6 relative">
             <div className="space-y-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-mono font-bold text-amber-300 uppercase tracking-widest bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-400/30">
                   STRATEJİK LİDERLİK
                 </span>
-                <h2 className="font-display font-black text-xl text-white">PKA EXECUTIVE</h2>
+                <h2 className="font-display font-black text-xl text-white">PKA YÖNETİCİ</h2>
                 <p className="text-[11px] text-gray-300 font-light leading-snug">
                   İnsan sermayesini ve gelecekteki yönetici ihtiyacını stratejik olarak yönetmek isteyen büyük işletmeler.
                 </p>
@@ -542,7 +542,7 @@ export default function KurumsalFiyatlandirmaClient() {
 
             <div className="space-y-2 pt-4 border-t border-white/10">
               <button
-                onClick={() => scrollToForm('PKA EXECUTIVE')}
+                onClick={() => scrollToForm('PKA YÖNETİCİ')}
                 className="w-full py-3.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-xl text-xs transition-colors shadow-lg flex items-center justify-center space-x-1"
               >
                 <span>Özel Teklif İste</span>
@@ -579,10 +579,10 @@ export default function KurumsalFiyatlandirmaClient() {
               <thead>
                 <tr className="bg-[#0B2A4A] text-white uppercase font-black tracking-wider">
                   <th className="p-4 border-r border-white/10 w-2/5">Özellik / Modül Kapsamı</th>
-                  <th className="p-4 border-r border-white/10 text-center w-1/7">PKA Learning</th>
-                  <th className="p-4 border-r border-white/10 text-center w-1/7 bg-[#087F96] text-amber-300">PKA Career</th>
-                  <th className="p-4 border-r border-white/10 text-center w-1/7">PKA Talent</th>
-                  <th className="p-4 text-center w-1/7 text-amber-300">PKA Executive</th>
+                  <th className="p-4 border-r border-white/10 text-center w-1/7">PKA Öğrenme</th>
+                  <th className="p-4 border-r border-white/10 text-center w-1/7 bg-[#087F96] text-amber-300">PKA Eğitim & Kariyer</th>
+                  <th className="p-4 border-r border-white/10 text-center w-1/7">PKA Yetenek</th>
+                  <th className="p-4 text-center w-1/7 text-amber-300">PKA Yönetici</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 font-medium">
@@ -590,28 +590,28 @@ export default function KurumsalFiyatlandirmaClient() {
                   <tr key={rIdx} className={rIdx % 2 === 0 ? 'bg-gray-50/60' : 'bg-white'}>
                     <td className="p-3.5 font-bold text-[#0B2A4A]">{row.name}</td>
                     
-                    {/* Learning */}
+                    {/* Öğrenme */}
                     <td className="p-3.5 text-center border-r border-gray-200">
                       {typeof row.l === 'boolean' ? (
                         row.l ? <Check className="h-5 w-5 text-emerald-600 mx-auto font-bold" /> : <span className="text-gray-300 text-lg">•</span>
                       ) : <span className="text-[11px] text-gray-600 font-bold">{row.l}</span>}
                     </td>
 
-                    {/* Career */}
+                    {/* Eğitim & Kariyer */}
                     <td className="p-3.5 text-center border-r border-gray-200 bg-cyan-50/40">
                       {typeof row.c === 'boolean' ? (
                         row.c ? <Check className="h-5 w-5 text-[#087F96] mx-auto font-black" /> : <span className="text-gray-300 text-lg">•</span>
                       ) : <span className="text-[11px] text-[#087F96] font-bold">{row.c}</span>}
                     </td>
 
-                    {/* Talent */}
+                    {/* Yetenek */}
                     <td className="p-3.5 text-center border-r border-gray-200">
                       {typeof row.t === 'boolean' ? (
                         row.t ? <Check className="h-5 w-5 text-purple-600 mx-auto font-bold" /> : <span className="text-gray-300 text-lg">•</span>
                       ) : <span className="text-[11px] text-purple-900 font-bold">{row.t}</span>}
                     </td>
 
-                    {/* Executive */}
+                    {/* Yönetici */}
                     <td className="p-3.5 text-center bg-slate-900 text-white">
                       {typeof row.e === 'boolean' ? (
                         row.e ? <Check className="h-5 w-5 text-amber-400 mx-auto font-black" /> : <span className="text-gray-600 text-lg">•</span>
@@ -627,39 +627,39 @@ export default function KurumsalFiyatlandirmaClient() {
           <div className="lg:hidden space-y-4">
             <div className="flex rounded-xl bg-gray-100 p-1 text-xs font-bold">
               <button
-                onClick={() => setActiveMobileTab('learning')}
-                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'learning' ? 'bg-[#0B2A4A] text-white shadow-xs' : 'text-gray-600'}`}
+                onClick={() => setActiveMobileTab('ogrenme')}
+                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'ogrenme' ? 'bg-[#0B2A4A] text-white shadow-xs' : 'text-gray-600'}`}
               >
-                Learning
+                Öğrenme
               </button>
               <button
-                onClick={() => setActiveMobileTab('career')}
-                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'career' ? 'bg-[#087F96] text-white shadow-xs font-black' : 'text-gray-600'}`}
+                onClick={() => setActiveMobileTab('kariyer')}
+                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'kariyer' ? 'bg-[#087F96] text-white shadow-xs font-black' : 'text-gray-600'}`}
               >
-                Career ★
+                Kariyer ★
               </button>
               <button
-                onClick={() => setActiveMobileTab('talent')}
-                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'talent' ? 'bg-purple-900 text-white shadow-xs' : 'text-gray-600'}`}
+                onClick={() => setActiveMobileTab('yetenek')}
+                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'yetenek' ? 'bg-purple-900 text-white shadow-xs' : 'text-gray-600'}`}
               >
-                Talent
+                Yetenek
               </button>
               <button
-                onClick={() => setActiveMobileTab('executive')}
-                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'executive' ? 'bg-slate-900 text-amber-300 shadow-xs' : 'text-gray-600'}`}
+                onClick={() => setActiveMobileTab('yonetici')}
+                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'yonetici' ? 'bg-slate-900 text-amber-300 shadow-xs' : 'text-gray-600'}`}
               >
-                Exec
+                Yönetici
               </button>
             </div>
 
             <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200 divide-y divide-gray-200">
               {comparisonFeatures.map((feat, idx) => {
                 let val: React.ReactNode = null;
-                if (activeMobileTab === 'learning') {
+                if (activeMobileTab === 'ogrenme') {
                   val = typeof feat.l === 'boolean' ? (feat.l ? <span className="text-emerald-600 font-bold">✓ Var</span> : <span className="text-gray-400">Yok</span>) : feat.l;
-                } else if (activeMobileTab === 'career') {
+                } else if (activeMobileTab === 'kariyer') {
                   val = typeof feat.c === 'boolean' ? (feat.c ? <span className="text-[#087F96] font-bold">✓ Var</span> : <span className="text-gray-400">Yok</span>) : feat.c;
-                } else if (activeMobileTab === 'talent') {
+                } else if (activeMobileTab === 'yetenek') {
                   val = typeof feat.t === 'boolean' ? (feat.t ? <span className="text-purple-700 font-bold">✓ Var</span> : <span className="text-gray-400">Yok</span>) : feat.t;
                 } else {
                   val = typeof feat.e === 'boolean' ? (feat.e ? <span className="text-amber-600 font-bold">✓ Var</span> : <span className="text-gray-400">Yok</span>) : feat.e;
@@ -858,7 +858,7 @@ export default function KurumsalFiyatlandirmaClient() {
               { name: 'Veri Temizleme ve Aktarım', tag: 'Veri' },
               { name: 'Yerinde Saha Danışmanlığı', tag: 'Danışmanlık' },
               { name: 'İç Eğitmen Yetiştirme (TTT)', tag: 'Akademi' },
-              { name: 'Premium SLA & Öncelikli Deste', tag: 'Destek' },
+              { name: 'Premium SLA & Öncelikli Destek', tag: 'Destek' },
               { name: 'Re-Branding Arayüz Teması', tag: 'Tasarım' },
               { name: 'Mağaza Audit Formları', tag: 'Denetim' }
             ].map((srv, idx) => (
@@ -930,7 +930,7 @@ export default function KurumsalFiyatlandirmaClient() {
               Sık Sorulan Sorular
             </h2>
             <p className="text-xs sm:text-sm text-gray-500 font-medium">
-              Kurumsal ücretlendirme, lisanslama ve devriye alma süreçleri hakkında net yanıtlar:
+              Kurumsal ücretlendirme, lisanslama ve devreye alma süreçleri hakkında net yanıtlar:
             </p>
           </div>
 
@@ -1115,10 +1115,10 @@ export default function KurumsalFiyatlandirmaClient() {
                     onChange={handleInputChange}
                     className="w-full p-3 rounded-xl bg-[#061B33] border border-white/20 text-amber-300 font-bold focus:outline-none focus:border-amber-400"
                   >
-                    <option value="PKA LEARNING">PKA LEARNING (Dijital Eğitim)</option>
-                    <option value="PKA LEARNING & CAREER">PKA LEARNING & CAREER (Önerilen)</option>
-                    <option value="PKA TALENT">PKA TALENT (Yetenek Yönetimi)</option>
-                    <option value="PKA EXECUTIVE">PKA EXECUTIVE (Stratejik Liderlik)</option>
+                    <option value="PKA ÖĞRENME">PKA ÖĞRENME (Dijital Eğitim)</option>
+                    <option value="PKA EĞİTİM & KARİYER">PKA EĞİTİM & KARİYER (Önerilen)</option>
+                    <option value="PKA YETENEK">PKA YETENEK (Yetenek Yönetimi)</option>
+                    <option value="PKA YÖNETİCİ">PKA YÖNETİCİ (Stratejik Liderlik)</option>
                     <option value="PİLOT UYGULAMA">Ücretli Pilot Uygulama (60-90 Gün)</option>
                   </select>
                 </div>
