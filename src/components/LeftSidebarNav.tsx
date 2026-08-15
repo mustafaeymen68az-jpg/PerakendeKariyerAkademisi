@@ -29,6 +29,7 @@ import Logo from '@/components/Logo';
 
 const HR_SUBMENU = [
   { name: '💰 Kurumsal Ücretlendirme', path: '/kurumsal-fiyatlandirma' },
+  { name: '🎓 İç Eğitmen Yetiştirme', path: '/kurumsal-cozumler#ic-egitmen' },
   { name: 'Çalışan Özgeçmiş & Deneyim ve Eğitim Karnesi', path: '/ik-cozumlari/calisan-ozgecmis-egitim-karnesi' },
   { name: 'Çalışan Kariyer Planlaması', path: '/ik-cozumlari/calisan-kariyer-planlamasi' },
   { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari/yetkinlik-matrisi' },
@@ -49,7 +50,7 @@ const INSTRUCTORS_SUBMENU = [
   { name: 'Can Demirel (Lojistik & Stok Müdürü)', path: '/egitmenler/can-demirel' }
 ];
 
-// Short & compact menu items to avoid layout breaking
+// Removed 'Admin Paneli' from sidebar items as requested
 const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/', icon: Home },
   { name: 'Eğitim Kataloğu', path: '/egitimler', icon: BookOpen },
@@ -58,7 +59,6 @@ const MENU_ITEMS = [
   { name: 'Kariyer Haritası', path: '/kariyer-yollari', icon: Map },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', icon: Target },
   { name: 'Yapay Zekâ', path: '/yapay-zeka', icon: Bot },
-  { name: 'Admin Paneli', path: '/admin', icon: ShieldCheck },
   { name: 'Aday & Yetenek Havuzu', path: '/yetkinlik-aday-havuzu', icon: Users },
   { name: 'Eğitmenlerimiz', path: '/egitmenler', icon: GraduationCap, isInstructorsDropdown: true }
 ];
