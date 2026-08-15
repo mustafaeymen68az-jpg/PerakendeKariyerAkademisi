@@ -299,7 +299,7 @@ export default function KurumsalCozumlerPage() {
           </div>
         </div>
 
-        {/* 4 CORE HR & TALENT EXECUTIVE PILLARS WITH REALISTIC VISUAL SAMPLE DATA WIDGETS */}
+        {/* 4 CORE HR & TALENT EXECUTIVE PILLARS WITH HIGH-DEFINITION DASHBOARD VISUALS */}
         <div className="bg-gradient-to-br from-[#061B33] via-[#0B2A4A] to-[#056B80] text-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-[#087F96]/40 space-y-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -317,196 +317,149 @@ export default function KurumsalCozumlerPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            {/* PILLAR 1: KARİYER PLANLAMASI + LIVE DATA WIDGET */}
-            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-4 hover:bg-white/15 transition-all flex flex-col justify-between">
+            {/* PILLAR 1: KARİYER PLANLAMASI + HD VISUAL DASHBOARD BANNER */}
+            <div className="bg-white/10 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-white/15 space-y-4 hover:bg-white/15 transition-all flex flex-col justify-between overflow-hidden group">
               <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold">
+                
+                {/* High-Definition Visual Image Banner */}
+                <div className="relative h-48 w-full overflow-hidden rounded-2xl border border-white/20 shadow-md">
+                  <img 
+                    src="/images/corp/hr_1.jpg" 
+                    alt="Şeffaf Çalışan Kariyer Planlaması Ekranı"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 right-3 bg-[#0B2A4A]/90 text-cyan-300 text-[10px] font-mono font-black px-2.5 py-1 rounded-full border border-cyan-400/40 shadow-md backdrop-blur-xs">
+                    GÜÇ #1 • CANLI EKRAN
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 pt-1">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold shrink-0">
                     <Compass className="w-6 h-6 text-cyan-300" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-cyan-300 uppercase">GÜÇ #1</span>
                     <h3 className="font-bold text-base text-white">Şeffaf Çalışan Kariyer Planlaması</h3>
+                    <span className="text-[10px] font-mono text-cyan-300 uppercase font-bold">15 Basamaklı Kariyer Haritası</span>
                   </div>
                 </div>
-                <p className="text-xs text-gray-200 leading-relaxed font-light">
+
+                <p className="text-xs text-gray-200 leading-relaxed font-light bg-white/5 p-3.5 rounded-xl border border-white/10">
                   Çalışanlarınız 15 basamaklı kariyer haritasında hangi pozisyonda olduklarını, bir üst unvana yükselmek için hangi yetkinlikleri ve eğitimleri tamamlamaları gerektiğini 7/24 canlı görürler.
                 </p>
-
-                {/* Live Sample Data Widget */}
-                <div className="bg-slate-950/70 p-3.5 rounded-xl border border-cyan-400/30 text-xs space-y-2 font-mono">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-cyan-300 font-bold flex items-center space-x-1">
-                      <span>👤 Canlı Örnek:</span>
-                      <span className="text-white">Ahmet Y. (Manav Şefi)</span>
-                    </span>
-                    <span className="text-amber-300 font-extrabold bg-amber-400/20 px-2 py-0.5 rounded">82/100 Skor</span>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-[10px] text-gray-300">
-                      <span>Kariyer Hedefi: Mağaza Müdür Yrd.</span>
-                      <span className="text-emerald-400 font-bold">%82 Tamamlandı</span>
-                    </div>
-                    <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden">
-                      <div className="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full w-[82%]" />
-                    </div>
-                  </div>
-                  <div className="text-[10px] text-gray-400 flex items-center justify-between pt-0.5">
-                    <span>📍 Mevcut: 8. Basamak</span>
-                    <span className="text-cyan-200 font-bold">🎯 Hedef: 10. Basamak (Q3 2026)</span>
-                  </div>
-                </div>
               </div>
 
-              <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-cyan-300 flex items-center space-x-1">
+              <div className="pt-3 border-t border-white/10 text-[11px] font-bold text-cyan-300 flex items-center space-x-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-cyan-300" />
                 <span>%100 Şeffaf Yükselme & Motivasyon Artışı</span>
               </div>
             </div>
 
-            {/* PILLAR 2: TERFİ EDECEK PERSONEL TAKİBİ + LIVE DATA WIDGET */}
-            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-4 hover:bg-white/15 transition-all flex flex-col justify-between">
+            {/* PILLAR 2: TERFİ EDECEK PERSONEL TAKİBİ + HD VISUAL DASHBOARD BANNER */}
+            <div className="bg-white/10 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-white/15 space-y-4 hover:bg-white/15 transition-all flex flex-col justify-between overflow-hidden group">
               <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold">
+                
+                {/* High-Definition Visual Image Banner */}
+                <div className="relative h-48 w-full overflow-hidden rounded-2xl border border-white/20 shadow-md">
+                  <img 
+                    src="/images/corp/hr_2.jpg" 
+                    alt="Terfi Edecek Personeli Anlık Takip Ekranı"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 right-3 bg-[#0B2A4A]/90 text-emerald-300 text-[10px] font-mono font-black px-2.5 py-1 rounded-full border border-emerald-400/40 shadow-md backdrop-blur-xs">
+                    GÜÇ #2 • CANLI EKRAN
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 pt-1">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold shrink-0">
                     <UserCheck className="w-6 h-6 text-emerald-300" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-emerald-300 uppercase">GÜÇ #2</span>
                     <h3 className="font-bold text-base text-white">Terfi Edecek Personeli Anlık Takip</h3>
+                    <span className="text-[10px] font-mono text-emerald-300 uppercase font-bold">Terfi Komitesi Listesi</span>
                   </div>
                 </div>
-                <p className="text-xs text-gray-200 leading-relaxed font-light">
+
+                <p className="text-xs text-gray-200 leading-relaxed font-light bg-white/5 p-3.5 rounded-xl border border-white/10">
                   2. Yıl eğitimlerini tamamlamış, sınav ve reyon simülasyon skorları %85'in üzerinde olan terfiye hazır personeliniz Terfi Komitesi ekranında anlık yeşil bayrakla listelenir.
                 </p>
-
-                {/* Live Sample Data Widget */}
-                <div className="bg-slate-950/70 p-3.5 rounded-xl border border-emerald-400/30 text-xs space-y-2 font-mono">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-emerald-300 font-bold flex items-center space-x-1">
-                      <span>🟢 Terfi Adayı:</span>
-                      <span className="text-white">Zeynep K. (Kasa Şefi)</span>
-                    </span>
-                    <span className="text-emerald-300 font-extrabold bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-400/40">YEŞİL BAYRAK</span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-                    <div className="bg-white/10 p-1.5 rounded">
-                      <div className="text-gray-400">Sınav Skoru</div>
-                      <div className="font-bold text-emerald-400 text-xs">94/100</div>
-                    </div>
-                    <div className="bg-white/10 p-1.5 rounded">
-                      <div className="text-gray-400">Saha Audit</div>
-                      <div className="font-bold text-cyan-300 text-xs">%92</div>
-                    </div>
-                    <div className="bg-white/10 p-1.5 rounded">
-                      <div className="text-gray-400">Terfi Uyum</div>
-                      <div className="font-bold text-amber-300 text-xs">%96</div>
-                    </div>
-                  </div>
-                  <div className="text-[10px] text-emerald-200 flex items-center justify-between pt-0.5">
-                    <span>📋 Terfi Komitesi Onay Durumu:</span>
-                    <span className="text-emerald-300 font-black">✅ ONAYLANDI (Mağaza Müdürü Adayı)</span>
-                  </div>
-                </div>
               </div>
 
-              <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-emerald-300 flex items-center space-x-1">
+              <div className="pt-3 border-t border-white/10 text-[11px] font-bold text-emerald-300 flex items-center space-x-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
                 <span>Objektif Terfi Listeleri & Hızlı Atama</span>
               </div>
             </div>
 
-            {/* PILLAR 3: YETERSİZ PERSONEL TESPİTİ + LIVE DATA WIDGET */}
-            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-4 hover:bg-white/15 transition-all flex flex-col justify-between">
+            {/* PILLAR 3: YETERSİZ PERSONEL TESPİTİ + HD VISUAL DASHBOARD BANNER */}
+            <div className="bg-white/10 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-white/15 space-y-4 hover:bg-white/15 transition-all flex flex-col justify-between overflow-hidden group">
               <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold">
+                
+                {/* High-Definition Visual Image Banner */}
+                <div className="relative h-48 w-full overflow-hidden rounded-2xl border border-white/20 shadow-md">
+                  <img 
+                    src="/images/corp/hr_3.jpg" 
+                    alt="Yetersiz Personeli Anında Tespit Etme Ekranı"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 right-3 bg-[#0B2A4A]/90 text-rose-300 text-[10px] font-mono font-black px-2.5 py-1 rounded-full border border-rose-400/40 shadow-md backdrop-blur-xs">
+                    GÜÇ #3 • CANLI EKRAN
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 pt-1">
+                  <div className="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold shrink-0">
                     <AlertTriangle className="w-6 h-6 text-rose-300" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-rose-300 uppercase">GÜÇ #3</span>
                     <h3 className="font-bold text-base text-white">Yetersiz Personeli Anında Tespit Etme</h3>
+                    <span className="text-[10px] font-mono text-rose-300 uppercase font-bold">Risk ve Erken Uyarı Sinyali</span>
                   </div>
                 </div>
-                <p className="text-xs text-gray-200 leading-relaxed font-light">
+
+                <p className="text-xs text-gray-200 leading-relaxed font-light bg-white/5 p-3.5 rounded-xl border border-white/10">
                   Sınav sonuçlarında, manav-şarküteri fire oranlarında veya denetim skorlarında geride kalan yetersiz personeller kırmızı uyarı sinyaliyle anında tespit edilir ve otomatik destek eğitimi atanır.
                 </p>
-
-                {/* Live Sample Data Widget */}
-                <div className="bg-slate-950/70 p-3.5 rounded-xl border border-rose-400/40 text-xs space-y-2 font-mono">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-rose-300 font-bold flex items-center space-x-1">
-                      <span>🔴 Erken Uyarı:</span>
-                      <span className="text-white">Mehmet D. (Şube #104)</span>
-                    </span>
-                    <span className="text-rose-300 font-extrabold bg-rose-500/20 px-2 py-0.5 rounded border border-rose-400/40 animate-pulse">RİSK SİNYALİ</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                    <div className="bg-white/10 p-1.5 rounded">
-                      <div className="text-gray-400">Reyon Fire Oranı</div>
-                      <div className="font-bold text-rose-400 text-xs">%4.8 (Yüksek)</div>
-                    </div>
-                    <div className="bg-white/10 p-1.5 rounded">
-                      <div className="text-gray-400">Sınav Test Skoru</div>
-                      <div className="font-bold text-amber-300 text-xs">58/100</div>
-                    </div>
-                  </div>
-                  <div className="text-[10px] text-rose-200 bg-rose-500/10 p-1.5 rounded border border-rose-500/20 flex items-center justify-between">
-                    <span>⚡ Atanan Düzeltici Aksiyon:</span>
-                    <span className="text-amber-300 font-bold">Manav Fire Önleme Desteği (3 Gün)</span>
-                  </div>
-                </div>
               </div>
 
-              <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-rose-300 flex items-center space-x-1">
+              <div className="pt-3 border-t border-white/10 text-[11px] font-bold text-rose-300 flex items-center space-x-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-rose-300" />
                 <span>Erken Uyarı ile Mağaza Fire ve Hata Engelleme</span>
               </div>
             </div>
 
-            {/* PILLAR 4: ELDE TUTULACAK YETKİN PERSONEL HAVUZU + LIVE DATA WIDGET */}
-            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-4 hover:bg-white/15 transition-all flex flex-col justify-between">
+            {/* PILLAR 4: ELDE TUTULACAK YETKİN PERSONEL HAVUZU + HD VISUAL DASHBOARD BANNER */}
+            <div className="bg-white/10 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-white/15 space-y-4 hover:bg-white/15 transition-all flex flex-col justify-between overflow-hidden group">
               <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold">
+                
+                {/* High-Definition Visual Image Banner */}
+                <div className="relative h-48 w-full overflow-hidden rounded-2xl border border-white/20 shadow-md">
+                  <img 
+                    src="/images/corp/hr_4.jpg" 
+                    alt="Elde Tutulacak Yetkin Personel Havuzu 9-Box Ekranı"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 right-3 bg-[#0B2A4A]/90 text-amber-300 text-[10px] font-mono font-black px-2.5 py-1 rounded-full border border-amber-400/40 shadow-md backdrop-blur-xs">
+                    GÜÇ #4 • CANLI EKRAN
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 pt-1">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold shrink-0">
                     <Award className="w-6 h-6 text-amber-300" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-amber-300 uppercase">GÜÇ #4</span>
                     <h3 className="font-bold text-base text-white">Elde Tutulacak Yetkin Personel Havuzu</h3>
+                    <span className="text-[10px] font-mono text-amber-300 uppercase font-bold">9-Box Matrisi & Retention</span>
                   </div>
                 </div>
-                <p className="text-xs text-gray-200 leading-relaxed font-light">
+
+                <p className="text-xs text-gray-200 leading-relaxed font-light bg-white/5 p-3.5 rounded-xl border border-white/10">
                   Şirketinizin geleceğini taşıyacak yüksek potansiyelli (High-Pot) yetkin çalışan havuzunuzu 9-Box matrisinde canlı görün. İşten ayrılma riski olan yıldız personelleri anında korumaya alın.
                 </p>
-
-                {/* Live Sample Data Widget */}
-                <div className="bg-slate-950/70 p-3.5 rounded-xl border border-amber-400/40 text-xs space-y-2 font-mono">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-amber-300 font-bold flex items-center space-x-1">
-                      <span>⭐ Star Talent:</span>
-                      <span className="text-white">Selin A. (Kategori Lead)</span>
-                    </span>
-                    <span className="text-amber-300 font-extrabold bg-amber-400/20 px-2 py-0.5 rounded border border-amber-400/40">9-BOX: TOP 1%</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                    <div className="bg-white/10 p-1.5 rounded">
-                      <div className="text-gray-400">Performans Rating</div>
-                      <div className="font-bold text-emerald-400 text-xs">A+ (Mükemmel)</div>
-                    </div>
-                    <div className="bg-white/10 p-1.5 rounded">
-                      <div className="text-gray-400">Turnover Riski</div>
-                      <div className="font-bold text-cyan-300 text-xs">%0.2 (Sıfır Risk)</div>
-                    </div>
-                  </div>
-                  <div className="text-[10px] text-amber-200 bg-amber-500/10 p-1.5 rounded border border-amber-500/20 flex items-center justify-between">
-                    <span>🛡️ Saklama (Retention) Aksiyonu:</span>
-                    <span className="text-emerald-300 font-bold">Özel Prim & Terfi Koruması Aktif</span>
-                  </div>
-                </div>
               </div>
 
-              <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-amber-300 flex items-center space-x-1">
+              <div className="pt-3 border-t border-white/10 text-[11px] font-bold text-amber-300 flex items-center space-x-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-amber-300" />
                 <span>%45 Daha Düşük Turnover & Kritik Yetenek Koruması</span>
               </div>
@@ -615,7 +568,7 @@ export default function KurumsalCozumlerPage() {
             <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
               <FileCheck2 className="h-6 w-6 text-[#34A853]" />
               <h3 className="font-bold text-white text-sm">Standart İçerik Dağıtımı</h3>
-              <p className="text-gray-300 font-light">Şirket genelindeki tüm şubelerde 1:1 aynı kalite me standartta mağazacılık ve taze gıda anlatımı.</p>
+              <p className="text-gray-300 font-light">Şirket genelindeki tüm şubelerde 1:1 aynı kalite ve standartta mağazacılık ve taze gıda anlatımı.</p>
             </div>
 
             <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-2">
