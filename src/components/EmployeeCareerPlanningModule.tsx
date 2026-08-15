@@ -27,16 +27,36 @@ import {
   Star,
   User,
   Send,
-  Check
+  Check,
+  Building,
+  Briefcase,
+  History,
+  CheckSquare,
+  Layers
 } from 'lucide-react';
 
 export interface CompletedTrainingRecord {
   courseTitle: string;
   duration: string;
+  durationHours: number;
   completedDate: string;
   score: number;
   gradeStatus: 'Üstün Başarı' | 'Pek İyi' | 'Başarılı';
   certificateId: string;
+}
+
+export interface PreviousWorkExperience {
+  companyName: string;
+  role: string;
+  duration: string;
+  yearsRange: string;
+}
+
+export interface PriorTrainingRecord {
+  title: string;
+  institution: string;
+  durationHours: number;
+  year: string;
 }
 
 export interface EvaluationItem {
@@ -63,6 +83,10 @@ export interface EmployeeCareerRecord {
   competencyScore: number;
   city: string;
   experienceYears: number;
+  startDate: string;
+  tenure: string;
+  previousExperiences: PreviousWorkExperience[];
+  priorTrainings: PriorTrainingRecord[];
   completedTrainings: CompletedTrainingRecord[];
   evaluations: EmployeeEvaluations;
   swot: {
@@ -90,10 +114,41 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     competencyScore: 94,
     city: 'İstanbul',
     experienceYears: 4,
+    startDate: '15 Mart 2022',
+    tenure: '4 Yıl 5 Ay',
+    previousExperiences: [
+      {
+        companyName: 'CarrefourSA',
+        role: 'Reyon Görevlisi & Kasiyer',
+        duration: '2 Yıl 3 Ay',
+        yearsRange: '2018–2020'
+      },
+      {
+        companyName: 'BİM A.Ş.',
+        role: 'Kasa Şefi',
+        duration: '1 Yıl 8 Ay',
+        yearsRange: '2020–2022'
+      }
+    ],
+    priorTrainings: [
+      {
+        title: 'Temel Perakendecilik & Müşteri İletişimi',
+        institution: 'Halk Eğitim Merkezi',
+        durationHours: 40,
+        year: '2018'
+      },
+      {
+        title: 'Kasa Bilgisayar Sistemleri Sertifikası',
+        institution: 'MEB Onaylı Kurs',
+        durationHours: 24,
+        year: '2019'
+      }
+    ],
     completedTrainings: [
       {
         courseTitle: 'Kasa Operasyon Sistemleri & Hızlı Geçiş Protokolleri',
         duration: '16 Saat',
+        durationHours: 16,
         completedDate: '12 Şubat 2026',
         score: 98,
         gradeStatus: 'Üstün Başarı',
@@ -102,6 +157,7 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         courseTitle: 'Zor Müşteri İkna ve Çatışma Yönetimi',
         duration: '12 Saat',
+        durationHours: 12,
         completedDate: '28 Mart 2026',
         score: 96,
         gradeStatus: 'Üstün Başarı',
@@ -110,6 +166,7 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         courseTitle: 'Vardiya Planlama & Mağaza İçi Personel Sevk Yönetimi',
         duration: '20 Saat',
+        durationHours: 20,
         completedDate: '15 Mayıs 2026',
         score: 92,
         gradeStatus: 'Pek İyi',
@@ -118,6 +175,7 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         courseTitle: 'Perakendecilikte Stok Devri ve SKT Takip İlkeleri',
         duration: '14 Saat',
+        durationHours: 14,
         completedDate: '10 Haziran 2026',
         score: 90,
         gradeStatus: 'Başarılı',
@@ -187,18 +245,38 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     competencyScore: 91,
     city: 'Ankara',
     experienceYears: 5,
+    startDate: '10 Ocak 2021',
+    tenure: '5 Yıl 7 Ay',
+    previousExperiences: [
+      {
+        companyName: 'A101 Marketler',
+        role: 'Satış Elemanı & Kasiyer',
+        duration: '2 Yıl',
+        yearsRange: '2019–2021'
+      }
+    ],
+    priorTrainings: [
+      {
+        title: 'Reyon Düzeni & Hijyen Sertifikası',
+        institution: 'Tarım İl Müdürlüğü Akademi',
+        durationHours: 30,
+        year: '2019'
+      }
+    ],
     completedTrainings: [
       {
         courseTitle: 'Reyon Teşhir (Planogram) ve 5S Görsel Standartları',
         duration: '18 Saat',
+        durationHours: 18,
         completedDate: '05 Ocak 2026',
         score: 95,
         gradeStatus: 'Üstün Başarı',
-        certificateId: 'PKA-2026-[#087F96]-095'
+        certificateId: 'PKA-2026-PLAN-095'
       },
       {
         courseTitle: 'Fire Minimizasyonu & FIFO Ürün Devir Mantığı',
         duration: '16 Saat',
+        durationHours: 16,
         completedDate: '20 Şubat 2026',
         score: 92,
         gradeStatus: 'Pek İyi',
@@ -207,6 +285,7 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         courseTitle: 'Tedarikçi Sipariş Teslimat & Kalite Kabul Protokolleri',
         duration: '14 Saat',
+        durationHours: 14,
         completedDate: '11 Nisan 2026',
         score: 88,
         gradeStatus: 'Başarılı',
@@ -275,10 +354,29 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     competencyScore: 96,
     city: 'İzmir',
     experienceYears: 8,
+    startDate: '01 Eylül 2018',
+    tenure: '7 Yıl 11 Ay',
+    previousExperiences: [
+      {
+        companyName: 'Metro Grossmarket',
+        role: 'Mağaza Müdürü Adayı',
+        duration: '3 Yıl 6 Ay',
+        yearsRange: '2014–2018'
+      }
+    ],
+    priorTrainings: [
+      {
+        title: 'İleri Mağaza Yönetimi & P&L Eğitimi',
+        institution: 'İstanbul Perakende Enstitüsü',
+        durationHours: 60,
+        year: '2015'
+      }
+    ],
     completedTrainings: [
       {
         courseTitle: 'Mağaza P&L Finansal Yönetimi & Kar/Zarar Tablosu',
         duration: '24 Saat',
+        durationHours: 24,
         completedDate: '10 Ocak 2026',
         score: 99,
         gradeStatus: 'Üstün Başarı',
@@ -287,6 +385,7 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         courseTitle: 'Multi-Store Liderlik ve Bölgesel Ciro Büyütme',
         duration: '30 Saat',
+        durationHours: 30,
         completedDate: '18 Mart 2026',
         score: 96,
         gradeStatus: 'Üstün Başarı',
@@ -295,6 +394,7 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         courseTitle: 'Resmi Kurum İlişkileri & İSG Saha Denetimleri',
         duration: '16 Saat',
+        durationHours: 16,
         completedDate: '04 Mayıs 2026',
         score: 94,
         gradeStatus: 'Pek İyi',
@@ -363,10 +463,29 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     competencyScore: 86,
     city: 'Bursa',
     experienceYears: 4,
+    startDate: '15 Haziran 2022',
+    tenure: '4 Yıl 2 Ay',
+    previousExperiences: [
+      {
+        companyName: 'ŞOK Marketler',
+        role: 'Depo Elemanı',
+        duration: '2 Yıl',
+        yearsRange: '2020–2022'
+      }
+    ],
+    priorTrainings: [
+      {
+        title: 'Depo Yönetimi & İSG Temel Eğitimi',
+        institution: 'Lojistik Derneği Akademi',
+        durationHours: 32,
+        year: '2020'
+      }
+    ],
     completedTrainings: [
       {
         courseTitle: 'Depo Kabul & WMS Otomasyon Yönetimi',
         duration: '20 Saat',
+        durationHours: 20,
         completedDate: '14 Şubat 2026',
         score: 90,
         gradeStatus: 'Başarılı',
@@ -375,6 +494,7 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
       {
         courseTitle: 'Araç Filosu & Sevkiyat Rotalama Sistemleri',
         duration: '16 Saat',
+        durationHours: 16,
         completedDate: '22 Nisan 2026',
         score: 86,
         gradeStatus: 'Başarılı',
@@ -461,6 +581,23 @@ export default function EmployeeCareerPlanningModule() {
     return employeesData.find(e => e.id === selectedEmpId) || employeesData[0];
   }, [employeesData, selectedEmpId]);
 
+  // Calculated totals for training summary
+  const trainingSummary = useMemo(() => {
+    const postHours = activeEmployee.completedTrainings.reduce((sum, item) => sum + item.durationHours, 0);
+    const priorHours = activeEmployee.priorTrainings.reduce((sum, item) => sum + item.durationHours, 0);
+    const totalCount = activeEmployee.completedTrainings.length + activeEmployee.priorTrainings.length;
+    const totalHours = postHours + priorHours;
+
+    return {
+      totalCount,
+      totalHours,
+      postCount: activeEmployee.completedTrainings.length,
+      postHours,
+      priorCount: activeEmployee.priorTrainings.length,
+      priorHours
+    };
+  }, [activeEmployee]);
+
   // Handler to update evaluation note dynamically
   const handleSaveEvaluation = (targetType: 'manager' | 'subordinate' | 'hr') => {
     let newComment = '';
@@ -515,9 +652,9 @@ export default function EmployeeCareerPlanningModule() {
           <BrainCircuit className="w-4 h-4 text-emerald-400" />
           <span>İK KARAR DESTEK & AKILLI KARİYER PLANLAMA MOTORU</span>
         </div>
-        <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Kariyer Planlaması & 360° Değerlendirme</h2>
+        <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Özgeçmiş, Deneyim ve Eğitim Karnesi</h2>
         <p className="text-xs sm:text-sm text-gray-200 font-light max-w-3xl leading-relaxed">
-          Çalışanları yetkinlik puanlarına göre sıralayın; her çalışan için <strong>360° Üst Yönetici, Alt Çalışan ve İK Değerlendirmelerini</strong>, <strong>Aldığı Eğitimleri</strong>, <strong>SWOT Analizini</strong> ve <strong>90 Günlük Bireysel Kariyer Planını</strong> inceleyin.
+          İşe başlangıç tarihi, geçmiş şirket deneyimleri, iş öncesi ve iş sonrası alınan eğitimlerin süresi, toplam eğitim saati özetleri ve 360° değerlendirmeler.
         </p>
       </div>
 
@@ -556,7 +693,7 @@ export default function EmployeeCareerPlanningModule() {
         </div>
       )}
 
-      {/* Main Two-Column Layout: Employee List + Detailed SWOT, 360 Reviews & Completed Trainings */}
+      {/* Main Two-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left Column: Sorted Employee List */}
@@ -611,10 +748,10 @@ export default function EmployeeCareerPlanningModule() {
           </div>
         </div>
 
-        {/* Right Column: Active Employee Details, 360 Reviews, Completed Trainings & SWOT */}
+        {/* Right Column: Active Employee Complete Details */}
         <div className="lg:col-span-2 space-y-6">
           
-          {/* Employee Header Overview */}
+          {/* Employee Header Overview & Employment Dates */}
           <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
               <div className="flex items-center space-x-4">
@@ -623,7 +760,7 @@ export default function EmployeeCareerPlanningModule() {
                   alt={activeEmployee.name}
                   className="w-16 h-16 rounded-2xl object-cover border-4 border-[#087F96] shadow-lg flex-shrink-0"
                 />
-                <div>
+                <div className="space-y-1">
                   <div className="flex items-center space-x-2">
                     <h3 className="text-xl font-black text-[#0B2A4A]">{activeEmployee.name}</h3>
                     <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full font-mono">
@@ -631,13 +768,24 @@ export default function EmployeeCareerPlanningModule() {
                     </span>
                   </div>
                   <p className="text-xs text-gray-600 font-medium">
-                    Mevcut Pozisyon: <strong>{activeEmployee.currentRole}</strong> • {activeEmployee.city} ({activeEmployee.experienceYears} Yıl Deneyim)
+                    Mevcut Pozisyon: <strong>{activeEmployee.currentRole}</strong> • {activeEmployee.city}
                   </p>
+
+                  {/* START DATE & TENURE BADGE */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <span className="bg-[#0B2A4A] text-white text-[10px] font-bold font-mono px-3 py-1 rounded-lg flex items-center space-x-1">
+                      <Calendar className="w-3 h-3 text-amber-300" />
+                      <span>İşe Başlangıç: <strong>{activeEmployee.startDate}</strong></span>
+                    </span>
+                    <span className="bg-blue-100 text-blue-900 border border-blue-300 text-[10px] font-bold font-mono px-3 py-1 rounded-lg">
+                      Mevcut Şirket Kıdemi: <strong>{activeEmployee.tenure}</strong>
+                    </span>
+                  </div>
                 </div>
               </div>
 
               {/* Recommendation Badge */}
-              <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-2xl shadow-md space-y-1 text-center sm:text-right w-full sm:w-auto">
+              <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-2xl shadow-md space-y-1 text-center sm:text-right w-full sm:w-auto shrink-0">
                 <div className="text-[10px] font-bold uppercase text-emerald-100">Önerilen Hedef Pozisyon</div>
                 <div className="text-sm font-black text-white">{activeEmployee.recommendedRole}</div>
                 <div className="text-[10px] font-mono font-bold text-amber-300">
@@ -645,17 +793,147 @@ export default function EmployeeCareerPlanningModule() {
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Quick Summary Alert */}
-            <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-[#0B2A4A] flex items-center space-x-2">
-              <Sparkles className="w-4 h-4 text-[#087F96] flex-shrink-0" />
-              <span>
-                <strong>Sistem Önerisi:</strong> {activeEmployee.name}, yetkinlik puanı ve aldığı {activeEmployee.completedTrainings.length} sertifikalı eğitimle <strong>{activeEmployee.recommendedRole}</strong> pozisyonu için en yüksek uyuma (%{activeEmployee.matchPercentage}) sahiptir.
+          {/* TOTAL TRAININGS & DURATION SUMMARY DASHBOARD BANNER */}
+          <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-6 rounded-3xl shadow-xl border border-[#087F96]/40 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/15 pb-3">
+              <h3 className="font-extrabold text-sm text-white flex items-center space-x-2">
+                <BarChart3 className="w-5 h-5 text-amber-300" />
+                <span>Eğitim Sayısı ve Toplam Süre Özet Karnesi</span>
+              </h3>
+              <span className="text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
+                Onaylı Gelişim Karnesi
               </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+              <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs">
+                <div className="text-[10px] font-bold text-gray-300 uppercase">Toplam Eğitim Sayısı</div>
+                <div className="text-2xl font-black text-amber-300 font-mono">{trainingSummary.totalCount} Modül</div>
+              </div>
+
+              <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs">
+                <div className="text-[10px] font-bold text-gray-300 uppercase">Toplam Eğitim Süresi</div>
+                <div className="text-2xl font-black text-emerald-300 font-mono">{trainingSummary.totalHours} Saat</div>
+              </div>
+
+              <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs">
+                <div className="text-[10px] font-bold text-gray-300 uppercase">Şirket İçi Akademi</div>
+                <div className="text-lg font-black text-white font-mono">{trainingSummary.postCount} Ders ({trainingSummary.postHours} Sa)</div>
+              </div>
+
+              <div className="bg-white/10 p-3.5 rounded-2xl border border-white/15 backdrop-blur-xs">
+                <div className="text-[10px] font-bold text-gray-300 uppercase">İşe Başlamadan Önce</div>
+                <div className="text-lg font-black text-white font-mono">{trainingSummary.priorCount} Ders ({trainingSummary.priorHours} Sa)</div>
+              </div>
             </div>
           </div>
 
-          {/* 360-DEGREE EVALUATION & REVIEW PANEL (ÜST YÖNETİCİ, ALT ÇALIŞAN & İK DEĞERLENDİRMELERİ) */}
+          {/* SECTION 1: DAHA ÖNCE ÇALIŞTIĞI FİRMALAR VE SÜRELERİ */}
+          <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md space-y-4">
+            <h3 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2 border-b border-gray-100 pb-3">
+              <Building className="w-5 h-5 text-[#087F96]" />
+              <span>Daha Önce Çalıştığı Firmalar ve Hizmet Süreleri</span>
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeEmployee.previousExperiences.map((exp, idx) => (
+                <div key={idx} className="p-4 bg-gray-50 border border-gray-200 rounded-2xl space-y-1.5 hover:border-[#087F96] transition-all">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-extrabold text-xs text-[#0B2A4A]">{exp.companyName}</h4>
+                    <span className="text-[10px] font-mono font-bold text-gray-500 bg-gray-200 px-2 py-0.5 rounded-md">
+                      {exp.yearsRange}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-700 font-bold">{exp.role}</div>
+                  <div className="text-[11px] text-emerald-700 font-mono font-bold">
+                    Çalışma Süresi: {exp.duration}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* SECTION 2: MEVCUT İŞYERİNDEN ÖNCE ALDIĞI EĞİTİMLER */}
+          <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md space-y-4">
+            <h3 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2 border-b border-gray-100 pb-3">
+              <History className="w-5 h-5 text-[#087F96]" />
+              <span>Mevcut İşyerinden Önce Aldığı Harici Eğitimler ({activeEmployee.priorTrainings.length} Ders)</span>
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeEmployee.priorTrainings.map((pt, idx) => (
+                <div key={idx} className="p-4 bg-blue-50/50 border border-blue-200 rounded-2xl space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-extrabold text-xs text-[#0B2A4A]">{pt.title}</h4>
+                    <span className="text-[10px] font-mono font-bold text-[#087F96] bg-blue-100 px-2 py-0.5 rounded-md">
+                      {pt.year}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-600 font-medium">Kurum: {pt.institution}</div>
+                  <div className="text-[11px] text-blue-900 font-mono font-bold">
+                    Eğitim Süresi: {pt.durationHours} Saat
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* SECTION 3: İŞE BAŞLADIKTAN SONRA ŞİRKET İÇİ ALDIĞI EĞİTİMLER VE PUANLARI */}
+          <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2">
+                <GraduationCap className="w-5 h-5 text-[#087F96]" />
+                <span>İşe Başladıktan Sonra Şirket İçi Akademi Aldığı Eğitimler ({activeEmployee.completedTrainings.length} Ders)</span>
+              </h3>
+              <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-200">
+                Onaylı Sertifikalı
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#0B2A4A] text-white font-bold uppercase text-[10px]">
+                  <tr>
+                    <th className="py-3 px-4 rounded-l-xl">Tamamlanan Ders / Eğitim Modülü</th>
+                    <th className="py-3 px-4">Süresi</th>
+                    <th className="py-3 px-4">Tamamlanma Tarihi</th>
+                    <th className="py-3 px-4 text-center">Sınav Puanı</th>
+                    <th className="py-3 px-4 text-right rounded-r-xl">Sertifika Kodu</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
+                  {activeEmployee.completedTrainings.map((tr, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50/80 transition-colors">
+                      <td className="py-3.5 px-4 font-bold text-[#0B2A4A] flex items-center space-x-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                        <span>{tr.courseTitle}</span>
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-gray-500">{tr.duration}</td>
+                      <td className="py-3.5 px-4 font-mono text-gray-500">{tr.completedDate}</td>
+                      <td className="py-3.5 px-4 text-center">
+                        <span className={`inline-block px-2.5 py-1 rounded-lg font-mono font-black text-xs ${
+                          tr.score >= 95 
+                            ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                            : tr.score >= 90
+                            ? 'bg-blue-100 text-blue-900 border border-blue-300'
+                            : 'bg-amber-100 text-amber-900 border border-amber-300'
+                        }`}>
+                          %{tr.score} ({tr.gradeStatus})
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right font-mono text-[10px] text-gray-400 font-bold">
+                        {tr.certificateId}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* 360-DEGREE EVALUATION & REVIEW PANEL */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-6">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <h3 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2">
@@ -786,59 +1064,6 @@ export default function EmployeeCareerPlanningModule() {
                 </div>
               </div>
 
-            </div>
-          </div>
-
-          {/* COMPLETED TRAININGS & EXAM SCORES TABLE */}
-          <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h3 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2">
-                <GraduationCap className="w-5 h-5 text-[#087F96]" />
-                <span>Çalışanın Şu Ana Kadar Aldığı Eğitimler & Sınav Puanları ({activeEmployee.completedTrainings.length} Ders)</span>
-              </h3>
-              <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-200">
-                Onaylı Sertifikalı
-              </span>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#0B2A4A] text-white font-bold uppercase text-[10px]">
-                  <tr>
-                    <th className="py-3 px-4 rounded-l-xl">Tamamlanan Ders / Eğitim Modülü</th>
-                    <th className="py-3 px-4">Süresi</th>
-                    <th className="py-3 px-4">Tamamlanma Tarihi</th>
-                    <th className="py-3 px-4 text-center">Sınav Puanı</th>
-                    <th className="py-3 px-4 text-right rounded-r-xl">Sertifika Kodu</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
-                  {activeEmployee.completedTrainings.map((tr, idx) => (
-                    <tr key={idx} className="hover:bg-gray-50/80 transition-colors">
-                      <td className="py-3.5 px-4 font-bold text-[#0B2A4A] flex items-center space-x-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                        <span>{tr.courseTitle}</span>
-                      </td>
-                      <td className="py-3.5 px-4 font-mono text-gray-500">{tr.duration}</td>
-                      <td className="py-3.5 px-4 font-mono text-gray-500">{tr.completedDate}</td>
-                      <td className="py-3.5 px-4 text-center">
-                        <span className={`inline-block px-2.5 py-1 rounded-lg font-mono font-black text-xs ${
-                          tr.score >= 95 
-                            ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
-                            : tr.score >= 90
-                            ? 'bg-blue-100 text-blue-900 border border-blue-300'
-                            : 'bg-amber-100 text-amber-900 border border-amber-300'
-                        }`}>
-                          %{tr.score} ({tr.gradeStatus})
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right font-mono text-[10px] text-gray-400 font-bold">
-                        {tr.certificateId}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </div>
 
