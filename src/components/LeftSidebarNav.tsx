@@ -22,7 +22,8 @@ import {
   ChevronRight,
   UserCheck,
   User,
-  GraduationCap
+  GraduationCap,
+  Crown
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
@@ -202,8 +203,17 @@ export default function LeftSidebarNav() {
             href="/ik-cozumlari/egitim-yonetimi"
             className="w-full py-2 px-3 bg-purple-700 hover:bg-purple-800 text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 border border-purple-400/40"
           >
-            <Award className="h-3.5 w-3.5 text-purple-200" />
+            <GraduationCap className="h-3.5 w-3.5 text-purple-200" />
             <span>🎓 Eğitmen Girişi</span>
+          </Link>
+
+          {/* 👑 Admin Paneli Button right under Eğitmen Girişi */}
+          <Link
+            href="/admin"
+            className="w-full py-2 px-3 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 border border-amber-300"
+          >
+            <Crown className="h-3.5 w-3.5 text-slate-950" />
+            <span>👑 Admin Paneli (Yönetici)</span>
           </Link>
 
           <Link
