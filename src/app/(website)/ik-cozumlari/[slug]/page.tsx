@@ -22,6 +22,7 @@ import PromotionReadinessModule from '@/components/PromotionReadinessModule';
 import SuccessionPlanModule from '@/components/SuccessionPlanModule';
 import EnterpriseROICalculator from '@/components/EnterpriseROICalculator';
 import EmployeeCareerPlanningModule from '@/components/EmployeeCareerPlanningModule';
+import EmployeeDevelopmentTimelineModule from '@/components/EmployeeDevelopmentTimelineModule';
 
 interface HRDetailData {
   slug: string;
@@ -228,7 +229,7 @@ export default async function HRSolutionDetailPage({ params }: { params: Promise
         </Link>
 
         {/* Hide duplicate outer hero for modules that render their own comprehensive header */}
-        {!(data.slug === 'calisan-kariyer-planlamasi' || data.slug === 'calisan-ozgecmis-egitim-karnesi') && (
+        {!(data.slug === 'calisan-kariyer-planlamasi' || data.slug === 'calisan-ozgecmis-egitim-karnesi' || data.slug === 'gelisim-karnesi') && (
           <>
             {/* Hero Header */}
             <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-8 sm:p-12 rounded-3xl border border-[#087F96]/30 shadow-xl space-y-4">
@@ -283,6 +284,7 @@ export default async function HRSolutionDetailPage({ params }: { params: Promise
 
         {/* Specialized Interactive Modules based on Slug */}
         {(data.slug === 'calisan-kariyer-planlamasi' || data.slug === 'calisan-ozgecmis-egitim-karnesi') && <EmployeeCareerPlanningModule />}
+        {data.slug === 'gelisim-karnesi' && <EmployeeDevelopmentTimelineModule />}
         {data.slug === 'terfi-yonetimi' && <PromotionReadinessModule />}
         {data.slug === 'yedekleme-plani' && <SuccessionPlanModule />}
         {data.slug === 'yetkinlik-matrisi' && <EnterpriseROICalculator />}
