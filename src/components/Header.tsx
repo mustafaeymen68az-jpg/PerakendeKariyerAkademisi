@@ -41,11 +41,11 @@ const HR_SUBMENU = [
 
 const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/' },
-  { name: 'PKA CAREER (Çalışan)', path: '/kariyerimi-planla' },
+  { name: 'PKA CAREER', path: '/kariyerimi-planla' },
+  { name: 'Kariyer Haritası', path: '/kariyer-yollari', badge: '15 Basamak' },
   { name: 'PKA TALENT (İK)', path: '/ik-cozumlari', isDropdown: true },
-  { name: 'PKA LEARNING (Eğitim)', path: '/egitimler' },
-  { name: 'PKA EXECUTIVE (CEO)', path: '/ik-cozumlari/gelisim-karnesi' },
-  { name: 'Kariyer GPS', path: '/kariyer-yollari', badge: 'GPS' },
+  { name: 'PKA LEARNING', path: '/egitimler' },
+  { name: 'PKA EXECUTIVE', path: '/ik-cozumlari/gelisim-karnesi' },
   { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', badge: '15 Soru' }
 ];
 
