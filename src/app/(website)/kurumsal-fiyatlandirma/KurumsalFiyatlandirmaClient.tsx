@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Building2, 
   Check, 
@@ -30,7 +31,14 @@ import {
   Headphones,
   Calendar,
   Briefcase,
-  ChevronRight
+  ChevronRight,
+  Video,
+  Cpu,
+  UserCheck,
+  Shield,
+  BarChart3,
+  Flame,
+  CheckCircle
 } from 'lucide-react';
 
 export default function KurumsalFiyatlandirmaClient() {
@@ -736,7 +744,7 @@ export default function KurumsalFiyatlandirmaClient() {
           </div>
         </div>
 
-        {/* 4. FEATURE COMPARISON MATRIX (PAKET KARŞILAŞTIRMA TABLOSU) */}
+        {/* 4. FEATURE COMPARISON MATRIX */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-md space-y-6">
           <div className="text-center space-y-2 max-w-2xl mx-auto">
             <span className="text-xs font-black text-[#087F96] bg-cyan-50 px-3.5 py-1 rounded-full border border-cyan-200 uppercase tracking-wider">
@@ -800,7 +808,7 @@ export default function KurumsalFiyatlandirmaClient() {
             </table>
           </div>
 
-          {/* Mobile Accordion / Vertical Cards View */}
+          {/* Mobile Accordion View */}
           <div className="lg:hidden space-y-4">
             <div className="flex rounded-xl bg-gray-100 p-1 text-xs font-bold">
               <button
@@ -941,51 +949,263 @@ export default function KurumsalFiyatlandirmaClient() {
 
         </div>
 
-        {/* 6. ADDITIONAL OPTIONAL SERVICES */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-sm space-y-6">
-          <div className="text-center space-y-2 max-w-2xl mx-auto">
-            <span className="text-xs font-black text-purple-900 bg-purple-100 px-3.5 py-1 rounded-full border border-purple-300 uppercase tracking-wider">
-              İsteğe Bağlı Özelleştirmeler
+        {/* 6. EXPANDED STRATEGIC CORPORATE SUPPORTS & CONSULTING (KARAR VERİCİYİ İKNA EDEN GÖRSEL DESTEKLİ BÖLÜM) */}
+        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-gray-200 shadow-lg space-y-10">
+          
+          <div className="text-center space-y-3 max-w-3xl mx-auto">
+            <span className="text-xs font-black text-purple-900 bg-purple-100 px-4 py-1.5 rounded-full border border-purple-300 uppercase tracking-wider">
+              STRATEJİK DANIŞMANLIK & KURUMSAL DESTEKLER
             </span>
-            <h2 className="font-display font-black text-2xl sm:text-3xl text-[#0B2A4A]">
-              Ek Hizmetler ve Danışmanlık Seçenekleri
+            <h2 className="font-display font-black text-2xl sm:text-4xl text-[#0B2A4A]">
+              Karar Vericiyi İkna Eden Kurumsal Destekler ve Danışmanlık Hizmetleri
             </h2>
-            <p className="text-xs text-gray-500 font-medium">
-              Paketlerin dışında kurum ihtiyacınıza göre projelendirilen isteğe bağlı hizmetler:
+            <p className="text-xs sm:text-sm text-gray-600 font-medium leading-relaxed">
+              Sadece bir yazılım platformu değil; kurulumdan saha adaptasyonuna, kuruma özel HD prodüksiyondan VIP teknik SLA'ya kadar uçtan uca kurumsal başarı garantisi.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-medium">
-            {[
-              { name: 'Kuruma Özel HD Video Çekimi', tag: 'Prodüksiyon' },
-              { name: 'Özel Eğitim Modülü Tasarımı', tag: 'İçerik' },
-              { name: 'Kuruma Özel Soru Bankası', tag: 'Sınav' },
-              { name: 'White-Label Özel Domain', tag: 'Markalama' },
-              { name: 'Active Directory / SSO', tag: 'Güvenlik' },
-              { name: 'Bordro / HRIS Entegrasyonu', tag: 'Veri' },
-              { name: 'Özel ERP / API Entegrasyonu', tag: 'Yazılım' },
-              { name: 'Özel Dashboard ve Raporlama', tag: 'Analitik' },
-              { name: 'Veri Temizleme ve Aktarım', tag: 'Veri' },
-              { name: 'Yerinde Saha Danışmanlığı', tag: 'Danışmanlık' },
-              { name: 'İç Eğitmen Yetiştirme (TTT)', tag: 'Akademi' },
-              { name: 'Premium SLA & Öncelikli Destek', tag: 'Destek' },
-              { name: 'Re-Branding Arayüz Teması', tag: 'Tasarım' },
-              { name: 'Mağaza Audit Formları', tag: 'Denetim' }
-            ].map((srv, idx) => (
-              <div key={idx} className="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 flex flex-col justify-between space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold text-[#087F96] bg-cyan-50 px-2 py-0.5 rounded border border-cyan-200 uppercase">
-                    {srv.tag}
-                  </span>
-                  <span className="text-[10px] text-gray-400 font-mono">Proje Bazlı</span>
+          {/* 4 STRATEGIC PILLAR CARDS WITH HD VISUAL BANNERS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            {/* PILLAR 1: 360 DEVREYE ALMA & KURULUM */}
+            <div className="bg-gray-50 rounded-3xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="relative h-48 w-full overflow-hidden bg-slate-900">
+                  <Image
+                    src="/images/corp/support_1.jpg"
+                    alt="360 Devreye Alma & Kurulum Komut Merkezi"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3 bg-[#0B2A4A]/90 backdrop-blur-md text-amber-300 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-amber-300/30">
+                    14 GÜNDE CANLIYA GEÇİŞ
+                  </div>
                 </div>
-                <div className="font-bold text-[#0B2A4A] text-xs">{srv.name}</div>
-                <div className="text-[10px] text-gray-500 font-medium italic pt-1 border-t border-gray-200">
-                  Proje kapsamına göre tekliflendirilir
+
+                <div className="p-6 space-y-3">
+                  <div className="flex items-center space-x-2 text-[#087F96]">
+                    <Cpu className="h-5 w-5" />
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider">Devreye Alma</span>
+                  </div>
+
+                  <h3 className="font-display font-black text-xl text-[#0B2A4A]">
+                    360° Devreye Alma & Kurulum Komut Merkezi
+                  </h3>
+
+                  <p className="text-xs text-gray-600 font-medium leading-relaxed">
+                    İK ekibinizin operasyonel yükünü sıfıra indiren anahtar teslim kurulum hizmeti: Şirketinizin organizasyon ağacı, şube hiyerarşisi, çalışan verilerinin aktarımı ve yetki matrisleri 14 günde sorunsuz tanımlanır.
+                  </p>
+
+                  <div className="bg-blue-50 p-3.5 rounded-xl border border-blue-200 text-[11px] text-blue-900 font-semibold space-y-1">
+                    <span className="font-bold text-[#0B2A4A] block">🎯 Karar Vericiye ROI Katkısı:</span>
+                    <p className="leading-tight">
+                      “İK departmanınız zaman kaybetmez. Veri aktarımı ve rol tanımları uzman ekibimizce yapılır, sıfır iş gücü kaybıyla hızlıca canlıya geçersiniz.”
+                    </p>
+                  </div>
                 </div>
               </div>
-            ))}
+
+              <div className="p-6 pt-0">
+                <button
+                  onClick={() => scrollToForm('360 Devreye Alma Hizmeti')}
+                  className="w-full py-2.5 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center space-x-1"
+                >
+                  <span>Kurulum Kapsamını İncele</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* PILLAR 2: KURUMA ÖZEL HD PRODÜKSİYON */}
+            <div className="bg-gray-50 rounded-3xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="relative h-48 w-full overflow-hidden bg-slate-900">
+                  <Image
+                    src="/images/corp/support_2.jpg"
+                    alt="Kuruma Özel HD Video Prodüksiyonu"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3 bg-purple-900/90 backdrop-blur-md text-purple-200 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-purple-400/30">
+                    ŞİRKETİNİZE ÖZEL İÇERİK
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-3">
+                  <div className="flex items-center space-x-2 text-purple-700">
+                    <Video className="h-5 w-5" />
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider">Prodüksiyon</span>
+                  </div>
+
+                  <h3 className="font-display font-black text-xl text-[#0B2A4A]">
+                    Kuruma Özel Stüdyo & Mağaza HD Video Prodüksiyonu
+                  </h3>
+
+                  <p className="text-xs text-gray-600 font-medium leading-relaxed">
+                    Genel eğitim videoları yerine kendi şirket El Kitapçığınıza, mağaza konseptinize ve operasyon standartlarınıza özel yerinde 4K video çekimi, kurumsal seslendirme ve marka kimliğinize özel eğitim modülleri.
+                  </p>
+
+                  <div className="bg-purple-50 p-3.5 rounded-xl border border-purple-200 text-[11px] text-purple-950 font-semibold space-y-1">
+                    <span className="font-bold text-[#0B2A4A] block">🎯 Karar Vericiye ROI Katkısı:</span>
+                    <p className="leading-tight">
+                      “Çalışanlar kendi mağazalarını ve çalışma arkadaşlarını izlediği için eğitim izlenme ve tamamlama oranları %94’ün üzerine çıkar.”
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 pt-0">
+                <button
+                  onClick={() => scrollToForm('Kuruma Özel Video Çekimi')}
+                  className="w-full py-2.5 bg-purple-900 hover:bg-purple-950 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center space-x-1"
+                >
+                  <span>Prodüksiyon Teklifi Al</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* PILLAR 3: ENTEGRASYON & GÜVENLİK */}
+            <div className="bg-gray-50 rounded-3xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="relative h-48 w-full overflow-hidden bg-slate-900">
+                  <Image
+                    src="/images/corp/support_3.jpg"
+                    alt="Kurumsal Entegrasyon ve Güvenlik"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3 bg-emerald-900/90 backdrop-blur-md text-emerald-300 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-emerald-400/30">
+                    ISO 27001 & KVKK UYUMLU
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-3">
+                  <div className="flex items-center space-x-2 text-emerald-600">
+                    <ShieldCheck className="h-5 w-5" />
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider">Güvenlik & IT</span>
+                  </div>
+
+                  <h3 className="font-display font-black text-xl text-[#0B2A4A]">
+                    Kurumsal Sistem Entegrasyonu & White-Label Mimari
+                  </h3>
+
+                  <p className="text-xs text-gray-600 font-medium leading-relaxed">
+                    SAP, Logo, Active Directory / Okta SSO ile tek tıkla şifresiz giriş, otomatik İK çalışan senkronizasyonu, tamamen izole veri sunucuları ve şirketinize özel alan adı (`akademi.sirketiniz.com`).
+                  </p>
+
+                  <div className="bg-emerald-50 p-3.5 rounded-xl border border-emerald-200 text-[11px] text-emerald-950 font-semibold space-y-1">
+                    <span className="font-bold text-[#0B2A4A] block">🎯 Karar Vericiye ROI Katkısı:</span>
+                    <p className="leading-tight">
+                      “IT departmanınızın güvenlik endişelerini tamamen ortadan kaldırır. İşe giriş ve işten çıkışlarda otomatik lisans güncellemesi sağlar.”
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 pt-0">
+                <button
+                  onClick={() => scrollToForm('SSO / IT Entegrasyonu')}
+                  className="w-full py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center space-x-1"
+                >
+                  <span>Entegrasyon Detayı İste</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* PILLAR 4: VIP MÜŞTERİ YÖNETİCİSİ & SLA */}
+            <div className="bg-gray-50 rounded-3xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="relative h-48 w-full overflow-hidden bg-slate-900">
+                  <Image
+                    src="/images/corp/support_4.jpg"
+                    alt="VIP Müşteri Yöneticisi ve SLA"
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3 bg-amber-400 text-slate-950 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-amber-300">
+                    ADANMIŞ MÜŞTERİ YÖNETİCİSİ
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-3">
+                  <div className="flex items-center space-x-2 text-amber-600">
+                    <Headphones className="h-5 w-5" />
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider">VIP Destek</span>
+                  </div>
+
+                  <h3 className="font-display font-black text-xl text-[#0B2A4A]">
+                    7/24 VIP Müşteri Başarı Yöneticisi & SLA Desteği
+                  </h3>
+
+                  <p className="text-xs text-gray-600 font-medium leading-relaxed">
+                    Kurumunuza özel atanan Kıdemli Müşteri Başarı Yöneticisi, 1 saat içinde teknik müdahale garantili SLA, aylık Yönetim Kurulu ROI ve Performans Sunumları ve saha ziyaret danışmanlığı.
+                  </p>
+
+                  <div className="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-[11px] text-amber-950 font-semibold space-y-1">
+                    <span className="font-bold text-[#0B2A4A] block">🎯 Karar Vericiye ROI Katkısı:</span>
+                    <p className="leading-tight">
+                      “Sistemde asla yalnız kalmazsınız. Aylık Yönetim Kurulu ROI raporları ile yapılan yatırımın başarısı üst yönetime şeffafça sunulur.”
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 pt-0">
+                <button
+                  onClick={() => scrollToForm('Premium SLA Desteği')}
+                  className="w-full py-2.5 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center space-x-1"
+                >
+                  <span>VIP Destek Paketi İste</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
           </div>
+
+          {/* 14 OPTIONAL SERVICES GRID */}
+          <div className="space-y-4 pt-6 border-t border-gray-200">
+            <div className="text-center space-y-1">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">TÜM EK HİZMET KATALOĞU</span>
+              <h3 className="font-display font-black text-xl text-[#0B2A4A]">İsteğe Bağlı Özelleştirme ve Hizmet Seçenekleri</h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-medium">
+              {[
+                { name: 'Kuruma Özel HD Video Çekimi', tag: 'Prodüksiyon', desc: 'Saha ve stüdyoda 4K profesyonel çekim' },
+                { name: 'Özel Eğitim Modülü Tasarımı', tag: 'İçerik', desc: 'Şirket El Kitapçığına özel modüller' },
+                { name: 'Kuruma Özel Soru Bankası', tag: 'Sınav', desc: 'Şirket içi standart ve sınav soruları' },
+                { name: 'White-Label Özel Domain', tag: 'Markalama', desc: 'akademi.sirketiniz.com alan adı' },
+                { name: 'Active Directory / SSO', tag: 'Güvenlik', desc: 'Tek tıkla güvenli kurum girişi' },
+                { name: 'Bordro / HRIS Entegrasyonu', tag: 'Veri', desc: 'Otomatik personel senkronizasyonu' },
+                { name: 'Özel ERP / API Entegrasyonu', tag: 'Yazılım', desc: 'SAP, Logo, Mikro API veri akışı' },
+                { name: 'Özel Dashboard ve Raporlama', tag: 'Analitik', desc: 'Yönetim kuruluna özel ROI grafikleri' },
+                { name: 'Veri Temizleme ve Aktarım', tag: 'Veri', desc: 'Eski çalışan verilerinin aktarımı' },
+                { name: 'Yerinde Saha Danışmanlığı', tag: 'Danışmanlık', desc: 'Uzman danışmanla mağaza ziyaretleri' },
+                { name: 'İç Eğitmen Yetiştirme (TTT)', tag: 'Akademi', desc: 'Kendi eğitmen ordunuzu kurma TTT' },
+                { name: 'Premium SLA & VIP Destek', tag: 'Destek', desc: '1 saat içinde yanıt garantili SLA' },
+                { name: 'Re-Branding Arayüz Teması', tag: 'Tasarım', desc: 'Kurumsal kurumsal renk uyarlaması' },
+                { name: 'Mağaza Audit Formları', tag: 'Denetim', desc: 'Saha gizli müşteri ve denetim modülü' }
+              ].map((srv, idx) => (
+                <div key={idx} className="p-4 bg-gray-50 rounded-2xl border border-gray-200 flex flex-col justify-between space-y-2 hover:border-[#087F96] transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold text-[#087F96] bg-cyan-50 px-2 py-0.5 rounded border border-cyan-200 uppercase">
+                      {srv.tag}
+                    </span>
+                    <span className="text-[10px] text-gray-400 font-mono">Proje Bazlı</span>
+                  </div>
+                  <div className="font-bold text-[#0B2A4A] text-xs">{srv.name}</div>
+                  <p className="text-[11px] text-gray-500 leading-snug">{srv.desc}</p>
+                  <div className="text-[10px] text-[#087F96] font-semibold pt-1 border-t border-gray-200 italic">
+                    Proje kapsamına göre tekliflendirilir
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
 
         {/* 7. PAYMENT & CONTRACT POLICY SECTION */}
