@@ -29,7 +29,8 @@ import {
   Lock,
   Headphones,
   Calendar,
-  Briefcase
+  Briefcase,
+  ChevronRight
 } from 'lucide-react';
 
 export default function KurumsalFiyatlandirmaClient() {
@@ -42,9 +43,9 @@ export default function KurumsalFiyatlandirmaClient() {
     title: '',
     email: '',
     phone: '',
-    employeeCount: '101-250',
+    employeeCount: '101-199',
     subCount: '10-25',
-    packageSelect: 'PKA EĞİTİM & KARİYER',
+    packageSelect: 'Eğitim & Kariyer Yönetimi',
     additionalServices: [] as string[],
     startDate: 'Hemen (1-2 Hafta)',
     notes: '',
@@ -56,11 +57,22 @@ export default function KurumsalFiyatlandirmaClient() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [serverError, setServerError] = useState('');
 
+  // Open / Close state for individual package tier listings in cards
+  const [showTiers, setShowTiers] = useState<Record<string, boolean>>({
+    egitim: true,
+    kariyer: true,
+    yetkinlik: true
+  });
+
+  const toggleTiers = (key: string) => {
+    setShowTiers(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
   // Active FAQ Accordions State
   const [openFaqs, setOpenFaqs] = useState<Record<number, boolean>>({});
 
   // Active Comparison View Tab for Mobile
-  const [activeMobileTab, setActiveMobileTab] = useState<'ogrenme' | 'kariyer' | 'yetenek' | 'yonetici'>('kariyer');
+  const [activeMobileTab, setActiveMobileTab] = useState<'egitim' | 'kariyer' | 'yetkinlik' | 'yonetici'>('kariyer');
 
   const toggleFaq = (idx: number) => {
     setOpenFaqs(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -129,7 +141,6 @@ export default function KurumsalFiyatlandirmaClient() {
     setServerError('');
 
     try {
-      // Map form fields to fit /api/requests schema safely
       const payload = {
         name: formData.name,
         companyName: formData.companyName,
@@ -190,55 +201,43 @@ export default function KurumsalFiyatlandirmaClient() {
   const faqs = [
     {
       q: 'Kurumsal fiyat nasıl hesaplanır?',
-      a: 'Kurumsal fiyatlarımız; aktif çalışan sayısı, seçilen platform paketi (Öğrenme, Eğitim & Kariyer, Yetenek, Yönetici), içerik kütüphanesi kapsamı, entegrasyonlar, kuruma özel geliştirmeler ve destek seviyesine göre belirlenmektedir.'
+      a: 'Kurumsal fiyatlarımız; aktif çalışan sayısı kademelerine (1-100, 101-199, 200-399, 400-599, 600-799, 800+ kişi), seçilen platform modülüne (Eğitim Yönetimi, Eğitim & Kariyer Yönetimi, Yetkinlik ve Terfi Süreç Yönetimi, Stratejik Liderlik), entegrasyonlara ve destek seviyesine göre belirlenmektedir.'
     },
     {
       q: 'Aktif çalışan ne demektir?',
       a: 'Aktif çalışan; ilgili ücretlendirme döneminde sisteme giriş yapan, eğitim görüntüleyen, sınava katılan, saha görevi tamamlayan veya değerlendirme sürecine katılan kullanıcıdır.'
     },
     {
+      q: 'Çalışan sayısı arttıkça birim fiyat düşer mi?',
+      a: 'Evet! Örneğin Eğitim Yönetimi paketinde 100 kişiye kadar 300 TL/ay olan kişi başı ücret, 800 kişi ve üzerinde 175 TL/ay seviyesine kadar düşmektedir.'
+    },
+    {
       q: 'Yalnızca eğitim modülünü satın alabilir miyiz?',
-      a: 'Evet, temel dijitalleştirme ve eğitim takibi ihtiyaçlarınız için PKA ÖĞRENME paketini tercih edebilirsiniz.'
+      a: 'Evet, temel dijitalleştirme ve eğitim takibi ihtiyaçlarınız için "Eğitim Yönetimi" paketini tercih edebilirsiniz.'
     },
     {
       q: 'Paketimizi sonradan yükseltebilir miyiz?',
-      a: 'Evet, ihtiyaçlarınız büyüdükçe dilediğiniz zaman bir üst pakete (örn. Eğitim & Kariyer veya Yetenek) kolayca geçiş yapabilirsiniz. Ücret farkı kalan sözleşme süresine göre hesaplanır.'
+      a: 'Evet, ihtiyaçlarınız büyüdükçe dilediğiniz zaman bir üst pakete (örn. Eğitim & Kariyer Yönetimi veya Yetkinlik ve Terfi Süreç Yönetimi) kolayca geçiş yapabilirsiniz.'
     },
     {
       q: 'İlk kurulum ücretine neler dahildir?',
-      a: 'Kurum hesabının açılması, logo ve kurumsal renk tanımı, organizasyon ve şube yapısının kurulması, çalışan verilerinin aktarımı, rol ve yetki tanımları, oryantasyon ve ilk 30 günlük başlangıç desteği dahildir.'
+      a: 'Kurum hesabının açılması, logo ve kurumsal renk tanımı, organizasyon yapısının kurulması, çalışan verilerinin aktarımı, rol tanımları ve ilk 30 günlük başlangıç desteği dahildir.'
     },
     {
       q: 'İçerikler paket fiyatına dahil midir?',
-      a: 'PKA standart zengin perakende eğitim kataloğu paket kapsamındadır. Şirketinize özel sıfırdan HD video çekimi veya özel modül tasarımları ek hizmet olarak bütçelenir.'
+      a: 'PKA standart zengin perakende eğitim kataloğu paket kapsamındadır. Şirketinize özel sıfırdan HD video çekimleri ek hizmet olarak bütçelenir.'
     },
     {
       q: 'Kendi eğitim içeriklerimizi yükleyebilir miyiz?',
       a: 'Evet! Kendi video, PDF, SCORM içeriklerinizi ve soru bankalarınızı platforma sınırsız olarak yükleyebilirsiniz.'
     },
     {
-      q: 'Kuruma özel eğitim hazırlanabilir mi?',
-      a: 'Evet, Perakende Akademisi prodüksiyon ekibimiz şirketinizin El Kitapçığına ve operasyon standartlarına özel HD video içerikler hazırlamaktadır.'
-    },
-    {
       q: 'Pilot uygulama ücretli midir?',
-      a: 'Evet, 60–90 günlük 50–150 çalışan ve 3–10 mağaza kapsayan pilot uygulamalarımız 90.000–200.000 TL + KDV aralığında ücretlendirilir.'
-    },
-    {
-      q: 'Pilot bedeli yıllık sözleşmeden düşülür mü?',
-      a: 'Evet! Pilot uygulama sonrasında yıllık kurumsal sözleşmeye geçilmesi durumunda pilot bedelinin tamamı veya belirlenen bölümü ilk yıl lisans ücretinden mahsup edilir.'
+      a: 'Evet, 60–90 günlük 50–150 çalışan kapsayan pilot uygulamalarımız 90.000–200.000 TL + KDV aralığında ücretlendirilir ve yıllık sözleşmeye geçildiğinde lisans ücretinden mahsup edilir.'
     },
     {
       q: 'SSO veya İK sistemi entegrasyonu dahil midir?',
-      a: 'SAP, Logo, Mikro, HRIS veya Active Directory SSO entegrasyonları Yönetici paketinde seçeneğe bağlı veya ek entegrasyon hizmeti olarak sunulur.'
-    },
-    {
-      q: 'Çalışan sayımız değişirse ücret nasıl hesaplanır?',
-      a: 'Dönem içi aktif çalışan sayısı artışlarında kademeli hacim avantajı uygulanarak ek lisanslandırma yapılır.'
-    },
-    {
-      q: 'Verilerimiz başka kurumlarla karışır mı?',
-      a: 'Hayır. Şirket verileriniz tamamen izole edilmiş (White-label & Tenancy), SSL şifrelemeli yüksek güvenlikli sunucularda saklanır.'
+      a: 'SAP, Logo, HRIS veya Active Directory SSO entegrasyonları Stratejik Liderlik paketinde veya ek entegrasyon hizmeti olarak sunulur.'
     },
     {
       q: 'Fiyatlara KDV dahil midir?',
@@ -254,7 +253,7 @@ export default function KurumsalFiyatlandirmaClient() {
         <div className="text-center max-w-4xl mx-auto space-y-4">
           <div className="inline-flex items-center space-x-2 bg-[#087F96]/10 text-[#087F96] px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border border-[#087F96]/20">
             <Building2 className="h-4 w-4" />
-            <span>Kurumsal Şirket Paketleri</span>
+            <span>Kurumsal Şirket Paketleri & Kademeli Fiyat Listesi</span>
           </div>
 
           <h1 className="font-display font-black text-3xl sm:text-5xl text-[#0B2A4A] leading-tight">
@@ -262,11 +261,11 @@ export default function KurumsalFiyatlandirmaClient() {
           </h1>
 
           <p className="text-lg sm:text-xl font-bold text-[#087F96]">
-            “Çalışan sayınıza ve ihtiyaç duyduğunuz modüllere göre ölçeklenen kurumsal çözümler.”
+            “Çalışan sayınıza ve seçtiğiniz yönetim modülüne göre kademeli olarak ölçeklenen net kurumsal çözümler.”
           </p>
 
           <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-medium max-w-3xl mx-auto">
-            Kurumsal fiyatlarımız; aktif çalışan sayısı, seçilen platform modülleri, içerik kütüphanesi, kuruma özel geliştirmeler, entegrasyonlar ve destek seviyesine göre belirlenmektedir.
+            Aşağıdaki 3 ana kurumsal yönetim seviyemizde; aktif çalışan sayınız arttıkça kişi başı aylık birim maliyetiniz otomatik olarak düşmektedir.
           </p>
         </div>
 
@@ -274,55 +273,91 @@ export default function KurumsalFiyatlandirmaClient() {
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 text-xs text-amber-900 flex items-start space-x-3 max-w-5xl mx-auto shadow-xs">
           <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <span className="font-bold uppercase tracking-wider block text-[11px] text-amber-800">Fiyat ve Teklif Şeffaflık Uyarısı</span>
+            <span className="font-bold uppercase tracking-wider block text-[11px] text-amber-800">Fiyat Şeffaflığı ve Lisanslama Bildirimi</span>
             <p className="leading-relaxed">
-              Belirtilen fiyatlar tavsiye edilen başlangıç aralıklarıdır ve KDV hariçtir. Kesin kurumsal teklif; aktif çalışan sayısı, seçilen modüller, içerik kapsamı, entegrasyonlar, özelleştirmeler ve destek seviyesine göre hazırlanır.
+              Belirtilen birim fiyatlar aktif çalışan sayısı kademelerine göredir ve KDV hariçtir. Yıllık taahhütlü kurumsal sözleşmelerde geçerlidir.
             </p>
           </div>
         </div>
 
-        {/* 2. PACKAGES GRID (4 CARDS WITH TURKISH TITLES) */}
+        {/* 2. PACKAGES GRID (4 CARDS WITH DETAILED TIER LISTINGS) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           
-          {/* PACKAGE 1: PKA ÖĞRENME */}
+          {/* PACKAGE 1: EĞİTİM YÖNETİMİ */}
           <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-mono font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-                  DİJİTAL EĞİTİM
+                  DİJİTAL EĞİTİM MODÜLÜ
                 </span>
-                <h2 className="font-display font-black text-xl text-[#0B2A4A]">PKA ÖĞRENME</h2>
+                <h2 className="font-display font-black text-xl text-[#0B2A4A]">Eğitim Yönetimi</h2>
                 <p className="text-[11px] text-gray-500 font-medium leading-snug">
-                  Kurumsal eğitim süreçlerini dijitalleştirmek isteyen işletmeler.
+                  Kurumsal eğitim süreçlerini dijitalleştirmek ve anlık takip etmek isteyen işletmeler.
                 </p>
               </div>
 
-              {/* Price Box */}
-              <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200 space-y-1 text-xs">
-                <div className="text-gray-500 font-medium">Aylık Aktif Çalışan Başına:</div>
-                <div className="text-2xl font-black text-[#0B2A4A]">90 – 160 TL</div>
-                <div className="text-[10px] text-gray-400 font-mono pt-1 space-y-0.5">
-                  <div>Min. Yıllık Sözleşme: <strong className="text-gray-700">180.000 TL</strong></div>
-                  <div>İlk Kurulum: <strong className="text-gray-700">50.000 – 100.000 TL</strong></div>
-                  <div className="text-amber-600 font-bold">KDV Hariçtir</div>
-                </div>
+              {/* Price Banner */}
+              <div className="bg-blue-50/70 p-4 rounded-2xl border border-blue-100 space-y-1 text-xs">
+                <div className="text-gray-500 font-medium text-[11px]">Kişi Başı Aylık Fiyat Aralığı:</div>
+                <div className="text-2xl font-black text-[#0B2A4A]">175 – 300 TL</div>
+                <div className="text-[10px] text-gray-400 font-mono">Çalışan sayısına göre kademeli düşer • KDV Hariç</div>
+              </div>
+
+              {/* TIER BREAKDOWN LISTING FOR EĞİTİM YÖNETİMİ */}
+              <div className="space-y-2 bg-gray-50 p-3.5 rounded-2xl border border-gray-200">
+                <button 
+                  onClick={() => toggleTiers('egitim')}
+                  className="w-full flex items-center justify-between text-[11px] font-black text-[#0B2A4A] uppercase tracking-wider text-left"
+                >
+                  <span className="flex items-center space-x-1">
+                    <span>📊</span>
+                    <span>Çalışan Sayısı Fiyat Listesi</span>
+                  </span>
+                  {showTiers.egitim ? <ChevronUp className="h-4 w-4 text-[#087F96]" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                </button>
+
+                {showTiers.egitim && (
+                  <div className="space-y-1.5 pt-2 border-t border-gray-200 text-xs font-mono">
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-gray-100">
+                      <span className="text-gray-600 font-bold">1 – 100 kişi:</span>
+                      <span className="font-black text-[#0B2A4A]">300 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-gray-100">
+                      <span className="text-gray-600 font-bold">101 – 199 kişi:</span>
+                      <span className="font-black text-[#0B2A4A]">275 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-gray-100">
+                      <span className="text-gray-600 font-bold">200 – 399 kişi:</span>
+                      <span className="font-black text-[#0B2A4A]">250 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-gray-100">
+                      <span className="text-gray-600 font-bold">400 – 599 kişi:</span>
+                      <span className="font-black text-[#0B2A4A]">225 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-gray-100">
+                      <span className="text-gray-600 font-bold">600 – 799 kişi:</span>
+                      <span className="font-black text-[#0B2A4A]">200 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-emerald-50 p-2 rounded-lg border border-emerald-200">
+                      <span className="text-emerald-900 font-bold">800+ kişi:</span>
+                      <span className="font-black text-emerald-700">175 TL <span className="text-[10px] font-normal text-emerald-600">/ay</span></span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Feature Checklist */}
               <div className="space-y-2">
-                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">Paket Kapsamı:</span>
+                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">Modül Kapsamı:</span>
                 <ul className="space-y-2 text-xs text-gray-600 font-medium">
                   {[
-                    'Eğitim kataloğu',
-                    'Eğitim atama',
-                    'Video ve PDF içerikleri',
-                    'Eğitim ilerleme takibi',
-                    'Sınavlar',
-                    'Sertifikalar',
-                    'Temel eğitim raporları',
-                    'Mağaza, bölge ve pozisyon filtreleri',
-                    'Eğitim hatırlatmaları',
-                    'Eğitim Müdürü paneli'
+                    'Perakende Zengin Eğitim Kataloğu',
+                    'Eğitim Atama ve Takibi',
+                    'HD Video & PDF İçerikler',
+                    'Sınavlar & Sertifikasyon',
+                    'Temel Eğitim Raporları',
+                    'Mağaza & Bölge Filtreleri',
+                    'Eğitim Müdürü Paneli'
                   ].map((feat, fIdx) => (
                     <li key={fIdx} className="flex items-start space-x-2 text-[11px] leading-tight">
                       <Check className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -335,7 +370,7 @@ export default function KurumsalFiyatlandirmaClient() {
 
             <div className="space-y-2 pt-4 border-t border-gray-100">
               <button
-                onClick={() => scrollToForm('PKA ÖĞRENME')}
+                onClick={() => scrollToForm('Eğitim Yönetimi')}
                 className="w-full py-3 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-bold rounded-xl text-xs transition-colors shadow-sm flex items-center justify-center space-x-1"
               >
                 <span>Kurumsal Teklif Al</span>
@@ -350,7 +385,7 @@ export default function KurumsalFiyatlandirmaClient() {
             </div>
           </div>
 
-          {/* PACKAGE 2: PKA EĞİTİM & KARİYER (HIGHLIGHTED / RECOMMENDED) */}
+          {/* PACKAGE 2: EĞİTİM & KARİYER YÖNETİMİ (HIGHLIGHTED / RECOMMENDED) */}
           <div className="bg-white rounded-3xl p-6 border-2 border-[#087F96] shadow-2xl hover:shadow-2xl transition-all flex flex-col justify-between space-y-6 relative scale-102 lg:-translate-y-2">
             
             {/* Recommendation Ribbon */}
@@ -364,38 +399,74 @@ export default function KurumsalFiyatlandirmaClient() {
                 <span className="text-[10px] font-mono font-bold text-[#087F96] uppercase tracking-widest bg-cyan-50 px-2.5 py-0.5 rounded-full border border-cyan-200">
                   EĞİTİM & KARİYER
                 </span>
-                <h2 className="font-display font-black text-xl text-[#0B2A4A]">PKA EĞİTİM & KARİYER</h2>
+                <h2 className="font-display font-black text-xl text-[#0B2A4A]">Eğitim & Kariyer Yönetimi</h2>
                 <p className="text-[11px] text-gray-500 font-medium leading-snug">
-                  Çalışanların eğitim ve kariyer gelişimini birlikte yönetmek isteyen işletmeler.
+                  Çalışanların hem eğitim hem de kariyer yolculuğunu birlikte yönetmek isteyen kurumlar.
                 </p>
               </div>
 
-              {/* Price Box */}
-              <div className="bg-cyan-50/70 p-4 rounded-2xl border border-cyan-200 space-y-1 text-xs">
-                <div className="text-gray-500 font-medium">Aylık Aktif Çalışan Başına:</div>
-                <div className="text-2xl font-black text-[#087F96]">160 – 260 TL</div>
-                <div className="text-[10px] text-gray-500 font-mono pt-1 space-y-0.5">
-                  <div>Min. Yıllık Sözleşme: <strong className="text-gray-800">300.000 TL</strong></div>
-                  <div>İlk Kurulum: <strong className="text-gray-800">100.000 – 200.000 TL</strong></div>
-                  <div className="text-amber-600 font-bold">KDV Hariçtir</div>
-                </div>
+              {/* Price Banner */}
+              <div className="bg-cyan-50/80 p-4 rounded-2xl border border-cyan-200 space-y-1 text-xs">
+                <div className="text-gray-500 font-medium text-[11px]">Kişi Başı Aylık Fiyat Aralığı:</div>
+                <div className="text-2xl font-black text-[#087F96]">250 – 500 TL</div>
+                <div className="text-[10px] text-gray-500 font-mono">Çalışan sayısına göre kademeli düşer • KDV Hariç</div>
+              </div>
+
+              {/* TIER BREAKDOWN LISTING FOR EĞİTİM & KARİYER YÖNETİMİ */}
+              <div className="space-y-2 bg-cyan-50/50 p-3.5 rounded-2xl border border-cyan-200">
+                <button 
+                  onClick={() => toggleTiers('kariyer')}
+                  className="w-full flex items-center justify-between text-[11px] font-black text-[#087F96] uppercase tracking-wider text-left"
+                >
+                  <span className="flex items-center space-x-1">
+                    <span>📊</span>
+                    <span>Çalışan Sayısı Fiyat Listesi</span>
+                  </span>
+                  {showTiers.kariyer ? <ChevronUp className="h-4 w-4 text-[#087F96]" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                </button>
+
+                {showTiers.kariyer && (
+                  <div className="space-y-1.5 pt-2 border-t border-cyan-200 text-xs font-mono">
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-cyan-100">
+                      <span className="text-gray-600 font-bold">1 – 100 kişi:</span>
+                      <span className="font-black text-[#087F96]">500 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-cyan-100">
+                      <span className="text-gray-600 font-bold">101 – 199 kişi:</span>
+                      <span className="font-black text-[#087F96]">450 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-cyan-100">
+                      <span className="text-gray-600 font-bold">200 – 399 kişi:</span>
+                      <span className="font-black text-[#087F96]">400 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-cyan-100">
+                      <span className="text-gray-600 font-bold">400 – 599 kişi:</span>
+                      <span className="font-black text-[#087F96]">350 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-cyan-100">
+                      <span className="text-gray-600 font-bold">600 – 799 kişi:</span>
+                      <span className="font-black text-[#087F96]">300 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-emerald-50 p-2 rounded-lg border border-emerald-200">
+                      <span className="text-emerald-900 font-bold">800+ kişi:</span>
+                      <span className="font-black text-emerald-700">250 TL <span className="text-[10px] font-normal text-emerald-600">/ay</span></span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Feature Checklist */}
               <div className="space-y-2">
-                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">PKA Öğrenme + Ek Özellikler:</span>
+                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">Eğitim Yönetimi + Ekler:</span>
                 <ul className="space-y-2 text-xs text-gray-600 font-medium">
                   {[
-                    'PKA Öğrenme paketindeki bütün özellikler',
-                    'Kariyer GPS',
-                    'Kariyer yolları',
-                    'Kariyer seviye testi',
-                    'Yetkinlik pasaportu',
-                    '90 günlük gelişim planı',
-                    'Terfi hazırlık skoru',
-                    'Çalışan ve yönetici geri bildirimi',
-                    'Saha görevleri',
-                    'Kişisel kariyer hedefleri'
+                    'Eğitim Yönetimi paketindeki tüm özellikler',
+                    'Kariyer GPS (Gelişim & Yol Haritası)',
+                    'Kariyer Seviye Testi & Yetkinlik Pasaportu',
+                    '90 Günlük Gelişim Planı',
+                    'Terfi Hazırlık Skoru',
+                    'Çalışan & Yönetici Geri Bildirimleri',
+                    'Saha Görevleri ve Hedefler'
                   ].map((feat, fIdx) => (
                     <li key={fIdx} className="flex items-start space-x-2 text-[11px] leading-tight">
                       <Check className="h-4 w-4 text-[#087F96] shrink-0 mt-0.5 font-bold" />
@@ -408,7 +479,7 @@ export default function KurumsalFiyatlandirmaClient() {
 
             <div className="space-y-2 pt-4 border-t border-gray-100">
               <button
-                onClick={() => scrollToForm('PKA EĞİTİM & KARİYER')}
+                onClick={() => scrollToForm('Eğitim & Kariyer Yönetimi')}
                 className="w-full py-3.5 bg-[#087F96] hover:bg-[#056B80] text-white font-black rounded-xl text-xs transition-colors shadow-md flex items-center justify-center space-x-1"
               >
                 <span>Kurumsal Teklif Al</span>
@@ -423,45 +494,81 @@ export default function KurumsalFiyatlandirmaClient() {
             </div>
           </div>
 
-          {/* PACKAGE 3: PKA YETENEK */}
+          {/* PACKAGE 3: YETKİNLİK VE TERFİ SÜREÇ YÖNETİMİ */}
           <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-mono font-bold text-purple-700 uppercase tracking-widest bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-200">
-                  YETENEK YÖNETİMİ
+                  YETENEK & TERFİ YÖNETİMİ
                 </span>
-                <h2 className="font-display font-black text-xl text-[#0B2A4A]">PKA YETENEK</h2>
+                <h2 className="font-display font-black text-xl text-[#0B2A4A]">Yetkinlik ve Terfi Süreç Yönetimi</h2>
                 <p className="text-[11px] text-gray-500 font-medium leading-snug">
-                  Yetkinlik, yetenek ve terfi süreçlerini yönetmek isteyen İK ekipleri.
+                  Yetkinlik, terfi komitesi ve yetenek havuzu süreçlerini uçtan uca yönetmek isteyen İK ekipleri.
                 </p>
               </div>
 
-              {/* Price Box */}
-              <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200 space-y-1 text-xs">
-                <div className="text-gray-500 font-medium">Aylık Aktif Çalışan Başına:</div>
-                <div className="text-2xl font-black text-[#0B2A4A]">230 – 390 TL</div>
-                <div className="text-[10px] text-gray-400 font-mono pt-1 space-y-0.5">
-                  <div>Min. Yıllık Sözleşme: <strong className="text-gray-700">480.000 TL</strong></div>
-                  <div>İlk Kurulum: <strong className="text-gray-700">150.000 – 350.000 TL</strong></div>
-                  <div className="text-amber-600 font-bold">KDV Hariçtir</div>
-                </div>
+              {/* Price Banner */}
+              <div className="bg-purple-50/70 p-4 rounded-2xl border border-purple-100 space-y-1 text-xs">
+                <div className="text-gray-500 font-medium text-[11px]">Kişi Başı Aylık Fiyat Aralığı:</div>
+                <div className="text-2xl font-black text-purple-900">400 – 700 TL</div>
+                <div className="text-[10px] text-gray-400 font-mono">Çalışan sayısına göre kademeli düşer • KDV Hariç</div>
+              </div>
+
+              {/* TIER BREAKDOWN LISTING FOR YETKİNLİK VE TERFİ SÜREÇ YÖNETİMİ */}
+              <div className="space-y-2 bg-purple-50/50 p-3.5 rounded-2xl border border-purple-200">
+                <button 
+                  onClick={() => toggleTiers('yetkinlik')}
+                  className="w-full flex items-center justify-between text-[11px] font-black text-purple-950 uppercase tracking-wider text-left"
+                >
+                  <span className="flex items-center space-x-1">
+                    <span>📊</span>
+                    <span>Çalışan Sayısı Fiyat Listesi</span>
+                  </span>
+                  {showTiers.yetkinlik ? <ChevronUp className="h-4 w-4 text-purple-700" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                </button>
+
+                {showTiers.yetkinlik && (
+                  <div className="space-y-1.5 pt-2 border-t border-purple-200 text-xs font-mono">
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-purple-100">
+                      <span className="text-gray-600 font-bold">1 – 100 kişi:</span>
+                      <span className="font-black text-purple-900">700 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-purple-100">
+                      <span className="text-gray-600 font-bold">101 – 199 kişi:</span>
+                      <span className="font-black text-purple-900">675 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-purple-100">
+                      <span className="text-gray-600 font-bold">200 – 399 kişi:</span>
+                      <span className="font-black text-purple-900">600 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-purple-100">
+                      <span className="text-gray-600 font-bold">400 – 599 kişi:</span>
+                      <span className="font-black text-purple-900">525 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-purple-100">
+                      <span className="text-gray-600 font-bold">600 – 799 kişi:</span>
+                      <span className="font-black text-purple-900">450 TL <span className="text-[10px] font-normal text-gray-400">/ay</span></span>
+                    </div>
+                    <div className="flex justify-between items-center bg-emerald-50 p-2 rounded-lg border border-emerald-200">
+                      <span className="text-emerald-900 font-bold">800+ kişi:</span>
+                      <span className="font-black text-emerald-700">400 TL <span className="text-[10px] font-normal text-emerald-600">/ay</span></span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Feature Checklist */}
               <div className="space-y-2">
-                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">PKA Eğitim & Kariyer + Ekler:</span>
+                <span className="text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider block">Eğitim & Kariyer + Ekler:</span>
                 <ul className="space-y-2 text-xs text-gray-600 font-medium">
                   {[
-                    'Eğitim & Kariyer paketindeki bütün özellikler',
-                    'Yetkinlik matrisi',
-                    '9 Box yetenek matrisi',
-                    'Yetenek havuzu',
-                    'Terfi yönetimi & Terfi komitesi',
-                    'Kritik pozisyon yedekleme',
-                    'Çalışan kaybetme risk analizi',
-                    'Organizasyon haritası',
-                    'Yönetici aday havuzu',
-                    'Gelişmiş İK raporları (PDF/Excel)'
+                    'Eğitim & Kariyer Yönetimi tüm özellikleri',
+                    'Yetkinlik Matrisi & Pozisyon Eşleştirme',
+                    '9 Box Yetenek Matrisi',
+                    'Yetenek Havuzu & Terfi Komitesi',
+                    'Kritik Pozisyon Yedekleme Planı',
+                    'Çalışan Kaybetme Riski Analizi',
+                    'Gelişmiş İK Analitik Raporları (PDF/Excel)'
                   ].map((feat, fIdx) => (
                     <li key={fIdx} className="flex items-start space-x-2 text-[11px] leading-tight">
                       <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
@@ -474,7 +581,7 @@ export default function KurumsalFiyatlandirmaClient() {
 
             <div className="space-y-2 pt-4 border-t border-gray-100">
               <button
-                onClick={() => scrollToForm('PKA YETENEK')}
+                onClick={() => scrollToForm('Yetkinlik ve Terfi Süreç Yönetimi')}
                 className="w-full py-3 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-bold rounded-xl text-xs transition-colors shadow-sm flex items-center justify-center space-x-1"
               >
                 <span>Kurumsal Teklif Al</span>
@@ -489,16 +596,16 @@ export default function KurumsalFiyatlandirmaClient() {
             </div>
           </div>
 
-          {/* PACKAGE 4: PKA YÖNETİCİ */}
+          {/* PACKAGE 4: STRATEJİK LİDERLİK & YÖNETİCİ */}
           <div className="bg-gradient-to-b from-[#061B33] to-[#0B2A4A] text-white rounded-3xl p-6 border border-cyan-400/40 shadow-xl flex flex-col justify-between space-y-6 relative">
             <div className="space-y-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-mono font-bold text-amber-300 uppercase tracking-widest bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-400/30">
                   STRATEJİK LİDERLİK
                 </span>
-                <h2 className="font-display font-black text-xl text-white">PKA YÖNETİCİ</h2>
+                <h2 className="font-display font-black text-xl text-white">Stratejik Liderlik & Yönetici</h2>
                 <p className="text-[11px] text-gray-300 font-light leading-snug">
-                  İnsan sermayesini ve gelecekteki yönetici ihtiyacını stratejik olarak yönetmek isteyen büyük işletmeler.
+                  İnsan sermayesini ve gelecekteki yönetici ihtiyacını stratejik olarak yönetmek isteyen büyük kurumlar.
                 </p>
               </div>
 
@@ -509,8 +616,8 @@ export default function KurumsalFiyatlandirmaClient() {
                 </div>
                 <div className="text-2xl font-black text-amber-300">Özel Teklif İste</div>
                 <div className="text-[10px] text-gray-300 font-mono space-y-0.5 border-t border-white/10 pt-1.5">
-                  <div>Tavsiye Başlangıç: <strong>320 – 550 TL/Ay</strong></div>
-                  <div>Min. Yıllık: <strong>750.000 TL</strong> • Kurulum: <strong>250k–600k TL</strong></div>
+                  <div>Tavsiye Başlangıç: <strong>500 – 950 TL/Ay</strong></div>
+                  <div>SLA Garantisi • Kuruma Özel Entegrasyonlar</div>
                   <div className="text-amber-300 font-bold">KDV Hariçtir</div>
                 </div>
               </div>
@@ -521,15 +628,12 @@ export default function KurumsalFiyatlandirmaClient() {
                 <ul className="space-y-2 text-xs text-gray-200 font-light">
                   {[
                     'Önceki paketlerdeki bütün özellikler',
-                    'Yönetici dashboardu & İnsan sermayesi analitiği',
-                    'Bölge ve mağaza karşılaştırması',
-                    'Yönetici aday havuzu & Kritik riskler',
-                    'Yeni mağaza açılış senaryoları',
-                    'Eğitim yatırım getirisi analizi (ROI)',
-                    'Yönetim kurulu raporları',
-                    'Kuruma özel KPI yapılandırması',
-                    'SSO ve API entegrasyon seçenekleri',
-                    'Öncelikli destek & SLA garantisi'
+                    'Yönetici Dashboardu & İnsan Sermayesi Analitiği',
+                    'Bölge ve Mağaza Karşılaştırmaları',
+                    'Yeni Mağaza Açılış Senaryoları',
+                    'Eğitim Yatırım Getirisi Analizi (ROI)',
+                    'SSO & API Entegrasyon Seçenekleri',
+                    'Öncelikli SLA Desteği & Özel Müşteri Yöneticisi'
                   ].map((feat, fIdx) => (
                     <li key={fIdx} className="flex items-start space-x-2 text-[11px] leading-tight">
                       <Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5 font-bold" />
@@ -542,7 +646,7 @@ export default function KurumsalFiyatlandirmaClient() {
 
             <div className="space-y-2 pt-4 border-t border-white/10">
               <button
-                onClick={() => scrollToForm('PKA YÖNETİCİ')}
+                onClick={() => scrollToForm('Stratejik Liderlik & Yönetici')}
                 className="w-full py-3.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-xl text-xs transition-colors shadow-lg flex items-center justify-center space-x-1"
               >
                 <span>Özel Teklif İste</span>
@@ -559,7 +663,80 @@ export default function KurumsalFiyatlandirmaClient() {
 
         </div>
 
-        {/* 3. FEATURE COMPARISON MATRIX (PAKET KARŞILAŞTIRMA TABLOSU) */}
+        {/* 3. FULL COMPARATIVE TIER LISTING TABLE (TÜM SEVİYELERİN KARŞILAŞTIRMALI DÖKÜM TABLOSU) */}
+        <div className="bg-gradient-to-br from-[#0B2A4A] to-[#061B33] text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-6 border border-[#087F96]/30">
+          <div className="max-w-3xl space-y-2">
+            <span className="text-xs font-mono font-bold text-cyan-300 uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full border border-white/20">
+              Kademeli Fiyat Matrisi
+            </span>
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-white">
+              Çalışan Sayısı Seviyelerine Göre Kişi Başı Aylık Fiyat Dökümü
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-200 font-light leading-relaxed">
+              Her 3 kurumsal paketimiz için çalışan sayınıza denk gelen net birim fiyatlar (TL / Ay / Kişi):
+            </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs text-left border-collapse min-w-[700px]">
+              <thead>
+                <tr className="bg-white/10 text-cyan-300 font-mono font-bold uppercase tracking-wider border-b border-white/20">
+                  <th className="p-3.5 border-r border-white/10">Çalışan Sayısı Seviyesi</th>
+                  <th className="p-3.5 border-r border-white/10 text-center">Eğitim Yönetimi</th>
+                  <th className="p-3.5 border-r border-white/10 text-center text-amber-300 bg-white/10">Eğitim & Kariyer Yönetimi ⭐</th>
+                  <th className="p-3.5 text-center text-purple-300">Yetkinlik ve Terfi Süreç Yönetimi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10 font-mono font-medium">
+                <tr className="hover:bg-white/5 transition-colors">
+                  <td className="p-3.5 font-bold text-white border-r border-white/10">1 – 100 Kişi Arası</td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-blue-200">300 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-amber-300 bg-white/5">500 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center font-bold text-purple-300">700 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                </tr>
+                <tr className="hover:bg-white/5 transition-colors">
+                  <td className="p-3.5 font-bold text-white border-r border-white/10">101 – 199 Kişi Arası</td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-blue-200">275 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-amber-300 bg-white/5">450 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center font-bold text-purple-300">675 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                </tr>
+                <tr className="hover:bg-white/5 transition-colors">
+                  <td className="p-3.5 font-bold text-white border-r border-white/10">200 – 399 Kişi Arası</td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-blue-200">250 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-amber-300 bg-white/5">400 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center font-bold text-purple-300">600 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                </tr>
+                <tr className="hover:bg-white/5 transition-colors">
+                  <td className="p-3.5 font-bold text-white border-r border-white/10">400 – 599 Kişi Arası</td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-blue-200">225 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-amber-300 bg-white/5">350 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center font-bold text-purple-300">525 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                </tr>
+                <tr className="hover:bg-white/5 transition-colors">
+                  <td className="p-3.5 font-bold text-white border-r border-white/10">600 – 799 Kişi Arası</td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-blue-200">200 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center border-r border-white/10 font-bold text-amber-300 bg-white/5">300 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                  <td className="p-3.5 text-center font-bold text-purple-300">450 TL <span className="text-[10px] text-gray-400">/ay</span></td>
+                </tr>
+                <tr className="bg-emerald-500/20 font-bold">
+                  <td className="p-3.5 text-emerald-300 border-r border-white/10">800 Kişi ve Üzeri</td>
+                  <td className="p-3.5 text-center border-r border-white/10 text-emerald-300">175 TL <span className="text-[10px] font-normal text-emerald-200">/ay</span></td>
+                  <td className="p-3.5 text-center border-r border-white/10 text-emerald-300 bg-emerald-500/30">250 TL <span className="text-[10px] font-normal text-emerald-200">/ay</span></td>
+                  <td className="p-3.5 text-center text-emerald-300">400 TL <span className="text-[10px] font-normal text-emerald-200">/ay</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="bg-slate-950/70 p-4 rounded-2xl border border-white/10 text-xs space-y-2 font-sans leading-relaxed">
+            <span className="font-bold text-amber-300 text-[11px] block">📌 Lisans Şartı & Fatura Notu:</span>
+            <p className="text-gray-300 font-light">
+              Tüm fiyatlar aktif çalışan kullanıcı başına aylık bedellerdir ve KDV hariçtir. Yıllık peşin veya kurumsal vadelerle faturalandırılır.
+            </p>
+          </div>
+        </div>
+
+        {/* 4. FEATURE COMPARISON MATRIX (PAKET KARŞILAŞTIRMA TABLOSU) */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-md space-y-6">
           <div className="text-center space-y-2 max-w-2xl mx-auto">
             <span className="text-xs font-black text-[#087F96] bg-cyan-50 px-3.5 py-1 rounded-full border border-cyan-200 uppercase tracking-wider">
@@ -569,7 +746,7 @@ export default function KurumsalFiyatlandirmaClient() {
               Paket Özellik Karşılaştırma Tablosu
             </h2>
             <p className="text-xs text-gray-500 font-medium">
-              Dört kurumsal paketin tüm teknik ve operasyonel modül kapsamları:
+              Tüm kurumsal yönetim modüllerimizin detaylı teknik ve operasyonel modül kapsamları:
             </p>
           </div>
 
@@ -579,10 +756,10 @@ export default function KurumsalFiyatlandirmaClient() {
               <thead>
                 <tr className="bg-[#0B2A4A] text-white uppercase font-black tracking-wider">
                   <th className="p-4 border-r border-white/10 w-2/5">Özellik / Modül Kapsamı</th>
-                  <th className="p-4 border-r border-white/10 text-center w-1/7">PKA Öğrenme</th>
-                  <th className="p-4 border-r border-white/10 text-center w-1/7 bg-[#087F96] text-amber-300">PKA Eğitim & Kariyer</th>
-                  <th className="p-4 border-r border-white/10 text-center w-1/7">PKA Yetenek</th>
-                  <th className="p-4 text-center w-1/7 text-amber-300">PKA Yönetici</th>
+                  <th className="p-4 border-r border-white/10 text-center w-1/7">Eğitim Yönetimi</th>
+                  <th className="p-4 border-r border-white/10 text-center w-1/7 bg-[#087F96] text-amber-300">Eğitim & Kariyer</th>
+                  <th className="p-4 border-r border-white/10 text-center w-1/7">Yetkinlik & Terfi</th>
+                  <th className="p-4 text-center w-1/7 text-amber-300">Stratejik Liderlik</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 font-medium">
@@ -590,7 +767,7 @@ export default function KurumsalFiyatlandirmaClient() {
                   <tr key={rIdx} className={rIdx % 2 === 0 ? 'bg-gray-50/60' : 'bg-white'}>
                     <td className="p-3.5 font-bold text-[#0B2A4A]">{row.name}</td>
                     
-                    {/* Öğrenme */}
+                    {/* Eğitim */}
                     <td className="p-3.5 text-center border-r border-gray-200">
                       {typeof row.l === 'boolean' ? (
                         row.l ? <Check className="h-5 w-5 text-emerald-600 mx-auto font-bold" /> : <span className="text-gray-300 text-lg">•</span>
@@ -604,14 +781,14 @@ export default function KurumsalFiyatlandirmaClient() {
                       ) : <span className="text-[11px] text-[#087F96] font-bold">{row.c}</span>}
                     </td>
 
-                    {/* Yetenek */}
+                    {/* Yetkinlik & Terfi */}
                     <td className="p-3.5 text-center border-r border-gray-200">
                       {typeof row.t === 'boolean' ? (
                         row.t ? <Check className="h-5 w-5 text-purple-600 mx-auto font-bold" /> : <span className="text-gray-300 text-lg">•</span>
                       ) : <span className="text-[11px] text-purple-900 font-bold">{row.t}</span>}
                     </td>
 
-                    {/* Yönetici */}
+                    {/* Stratejik Liderlik */}
                     <td className="p-3.5 text-center bg-slate-900 text-white">
                       {typeof row.e === 'boolean' ? (
                         row.e ? <Check className="h-5 w-5 text-amber-400 mx-auto font-black" /> : <span className="text-gray-600 text-lg">•</span>
@@ -623,14 +800,14 @@ export default function KurumsalFiyatlandirmaClient() {
             </table>
           </div>
 
-          {/* Mobile Accordion / Vertical Cards View (No Horizontal Overflow) */}
+          {/* Mobile Accordion / Vertical Cards View */}
           <div className="lg:hidden space-y-4">
             <div className="flex rounded-xl bg-gray-100 p-1 text-xs font-bold">
               <button
-                onClick={() => setActiveMobileTab('ogrenme')}
-                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'ogrenme' ? 'bg-[#0B2A4A] text-white shadow-xs' : 'text-gray-600'}`}
+                onClick={() => setActiveMobileTab('egitim')}
+                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'egitim' ? 'bg-[#0B2A4A] text-white shadow-xs' : 'text-gray-600'}`}
               >
-                Öğrenme
+                Eğitim
               </button>
               <button
                 onClick={() => setActiveMobileTab('kariyer')}
@@ -639,10 +816,10 @@ export default function KurumsalFiyatlandirmaClient() {
                 Kariyer ★
               </button>
               <button
-                onClick={() => setActiveMobileTab('yetenek')}
-                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'yetenek' ? 'bg-purple-900 text-white shadow-xs' : 'text-gray-600'}`}
+                onClick={() => setActiveMobileTab('yetkinlik')}
+                className={`flex-1 py-2 text-center rounded-lg transition-all ${activeMobileTab === 'yetkinlik' ? 'bg-purple-900 text-white shadow-xs' : 'text-gray-600'}`}
               >
-                Yetenek
+                Terfi
               </button>
               <button
                 onClick={() => setActiveMobileTab('yonetici')}
@@ -655,11 +832,11 @@ export default function KurumsalFiyatlandirmaClient() {
             <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200 divide-y divide-gray-200">
               {comparisonFeatures.map((feat, idx) => {
                 let val: React.ReactNode = null;
-                if (activeMobileTab === 'ogrenme') {
+                if (activeMobileTab === 'egitim') {
                   val = typeof feat.l === 'boolean' ? (feat.l ? <span className="text-emerald-600 font-bold">✓ Var</span> : <span className="text-gray-400">Yok</span>) : feat.l;
                 } else if (activeMobileTab === 'kariyer') {
                   val = typeof feat.c === 'boolean' ? (feat.c ? <span className="text-[#087F96] font-bold">✓ Var</span> : <span className="text-gray-400">Yok</span>) : feat.c;
-                } else if (activeMobileTab === 'yetenek') {
+                } else if (activeMobileTab === 'yetkinlik') {
                   val = typeof feat.t === 'boolean' ? (feat.t ? <span className="text-purple-700 font-bold">✓ Var</span> : <span className="text-gray-400">Yok</span>) : feat.t;
                 } else {
                   val = typeof feat.e === 'boolean' ? (feat.e ? <span className="text-amber-600 font-bold">✓ Var</span> : <span className="text-gray-400">Yok</span>) : feat.e;
@@ -676,73 +853,10 @@ export default function KurumsalFiyatlandirmaClient() {
           </div>
         </div>
 
-        {/* 4. VOLUME ADVANTAGE POLICY SECTION (ÇALIŞAN SAYISINA GÖRE HACİM AVANTAJI) */}
-        <div className="bg-gradient-to-br from-[#0B2A4A] to-[#061B33] text-white rounded-3xl p-8 sm:p-10 shadow-xl space-y-6">
-          <div className="max-w-3xl space-y-2">
-            <span className="text-xs font-mono font-bold text-cyan-300 uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full border border-white/20">
-              Ölçeklenebilir Ticari Şartlar
-            </span>
-            <h2 className="font-display font-black text-2xl sm:text-3xl text-white">
-              Çalışan Sayısına Göre Hacim Avantajı Politikası
-            </h2>
-            <p className="text-xs sm:text-sm text-gray-200 font-light leading-relaxed">
-              Şirketinizin aktif çalışan sayısı arttıkça birim kullanıcı maliyetleriniz otomatik olarak düşer:
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs font-mono">
-            <div className="bg-white/10 p-4 rounded-2xl border border-white/15 space-y-1">
-              <div className="text-gray-300 font-bold text-[11px]">1 – 100 Aktif Çalışan</div>
-              <div className="text-lg font-black text-white">Liste Fiyatı</div>
-              <div className="text-[10px] text-gray-300 font-sans font-light">Standart başlangıç birim fiyatı.</div>
-            </div>
-
-            <div className="bg-white/10 p-4 rounded-2xl border border-white/15 space-y-1">
-              <div className="text-cyan-300 font-bold text-[11px]">101 – 250 Aktif Çalışan</div>
-              <div className="text-lg font-black text-cyan-300">%8’e Kadar Hacim Avantajı</div>
-              <div className="text-[10px] text-gray-300 font-sans font-light">Bölgesel zincirler için avantajlı ölçek.</div>
-            </div>
-
-            <div className="bg-white/10 p-4 rounded-2xl border border-white/15 space-y-1">
-              <div className="text-emerald-300 font-bold text-[11px]">251 – 500 Aktif Çalışan</div>
-              <div className="text-lg font-black text-emerald-300">%15’e Kadar Hacim Avantajı</div>
-              <div className="text-[10px] text-gray-300 font-sans font-light">Büyüyen market ağları için optimize.</div>
-            </div>
-
-            <div className="bg-white/10 p-4 rounded-2xl border border-white/15 space-y-1">
-              <div className="text-amber-300 font-bold text-[11px]">501 – 1.000 Aktif Çalışan</div>
-              <div className="text-lg font-black text-amber-300">%22’ye Kadar Hacim Avantajı</div>
-              <div className="text-[10px] text-gray-300 font-sans font-light">Büyük ulusal perakende zincirleri.</div>
-            </div>
-
-            <div className="bg-white/10 p-4 rounded-2xl border border-white/15 space-y-1">
-              <div className="text-purple-300 font-bold text-[11px]">1.001 – 2.500 Aktif Çalışan</div>
-              <div className="text-lg font-black text-purple-300">%30’a Kadar Hacim Avantajı</div>
-              <div className="text-[10px] text-gray-300 font-sans font-light">Makro perakende operasyonları.</div>
-            </div>
-
-            <div className="bg-amber-400/20 p-4 rounded-2xl border border-amber-400/40 space-y-1">
-              <div className="text-amber-300 font-bold text-[11px]">2.501 ve Üzeri Çalışan</div>
-              <div className="text-lg font-black text-amber-300">Özel Teklif & Enterprise</div>
-              <div className="text-[10px] text-gray-200 font-sans font-light">Özel SLA, SSO ve adanmış sunucu mimarisi.</div>
-            </div>
-          </div>
-
-          <div className="bg-slate-950/70 p-4 rounded-2xl border border-white/10 text-xs space-y-2 font-sans leading-relaxed">
-            <span className="font-bold text-amber-300 text-[11px] block">📌 Aktif Çalışan Tanımı & Sözleşme Şartı:</span>
-            <p className="text-gray-300 font-light">
-              “Aktif çalışan; ilgili ücretlendirme döneminde sisteme giriş yapan, eğitim görüntüleyen, sınava katılan, saha görevi tamamlayan veya değerlendirme sürecine katılan kullanıcıdır.”
-            </p>
-            <p className="text-[11px] text-gray-400">
-              * Minimum kullanıcı ve minimum yıllık sözleşme tutarları kurumsal şartlara bağlı olarak uygulanır.
-            </p>
-          </div>
-        </div>
-
         {/* 5. SETUP FEE SCOPE & PAID PILOT PROGRAM GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
-          {/* SETUP FEE SCOPE (KURULUM BEDELİ KAPSAMI) */}
+          {/* SETUP FEE SCOPE */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-md space-y-6">
             <div className="space-y-2">
               <span className="text-xs font-black text-blue-700 bg-blue-50 px-3.5 py-1 rounded-full border border-blue-200 uppercase tracking-wider">
@@ -775,13 +889,9 @@ export default function KurumsalFiyatlandirmaClient() {
                 </li>
               ))}
             </ul>
-
-            <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 text-[11px] text-gray-500 italic">
-              * Kurulum kapsamı kurumun çalışan sayısı, veri yapısı ve entegrasyon ihtiyaçlarına göre değişebilir.
-            </div>
           </div>
 
-          {/* PAID PILOT PROGRAM (PİLOT UYGULAMA ALANI) */}
+          {/* PAID PILOT PROGRAM */}
           <div className="bg-gradient-to-br from-[#061B33] via-[#0B2A4A] to-[#087F96] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-[#087F96]/40 flex flex-col justify-between space-y-6 relative overflow-hidden">
             <div className="space-y-4">
               <div className="space-y-2">
@@ -831,7 +941,7 @@ export default function KurumsalFiyatlandirmaClient() {
 
         </div>
 
-        {/* 6. ADDITIONAL OPTIONAL SERVICES (EK HİZMETLER) */}
+        {/* 6. ADDITIONAL OPTIONAL SERVICES */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-sm space-y-6">
           <div className="text-center space-y-2 max-w-2xl mx-auto">
             <span className="text-xs font-black text-purple-900 bg-purple-100 px-3.5 py-1 rounded-full border border-purple-300 uppercase tracking-wider">
@@ -878,7 +988,7 @@ export default function KurumsalFiyatlandirmaClient() {
           </div>
         </div>
 
-        {/* 7. PAYMENT & CONTRACT POLICY SECTION (ÖDEME VE SÖZLEŞME POLİTİKASI) */}
+        {/* 7. PAYMENT & CONTRACT POLICY SECTION */}
         <div className="bg-gray-100 rounded-3xl p-6 sm:p-8 border border-gray-300 space-y-6">
           <div className="space-y-1">
             <span className="text-xs font-mono font-bold text-gray-600 uppercase tracking-wider">TİCARİ ŞARTLAR</span>
@@ -920,7 +1030,7 @@ export default function KurumsalFiyatlandirmaClient() {
           </div>
         </div>
 
-        {/* 8. FAQ ACCORDION SECTION (SIK SORULAN SORULAR) */}
+        {/* 8. FAQ ACCORDION SECTION */}
         <div className="bg-white rounded-3xl p-6 sm:p-10 border border-gray-200 shadow-md space-y-8">
           <div className="text-center space-y-2 max-w-2xl mx-auto">
             <span className="text-xs font-black text-[#087F96] bg-cyan-50 px-3.5 py-1 rounded-full border border-cyan-200 uppercase tracking-wider">
@@ -964,7 +1074,7 @@ export default function KurumsalFiyatlandirmaClient() {
           </div>
         </div>
 
-        {/* 9. QUOTE FORM SECTION (KURUMSAL FİYAT TEKLİFİ AL FORMU) */}
+        {/* 9. QUOTE FORM SECTION */}
         <div ref={formRef} className="bg-gradient-to-br from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-[#087F96]/40 space-y-8 max-w-4xl mx-auto">
           <div className="text-center space-y-2">
             <span className="text-xs font-black text-amber-300 bg-amber-400/20 px-3.5 py-1 rounded-full border border-amber-400/30 uppercase tracking-wider">
@@ -1071,21 +1181,21 @@ export default function KurumsalFiyatlandirmaClient() {
                   {formErrors.phone && <span className="text-rose-300 text-[10px] font-bold">{formErrors.phone}</span>}
                 </div>
 
-                {/* Çalışan Sayısı */}
+                {/* Çalışan Sayısı Seviyesi */}
                 <div className="space-y-1">
-                  <label className="text-gray-200 font-bold block">Çalışan Sayısı</label>
+                  <label className="text-gray-200 font-bold block">Çalışan Sayısı Seviyesi</label>
                   <select
                     name="employeeCount"
                     value={formData.employeeCount}
                     onChange={handleInputChange}
                     className="w-full p-3 rounded-xl bg-[#061B33] border border-white/20 text-white focus:outline-none focus:border-amber-400"
                   >
-                    <option value="1-100">1 – 100 Aktif Çalışan</option>
-                    <option value="101-250">101 – 250 Aktif Çalışan</option>
-                    <option value="251-500">251 – 500 Aktif Çalışan</option>
-                    <option value="501-1000">501 – 1.000 Aktif Çalışan</option>
-                    <option value="1001-2500">1.001 – 2.500 Aktif Çalışan</option>
-                    <option value="2501+">2.501 ve Üzeri (Enterprise)</option>
+                    <option value="1-100">1 – 100 Kişi</option>
+                    <option value="101-199">101 – 199 Kişi</option>
+                    <option value="200-399">200 – 399 Kişi</option>
+                    <option value="400-599">400 – 599 Kişi</option>
+                    <option value="600-799">600 – 799 Kişi</option>
+                    <option value="800+">800+ Kişi (En Avantajlı Kademe)</option>
                   </select>
                 </div>
 
@@ -1106,25 +1216,25 @@ export default function KurumsalFiyatlandirmaClient() {
                   </select>
                 </div>
 
-                {/* İlgilenilen Paket */}
+                {/* İlgilenilen Yönetim Modülü */}
                 <div className="space-y-1">
-                  <label className="text-gray-200 font-bold block">İlgilenilen Paket</label>
+                  <label className="text-gray-200 font-bold block">İlgilenilen Yönetim Modülü</label>
                   <select
                     name="packageSelect"
                     value={formData.packageSelect}
                     onChange={handleInputChange}
                     className="w-full p-3 rounded-xl bg-[#061B33] border border-white/20 text-amber-300 font-bold focus:outline-none focus:border-amber-400"
                   >
-                    <option value="PKA ÖĞRENME">PKA ÖĞRENME (Dijital Eğitim)</option>
-                    <option value="PKA EĞİTİM & KARİYER">PKA EĞİTİM & KARİYER (Önerilen)</option>
-                    <option value="PKA YETENEK">PKA YETENEK (Yetenek Yönetimi)</option>
-                    <option value="PKA YÖNETİCİ">PKA YÖNETİCİ (Stratejik Liderlik)</option>
+                    <option value="Eğitim Yönetimi">Eğitim Yönetimi (175–300 TL/ay)</option>
+                    <option value="Eğitim & Kariyer Yönetimi">Eğitim & Kariyer Yönetimi (250–500 TL/ay - Önerilen)</option>
+                    <option value="Yetkinlik ve Terfi Süreç Yönetimi">Yetkinlik ve Terfi Süreç Yönetimi (400–700 TL/ay)</option>
+                    <option value="Stratejik Liderlik & Yönetici">Stratejik Liderlik & Yönetici (Özel Teklif)</option>
                     <option value="PİLOT UYGULAMA">Ücretli Pilot Uygulama (60-90 Gün)</option>
                   </select>
                 </div>
               </div>
 
-              {/* İlgilenilen Ek Hizmetler (Checkboxes) */}
+              {/* İlgilenilen Ek Hizmetler */}
               <div className="space-y-2 pt-2">
                 <label className="text-gray-200 font-bold block">İlgilenilen Ek Hizmetler (Opsiyonel)</label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px]">
@@ -1205,7 +1315,7 @@ export default function KurumsalFiyatlandirmaClient() {
         <div className="text-center text-[11px] text-gray-500 max-w-3xl mx-auto space-y-1 border-t border-gray-200 pt-6">
           <p className="font-bold text-gray-700">Yasal Fiyat Uyarısı:</p>
           <p className="leading-relaxed font-light">
-            “Belirtilen fiyatlar tavsiye edilen başlangıç aralıklarıdır ve KDV hariçtir. Kesin kurumsal teklif; aktif çalışan sayısı, seçilen modüller, içerik kapsamı, entegrasyonlar, özelleştirmeler ve destek seviyesine göre hazırlanır.”
+            “Belirtilen birim fiyatlar aktif çalışan sayısı kademelerine göredir ve KDV hariçtir. Kesin kurumsal teklif; seçilen çalışan sayısı seviyesi, modüller, entegrasyonlar ve destek kapsamına göre hazırlanır.”
           </p>
         </div>
 
