@@ -475,38 +475,43 @@ function generate1000EmployeesData(): EmployeeCareerRecord[] {
           },
           {
             id: `gmy_${i}`,
-            name: i % 2 === 0 ? 'Fatih Şimşek' : 'Dr. Mehmet Yılmaz',
+            name: i === 0 ? 'Fatih Şimşek' : i % 2 === 0 ? 'Fatih Şimşek' : 'Dr. Mehmet Yılmaz',
             avatar: avatars[(i + 6) % avatars.length],
-            role: 'Operasyon & Satış Direktörü (GMY)',
+            role: i === 0 ? 'Taze Gıda & Saha Operasyonları Direktörü (GMY)' : 'Operasyon & Satış Direktörü (GMY)',
             department: 'Genel Merkez İcra Kurulu',
             levelTitle: '👔 2. KADEME: DİREKTÖR / GENEL MÜDÜR YRD.'
           },
           {
             id: `bm_${i}`,
-            name: i % 3 === 0 ? 'Murat Yıldırım' : i % 3 === 1 ? 'Hakan Arslan' : 'Volkan Kaya',
+            name: i === 0 ? 'Murat Yıldırım' : i % 3 === 0 ? 'Murat Yıldırım' : i % 3 === 1 ? 'Hakan Arslan' : 'Volkan Kaya',
             avatar: avatars[(i + 3) % avatars.length],
-            role: 'Bölge Operasyon Müdürü (Area Manager)',
+            role: i === 0 ? 'Marmara Bölge Operasyon Müdürü' : 'Bölge Operasyon Müdürü (Area Manager)',
             department: deptConfig.groupName,
             levelTitle: '🏬 3. KADEME: BÖLGE MÜDÜRÜ'
           },
           {
             id: `mgr_${i}`,
-            name: i % 3 === 0 ? 'Seda Yılmaz' : i % 3 === 1 ? 'Gamze Öztürk' : 'Caner Şahin',
+            name: i === 0 ? 'Seda Yılmaz' : i % 3 === 0 ? 'Seda Yılmaz' : i % 3 === 1 ? 'Gamze Öztürk' : 'Caner Şahin',
             avatar: avatars[(i + 4) % avatars.length],
-            role: 'Mağaza Müdürü / Birim Amiri',
+            role: i === 0 ? 'Taze Gıda & Manav Mağaza Müdürü' : 'Mağaza Müdürü / Birim Amiri',
             department: deptConfig.name,
             levelTitle: '🏪 4. KADEME: DOĞRUDAN MAĞAZA AMİRİ'
           }
         ],
         manager: {
           id: `mgr_${i}`,
-          name: i % 3 === 0 ? 'Seda Yılmaz' : i % 3 === 1 ? 'Gamze Öztürk' : 'Caner Şahin',
+          name: i === 0 ? 'Seda Yılmaz' : i % 3 === 0 ? 'Seda Yılmaz' : i % 3 === 1 ? 'Gamze Öztürk' : 'Caner Şahin',
           avatar: avatars[(i + 4) % avatars.length],
-          role: 'Mağaza Müdürü / Birim Amiri',
+          role: i === 0 ? 'Taze Gıda & Manav Mağaza Müdürü' : 'Mağaza Müdürü / Birim Amiri',
           department: deptConfig.name,
           levelTitle: '🏪 DOĞRUDAN MAĞAZA AMİRİ'
         },
-        subordinates: [
+        subordinates: i === 0 ? [
+          { id: 'sub_0_1', name: 'Elif Kaya', avatar: avatars[1], role: 'Manav Reyon Destek Elemanı', department: dept },
+          { id: 'sub_0_2', name: 'Caner Arslan', avatar: avatars[2], role: 'Taze Gıda Kasa Operatörü', department: dept },
+          { id: 'sub_0_3', name: 'Tuğba Demir', avatar: avatars[4], role: 'Meyve Sebze Reyon Stajyeri', department: dept },
+          { id: 'sub_0_4', name: 'Kadir Öztürk', avatar: avatars[5], role: 'Reyon Mal Kabul Görevlisi', department: dept }
+        ] : [
           {
             id: `sub_${i}_1`,
             name: `${femaleNames[(i * 3 + 1) % femaleNames.length]} ${lastNames[(i * 5 + 1) % lastNames.length]}`,
