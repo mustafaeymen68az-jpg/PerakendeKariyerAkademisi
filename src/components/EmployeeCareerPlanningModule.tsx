@@ -478,10 +478,10 @@ export default function EmployeeCareerPlanningModule() {
     }
   }, [employeesData]);
 
-  // Reset display limit when filter conditions change
-  React.useEffect(() => {
-    setDisplayLimit(50);
-  }, [scoreFilterCategory, selectedGroupFilter, selectedDepartmentFilter, searchQuery]);
+  const [showAllSubDepts, setShowAllSubDepts] = useState<boolean>(false);
+
+  // Auto-expand sub-departments when a main group is selected
+  const isSubDeptsExpanded = selectedGroupFilter !== 'all' || showAllSubDepts;
 
   // Dynamically calculate score tier counts for top Summary Dashboard (filtered dynamically by selected Group or Department)
   const scoreCounts = useMemo(() => {
@@ -916,7 +916,7 @@ export default function EmployeeCareerPlanningModule() {
           <div className="flex items-center justify-between">
             <h4 className="font-black text-xs uppercase tracking-wider text-amber-300 flex items-center space-x-2">
               <Building className="w-4 h-4 text-amber-300" />
-              <span>Ana Departman Grupları Karnesi (Filtrelemek İçin Tıklayın)</span>
+              <span>Ana Departman Grupları Karnesi (Alt Birimleri Açmak İçin Tıklayın)</span>
             </h4>
             <span className="text-[10px] font-mono text-gray-300">6 Ana Departman Grubu</span>
           </div>
@@ -932,14 +932,16 @@ export default function EmployeeCareerPlanningModule() {
                     if (isGroupSelected) {
                       setSelectedGroupFilter('all');
                       setSelectedDepartmentFilter('all');
+                      setShowAllSubDepts(false);
                     } else {
                       setSelectedGroupFilter(grp.id);
                       setSelectedDepartmentFilter('all');
+                      setShowAllSubDepts(true);
                     }
                   }}
                   className={`p-3.5 rounded-2xl border transition-all cursor-pointer space-y-2 group hover:scale-105 ${
                     isGroupSelected
-                      ? 'bg-amber-400 text-slate-950 border-amber-200 shadow-xl font-extrabold'
+                      ? 'bg-amber-400 text-slate-950 border-amber-200 shadow-xl font-extrabold ring-4 ring-amber-400/40'
                       : 'bg-white/10 hover:bg-white/20 border-white/15 text-white'
                   }`}
                 >
@@ -972,9 +974,11 @@ export default function EmployeeCareerPlanningModule() {
                       <span>🔵 Başarılı:</span>
                       <strong className={isGroupSelected ? 'text-slate-950' : 'text-blue-200'}>{grp.successful}</strong>
                     </div>
-                    <div className="flex justify-between">
-                      <span>🟡 Gelişime Açık:</span>
-                      <strong className={isGroupSelected ? 'text-slate-950' : 'text-amber-200'}>{grp.needsImprovement}</strong>
+                    <div className="flex justify-between items-center pt-0.5">
+                      <span className="text-[8.5px] italic">
+                        {isGroupSelected ? '🔓 Alt Birimler Açık' : 'Tıklayınca Açılır 📂'}
+                      </span>
+                      <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isGroupSelected ? 'rotate-90' : ''}`} />
                     </div>
                   </div>
                 </div>
@@ -983,81 +987,115 @@ export default function EmployeeCareerPlanningModule() {
           </div>
         </div>
 
-        {/* SECTION 3: ALT DEPARTMAN DETAYLARI (26 ALT DEPARTMAN) */}
+        {/* SECTION 3: DİNAMİK AÇILAN ALT DEPARTMAN KARTLARI */}
         <div className="space-y-3 pt-2 border-t border-white/15">
           <div className="flex items-center justify-between">
             <h4 className="font-black text-xs uppercase tracking-wider text-amber-300 flex items-center space-x-2">
               <Layers className="w-4 h-4 text-amber-300" />
               <span>
-                {selectedGroupFilter === 'all'
-                  ? '26 Alt Departman Karnesi (Tüm Listeyi Filtreleyin)'
-                  : `${MAIN_DEPARTMENT_GROUPS.find(g => g.id === selectedGroupFilter)?.name} Alt Departmanları`}
+                {selectedGroupFilter !== 'all'
+                  ? `🔓 ${MAIN_DEPARTMENT_GROUPS.find(g => g.id === selectedGroupFilter)?.name} — Alt Departman ve Pozisyonları`
+                  : 'Alt Departman ve Pozisyon Listesi'}
               </span>
             </h4>
-            <span className="text-[10px] font-mono text-gray-300">Detaylı Birim Filtresi</span>
+            
+            {selectedGroupFilter !== 'all' ? (
+              <button
+                onClick={() => {
+                  setSelectedGroupFilter('all');
+                  setSelectedDepartmentFilter('all');
+                  setShowAllSubDepts(false);
+                }}
+                className="text-[10px] font-mono font-bold text-amber-300 bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full border border-amber-300/40 flex items-center space-x-1 cursor-pointer"
+              >
+                <span>✖ Alt Birimleri Kapat (Tüm Kadroyu Göster)</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowAllSubDepts(prev => !prev)}
+                className="text-[10px] font-mono font-bold text-emerald-300 bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full border border-emerald-300/40 flex items-center space-x-1 cursor-pointer"
+              >
+                <span>{showAllSubDepts ? '🙈 Alt Birimleri Gizle' : '📂 Tüm 26 Alt Birimi Göster'}</span>
+              </button>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 max-h-[360px] overflow-y-auto pr-1">
-            {departmentAnalytics
-              .filter(d => {
-                if (selectedGroupFilter === 'all') return true;
-                const activeGrp = MAIN_DEPARTMENT_GROUPS.find(g => g.id === selectedGroupFilter);
-                return activeGrp ? activeGrp.departments.includes(d.name) : true;
-              })
-              .map((dept) => {
-                const IconComp = dept.icon;
-                const isDeptSelected = selectedDepartmentFilter === dept.name;
-                return (
-                  <div
-                    key={dept.name}
-                    onClick={() => {
-                      if (isDeptSelected) setSelectedDepartmentFilter('all');
-                      else setSelectedDepartmentFilter(dept.name);
-                    }}
-                    className={`p-3 rounded-2xl border transition-all cursor-pointer space-y-1.5 group hover:scale-105 ${
-                      isDeptSelected
-                        ? 'bg-amber-400 text-slate-950 border-amber-200 shadow-xl font-extrabold'
-                        : 'bg-white/10 hover:bg-white/20 border-white/15 text-white'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="p-1 rounded-lg bg-white/15 text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
-                        <IconComp className="w-3.5 h-3.5" />
+          {/* Render opened sub-departments or prompt */}
+          {isSubDeptsExpanded ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 max-h-[360px] overflow-y-auto pr-1 animate-in fade-in duration-200">
+              {departmentAnalytics
+                .filter(d => {
+                  if (selectedGroupFilter === 'all') return true;
+                  const activeGrp = MAIN_DEPARTMENT_GROUPS.find(g => g.id === selectedGroupFilter);
+                  return activeGrp ? activeGrp.departments.includes(d.name) : true;
+                })
+                .map((dept) => {
+                  const IconComp = dept.icon;
+                  const isDeptSelected = selectedDepartmentFilter === dept.name;
+                  return (
+                    <div
+                      key={dept.name}
+                      onClick={() => {
+                        if (isDeptSelected) setSelectedDepartmentFilter('all');
+                        else setSelectedDepartmentFilter(dept.name);
+                      }}
+                      className={`p-3 rounded-2xl border transition-all cursor-pointer space-y-1.5 group hover:scale-105 ${
+                        isDeptSelected
+                          ? 'bg-amber-400 text-slate-950 border-amber-200 shadow-xl font-extrabold ring-2 ring-amber-300'
+                          : 'bg-white/10 hover:bg-white/20 border-white/15 text-white'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="p-1 rounded-lg bg-white/15 text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+                          <IconComp className="w-3.5 h-3.5" />
+                        </div>
+                        <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                          isDeptSelected ? 'bg-slate-900 text-amber-300' : 'bg-white/15 text-emerald-300'
+                        }`}>
+                          Ort %{dept.avgScore}
+                        </span>
                       </div>
-                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                        isDeptSelected ? 'bg-slate-900 text-amber-300' : 'bg-white/15 text-emerald-300'
+
+                      <div>
+                        <h5 className="font-extrabold text-[11px] truncate" title={dept.name}>{dept.name}</h5>
+                        <div className="text-[10px] font-black font-mono mt-0.5">
+                          {dept.count} Çalışan
+                        </div>
+                      </div>
+
+                      <div className={`text-[8.5px] font-mono font-bold space-y-0.5 pt-1 border-t ${
+                        isDeptSelected ? 'border-slate-950/20 text-slate-900' : 'border-white/10 text-gray-300'
                       }`}>
-                        Ort %{dept.avgScore}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h5 className="font-extrabold text-[11px] truncate" title={dept.name}>{dept.name}</h5>
-                      <div className="text-[10px] font-black font-mono mt-0.5">
-                        {dept.count} Çalışan
+                        <div className="flex justify-between">
+                          <span>🟢 Terfiye Hazır:</span>
+                          <strong className={isDeptSelected ? 'text-slate-950' : 'text-emerald-300'}>{dept.promotable}</strong>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>🔵 Başarılı:</span>
+                          <strong className={isDeptSelected ? 'text-slate-950' : 'text-blue-200'}>{dept.successful}</strong>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>🟡 Gelişime Açık:</span>
+                          <strong className={isDeptSelected ? 'text-slate-950' : 'text-amber-200'}>{dept.needsImprovement}</strong>
+                        </div>
                       </div>
                     </div>
-
-                    <div className={`text-[8.5px] font-mono font-bold space-y-0.5 pt-1 border-t ${
-                      isDeptSelected ? 'border-slate-950/20 text-slate-900' : 'border-white/10 text-gray-300'
-                    }`}>
-                      <div className="flex justify-between">
-                        <span>🟢 Terfiye Hazır:</span>
-                        <strong className={isDeptSelected ? 'text-slate-950' : 'text-emerald-300'}>{dept.promotable}</strong>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>🔵 Başarılı:</span>
-                        <strong className={isDeptSelected ? 'text-slate-950' : 'text-blue-200'}>{dept.successful}</strong>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>🟡 Gelişime Açık:</span>
-                        <strong className={isDeptSelected ? 'text-slate-950' : 'text-amber-200'}>{dept.needsImprovement}</strong>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
+                  );
+                })}
+            </div>
+          ) : (
+            <div className="p-4 bg-white/5 border border-white/10 rounded-2xl text-center text-xs text-gray-300 space-y-2">
+              <p className="font-medium">
+                👆 Alt departman ve pozisyon detaylarını açmak için yukarıdaki <strong>6 Ana Departman Grubundan</strong> birine tıklayın.
+              </p>
+              <button
+                onClick={() => setShowAllSubDepts(true)}
+                className="px-4 py-1.5 bg-amber-400 text-slate-950 font-black rounded-xl text-[11px] hover:bg-amber-300 transition-colors inline-flex items-center space-x-1 cursor-pointer"
+              >
+                <span>📂 Tüm 26 Alt Departmanı Şimdi Aç</span>
+              </button>
+            </div>
+          )}
         </div>
 
       </div>
