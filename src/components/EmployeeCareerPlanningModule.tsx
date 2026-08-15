@@ -720,13 +720,207 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     },
     developmentAreas: ['Stok ve Reyon Yönetimi'],
     careerAdvice: [{ phase: '1. Ay', action: 'Kasa Şefliği ataması', targetDate: '01 Ağustos 2026' }]
+  },
+  {
+    id: 'emp_7',
+    name: 'Burak Çetin',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
+    currentRole: 'Kasiyer & Reyon Elemanı',
+    recommendedRole: 'Baş Kasiyer Adayı (Gelişim Programında)',
+    matchPercentage: 78,
+    competencyScore: 76,
+    city: 'İzmir',
+    experienceYears: 2,
+    startDate: '10 Mart 2024',
+    tenure: '2 Yıl 5 Ay',
+    previousExperiences: [
+      { companyName: 'ŞOK Marketler', role: 'Satış Elemanı', duration: '1 Yıl', yearsRange: '2023–2024' }
+    ],
+    priorTrainings: [
+      { title: 'Temel Hijyen ve Müşteri İlişkileri', institution: 'Halk Eğitim', instructorName: 'Kemal Sunal', companyWhereTaken: 'ŞOK Marketler', durationHours: 16, year: '2023' }
+    ],
+    completedTrainings: [
+      { courseTitle: 'Kasa İşletim ve Müşteri Memnuniyeti', duration: '12 Saat', durationHours: 12, completedDate: '10 Mart 2026', instructorName: 'Zeynep Kaya', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 76, gradeStatus: 'Başarılı', certificateId: 'PKA-2026-KAS-076' }
+    ],
+    evaluations: {
+      managerReview: { author: 'Mehmet Yılmaz', role: 'Mağaza Müdürü', rating: 4.0, comment: 'Burak gayretli ancak yoğun günlerde müşteri iletişimini geliştirmelidir.', date: '01 Nisan 2026' },
+      subordinateReview: { author: 'Ahmet Kaya', role: 'Müdür Yrd.', rating: 4.2, comment: 'Öğrenmeye açık.', date: '05 Nisan 2026' },
+      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 4.1, comment: '76 Puan ile Geliştirilebilir kadro seviyesindedir.', date: '10 Nisan 2026' }
+    },
+    swot: {
+      strengths: ['Hızlı öğrenme ve istek'],
+      weaknesses: ['Zor müşteri yönetimi ve stres kontrolü'],
+      opportunities: ['Baş Kasiyerlik gelişim modülünü tamamlama'],
+      threats: ['Kasa açıklarında dikkat dağınıklığı']
+    },
+    developmentAreas: ['Zor Müşteri İkna ve Çatışma Yönetimi', 'Kasa İşlem Hızı'],
+    careerAdvice: [{ phase: '1. Ay', action: 'İkna eğitimi ve gölge kasiyerlik', targetDate: '01 Eylül 2026' }]
+  },
+  {
+    id: 'emp_8',
+    name: 'Merve Öztürk',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+    currentRole: 'Satış Elemanı',
+    recommendedRole: 'Reyon Şefi Adayı',
+    matchPercentage: 75,
+    competencyScore: 74,
+    city: 'Ankara',
+    experienceYears: 2,
+    startDate: '15 Mayıs 2024',
+    tenure: '2 Yıl 3 Ay',
+    previousExperiences: [
+      { companyName: 'A101', role: 'Reyon Elemanı', duration: '1 Yıl', yearsRange: '2023–2024' }
+    ],
+    priorTrainings: [
+      { title: 'Reyon Düzeni 101', institution: 'MEB', instructorName: 'Seda Yılmaz', companyWhereTaken: 'A101', durationHours: 14, year: '2023' }
+    ],
+    completedTrainings: [
+      { courseTitle: '5S Görsel Standartlar', duration: '14 Saat', durationHours: 14, completedDate: '12 Şubat 2026', instructorName: 'Zeynep Kaya', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 74, gradeStatus: 'Başarılı', certificateId: 'PKA-2026-5S-074' }
+    ],
+    evaluations: {
+      managerReview: { author: 'Caner Şahin', role: 'Şef', rating: 3.9, comment: 'Görsel düzen takibinde gelişime açık.', date: '10 Mart 2026' },
+      subordinateReview: { author: 'Emre Aksoy', role: 'Ekip Arkadaşı', rating: 4.0, comment: 'Uyumlu ve çalışkan.', date: '12 Mart 2026' },
+      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 4.0, comment: '74 Puan (Geliştirilebilir seviye).', date: '20 Mart 2026' }
+    },
+    swot: {
+      strengths: ['Güler yüzlü temsil'],
+      weaknesses: ['FIFO stok devir takibi'],
+      opportunities: ['Reyon Şefliği eğitimi'],
+      threats: ['SKT son gün ürün takibinde atlama']
+    },
+    developmentAreas: ['FIFO ve Son Kullanma Tarihi Takibi'],
+    careerAdvice: [{ phase: '1. Ay', action: 'FIFO eğitimi tamamlama', targetDate: '15 Ağustos 2026' }]
+  },
+  {
+    id: 'emp_9',
+    name: 'Emre Aksoy',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
+    currentRole: 'Stajyer Reyon Elemanı',
+    recommendedRole: 'Reyon Elemanı (Orta Performans Takibinde)',
+    matchPercentage: 65,
+    competencyScore: 65,
+    city: 'Bursa',
+    experienceYears: 1,
+    startDate: '01 Eylül 2025',
+    tenure: '11 Ay',
+    previousExperiences: [],
+    priorTrainings: [],
+    completedTrainings: [
+      { courseTitle: 'Oryantasyon & İş Sağlığı Güvenliği', duration: '10 Saat', durationHours: 10, completedDate: '10 Ekim 2025', instructorName: 'Mustafa Aydın', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 65, gradeStatus: 'Başarılı', certificateId: 'PKA-2025-ISG-065' }
+    ],
+    evaluations: {
+      managerReview: { author: 'Ayşe Demir', role: 'Depo Müdürü', rating: 3.5, comment: 'Orta performans (65p). Vardiya saatlerine uyum sağladı ancak hız kazanmalıdır.', date: '10 Ocak 2026' },
+      subordinateReview: { author: 'Tarık Yıldız', role: 'Depo Şefi', rating: 3.6, comment: 'Destek veriliyor.', date: '12 Ocak 2026' },
+      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 3.5, comment: 'Orta seviye gelişim takibi.', date: '15 Ocak 2026' }
+    },
+    swot: {
+      strengths: ['Genç ve dinamik'],
+      weaknesses: ['Ürün etiketleme ve koli yükleme hızı'],
+      opportunities: ['Teknik beceri kazanma'],
+      threats: ['Hatalı barkod okutma']
+    },
+    developmentAreas: ['Saha Hız & Etiket Kontrolü'],
+    careerAdvice: [{ phase: '1. Ay', action: 'Hızlandırma mentörlüğü', targetDate: '01 Eylül 2026' }]
+  },
+  {
+    id: 'emp_10',
+    name: 'Tarık Yıldız',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
+    currentRole: 'Depo Destek Elemanı',
+    recommendedRole: 'Depo Elemanı (Orta Seviye)',
+    matchPercentage: 58,
+    competencyScore: 58,
+    city: 'Kocaeli',
+    experienceYears: 1,
+    startDate: '10 Kasım 2025',
+    tenure: '9 Ay',
+    previousExperiences: [],
+    priorTrainings: [],
+    completedTrainings: [
+      { courseTitle: 'Depo Kabul Temel Bilgileri', duration: '8 Saat', durationHours: 8, completedDate: '01 Aralık 2025', instructorName: 'Caner Şahin', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 58, gradeStatus: 'Başarılı', certificateId: 'PKA-2025-DEP-058' }
+    ],
+    evaluations: {
+      managerReview: { author: 'Ayşe Demir', role: 'Lojistik Müdürü', rating: 3.0, comment: '58 Puan orta seviye. Mal kabul evraklarında daha dikkatli olmalı.', date: '15 Şubat 2026' },
+      subordinateReview: { author: 'Emre Aksoy', role: 'Stajyer', rating: 3.2, comment: 'Gelişiyor.', date: '20 Şubat 2026' },
+      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 3.0, comment: 'Orta performans gelişim planı uygulansın.', date: '01 Mart 2026' }
+    },
+    swot: {
+      strengths: ['Fiziksel güç ve taşıma'],
+      weaknesses: ['WMS sistem girişi hataları'],
+      opportunities: ['WMS yazılım eğitimi'],
+      threats: ['İrsaliye uyumsuzluğu']
+    },
+    developmentAreas: ['WMS Yazılım Giriş Becerileri'],
+    careerAdvice: [{ phase: '1. Ay', action: 'WMS birebir pratik eğitimi', targetDate: '10 Eylül 2026' }]
+  },
+  {
+    id: 'emp_11',
+    name: 'Hasan Arslan',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
+    currentRole: 'Kasiyer Adayı (Deneme Süresinde)',
+    recommendedRole: 'Temel Perakende Eğitimi (Zayıf Performans / İkaz)',
+    matchPercentage: 45,
+    competencyScore: 45,
+    city: 'İstanbul',
+    experienceYears: 1,
+    startDate: '01 Ocak 2026',
+    tenure: '7 Ay',
+    previousExperiences: [],
+    priorTrainings: [],
+    completedTrainings: [
+      { courseTitle: 'Kasa Oryantasyon Kursu', duration: '6 Saat', durationHours: 6, completedDate: '15 Ocak 2026', instructorName: 'Zeynep Kaya', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 45, gradeStatus: 'Başarılı', certificateId: 'PKA-2026-ORY-045' }
+    ],
+    evaluations: {
+      managerReview: { author: 'Murat Yıldırım', role: 'Mağaza Müdürü', rating: 2.3, comment: 'Zayıf performans (45p). Kasa işlemlerinde sık hata yapıyor, müşteri iletişiminde ikaz verilmiştir.', date: '10 Mart 2026' },
+      subordinateReview: { author: 'Selin Demir', role: 'Kasiyer', rating: 2.5, comment: 'Daha çok pratiğe ihtiyacı var.', date: '12 Mart 2026' },
+      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 2.2, comment: 'Acil gelişim aksiyonu alınmalı, aksi halde deneme sonlandırılacak.', date: '15 Mart 2026' }
+    },
+    swot: {
+      strengths: ['Devamlılık oranı düzgün'],
+      weaknesses: ['Kasa açığı verme riski ve yavaşlık'],
+      opportunities: ['Hızlandırılmış pratik ve mentörlük'],
+      threats: ['Müşteri şikayeti artışı']
+    },
+    developmentAreas: ['Kasa Sistemi Temel Kullanım & İletişim'],
+    careerAdvice: [{ phase: '1. Ay', action: '15 gün mentör eşliğinde kasa denetimi', targetDate: '01 Ağustos 2026' }]
+  },
+  {
+    id: 'emp_12',
+    name: 'Mustafa Aydın',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
+    currentRole: 'Reyon Yardımcı Elemanı',
+    recommendedRole: 'Temel Saha İSG & Temizlik Eğitimi',
+    matchPercentage: 38,
+    competencyScore: 38,
+    city: 'Adana',
+    experienceYears: 1,
+    startDate: '10 Şubat 2026',
+    tenure: '6 Ay',
+    previousExperiences: [],
+    priorTrainings: [],
+    completedTrainings: [
+      { courseTitle: 'Giriş Seviye Saha Eğitimi', duration: '4 Saat', durationHours: 4, completedDate: '20 Şubat 2026', instructorName: 'Seda Yılmaz', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 38, gradeStatus: 'Başarılı', certificateId: 'PKA-2026-SAH-038' }
+    ],
+    evaluations: {
+      managerReview: { author: 'Oğuzhan Kaya', role: 'Bölge Müdürü', rating: 2.0, comment: '38 Puan (Zayıf performans). Reyon dizilimi ve hijyen kurallarına riayet eksik.', date: '01 Nisan 2026' },
+      subordinateReview: { author: 'Gamze Tekin', role: 'Müdür Yrd.', rating: 2.1, comment: 'Takip gerektiriyor.', date: '05 Nisan 2026' },
+      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 2.0, comment: '30 günlük performans iyileştirme planı başlatıldı.', date: '10 Nisan 2026' }
+    },
+    swot: {
+      strengths: ['Saha ulaşımı kolay'],
+      weaknesses: ['Hijyen ve etiket düzen standartları eksik'],
+      opportunities: ['Temel 5S eğitimi alma'],
+      threats: ['Reyon denetiminde ceza riski']
+    },
+    developmentAreas: ['Temel Reyon Hijyeni ve 5S Standartları'],
+    careerAdvice: [{ phase: '1. Ay', action: '30 günlük performans iyileştirme programı', targetDate: '15 Ağustos 2026' }]
   }
 ];
 
 export default function EmployeeCareerPlanningModule() {
   const [employeesData, setEmployeesData] = useState<EmployeeCareerRecord[]>(INITIAL_EMPLOYEES_CAREER_DATA);
   const [selectedEmpId, setSelectedEmpId] = useState<string>(INITIAL_EMPLOYEES_CAREER_DATA[0].id);
-  const [minScoreFilter, setMinScoreFilter] = useState<number>(80);
+  const [scoreFilterCategory, setScoreFilterCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Interactive Training Breakdown Modal State
@@ -741,14 +935,20 @@ export default function EmployeeCareerPlanningModule() {
 
   const filteredEmployees = useMemo(() => {
     return employeesData.filter(emp => {
-      const matchesScore = emp.competencyScore >= minScoreFilter;
+      let matchesScore = true;
+      if (scoreFilterCategory === '91-100') matchesScore = emp.competencyScore >= 91 && emp.competencyScore <= 100;
+      else if (scoreFilterCategory === '81-90') matchesScore = emp.competencyScore >= 81 && emp.competencyScore <= 90;
+      else if (scoreFilterCategory === '71-80') matchesScore = emp.competencyScore >= 71 && emp.competencyScore <= 80;
+      else if (scoreFilterCategory === '51-70') matchesScore = emp.competencyScore >= 51 && emp.competencyScore <= 70;
+      else if (scoreFilterCategory === '0-50') matchesScore = emp.competencyScore <= 50;
+
       const matchesSearch = searchQuery === '' || 
         emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         emp.currentRole.toLowerCase().includes(searchQuery.toLowerCase()) ||
         emp.recommendedRole.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesScore && matchesSearch;
     });
-  }, [employeesData, minScoreFilter, searchQuery]);
+  }, [employeesData, scoreFilterCategory, searchQuery]);
 
   const activeEmployee = useMemo(() => {
     return employeesData.find(e => e.id === selectedEmpId) || employeesData[0];
@@ -926,15 +1126,18 @@ export default function EmployeeCareerPlanningModule() {
         </div>
 
         <div className="flex items-center space-x-3 text-xs w-full md:w-auto">
-          <span className="text-gray-500 font-bold whitespace-nowrap">Puan Barajı:</span>
+          <span className="text-gray-500 font-bold whitespace-nowrap">Puan Seviyesi Filtresi:</span>
           <select
-            value={minScoreFilter}
-            onChange={(e) => setMinScoreFilter(Number(e.target.value))}
-            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-bold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-[#087F96]"
+            value={scoreFilterCategory}
+            onChange={(e) => setScoreFilterCategory(e.target.value)}
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-extrabold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-[#087F96]"
           >
-            <option value={80}>≥ 80 Puan (Terfiye Hazır)</option>
-            <option value={90}>≥ 90 Puan (Dereceli Liderler)</option>
-            <option value={70}>Tüm Puan Seviyeleri</option>
+            <option value="all">Tüm Puan Seviyeleri (0-100 Puan)</option>
+            <option value="91-100">Terfi Edebilir (91 - 100 Puan) 🟢</option>
+            <option value="81-90">Başarılı (81 - 90 Puan) 🔵</option>
+            <option value="71-80">Geliştirilebilir (71 - 80 Puan) 🟡</option>
+            <option value="51-70">Orta Performans (51 - 70 Puan) 🟠</option>
+            <option value="0-50">Zayıf Performans (0 - 50 Puan) 🔴</option>
           </select>
         </div>
       </div>
@@ -988,12 +1191,20 @@ export default function EmployeeCareerPlanningModule() {
                     </div>
                   </div>
 
-                  <div className="text-right">
-                    <div className="px-2.5 py-1 bg-[#0B2A4A] text-white rounded-lg font-mono text-xs font-black">
+                  <div className="text-right space-y-1">
+                    <div className={`px-2.5 py-1 rounded-lg font-mono text-xs font-black shadow-xs ${
+                      emp.competencyScore >= 91 ? 'bg-emerald-600 text-white' :
+                      emp.competencyScore >= 81 ? 'bg-blue-600 text-white' :
+                      emp.competencyScore >= 71 ? 'bg-amber-500 text-slate-950' :
+                      emp.competencyScore >= 51 ? 'bg-orange-500 text-white' : 'bg-rose-600 text-white'
+                    }`}>
                       {emp.competencyScore} Puan
                     </div>
-                    <div className="text-[9px] text-emerald-600 font-mono font-bold mt-1">
-                      %{emp.matchPercentage} Uyum
+                    <div className="text-[9px] font-mono font-extrabold text-gray-600">
+                      {emp.competencyScore >= 91 ? 'Terfi Edebilir 🟢' :
+                       emp.competencyScore >= 81 ? 'Başarılı 🔵' :
+                       emp.competencyScore >= 71 ? 'Geliştirilebilir 🟡' :
+                       emp.competencyScore >= 51 ? 'Orta Performans 🟠' : 'Zayıf Performans 🔴'}
                     </div>
                   </div>
                 </div>
