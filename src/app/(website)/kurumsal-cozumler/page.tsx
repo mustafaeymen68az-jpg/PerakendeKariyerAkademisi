@@ -21,7 +21,11 @@ import {
   DollarSign,
   PieChart,
   ShieldAlert,
-  Sparkles
+  Sparkles,
+  UserCheck,
+  UserPlus,
+  Compass,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function KurumsalCozumlerPage() {
@@ -295,11 +299,112 @@ export default function KurumsalCozumlerPage() {
           </div>
         </div>
 
+        {/* 4 CORE HR & TALENT EXECUTIVE PILLARS (ÇALIŞAN KARİYERİ, TERFİ TAKİBİ, YETERSİZ PERSONEL & ELDE TUTULACAK YETENEK) */}
+        <div className="bg-gradient-to-br from-[#061B33] via-[#0B2A4A] to-[#056B80] text-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-[#087F96]/40 space-y-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="text-center space-y-2 max-w-3xl mx-auto">
+            <span className="text-xs font-black text-amber-300 bg-amber-500/20 px-3.5 py-1 rounded-full border border-amber-400/40 uppercase tracking-wider">
+              Anlık İnsan Sermayesi Yönetimi
+            </span>
+            <h2 className="font-display font-black text-2xl sm:text-4xl text-white">
+              Çalışan Gelişimi ve Anlık Personel Takip Gücü
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-300 font-light max-w-2xl mx-auto">
+              Perakende Kariyer Akademisi platformu ile tüm kadronuzu 7/24 canlı izleyebilir, yetersiz personelleri ve yüksek potansiyelli yetenekleri anında tespit edebilirsiniz:
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* PILLAR 1: KARİYER PLANLAMASI */}
+            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-3 hover:bg-white/15 transition-all">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold">
+                  <Compass className="w-6 h-6 text-cyan-300" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-cyan-300 uppercase">GÜÇ #1</span>
+                  <h3 className="font-bold text-base text-white">Şeffaf Çalışan Kariyer Planlaması</h3>
+                </div>
+              </div>
+              <p className="text-xs text-gray-200 leading-relaxed font-light">
+                Çalışanlarınız 15 basamaklı kariyer haritasında hangi pozisyonda olduklarını, bir üst unvana yükselmek için hangi yetkinlikleri ve eğitimleri tamamlamaları gerektiğini 7/24 canlı görürler.
+              </p>
+              <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-cyan-300 flex items-center space-x-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-cyan-300" />
+                <span>%100 Şeffaf Yükselme & Motivasyon Artışı</span>
+              </div>
+            </div>
+
+            {/* PILLAR 2: TERFİ EDECEK PERSONEL TAKİBİ */}
+            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-3 hover:bg-white/15 transition-all">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold">
+                  <UserCheck className="w-6 h-6 text-emerald-300" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-emerald-300 uppercase">GÜÇ #2</span>
+                  <h3 className="font-bold text-base text-white">Terfi Edecek Personeli Anlık Takip</h3>
+                </div>
+              </div>
+              <p className="text-xs text-gray-200 leading-relaxed font-light">
+                2. Yıl eğitimlerini tamamlamış, sınav ve reyon simülasyon skorları %85'in üzerinde olan terfiye hazır personeliniz Terfi Komitesi ekranında anlık yeşil bayrakla listelenir.
+              </p>
+              <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-emerald-300 flex items-center space-x-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
+                <span>Objektif Terfi Listeleri & Hızlı Atama</span>
+              </div>
+            </div>
+
+            {/* PILLAR 3: YETERSİZ PERSONEL TESPİTİ */}
+            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-3 hover:bg-white/15 transition-all">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold">
+                  <AlertTriangle className="w-6 h-6 text-rose-300" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-rose-300 uppercase">GÜÇ #3</span>
+                  <h3 className="font-bold text-base text-white">Yetersiz Personeli Anında Tespit Etme</h3>
+                </div>
+              </div>
+              <p className="text-xs text-gray-200 leading-relaxed font-light">
+                Sınav sonuçlarında, manav-şarküteri fire oranlarında veya denetim skorlarında geride kalan yetersiz personeller kırmızı uyarı sinyaliyle anında tespit edilir ve otomatik destek eğitimi atanır.
+              </p>
+              <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-rose-300 flex items-center space-x-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-rose-300" />
+                <span>Erken Uyarı ile Mağaza Fire ve Hata Engelleme</span>
+              </div>
+            </div>
+
+            {/* PILLAR 4: ELDE TUTULACAK YETKİN PERSONEL HAVUZU */}
+            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 space-y-3 hover:bg-white/15 transition-all">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold">
+                  <Award className="w-6 h-6 text-amber-300" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-amber-300 uppercase">GÜÇ #4</span>
+                  <h3 className="font-bold text-base text-white">Elde Tutulacak Yetkin Personel Havuzu</h3>
+                </div>
+              </div>
+              <p className="text-xs text-gray-200 leading-relaxed font-light">
+                Şirketinizin geleceğini taşıyacak yüksek potansiyelli (High-Pot) yetkin çalışan havuzunuzu 9-Box matrisinde canlı görün. İşten ayrılma riski olan yıldız personelleri anında korumaya alın.
+              </p>
+              <div className="pt-2 border-t border-white/10 text-[11px] font-bold text-amber-300 flex items-center space-x-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-amber-300" />
+                <span>%45 Daha Düşük Turnover & Kritik Yetenek Koruması</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         {/* WHY EXECUTIVES MUST BUY THIS PROGRAM (YÖNETİCİ İKNA TABLOSU / GİRİŞİM METRİKLERİ) */}
         <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-md space-y-6">
           <div className="text-center space-y-2 max-w-2xl mx-auto">
             <span className="text-xs font-black text-purple-900 bg-purple-100 px-3.5 py-1 rounded-full border border-purple-300 uppercase">
-              Karşılaştırmalı Analiz
+              Detaylı Karşılaştırmalı Analiz
             </span>
             <h2 className="font-display font-black text-2xl sm:text-3xl text-[#0B2A4A]">
               Neden Bu Platformu Tercih Etmelisiniz?
@@ -310,12 +415,12 @@ export default function KurumsalCozumlerPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left border-collapse min-w-[600px]">
+            <table className="w-full text-xs text-left border-collapse min-w-[700px]">
               <thead>
                 <tr className="bg-[#0B2A4A] text-white uppercase font-black tracking-wider">
-                  <th className="p-3.5 border-r border-white/10 w-1/3">Kriter / Özellik</th>
+                  <th className="p-3.5 border-r border-white/10 w-1/4">Kriter / Özellik</th>
                   <th className="p-3.5 border-r border-white/10 w-1/3 text-rose-300">Geleneksel Eğitimler</th>
-                  <th className="p-3.5 bg-[#087F96] text-amber-300 w-1/3 font-black">Perakende Kariyer Akademisi</th>
+                  <th className="p-3.5 bg-[#087F96] text-amber-300 w-5/12 font-black">Perakende Kariyer Akademisi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 font-medium">
@@ -343,6 +448,28 @@ export default function KurumsalCozumlerPage() {
                   <td className="p-3.5 font-bold text-[#0B2A4A] bg-gray-50">Sertifikasyon Güvenilirliği</td>
                   <td className="p-3.5 text-rose-700 bg-rose-50/40">Kâğıt Baskı, Doğrulanamaz Matbu Belge</td>
                   <td className="p-3.5 text-emerald-900 bg-emerald-50/60 font-black">QR Kod Doğrulanabilir e-Devlet/Üniversite Onaylı</td>
+                </tr>
+                
+                {/* NEW ENRICHED ROWS REQUESTED BY USER */}
+                <tr className="bg-cyan-50/30">
+                  <td className="p-3.5 font-bold text-[#0B2A4A] bg-cyan-100/50">Çalışan Kariyer Planlaması</td>
+                  <td className="p-3.5 text-rose-700 bg-rose-50/40">Belirsiz, şahsa bağlı subjektif ilerleme</td>
+                  <td className="p-3.5 text-emerald-900 bg-emerald-50/80 font-black">15 Basamaklı Canlı Kariyer Haritası ile %100 Şeffaf Planlama</td>
+                </tr>
+                <tr className="bg-cyan-50/30">
+                  <td className="p-3.5 font-bold text-[#0B2A4A] bg-cyan-100/50">Terfi Edecek Personel Takibi</td>
+                  <td className="p-3.5 text-rose-700 bg-rose-50/40">Kulaktan kulağa tavsiye, geç atamalar</td>
+                  <td className="p-3.5 text-emerald-900 bg-emerald-50/80 font-black">Terfiye Hazır Adayların Canlı Sınav ve Skorlarla Anlık Takibi</td>
+                </tr>
+                <tr className="bg-cyan-50/30">
+                  <td className="p-3.5 font-bold text-[#0B2A4A] bg-cyan-100/50">Yetersiz Personel Tespiti</td>
+                  <td className="p-3.5 text-rose-700 bg-rose-50/40">Fire oluştuktan sonra fark edilen geç müdahaleler</td>
+                  <td className="p-3.5 text-emerald-900 bg-emerald-50/80 font-black">Kırmızı Sinyalle Anında Tespit ve Otomatik Destek Eğitimi</td>
+                </tr>
+                <tr className="bg-cyan-50/30">
+                  <td className="p-3.5 font-bold text-[#0B2A4A] bg-cyan-100/50">Elde Tutulacak Yetkin Personel Havuzu</td>
+                  <td className="p-3.5 text-rose-700 bg-rose-50/40">Yüksek turnover (istifa), kilit yetenek kaybı</td>
+                  <td className="p-3.5 text-emerald-900 bg-emerald-50/80 font-black">9-Box Matrisinde Canlı Yetenek Havuzu ve %45 Daha Düşük Turnover</td>
                 </tr>
               </tbody>
             </table>
