@@ -506,111 +506,155 @@ export default function EmployeeDevelopmentTimelineModule() {
 
           </div>
 
-          {/* CHRONOLOGICAL CAREER TIMELINE GRAPH CARD */}
+          {/* CHRONOLOGICAL CAREER TIMELINE GRAPH CARD (YATAY KRONOLOJİK YOL HARİTASI) */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
               <div className="space-y-1">
                 <h3 className="font-black text-lg text-[#0B2A4A] flex items-center space-x-2">
                   <Milestone className="w-5 h-5 text-[#087F96]" />
-                  <span>Kronolojik Kariyer Haritası & Yolculuk Zaman Çizelgesi</span>
+                  <span>Yatay Kronolojik Kariyer Haritası & Yolculuk Zaman Çizelgesi</span>
                 </h3>
                 <p className="text-xs text-gray-500">
-                  {activeEmployee.name} için geçmiş tecrübelerden gelecek terfi hedeflerine kadar olan kronolojik basamaklar.
+                  {activeEmployee.name} için geçmiş tecrübelerden gelecek terfi hedeflerine kronolojik yatay ilerleme akışı.
                 </p>
               </div>
 
               <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-mono font-bold rounded-full border border-emerald-300 whitespace-nowrap">
-                Canlı Zaman Çizelgesi ⚡
+                Yatay İlerleme Akışı ⚡
               </span>
             </div>
 
-            {/* VISUAL TIMELINE NODES (KRONOLOJİK ZAMAN ÇİZELGESİ) */}
-            <div className="relative border-l-4 border-[#087F96]/30 ml-4 sm:ml-6 space-y-8 pl-6 sm:pl-8 py-2">
-              {careerTimelineMilestones.map((ms, idx) => {
-                const isCompleted = ms.status === 'completed';
-                const isCurrent = ms.status === 'current';
-                const isTarget = ms.status === 'target';
-                const isVision = ms.status === 'vision';
+            {/* 1. HORIZONTAL STEPPER PROGRESS LINE (YATAY TARİHLİ KRONOLOJİ ZAMAN DİZGİSİ) */}
+            <div className="overflow-x-auto pb-4 pt-2">
+              <div className="min-w-[850px] space-y-6">
+                
+                {/* Horizontal Bar Connecting Line with Circles */}
+                <div className="relative flex items-center justify-between px-6 py-4">
+                  {/* Connecting Line */}
+                  <div className="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-2 bg-gradient-to-r from-blue-600 via-[#087F96] via-emerald-500 via-amber-400 to-purple-600 rounded-full shadow-xs z-0" />
 
-                return (
-                  <div key={idx} className="relative group">
-                    {/* Node Dot Icon */}
-                    <div className={`absolute -left-[35px] sm:-left-[43px] top-1.5 w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-md border-2 transition-all ${
-                      isCurrent
-                        ? 'bg-emerald-500 text-white border-white ring-4 ring-emerald-400/30 scale-110'
-                        : isTarget
-                        ? 'bg-amber-400 text-slate-950 border-white ring-4 ring-amber-400/30 scale-105'
-                        : isVision
-                        ? 'bg-purple-600 text-white border-white ring-4 ring-purple-400/30'
-                        : 'bg-[#0B2A4A] text-white border-white'
-                    }`}>
-                      {isCurrent ? <Flag className="w-4 h-4" /> :
-                       isTarget ? <Target className="w-4 h-4" /> :
-                       isVision ? <Crown className="w-4 h-4" /> :
-                       <Check className="w-4 h-4" />}
-                    </div>
+                  {careerTimelineMilestones.map((ms, idx) => {
+                    const isCompleted = ms.status === 'completed';
+                    const isCurrent = ms.status === 'current';
+                    const isTarget = ms.status === 'target';
+                    const isVision = ms.status === 'vision';
 
-                    {/* Timeline Node Card Container */}
-                    <div className={`p-5 rounded-2xl border-2 transition-all space-y-3 ${
-                      isCurrent
-                        ? 'bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-400 shadow-md'
-                        : isTarget
-                        ? 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 shadow-md'
-                        : isVision
-                        ? 'bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-300 shadow-xs'
-                        : 'bg-gray-50/80 border-gray-200 hover:border-gray-300'
-                    }`}>
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200/60 pb-2">
-                        <div className="space-y-0.5">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-xs font-mono font-black text-[#087F96] bg-blue-100 px-2.5 py-0.5 rounded-md">
+                    return (
+                      <div key={idx} className="relative z-10 flex flex-col items-center group cursor-pointer">
+                        {/* Date Pill above circle */}
+                        <div className={`text-[10px] font-mono font-black px-2.5 py-1 rounded-full border shadow-sm mb-2 transition-all group-hover:scale-110 whitespace-nowrap ${
+                          isCurrent
+                            ? 'bg-emerald-600 text-white border-emerald-400 ring-2 ring-emerald-300'
+                            : isTarget
+                            ? 'bg-amber-400 text-slate-950 border-amber-300 ring-2 ring-amber-200'
+                            : isVision
+                            ? 'bg-purple-700 text-white border-purple-400'
+                            : 'bg-[#0B2A4A] text-white border-gray-300'
+                        }`}>
+                          {ms.date}
+                        </div>
+
+                        {/* Circle Node */}
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shadow-lg border-4 transition-transform group-hover:scale-115 ${
+                          isCurrent
+                            ? 'bg-emerald-500 text-white border-white ring-4 ring-emerald-400/40 scale-110'
+                            : isTarget
+                            ? 'bg-amber-400 text-slate-950 border-white ring-4 ring-amber-400/40 scale-105'
+                            : isVision
+                            ? 'bg-purple-600 text-white border-white ring-4 ring-purple-400/30'
+                            : 'bg-[#0B2A4A] text-white border-white'
+                        }`}>
+                          {isCurrent ? <Flag className="w-5 h-5" /> :
+                           isTarget ? <Target className="w-5 h-5" /> :
+                           isVision ? <Crown className="w-5 h-5" /> :
+                           <Check className="w-5 h-5" />}
+                        </div>
+
+                        {/* Title label below circle */}
+                        <div className="text-center mt-2 max-w-[130px]">
+                          <div className="text-[11px] font-extrabold text-[#0B2A4A] line-clamp-1" title={ms.title}>{ms.title}</div>
+                          <div className="text-[9.5px] text-gray-500 font-bold line-clamp-1">{ms.role}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* 2. HORIZONTAL MILESTONE CARDS (YATAY KARTLAR AKIŞI) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+                  {careerTimelineMilestones.map((ms, idx) => {
+                    const isCurrent = ms.status === 'current';
+                    const isTarget = ms.status === 'target';
+                    const isVision = ms.status === 'vision';
+
+                    return (
+                      <div
+                        key={idx}
+                        className={`p-4 rounded-2xl border-2 transition-all space-y-2.5 flex flex-col justify-between hover:scale-[1.02] shadow-xs ${
+                          isCurrent
+                            ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-400 shadow-md ring-2 ring-emerald-300/50'
+                            : isTarget
+                            ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-300 shadow-md'
+                            : isVision
+                            ? 'bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-300'
+                            : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-mono font-black text-[#087F96] bg-blue-100 px-2 py-0.5 rounded-md">
                               {ms.date}
                             </span>
-                            <h4 className="font-black text-sm text-[#0B2A4A]">{ms.title}</h4>
+                            <span className={`text-[9.5px] font-mono font-black px-2 py-0.5 rounded-lg ${
+                              ms.score >= 90 ? 'bg-emerald-600 text-white' :
+                              ms.score >= 80 ? 'bg-blue-600 text-white' :
+                              ms.score >= 70 ? 'bg-amber-500 text-slate-950' : 'bg-gray-700 text-white'
+                            }`}>
+                              %{ms.score} Puan
+                            </span>
                           </div>
-                          <p className="text-xs text-gray-700 font-bold">
-                            Unvan: <strong className="text-[#0B2A4A]">{ms.role}</strong> • {ms.company}
+
+                          <div>
+                            <h4 className="font-extrabold text-xs text-[#0B2A4A] leading-snug">{ms.title}</h4>
+                            <p className="text-[11px] text-gray-700 font-bold mt-0.5">
+                              {ms.role}
+                            </p>
+                            <div className="text-[10px] text-gray-500 font-medium">{ms.company}</div>
+                          </div>
+
+                          <p className="text-[11px] text-gray-600 leading-snug">
+                            {ms.description}
                           </p>
                         </div>
 
-                        <div className="flex items-center space-x-2 shrink-0">
-                          <span className={`text-[10px] font-mono font-black px-2.5 py-1 rounded-lg shadow-xs ${
-                            ms.score >= 90 ? 'bg-emerald-600 text-white' :
-                            ms.score >= 80 ? 'bg-blue-600 text-white' :
-                            ms.score >= 70 ? 'bg-amber-500 text-slate-950' : 'bg-gray-700 text-white'
-                          }`}>
-                            %{ms.score} Puan
-                          </span>
-                          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${
-                            isCurrent ? 'bg-emerald-100 text-emerald-900 border-emerald-300' :
-                            isTarget ? 'bg-amber-100 text-amber-900 border-amber-300' :
-                            isVision ? 'bg-purple-100 text-purple-900 border-purple-300' :
+                        <div className="pt-2 border-t border-gray-200/60 space-y-2">
+                          <div className="flex flex-wrap gap-1">
+                            {ms.badges.map((badge, bIdx) => (
+                              <span key={bIdx} className="text-[9px] font-bold text-gray-700 bg-white border border-gray-300 px-2 py-0.5 rounded-full flex items-center space-x-1">
+                                <Sparkles className="w-2.5 h-2.5 text-amber-500" />
+                                <span>{badge}</span>
+                              </span>
+                            ))}
+                          </div>
+
+                          <div className={`text-[9.5px] font-mono font-bold px-2 py-1 rounded-md text-center border ${
+                            isCurrent ? 'bg-emerald-100 text-emerald-900 border-emerald-300 font-black' :
+                            isTarget ? 'bg-amber-100 text-amber-900 border-amber-300 font-black' :
+                            isVision ? 'bg-purple-100 text-purple-900 border-purple-300 font-black' :
                             'bg-gray-200 text-gray-700 border-gray-300'
                           }`}>
                             {ms.statusLabel}
-                          </span>
+                          </div>
                         </div>
+
                       </div>
+                    );
+                  })}
+                </div>
 
-                      <p className="text-xs text-gray-600 font-medium leading-relaxed">
-                        {ms.description}
-                      </p>
-
-                      {/* Milestones & Skill Badges */}
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {ms.badges.map((badge, bIdx) => (
-                          <span key={bIdx} className="text-[9.5px] font-bold text-gray-700 bg-white border border-gray-300 px-2.5 py-0.5 rounded-full flex items-center space-x-1">
-                            <Sparkles className="w-2.5 h-2.5 text-amber-500" />
-                            <span>{badge}</span>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                  </div>
-                );
-              })}
+              </div>
             </div>
+
           </div>
 
           {/* 30-60-90 DAY INDIVIDUAL DEVELOPMENT ACTION PLAN */}
