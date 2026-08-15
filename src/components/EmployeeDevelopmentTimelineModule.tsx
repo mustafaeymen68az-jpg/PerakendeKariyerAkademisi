@@ -205,9 +205,13 @@ function generate1000TimelineEmployeesData(): EmployeeCareerRecord[] {
         ]
       },
       personalCareerGoal: {
-        targetRole: deptConfig.target,
+        targetRole: i % 3 === 0 
+          ? (i % 2 === 0 ? 'Bölge Operasyon Müdürü' : 'Satınalma & Kategori Yöneticisi')
+          : deptConfig.target,
         targetDate: '1. Çeyrek 2027',
-        description: `Kariyerimi Planlıyorum Modülü: 2027 hedeflerim doğrultusunda ${deptConfig.target} pozisyonuna terfi etmek ve Perakende Akademi liderlik sertifikasyonunu %90+ puanla tamamlamak.`,
+        description: i % 3 === 0
+          ? `Kariyerimi Planlıyorum Modülü: 2027 hedeflerim doğrultusunda ${i % 2 === 0 ? 'Bölge Operasyon Müdürü' : 'Satınalma & Kategori Yöneticisi'} pozisyonuna yükselmeyi planlıyorum.`
+          : `Kariyerimi Planlıyorum Modülü: 2027 hedeflerim doğrultusunda ${deptConfig.target} pozisyonuna terfi etmek ve Perakende Akademi liderlik sertifikasyonunu %90+ puanla tamamlamak.`,
         savedAt: `${(i % 25) + 1} Ağustos 2026`,
         status: score >= 90 ? 'Hedefe Ulaşıldı' : score >= 80 ? 'Aktif Planlama' : 'Onay Bekliyor'
       }
@@ -462,14 +466,53 @@ export default function EmployeeDevelopmentTimelineModule() {
               </div>
             </div>
 
-            {/* Target Role Card */}
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-5 rounded-2xl shadow-lg space-y-1 text-center sm:text-right w-full sm:w-auto shrink-0 border border-emerald-400">
-              <div className="text-xs font-bold uppercase text-emerald-100">Önerilen Terfi Hedefi</div>
-              <div className="text-base font-black text-white">{activeEmployee.recommendedRole}</div>
-              <div className="text-xs font-mono font-bold text-amber-300">
-                Uyum Oranı: %{activeEmployee.matchPercentage}
-              </div>
-            </div>
+            {/* SIDE-BY-SIDE DUAL GOAL COMPARISON CARDS (ÖNERİLEN VE PLANLANAN KİŞİSEL HEDEF) */}
+            {(() => {
+              const personalGoalRole = activeEmployee.personalCareerGoal?.targetRole || activeEmployee.recommendedRole;
+              const isMatching = personalGoalRole.trim().toLowerCase() === activeEmployee.recommendedRole.trim().toLowerCase();
+
+              return (
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto shrink-0">
+                  
+                  {/* 1. ÖNERİLEN TERFİ HEDEFİ (SİSTEM ÖNERİSİ - DAİMA YEŞİL) */}
+                  <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 sm:p-5 rounded-2xl shadow-md space-y-1 text-left sm:text-right flex-1 sm:flex-none border border-emerald-400">
+                    <div className="text-[10px] font-mono font-black uppercase text-emerald-100 flex items-center justify-start sm:justify-end space-x-1">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                      <span>ÖNERİLEN TERFİ HEDEFİ</span>
+                    </div>
+                    <div className="text-sm sm:text-base font-black text-white">{activeEmployee.recommendedRole}</div>
+                    <div className="text-xs font-mono font-bold text-amber-300">
+                      Uyum Oranı: %{activeEmployee.matchPercentage}
+                    </div>
+                  </div>
+
+                  {/* 2. PLANLANAN KİŞİSEL HEDEF (UYUMLU İSE YEŞİL, TUTARSIZ İSE KIRMIZI) */}
+                  <div className={`p-4 sm:p-5 rounded-2xl shadow-md space-y-1 text-left sm:text-right flex-1 sm:flex-none border ${
+                    isMatching
+                      ? 'bg-gradient-to-r from-emerald-600 to-teal-700 text-white border-emerald-400'
+                      : 'bg-gradient-to-r from-rose-600 via-red-600 to-rose-700 text-white border-rose-400 ring-2 ring-rose-300/40'
+                  }`}>
+                    <div className="text-[10px] font-mono font-black uppercase text-white/90 flex items-center justify-start sm:justify-end space-x-1">
+                      <Target className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                      <span>PLANLANAN KİŞİSEL HEDEF</span>
+                    </div>
+                    <div className="text-sm sm:text-base font-black text-white">{personalGoalRole}</div>
+                    <div className="text-xs font-mono font-bold">
+                      {isMatching ? (
+                        <span className="text-emerald-100 bg-emerald-900/50 px-2.5 py-0.5 rounded-md border border-emerald-300/40 font-black inline-block">
+                          Sistemle Uyumlu ✅
+                        </span>
+                      ) : (
+                        <span className="text-white bg-rose-950/70 px-2.5 py-0.5 rounded-md border border-rose-200/50 font-black inline-block">
+                          ⚠️ Tutarsızlık Var! (Kırmızı)
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })()}
           </div>
 
           {/* VISUAL SCORE EVOLUTION PROGRESS BAR GRAPH */}
@@ -506,38 +549,58 @@ export default function EmployeeDevelopmentTimelineModule() {
           </div>
 
           {/* PERSONAL CAREER GOAL CARD (KARİYERİMİ PLANLIYORUM) */}
-          <div className="bg-gradient-to-r from-amber-500/10 via-amber-50 to-orange-50 p-5 rounded-2xl border-2 border-amber-300 shadow-sm space-y-3 mt-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-amber-200/60 pb-2">
-              <div className="flex items-center space-x-2">
-                <Target className="w-5 h-5 text-amber-600 shrink-0" />
-                <h4 className="font-black text-sm text-[#0B2A4A]">
-                  🎯 Kayıtlı Kişisel Kariyer Hedefi (Kariyerimi Planlıyorum Modülü)
-                </h4>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-[10px] font-mono font-black px-2.5 py-1 bg-amber-200 text-amber-900 rounded-lg border border-amber-400">
-                  Durum: {activeEmployee.personalCareerGoal.status}
-                </span>
-                <span className="text-[10px] font-mono text-gray-600">
-                  Kayıt Tarihi: {activeEmployee.personalCareerGoal.savedAt}
-                </span>
-              </div>
-            </div>
+          {(() => {
+            const personalGoalRole = activeEmployee.personalCareerGoal?.targetRole || activeEmployee.recommendedRole;
+            const isMatching = personalGoalRole.trim().toLowerCase() === activeEmployee.recommendedRole.trim().toLowerCase();
 
-            <div className="bg-white p-4 rounded-xl border border-amber-200 space-y-2 shadow-xs">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-2">
-                <span className="text-xs font-black text-[#0B2A4A]">
-                  Kişinin Kendi Belirlediği Hedef Pozisyon: <span className="text-emerald-700 font-black">{activeEmployee.personalCareerGoal.targetRole}</span>
-                </span>
-                <span className="text-[11px] font-mono font-bold text-amber-900 bg-amber-100 px-3 py-0.5 rounded-md border border-amber-300">
-                  🎯 Hedef Zaman: {activeEmployee.personalCareerGoal.targetDate}
-                </span>
+            return (
+              <div className={`p-5 rounded-2xl border-2 shadow-sm space-y-3 mt-4 transition-all ${
+                isMatching 
+                  ? 'bg-gradient-to-r from-amber-500/10 via-amber-50 to-orange-50 border-amber-300' 
+                  : 'bg-gradient-to-r from-rose-500/10 via-red-50 to-rose-100 border-rose-300'
+              }`}>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-amber-200/60 pb-2">
+                  <div className="flex items-center space-x-2">
+                    <Target className={`w-5 h-5 shrink-0 ${isMatching ? 'text-amber-600' : 'text-rose-600'}`} />
+                    <h4 className="font-black text-sm text-[#0B2A4A]">
+                      🎯 Kayıtlı Kişisel Kariyer Hedefi (Kariyerimi Planlıyorum Modülü)
+                    </h4>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {isMatching ? (
+                      <span className="text-[10px] font-mono font-black px-2.5 py-1 bg-emerald-100 text-emerald-900 rounded-lg border border-emerald-400">
+                        Sistem Hedefi ile Uyumlu ✅
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-mono font-black px-2.5 py-1 bg-rose-200 text-rose-950 rounded-lg border border-rose-400 animate-pulse">
+                        ⚠️ Tutarsızlık Var! (Farklı Hedef Beyanı)
+                      </span>
+                    )}
+                    <span className="text-[10px] font-mono text-gray-600">
+                      Kayıt Tarihi: {activeEmployee.personalCareerGoal.savedAt}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl border border-gray-200 space-y-2 shadow-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-2">
+                    <span className="text-xs font-black text-[#0B2A4A]">
+                      Kişinin Kendi Belirlediği Hedef Pozisyon:{' '}
+                      <span className={`font-black ${isMatching ? 'text-emerald-700' : 'text-rose-700 font-extrabold'}`}>
+                        {activeEmployee.personalCareerGoal.targetRole}
+                      </span>
+                    </span>
+                    <span className="text-[11px] font-mono font-bold text-amber-900 bg-amber-100 px-3 py-0.5 rounded-md border border-amber-300">
+                      🎯 Hedef Zaman: {activeEmployee.personalCareerGoal.targetDate}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-800 italic font-medium bg-gray-50/80 p-3 rounded-lg border border-gray-200/80 leading-relaxed">
+                    "{activeEmployee.personalCareerGoal.description}"
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-gray-800 italic font-medium bg-amber-50/60 p-3 rounded-lg border border-amber-100/80 leading-relaxed">
-                "{activeEmployee.personalCareerGoal.description}"
-              </p>
-            </div>
-          </div>
+            );
+          })()}
 
         </div>
 
