@@ -35,7 +35,8 @@ import {
   Crown,
   UserCheck,
   Database,
-  Calendar
+  Calendar,
+  CheckSquare
 } from 'lucide-react';
 import {
   ALL_CAREER_TRACKS_15,
@@ -71,10 +72,12 @@ export default function OperationCareerJourney() {
   const activeTrack = ALL_CAREER_TRACKS_15.find(t => t.id === activeTrackId) || ALL_CAREER_TRACKS_15[0];
 
   const [userCurrentLevelId, setUserCurrentLevelId] = useState<number>(5);
-  const [selectedStep, setSelectedStep] = useState<CareerStep15>(activeTrack.steps[Math.min(4, activeTrack.steps.length - 1)]);
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [selectedStep, setSelectedStep] = useState<CareerStep15>(
+    activeTrack.steps.find(s => s.id === 5) || activeTrack.steps[0]
+  );
   const [activeView, setActiveView] = useState<'staircase' | 'grid'>('staircase');
 
+  // Track selection change handler
   const handleTrackChange = (trackId: string) => {
     setActiveTrackId(trackId);
     const newTrack = ALL_CAREER_TRACKS_15.find(t => t.id === trackId) || ALL_CAREER_TRACKS_15[0];
@@ -82,9 +85,10 @@ export default function OperationCareerJourney() {
     setSelectedStep(defaultStep);
   };
 
-  const openPositionDetails = (step: CareerStep15) => {
+  // Step click handler (interactively updates level & top calculations & detail panel)
+  const handleStepClick = (step: CareerStep15) => {
+    setUserCurrentLevelId(step.id);
     setSelectedStep(step);
-    setIsDrawerOpen(true);
   };
 
   const totalStepsInTrack = activeTrack.steps.length;
@@ -129,11 +133,9 @@ export default function OperationCareerJourney() {
 
   return (
     <div id="15-basamakli-harita" className="min-h-screen bg-[#F4F7F9] font-sans pb-24 scroll-mt-6">
-      {/* -------------------------------------------------- */}
-      {/* TOP HEADER SECTION WITH CARRIER TRACK SELECTOR */}
-      {/* -------------------------------------------------- */}
+      
+      {/* TOP HEADER SECTION WITH CAREER TRACK SELECTOR */}
       <section id="kariyer-haritasi" className="bg-gradient-to-b from-[#0B2A4A] via-[#061B33] to-[#0B2A4A] text-white py-14 px-4 sm:px-6 lg:px-8 border-b border-[#087F96]/30 relative overflow-hidden scroll-mt-6">
-        {/* Background glow */}
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#087F96]/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#34A853]/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -214,11 +216,12 @@ export default function OperationCareerJourney() {
         </div>
       </section>
 
-      {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 mt-12">
+      {/* Main Content Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 mt-10">
 
-        {/* DYNAMIC STEP COUNT STAIRCASE CAREER MAP SECTION */}
+        {/* STAIRCASE & INTERACTIVE DASHBOARD SECTION */}
         <section className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200/80 space-y-8 relative overflow-hidden">
+          
           {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-6">
             <div>
@@ -229,7 +232,7 @@ export default function OperationCareerJourney() {
                 {activeTrack.headline}
               </h2>
               <p className="text-gray-500 text-xs sm:text-sm mt-1">
-                Herhangi bir kariyer kartına tıklayarak "Buradan sonra nereye gidebilirim?" ve sonraki basamağın eğitimlerini görüntüleyin.
+                Aşağıdaki basamaklara tıklayarak seçtiğiniz pozisyondan zirveye kalan süreyi ve terfi için gereken eğitimleri anında inceleyebilirsiniz.
               </p>
             </div>
 
@@ -241,17 +244,17 @@ export default function OperationCareerJourney() {
               </div>
               <div className="flex items-center space-x-1 bg-[#087F96] text-white px-3 py-1.5 rounded-xl font-extrabold shadow-sm">
                 <div className="w-2 h-2 rounded-full bg-amber-300 animate-ping" />
-                <span>Mevcut</span>
+                <span>Mevcut Seçim</span>
               </div>
               <div className="flex items-center space-x-1 bg-slate-900 text-white px-3 py-1.5 rounded-xl font-bold">
                 <ArrowUp className="w-3.5 h-3.5 text-amber-300" />
-                <span>Sonraki Hedef</span>
+                <span>Hedef Rol</span>
               </div>
             </div>
           </div>
 
-          {/* DYNAMIC TIME & TARGET DATE DASHBOARD BANNER */}
-          <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-6 rounded-2xl shadow-lg border border-[#087F96]/40 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          {/* DYNAMIC TIME & TARGET DATE INTERACTIVE BANNER */}
+          <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-6 rounded-3xl shadow-lg border border-[#087F96]/40 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             {/* Total Track Duration */}
             <div className="space-y-1">
               <div className="text-[10px] uppercase font-bold text-gray-300 tracking-wider flex items-center space-x-1">
@@ -263,58 +266,58 @@ export default function OperationCareerJourney() {
               </div>
             </div>
 
-            {/* Remaining Duration from Selected Step to Peak */}
+            {/* Remaining Duration from Selected Step to Peak (INTERACTIVE) */}
             <div className="space-y-1 border-t md:border-t-0 md:border-l border-white/15 pt-3 md:pt-0 md:pl-6">
               <div className="text-[10px] uppercase font-bold text-gray-300 tracking-wider flex items-center space-x-1">
                 <Target className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Seçilen Pozisyondan Zirveye Kalan Süre</span>
+                <span>SEÇİLEN POZİSYONDAN ZİRVEYE KALAN SÜRE</span>
               </div>
               <div className="text-xl sm:text-2xl font-black text-emerald-300 font-mono">
                 {formatYearsMonths(remainingMinMonths)}
               </div>
-              <div className="text-[10px] text-gray-300">
-                Seçilen: {activeTrack.steps[effectiveCurrentIndex]?.title || 'Kasiyer'}
+              <div className="text-[10px] text-emerald-200 font-bold">
+                Seçilen: <strong>{selectedStep.title} ({effectiveCurrentIndex + 1}. Basamak)</strong>
               </div>
             </div>
 
-            {/* Estimated Peak Reaching Month/Year */}
+            {/* Estimated Peak Reaching Month/Year (INTERACTIVE) */}
             <div className="space-y-1 border-t md:border-t-0 md:border-l border-white/15 pt-3 md:pt-0 md:pl-6">
               <div className="text-[10px] uppercase font-bold text-gray-300 tracking-wider flex items-center space-x-1">
                 <Calendar className="w-3.5 h-3.5 text-yellow-300" />
-                <span>Tahmini Zirveye Ulaşım Tarihi</span>
+                <span>TAHMİNİ ZİRVEYE ULAŞIM TARİHİ</span>
               </div>
               <div className="text-lg sm:text-xl font-black text-yellow-300 font-mono">
                 {minTargetDateStr} – {maxTargetDateStr}
               </div>
               <div className="text-[10px] text-gray-300">
-                Planlanan Dönem: Ağustos 2026 Başlangıçlı
+                Planlanan Dönem: Ağustos {currentYearVal} Başlangıçlı
               </div>
             </div>
           </div>
 
-          {/* DYNAMIC STAIRCASE MAP DISPLAY */}
+          {/* FLUID STAIRCASE DISPLAY (NO HORIZONTAL SCROLLBAR, FULL VISIBILITY) */}
           {activeView === 'staircase' ? (
-            <div className="overflow-x-auto pb-6 custom-scrollbar">
-              <div className="min-w-[1100px] flex items-end justify-between gap-2.5 pt-12 pb-4 px-2 relative min-h-[460px]">
+            <div className="w-full pt-10 pb-12 px-2 relative min-h-[540px]">
+              
+              {/* Horizontal Baseline */}
+              <div className="absolute bottom-6 left-0 right-0 h-3 bg-gradient-to-r from-gray-200 via-[#087F96]/40 to-[#0B2A4A] rounded-full" />
 
-                {/* Horizontal Baseline */}
-                <div className="absolute bottom-4 left-0 right-0 h-2 bg-gradient-to-r from-gray-200 via-[#087F96]/30 to-[#0B2A4A] rounded-full" />
-
+              <div className="w-full flex items-end justify-between gap-1 sm:gap-2">
                 {activeTrack.steps.map((step, idx) => {
                   const isCurrent = step.id === userCurrentLevelId;
                   const isCompleted = step.id < userCurrentLevelId;
                   const isNextTarget = step.id === userCurrentLevelId + 1;
                   const isPeak = idx === totalStepsInTrack - 1;
 
-                  // Staircase height calculation
-                  const stepHeight = 120 + Math.round((idx / (totalStepsInTrack - 1)) * 260);
+                  // Fluid staircase height calculation with ample space for details & buttons
+                  const stepHeight = 180 + Math.round((idx / (totalStepsInTrack - 1)) * 300);
 
                   return (
                     <div
                       key={step.id}
-                      onClick={() => openPositionDetails(step)}
+                      onClick={() => handleStepClick(step)}
                       style={{ height: `${stepHeight}px` }}
-                      className={`relative flex-1 rounded-2xl p-3 flex flex-col justify-between cursor-pointer transition-all duration-300 group border-2 ${
+                      className={`relative flex-1 rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between cursor-pointer transition-all duration-300 group border-2 ${
                         isCurrent
                           ? 'bg-[#087F96] text-white border-white ring-4 ring-[#087F96]/40 shadow-2xl scale-105 z-20'
                           : isNextTarget
@@ -340,30 +343,36 @@ export default function OperationCareerJourney() {
                       </div>
 
                       {/* Title & Duration */}
-                      <div className="my-auto space-y-1 text-center">
-                        <h3 className="font-extrabold text-xs leading-snug line-clamp-2">
+                      <div className="my-auto space-y-1 text-center py-2">
+                        <h3 className="font-extrabold text-[11px] sm:text-xs leading-snug line-clamp-2">
                           {step.title}
                         </h3>
-                        <span className={`text-[9px] font-mono block ${
+                        <span className={`text-[9px] font-mono block font-bold ${
                           isCurrent ? 'text-amber-200' : 'text-gray-500'
                         }`}>
                           ⏱️ {step.recommendedDuration}
                         </span>
                       </div>
 
-                      {/* Action Button */}
-                      <button className={`w-full py-1 rounded-xl text-[10px] font-black transition-all ${
-                        isCurrent 
-                          ? 'bg-amber-400 text-slate-950 hover:bg-amber-300'
-                          : 'bg-white/20 text-white hover:bg-white/30'
-                      }`}>
+                      {/* Action Button (100% visible at the bottom) */}
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStepClick(step);
+                        }}
+                        className={`w-full py-1.5 rounded-xl text-[10px] font-black transition-all shadow-xs ${
+                          isCurrent 
+                            ? 'bg-amber-400 text-slate-950 hover:bg-amber-300'
+                            : 'bg-white/20 text-white hover:bg-white/30'
+                        }`}
+                      >
                         Detay
                       </button>
                     </div>
                   );
                 })}
-
               </div>
+
             </div>
           ) : (
             /* GRID VIEW */
@@ -371,8 +380,10 @@ export default function OperationCareerJourney() {
               {activeTrack.steps.map((step, idx) => (
                 <div
                   key={step.id}
-                  onClick={() => openPositionDetails(step)}
-                  className="p-6 bg-white border-2 border-gray-200 rounded-3xl shadow-sm hover:shadow-xl transition-all flex flex-col justify-between space-y-4 group cursor-pointer hover:border-[#087F96]"
+                  onClick={() => handleStepClick(step)}
+                  className={`p-6 bg-white border-2 rounded-3xl shadow-sm hover:shadow-xl transition-all flex flex-col justify-between space-y-4 group cursor-pointer ${
+                    step.id === userCurrentLevelId ? 'border-[#087F96] ring-2 ring-[#087F96]' : 'border-gray-200 hover:border-[#087F96]'
+                  }`}
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
@@ -394,6 +405,99 @@ export default function OperationCareerJourney() {
               ))}
             </div>
           )}
+
+        </section>
+
+        {/* INLINE DETAILED TRAINING & COMPETENCY PANEL FOR SELECTED STEP */}
+        <section className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border-2 border-[#087F96] space-y-8 animate-in fade-in duration-200">
+          
+          {/* Panel Header */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
+            <div className="space-y-1">
+              <div className="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-900 border border-emerald-300 px-3 py-1 rounded-full text-xs font-bold font-mono">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>SEÇİLEN BASAMAK KARİYER YOLCULUĞU VE EĞİTİM KARNESİ</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-black text-[#0B2A4A]">
+                {selectedStep.title}
+              </h3>
+              <p className="text-xs text-gray-600">
+                Önerilen Pozisyon Süresi: <strong>{selectedStep.recommendedDuration}</strong> • Amac: {selectedStep.purpose}
+              </p>
+            </div>
+
+            <div className="bg-[#0B2A4A] text-white p-4 rounded-2xl text-center space-y-1 w-full sm:w-auto">
+              <div className="text-[10px] font-bold uppercase text-gray-300">Bir Sonraki Hedef Rol</div>
+              <div className="text-sm font-black text-amber-300">{selectedStep.nextCareerLevel}</div>
+            </div>
+          </div>
+
+          {/* Next Level Required Trainings Grid */}
+          <div className="space-y-4">
+            <h4 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2">
+              <GraduationCap className="w-5 h-5 text-[#087F96]" />
+              <span>Sonraki Seviyeye Terfi İçin Alınması Gereken Zorunlu Eğitimler</span>
+            </h4>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {selectedStep.requiredTrainingForNextLevel.map((training, idx) => (
+                <div key={idx} className="p-4 bg-gray-50 border border-gray-200 rounded-2xl flex items-start space-x-3 text-xs text-gray-800 font-bold hover:border-[#087F96] transition-all">
+                  <BookOpen className="w-4 h-4 text-[#087F96] flex-shrink-0 mt-0.5" />
+                  <span>{training}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Competencies & Promotion Criteria Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
+            
+            {/* Competencies to Gain */}
+            <div className="space-y-3 bg-blue-50/60 p-5 rounded-2xl border border-blue-200">
+              <h4 className="font-extrabold text-sm text-[#0B2A4A] flex items-center space-x-2">
+                <Award className="w-4 h-4 text-[#087F96]" />
+                <span>Kazanılması Gereken Yetkinlikler</span>
+              </h4>
+              <ul className="space-y-2 text-xs text-gray-700 font-medium">
+                {selectedStep.nextCompetencies.map((comp, idx) => (
+                  <li key={idx} className="flex items-center space-x-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                    <span>{comp}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Promotion Criteria */}
+            <div className="space-y-3 bg-amber-50/60 p-5 rounded-2xl border border-amber-200">
+              <h4 className="font-extrabold text-sm text-[#0B2A4A] flex items-center space-x-2">
+                <CheckSquare className="w-4 h-4 text-amber-600" />
+                <span>Terfi & Değerlendirme Kriterleri</span>
+              </h4>
+              <ul className="space-y-2 text-xs text-gray-700 font-medium">
+                {selectedStep.promotionCriteria && selectedStep.promotionCriteria.length > 0 ? (
+                  selectedStep.promotionCriteria.map((crit, idx) => (
+                    <li key={idx} className="flex items-center space-x-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-600 flex-shrink-0" />
+                      <span>{crit}</span>
+                    </li>
+                  ))
+                ) : (
+                  <>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-600 flex-shrink-0" />
+                      <span>Eğitim sonu sınavında minimum %80 başarı skoru</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-600 flex-shrink-0" />
+                      <span>Saha operasyon denetiminde %85 üzeri karne</span>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </div>
+
+          </div>
 
         </section>
 
