@@ -341,7 +341,7 @@ export default function EmployeeCareerPlanningModule() {
     }
   }, [employeesData]);
 
-  // Dynamically calculate score tier counts for top Summary Dashboard
+  // Dynamically calculate score tier counts for top Summary Dashboard (filtered dynamically by selected Department)
   const scoreCounts = useMemo(() => {
     let tier91_100 = 0;
     let tier81_90 = 0;
@@ -349,7 +349,12 @@ export default function EmployeeCareerPlanningModule() {
     let tier51_70 = 0;
     let tier0_50 = 0;
 
-    employeesData.forEach(e => {
+    const filteredForDept = employeesData.filter(e => {
+      if (selectedDepartmentFilter === 'all') return true;
+      return e.department === selectedDepartmentFilter;
+    });
+
+    filteredForDept.forEach(e => {
       if (e.competencyScore >= 91) tier91_100++;
       else if (e.competencyScore >= 81) tier81_90++;
       else if (e.competencyScore >= 71) tier71_80++;
@@ -357,15 +362,22 @@ export default function EmployeeCareerPlanningModule() {
       else tier0_50++;
     });
 
+    const total = filteredForDept.length;
+
     return {
-      total: employeesData.length,
+      total,
       tier91_100,
       tier81_90,
       tier71_80,
       tier51_70,
-      tier0_50
+      tier0_50,
+      pct91_100: total > 0 ? Math.round((tier91_100 / total) * 100) : 0,
+      pct81_90: total > 0 ? Math.round((tier81_90 / total) * 100) : 0,
+      pct71_80: total > 0 ? Math.round((tier71_80 / total) * 100) : 0,
+      pct51_70: total > 0 ? Math.round((tier51_70 / total) * 100) : 0,
+      pct0_50: total > 0 ? Math.round((tier0_50 / total) * 100) : 0,
     };
-  }, [employeesData]);
+  }, [employeesData, selectedDepartmentFilter]);
 
   // Dynamically calculate department success & headcount stats
   const departmentAnalytics = useMemo(() => {
@@ -601,10 +613,15 @@ export default function EmployeeCareerPlanningModule() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/15 pb-3">
             <div className="flex items-center space-x-2">
               <BarChart3 className="w-5 h-5 text-amber-300" />
-              <h3 className="font-extrabold text-sm text-white">Çalışan Performans & Terfi Özet Dashboard</h3>
+              <h3 className="font-extrabold text-sm text-white">
+                Çalışan Performans & Terfi Özet Dashboard 
+                {selectedDepartmentFilter !== 'all' && (
+                  <span className="text-amber-300 ml-2">— {selectedDepartmentFilter} ({scoreCounts.total} Personel)</span>
+                )}
+              </h3>
             </div>
             <span className="text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
-              Canlı 50 Personel Analizi ⚡
+              {selectedDepartmentFilter === 'all' ? 'Canlı 50 Personel Analizi ⚡' : `Canlı ${selectedDepartmentFilter} (${scoreCounts.total} Personel) ⚡`}
             </span>
           </div>
 
@@ -633,7 +650,7 @@ export default function EmployeeCareerPlanningModule() {
             >
               <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-100">Terfi Edebilir 🟢</div>
               <div className="text-2xl font-black font-mono text-emerald-300 mt-1">{scoreCounts.tier91_100} Kişi</div>
-              <div className="text-[9px] font-bold mt-1 text-emerald-200">%20 Lider Adayı →</div>
+              <div className="text-[9px] font-bold mt-1 text-emerald-200">%{scoreCounts.pct91_100} Lider Adayı →</div>
             </div>
 
             <div
@@ -646,7 +663,7 @@ export default function EmployeeCareerPlanningModule() {
             >
               <div className="text-[10px] font-bold uppercase tracking-wider text-blue-100">Başarılı 🔵</div>
               <div className="text-2xl font-black font-mono text-blue-300 mt-1">{scoreCounts.tier81_90} Kişi</div>
-              <div className="text-[9px] font-bold mt-1 text-blue-200">%30 Yüksek Performans →</div>
+              <div className="text-[9px] font-bold mt-1 text-blue-200">%{scoreCounts.pct81_90} Yüksek Performans →</div>
             </div>
 
             <div
@@ -659,7 +676,7 @@ export default function EmployeeCareerPlanningModule() {
             >
               <div className="text-[10px] font-bold uppercase tracking-wider text-amber-100">Geliştirilebilir 🟡</div>
               <div className="text-2xl font-black font-mono text-amber-300 mt-1">{scoreCounts.tier71_80} Kişi</div>
-              <div className="text-[9px] font-bold mt-1 text-amber-200">%24 Eğitime Yönlendir →</div>
+              <div className="text-[9px] font-bold mt-1 text-amber-200">%{scoreCounts.pct71_80} Eğitime Yönlendir →</div>
             </div>
 
             <div
@@ -672,7 +689,7 @@ export default function EmployeeCareerPlanningModule() {
             >
               <div className="text-[10px] font-bold uppercase tracking-wider text-orange-100">Orta Performans 🟠</div>
               <div className="text-2xl font-black font-mono text-orange-300 mt-1">{scoreCounts.tier51_70} Kişi</div>
-              <div className="text-[9px] font-bold mt-1 text-orange-200">%16 Takipte →</div>
+              <div className="text-[9px] font-bold mt-1 text-orange-200">%{scoreCounts.pct51_70} Takipte →</div>
             </div>
 
             <div
@@ -685,7 +702,7 @@ export default function EmployeeCareerPlanningModule() {
             >
               <div className="text-[10px] font-bold uppercase tracking-wider text-rose-100">Zayıf Performans 🔴</div>
               <div className="text-2xl font-black font-mono text-rose-300 mt-1">{scoreCounts.tier0_50} Kişi</div>
-              <div className="text-[9px] font-bold mt-1 text-rose-200">%10 İkaz / Mentörlük →</div>
+              <div className="text-[9px] font-bold mt-1 text-rose-200">%{scoreCounts.pct0_50} İkaz / Mentörlük →</div>
             </div>
 
           </div>
