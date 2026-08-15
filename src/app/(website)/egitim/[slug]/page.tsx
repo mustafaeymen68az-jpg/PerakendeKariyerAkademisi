@@ -616,6 +616,115 @@ export default async function EgitimDetayPage({ params }: PageProps) {
                 </p>
               </div>
             </div>
+
+            {/* UNIFIED MEDIA & DOCUMENTS CARD (PDF, EXCEL, SLIDES, VISUALS) */}
+            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-200 space-y-6">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div>
+                  <span className="text-[10px] font-black text-white bg-[#E11D48] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                    Tek Kart Medya Kütüphanesi
+                  </span>
+                  <h3 className="font-display font-bold text-xl text-[#0B2A4A] mt-1 flex items-center space-x-2">
+                    <FileText className="h-6 w-6 text-[#087F96]" />
+                    <span>Dersin Tüm Yazılı, Görsel & Veri Dökümanları</span>
+                  </h3>
+                  <p className="text-xs text-gray-500 font-light mt-0.5">
+                    Videolar, PDF çalışma rehberleri, Excel KPI şablonları, PowerPoint ders slaytları ve infografikler tek kartta:
+                  </p>
+                </div>
+              </div>
+
+              {/* Grid of 4 Document Categories */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                {/* 1. PDF Handouts */}
+                <div className="p-4 bg-amber-50/60 border border-amber-200 rounded-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-900 flex items-center space-x-1">
+                      <FileText className="w-4 h-4 text-amber-600" />
+                      <span>📄 PDF Ders Rehberi & El Kitabı</span>
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">2.4 MB</span>
+                  </div>
+                  <p className="text-xs text-gray-600 font-light">
+                    Saha çalışanları için adım adım uygulama adımları, SOP kuralları ve kontrol listeleri.
+                  </p>
+                  <a
+                    href={`data:text/plain;charset=utf-8,${encodeURIComponent(`${courseData.title} - Ders Rehberi ve Uygulama Kitapçığı\n\n1. Giriş ve SOP Standartları\n2. Saha Uygulama Kuralları\n3. Yangın ve Fire Önleme Kontrol Listesi`)}`}
+                    download={`${createSlug(courseData.title)}_ders_rehberi.pdf`}
+                    className="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-extrabold rounded-lg text-xs transition-colors flex items-center justify-center space-x-1 shadow-xs"
+                  >
+                    <span>PDF İndir (.PDF)</span>
+                  </a>
+                </div>
+
+                {/* 2. Excel KPI Spreadsheets */}
+                <div className="p-4 bg-emerald-50/60 border border-emerald-200 rounded-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-emerald-900 flex items-center space-x-1">
+                      <FileText className="w-4 h-4 text-emerald-600" />
+                      <span>📊 Excel KPI & Hesaplama Tablosu</span>
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">1.8 MB</span>
+                  </div>
+                  <p className="text-xs text-gray-600 font-light">
+                    Mağaza fire hesabı, GMROI stok getirisi ve sepet ikraz oranları otomatik Excel şablonu.
+                  </p>
+                  <a
+                    href={`data:application/vnd.ms-excel;charset=utf-8,${encodeURIComponent(`SKU\tMetrik\tDeğer\nSKU-101\tFire Oranı Target\t%1.4\nSKU-202\tKasa İşlem Hızı\t3.5 İşlem/Dk\nSKU-303\tSepet Ortalaması\t₺485.00`)}`}
+                    download={`${createSlug(courseData.title)}_kpi_hesaplama.xlsx`}
+                    className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-lg text-xs transition-colors flex items-center justify-center space-x-1 shadow-xs"
+                  >
+                    <span>Excel İndir (.XLSX)</span>
+                  </a>
+                </div>
+
+                {/* 3. PowerPoint Slides */}
+                <div className="p-4 bg-purple-50/60 border border-purple-200 rounded-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-purple-900 flex items-center space-x-1">
+                      <FileText className="w-4 h-4 text-purple-600" />
+                      <span>📊 PowerPoint Ders Slaytları</span>
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded">8.5 MB</span>
+                  </div>
+                  <p className="text-xs text-gray-600 font-light">
+                    Eğitmen tarafından anlatılan 35 slaytlık interaktif ders sunumu ve grafik materyalleri.
+                  </p>
+                  <a
+                    href={`data:text/plain;charset=utf-8,${encodeURIComponent(`${courseData.title} - 35 Slayt Ders Sunumu`)}`}
+                    download={`${createSlug(courseData.title)}_ders_slaytlari.pptx`}
+                    className="w-full py-2 bg-purple-700 hover:bg-purple-800 text-white font-extrabold rounded-lg text-xs transition-colors flex items-center justify-center space-x-1 shadow-xs"
+                  >
+                    <span>Slayt İndir (.PPTX)</span>
+                  </a>
+                </div>
+
+                {/* 4. Visual Infographic & Diagram */}
+                <div className="p-4 bg-cyan-50/60 border border-cyan-200 rounded-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-cyan-900 flex items-center space-x-1">
+                      <FileText className="w-4 h-4 text-cyan-600" />
+                      <span>🖼️ Reyon & Saha İnfografik Şeması</span>
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-cyan-700 bg-cyan-100 px-2 py-0.5 rounded">1080p HD</span>
+                  </div>
+                  <p className="text-xs text-gray-600 font-light">
+                    Reyon ve panolara asılmak üzere tasarlanmış yüksek çözünürlüklü görsel rehber şeması.
+                  </p>
+                  <a
+                    href={`/images/corp/service_1.jpg`}
+                    download={`${createSlug(courseData.title)}_infografik.jpg`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full py-2 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-lg text-xs transition-colors flex items-center justify-center space-x-1 shadow-xs"
+                  >
+                    <span>Görsel İndir (.JPG)</span>
+                  </a>
+                </div>
+
+              </div>
+            </div>
           </div>
 
           {/* Right Column: CTA & Assessment */}
