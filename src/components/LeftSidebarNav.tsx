@@ -26,6 +26,7 @@ import Logo from '@/components/Logo';
 
 // Added "Çalışan Kariyer Planlaması" under İK Çözümleri submenu as requested
 const HR_SUBMENU = [
+  { name: 'Çalışan Özgeçmiş & Deneyim ve Eğitim Karnesi', path: '/ik-cozumlari/calisan-ozgecmis-egitim-karnesi' },
   { name: 'Çalışan Kariyer Planlaması', path: '/ik-cozumlari/calisan-kariyer-planlamasi' },
   { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari/yetkinlik-matrisi' },
   { name: 'Terfi Yönetimi', path: '/ik-cozumlari/terfi-yonetimi' },

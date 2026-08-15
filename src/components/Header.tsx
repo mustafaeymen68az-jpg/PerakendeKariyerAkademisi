@@ -29,6 +29,7 @@ import Logo from '@/components/Logo';
 
 // Added "Çalışan Kariyer Planlaması" under HR_SUBMENU as requested
 const HR_SUBMENU = [
+  { name: 'Çalışan Özgeçmiş & Deneyim ve Eğitim Karnesi', path: '/ik-cozumlari/calisan-ozgecmis-egitim-karnesi', desc: 'İş tecrübesi, eğitimler ve PDF karnesi' },
   { name: 'Çalışan Kariyer Planlaması', path: '/ik-cozumlari/calisan-kariyer-planlamasi', desc: 'SWOT analizi & pozisyon önerisi' },
   { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari/yetkinlik-matrisi', desc: 'Saha & merkez yetkinlik haritası' },
   { name: 'Terfi Yönetimi', path: '/ik-cozumlari/terfi-yonetimi', desc: 'Ağırlıklı %80+ Terfi Skoru' },

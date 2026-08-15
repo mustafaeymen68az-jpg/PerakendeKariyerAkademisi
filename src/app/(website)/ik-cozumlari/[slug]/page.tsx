@@ -38,6 +38,27 @@ interface HRDetailData {
 }
 
 const HR_SOLUTIONS_DATA: Record<string, HRDetailData> = {
+  'calisan-ozgecmis-egitim-karnesi': {
+    slug: 'calisan-ozgecmis-egitim-karnesi',
+    title: 'Çalışan Özgeçmiş, Deneyim ve Eğitim Karnesi',
+    badge: 'Resmi İK Özgeçmiş & Eğitim Karnesi',
+    subtitle: 'İşe Başlangıç Tarihi, Geçmiş Şirket Deneyimleri, Eğitim Süreleri Özet Karnesi ve PDF İndirme',
+    description: 'Çalışanın tüm geçmiş iş deneyimlerini, harici ve şirket içi eğitimlerini, eğitmen ve kurum detaylarını inceleyin ve resmi PDF karnesi olarak indirin.',
+    iconName: 'FileText',
+    benefits: [
+      'İşe başlangıç tarihi ve şirket kıdem bilgileri',
+      'Daha önce çalıştığı firmalar ve hizmet süreleri dökümü',
+      'İşe başlamadan önce ve işe başladıktan sonra alınan tüm eğitimler',
+      'Eğitmen, kurum ve çalıştığı şirket detaylı döküm modalı',
+      'Tek tıkla resmi PDF karnesi oluşturma ve indirme'
+    ],
+    moduleDetails: [
+      { heading: 'İş Deneyimi & Kıdem Takibi', text: 'Çalışanın işe başlangıç tarihi ve geçmiş şirket süreleri kronolojik olarak listelenir.' },
+      { heading: 'Eğitmen & Kurum Detayları', text: 'Alınan her dersin eğitmeni, kurumu ve hangi şirkette çalışırken alındığı kaydedilir.' },
+      { heading: 'PDF Karnesi İndirme', text: 'Tüm karne resmi olarak onaylı PDF formatında bilgisayara indirilebilir.' }
+    ]
+  },
+
   'calisan-kariyer-planlamasi': {
     slug: 'calisan-kariyer-planlamasi',
     title: 'Çalışan Kariyer Planlaması & SWOT Analizi',
@@ -258,7 +279,7 @@ export default async function HRSolutionDetailPage({ params }: { params: Promise
         </div>
 
         {/* Specialized Interactive Modules based on Slug */}
-        {data.slug === 'calisan-kariyer-planlamasi' && <EmployeeCareerPlanningModule />}
+        {(data.slug === 'calisan-kariyer-planlamasi' || data.slug === 'calisan-ozgecmis-egitim-karnesi') && <EmployeeCareerPlanningModule />}
         {data.slug === 'terfi-yonetimi' && <PromotionReadinessModule />}
         {data.slug === 'yedekleme-plani' && <SuccessionPlanModule />}
         {data.slug === 'yetkinlik-matrisi' && <EnterpriseROICalculator />}

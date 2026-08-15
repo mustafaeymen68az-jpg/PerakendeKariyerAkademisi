@@ -35,7 +35,9 @@ import {
   Layers,
   X,
   ExternalLink,
-  Info
+  Info,
+  Printer,
+  Download
 } from 'lucide-react';
 
 export interface CompletedTrainingRecord {
@@ -875,15 +877,39 @@ export default function EmployeeCareerPlanningModule() {
     <div className="space-y-8">
       
       {/* Header Banner */}
-      <div className="bg-[#0B2A4A] text-white p-6 sm:p-8 rounded-3xl border border-[#087F96]/40 shadow-xl space-y-3">
-        <div className="inline-flex items-center space-x-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3.5 py-1 rounded-full text-xs font-bold font-mono">
-          <BrainCircuit className="w-4 h-4 text-emerald-400" />
-          <span>İK KARAR DESTEK & AKILLI KARİYER PLANLAMA MOTORU</span>
+      <div className="bg-[#0B2A4A] text-white p-6 sm:p-8 rounded-3xl border border-[#087F96]/40 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-3">
+          <div className="inline-flex items-center space-x-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3.5 py-1 rounded-full text-xs font-bold font-mono">
+            <BrainCircuit className="w-4 h-4 text-emerald-400" />
+            <span>İK KARAR DESTEK & AKILLI KARİYER PLANLAMA MOTORU</span>
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Özgeçmiş, Deneyim ve Eğitim Karnesi</h2>
+          <p className="text-xs sm:text-sm text-gray-200 font-light max-w-3xl leading-relaxed">
+            Eğitim özet kartlarına tıklayarak çalışanın <strong>hangi eğitmeni hangi kurumdan</strong> ve <strong>hangi şirkette çalışırken aldığını</strong> detaylı döküm tablosunda inceleyebilir ve resmi PDF karnesi olarak indirebilirsiniz.
+          </p>
         </div>
-        <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Özgeçmiş, Deneyim ve Eğitim Karnesi</h2>
-        <p className="text-xs sm:text-sm text-gray-200 font-light max-w-3xl leading-relaxed">
-          Eğitim özet kartlarına tıklayarak çalışanın <strong>hangi eğitmeni hangi kurumdan</strong> ve <strong>hangi şirkette çalışırken aldığını</strong> detaylı döküm tablosunda inceleyebilirsiniz.
-        </p>
+
+        {/* PDF & REPORT DOWNLOAD BUTTONS */}
+        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-stretch gap-2.5 shrink-0">
+          <button
+            onClick={() => {
+              if (typeof window !== 'undefined') window.print();
+            }}
+            className="px-5 py-3 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-2xl text-xs shadow-lg transition-all flex items-center justify-center space-x-2 border border-white/20 whitespace-nowrap"
+          >
+            <Printer className="w-4 h-4 text-amber-300" />
+            <span>📄 PDF Karnesini İndir / Yazdır</span>
+          </button>
+
+          <a
+            href={`data:text/plain;charset=utf-8,${encodeURIComponent(`PERAKENDE KARİYER AKADEMİSİ — RESMİ ÇALIŞAN ÖZGEÇMİŞ, DENEYİM VE EĞİTİM KARNESİ\n--------------------------------------------------------------------------------\nAday / Çalışan: ${activeEmployee.name}\nMevcut Pozisyon: ${activeEmployee.currentRole} (${activeEmployee.city})\nİşe Başlangıç Tarihi: ${activeEmployee.startDate}\nMevcut Şirket Kıdemi: ${activeEmployee.tenure}\nÖnerilen Hedef Pozisyon: ${activeEmployee.recommendedRole} (%${activeEmployee.matchPercentage} Uyum)\nYetkinlik Puanı: ${activeEmployee.competencyScore} / 100\n\n================================================================================\n1. DAHA ÖNCE ÇALIŞTIĞI FİRMALAR VE HİZMET SÜRELERİ\n================================================================================\n${activeEmployee.previousExperiences.map(e => `- ${e.companyName}: ${e.role} (${e.duration} | ${e.yearsRange})`).join('\n')}\n\n================================================================================\n2. MEVCUT İŞYERİNDEN ÖNCE ALDIĞI HARİCİ EĞİTİMLER (${activeEmployee.priorTrainings.length} DERS)\n================================================================================\n${activeEmployee.priorTrainings.map(t => `- ${t.title} (${t.durationHours} Saat) | Eğitmen: ${t.instructorName} | Kurum: ${t.institution} | Şirket: ${t.companyWhereTaken}`).join('\n')}\n\n================================================================================\n3. İŞE BAŞLADIKTAN SONRA ŞİRKET İÇİ AKADEMİ EĞİTİMLERİ (${activeEmployee.completedTrainings.length} DERS)\n================================================================================\n${activeEmployee.completedTrainings.map(t => `- ${t.courseTitle} (${t.duration}) | Sınav: %${t.score} (${t.gradeStatus}) | Eğitmen: ${t.instructorName} | Kurum: ${t.institution} | Sertifika: ${t.certificateId}`).join('\n')}\n\n================================================================================\n4. 360° DEĞERLENDİRMELER\n================================================================================\nÜst Yönetici (${activeEmployee.evaluations.managerReview.author}): "${activeEmployee.evaluations.managerReview.comment}"\nEkip Geri Bildirimi (${activeEmployee.evaluations.subordinateReview.author}): "${activeEmployee.evaluations.subordinateReview.comment}"\nİK Yönetimi (${activeEmployee.evaluations.hrReview.author}): "${activeEmployee.evaluations.hrReview.comment}"\n`)}`}
+            download={`${activeEmployee.name.replace(/\s+/g, '_')}_Ozgecmis_Deneyim_Egitim_Karnesi.txt`}
+            className="px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl text-xs transition-all flex items-center justify-center space-x-1.5 border border-white/15 whitespace-nowrap"
+          >
+            <Download className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Rapor İndir</span>
+          </a>
+        </div>
       </div>
 
       {/* Filter and Employee Selection Bar */}
