@@ -45,7 +45,9 @@ import {
   Milestone,
   Flag,
   ArrowUpRight,
-  Check
+  Check,
+  GitFork,
+  ArrowDown
 } from 'lucide-react';
 import { 
   EmployeeCareerRecord, 
@@ -162,7 +164,46 @@ function generate1000TimelineEmployeesData(): EmployeeCareerRecord[] {
       developmentAreas: ['Saha İletişimi ve Bütçe Yönetimi'],
       careerAdvice: [
         { phase: '1. Ay (Ağustos 2026)', action: 'Terfi ve gelişim modülleri başlanacak.', targetDate: '15 Ağustos 2026' }
-      ]
+      ],
+      hierarchy: {
+        manager: {
+          id: `mgr_${i}`,
+          name: i % 3 === 0 ? 'Murat Yıldırım' : i % 3 === 1 ? 'Seda Yılmaz' : 'Fatih Şimşek',
+          avatar: avatars[(i + 3) % avatars.length],
+          role: i % 3 === 0 ? 'Bölge Müdürü (Area Manager)' : i % 3 === 1 ? 'Mağaza Müdürü' : 'Satış & Operasyon Direktörü',
+          department: deptConfig.groupName
+        },
+        subordinates: [
+          {
+            id: `sub_${i}_1`,
+            name: `${femaleNames[(i * 3 + 1) % femaleNames.length]} ${lastNames[(i * 5 + 1) % lastNames.length]}`,
+            avatar: avatars[(i + 1) % avatars.length],
+            role: 'Reyon Satış Elemanı',
+            department: dept
+          },
+          {
+            id: `sub_${i}_2`,
+            name: `${maleNames[(i * 3 + 2) % maleNames.length]} ${lastNames[(i * 5 + 2) % lastNames.length]}`,
+            avatar: avatars[(i + 2) % avatars.length],
+            role: 'Kasiyer & Kasa Görevlisi',
+            department: dept
+          },
+          {
+            id: `sub_${i}_3`,
+            name: `${femaleNames[(i * 3 + 3) % femaleNames.length]} ${lastNames[(i * 5 + 3) % lastNames.length]}`,
+            avatar: avatars[(i + 4) % avatars.length],
+            role: 'Stajyer / Saha Destek',
+            department: dept
+          },
+          {
+            id: `sub_${i}_4`,
+            name: `${maleNames[(i * 3 + 4) % maleNames.length]} ${lastNames[(i * 5 + 4) % lastNames.length]}`,
+            avatar: avatars[(i + 5) % avatars.length],
+            role: 'Kıdemli Operasyon Elemanı',
+            department: dept
+          }
+        ]
+      }
     });
   }
 
@@ -457,6 +498,135 @@ export default function EmployeeDevelopmentTimelineModule() {
             })()}
           </div>
 
+        </div>
+
+        {/* ORGANİZASYON HİYERARŞİSİ & YÖNETİM AĞACI CARD */}
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-6 w-full">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+            <div className="space-y-1">
+              <h3 className="font-black text-xl text-[#0B2A4A] flex items-center space-x-2">
+                <GitFork className="w-6 h-6 text-[#087F96]" />
+                <span>Organizasyon Hiyerarşisi & Yönetim Ağacı (Chain of Command)</span>
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-500">
+                {activeEmployee.name}'in bağlı olduğu üst yönetici ve doğrudan kendisine bağlı ekip üyeleri.
+              </p>
+            </div>
+
+            <span className="px-4 py-1.5 bg-emerald-100 text-emerald-800 text-xs font-mono font-bold rounded-full border border-emerald-300 whitespace-nowrap shadow-xs">
+              3 Kademe Ekip Hiyerarşisi 🌳
+            </span>
+          </div>
+
+          {/* VISUAL HIERARCHY TREE DIAGRAM */}
+          <div className="flex flex-col items-center space-y-4 py-2">
+            
+            {/* 1. KİME BAĞLI OLDUĞU (ÜST YÖNETİCİ / AMİR) */}
+            <div className="w-full max-w-2xl bg-gradient-to-r from-slate-900 via-[#0B2A4A] to-slate-900 text-white p-5 rounded-2xl border-2 border-[#087F96] shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative">
+              <div className="flex items-center space-x-4">
+                <div className="relative shrink-0">
+                  <img
+                    src={activeEmployee.hierarchy.manager.avatar}
+                    alt={activeEmployee.hierarchy.manager.name}
+                    className="w-14 h-14 rounded-2xl object-cover border-2 border-amber-400 shadow-md"
+                  />
+                  <span className="absolute -top-2 -right-2 bg-amber-400 text-slate-950 px-1.5 py-0.5 rounded-full text-[10px] font-black shadow-xs">
+                    👑 Amir
+                  </span>
+                </div>
+                <div className="space-y-0.5">
+                  <span className="text-[10px] font-mono font-black text-amber-300 uppercase tracking-wider block">
+                    ⬆️ Kime Bağlı? (Doğrudan Üst Yönetici)
+                  </span>
+                  <h4 className="font-black text-base text-white">{activeEmployee.hierarchy.manager.name}</h4>
+                  <p className="text-xs text-gray-300 font-medium">
+                    {activeEmployee.hierarchy.manager.role} • {activeEmployee.hierarchy.manager.department}
+                  </p>
+                </div>
+              </div>
+
+              <span className="text-xs font-mono font-extrabold text-emerald-300 bg-emerald-500/20 px-3.5 py-1.5 rounded-xl border border-emerald-500/30 whitespace-nowrap self-stretch sm:self-auto text-center">
+                Doğrudan Raporlanan Amir 👔
+              </span>
+            </div>
+
+            {/* CONNECTING LINE & ARROW DOWN */}
+            <div className="flex flex-col items-center justify-center my-1 space-y-0.5">
+              <div className="w-1 h-6 bg-gradient-to-b from-[#087F96] to-emerald-500 rounded-full" />
+              <ArrowDown className="w-4 h-4 text-emerald-500 animate-bounce" />
+            </div>
+
+            {/* 2. MEVCUT ÇALIŞAN (İNCELENEN AKTİF PROFİL) */}
+            <div className="w-full max-w-3xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100 p-5 rounded-3xl border-4 border-emerald-500 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ring-4 ring-emerald-300/40">
+              <div className="flex items-center space-x-4">
+                <div className="relative shrink-0">
+                  <img
+                    src={activeEmployee.avatar}
+                    alt={activeEmployee.name}
+                    className="w-16 h-16 rounded-2xl object-cover border-4 border-emerald-600 shadow-md"
+                  />
+                  <span className="absolute -bottom-1 -right-1 bg-emerald-600 text-white px-2 py-0.5 rounded-full text-[9px] font-black font-mono">
+                    📍 Aktif
+                  </span>
+                </div>
+                <div className="space-y-0.5">
+                  <span className="text-[10px] font-mono font-black text-emerald-900 uppercase tracking-wider block">
+                    📍 Mevcut Çalışan (Seçili Profil)
+                  </span>
+                  <h4 className="font-black text-xl text-[#0B2A4A]">{activeEmployee.name}</h4>
+                  <p className="text-xs text-gray-700 font-bold">
+                    {activeEmployee.currentRole} • {activeEmployee.department}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-left sm:text-right space-y-1 w-full sm:w-auto">
+                <span className="px-3.5 py-1.5 bg-emerald-600 text-white font-mono text-xs font-black rounded-xl shadow-xs inline-block">
+                  %{activeEmployee.competencyScore} Yetkinlik Skoru
+                </span>
+                <span className="text-xs font-mono font-bold text-emerald-900 block">
+                  {activeEmployee.hierarchy.subordinates.length} Ekip Üyesi Yönetiyor 👥
+                </span>
+              </div>
+            </div>
+
+            {/* CONNECTING LINE & ARROW DOWN */}
+            <div className="flex flex-col items-center justify-center my-1 space-y-0.5">
+              <div className="w-1 h-6 bg-gradient-to-b from-emerald-500 to-[#087F96] rounded-full" />
+              <ArrowDown className="w-4 h-4 text-[#087F96] animate-bounce" />
+            </div>
+
+            {/* 3. KENDİSİNE BAĞLI ÇALIŞANLAR (ALT EKİP ÜYELERİ) */}
+            <div className="w-full space-y-3 pt-1">
+              <div className="flex items-center justify-between">
+                <h4 className="font-extrabold text-xs text-[#0B2A4A] uppercase tracking-wider flex items-center space-x-2">
+                  <Users className="w-4 h-4 text-[#087F96]" />
+                  <span>⬇️ Kendisine Bağlı Alt Çalışanlar / Ekip Üyeleri ({activeEmployee.hierarchy.subordinates.length} Personel)</span>
+                </h4>
+                <span className="text-[10px] font-mono text-gray-500">Doğrudan Raporlama Grubu</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {activeEmployee.hierarchy.subordinates.map((sub) => (
+                  <div key={sub.id} className="p-4 bg-gray-50 hover:bg-blue-50/80 border-2 border-gray-200 hover:border-[#087F96] rounded-2xl transition-all flex items-center space-x-3.5 shadow-xs group hover:scale-[1.02]">
+                    <img
+                      src={sub.avatar}
+                      alt={sub.name}
+                      className="w-12 h-12 rounded-xl object-cover border-2 border-[#087F96] flex-shrink-0 group-hover:scale-105 transition-transform"
+                    />
+                    <div className="space-y-0.5 truncate">
+                      <h5 className="font-extrabold text-xs text-[#0B2A4A] truncate">{sub.name}</h5>
+                      <p className="text-[11px] text-gray-600 font-bold truncate">{sub.role}</p>
+                      <span className="text-[9.5px] font-mono font-bold text-[#087F96] block truncate">
+                        {sub.department}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
         </div>
 
         {/* CHRONOLOGICAL CAREER TIMELINE GRAPH CARD (GENİŞ VE BÜYÜK YATAY KRONOLOJİK YOL HARİTASI) */}
