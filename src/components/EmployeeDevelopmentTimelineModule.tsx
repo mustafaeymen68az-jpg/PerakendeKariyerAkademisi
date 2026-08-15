@@ -320,13 +320,15 @@ export default function EmployeeDevelopmentTimelineModule() {
         </div>
       </div>
 
-      {/* Filter and Employee Selector Bar */}
+      {/* Sleek Top Filter & Employee Selector Bar */}
       <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="relative w-full md:w-80">
+        
+        {/* Search Input */}
+        <div className="relative w-full md:w-72">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
             type="text"
-            placeholder="1.000 çalışan arasında adı, pozisyon veya departman ara..."
+            placeholder="1.000 çalışan arasında hızlı ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#087F96] text-[#0B2A4A]"
@@ -336,7 +338,7 @@ export default function EmployeeDevelopmentTimelineModule() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 text-xs w-full md:w-auto">
           {/* DEPARTMAN FİLTRESİ */}
           <div className="flex items-center space-x-2">
-            <span className="text-gray-500 font-bold whitespace-nowrap">Departman:</span>
+            <span className="text-gray-500 font-bold whitespace-nowrap">Birim:</span>
             <select
               value={selectedDeptFilter}
               onChange={(e) => setSelectedDeptFilter(e.target.value)}
@@ -350,373 +352,314 @@ export default function EmployeeDevelopmentTimelineModule() {
               ))}
             </select>
           </div>
+
+          {/* ACTIVE EMPLOYEE SELECTION DROPDOWN */}
+          <div className="flex items-center space-x-2">
+            <span className="text-[#087F96] font-extrabold whitespace-nowrap flex items-center space-x-1">
+              <UserCheck className="w-4 h-4 text-[#087F96]" />
+              <span>Seçili Çalışan:</span>
+            </span>
+            <select
+              value={selectedEmpId}
+              onChange={(e) => setSelectedEmpId(e.target.value)}
+              className="bg-emerald-50 border-2 border-emerald-400 rounded-xl px-3.5 py-2 font-extrabold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-emerald-500 max-w-xs shadow-xs"
+            >
+              {filteredEmployees.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.name} — {emp.currentRole} (%{emp.competencyScore}p)
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Main Two-Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Single Column Full Width Layout for Selected Employee */}
+      <div className="space-y-6 w-full">
         
-        {/* Left Column: Sorted Employee List */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between px-2">
-            <h3 className="font-extrabold text-sm text-[#0B2A4A] flex items-center space-x-2">
-              <Users className="w-4 h-4 text-[#087F96]" />
-              <span>Kariyer Karnesi İncelenecek Çalışanlar ({filteredEmployees.length})</span>
-            </h3>
-            <span className="text-[10px] text-gray-400 font-mono">1.000 Kadro</span>
-          </div>
-
-          <div className="space-y-3 max-h-[900px] overflow-y-auto pr-1">
-            {visibleEmployees.map((emp) => {
-              const isSelected = emp.id === activeEmployee.id;
-              return (
-                <div
-                  key={emp.id}
-                  onClick={() => setSelectedEmpId(emp.id)}
-                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between ${
-                    isSelected 
-                      ? 'bg-gradient-to-r from-blue-50 to-indigo-50 border-[#087F96] shadow-md scale-[1.02]' 
-                      : 'bg-white border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <img
-                      src={emp.avatar}
-                      alt={emp.name}
-                      className="w-12 h-12 rounded-xl object-cover border-2 border-[#087F96] flex-shrink-0"
-                    />
-                    <div>
-                      <div className="flex items-center space-x-1.5">
-                        <h4 className="font-bold text-xs text-[#0B2A4A]">{emp.name}</h4>
-                        <span className="text-[9px] font-mono font-bold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded truncate max-w-[110px]" title={emp.department}>
-                          {emp.department}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-gray-500">{emp.currentRole}</p>
-                      <div className="text-[10px] text-emerald-600 font-bold mt-0.5">
-                        Hedef: {emp.recommendedRole}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-right space-y-1">
-                    <div className={`px-2.5 py-1 rounded-lg font-mono text-xs font-black shadow-xs ${
-                      emp.competencyScore >= 91 ? 'bg-emerald-600 text-white' :
-                      emp.competencyScore >= 81 ? 'bg-blue-600 text-white' :
-                      emp.competencyScore >= 71 ? 'bg-amber-500 text-slate-950' : 'bg-orange-500 text-white'
-                    }`}>
-                      {emp.competencyScore} Puan
-                    </div>
-                    <div className="text-[9px] font-mono font-extrabold text-[#087F96]">
-                      Kariyer Haritası →
-                    </div>
-                  </div>
+        {/* Active Employee Header Summary Card */}
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-4 w-full">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+            <div className="flex items-center space-x-4">
+              <img
+                src={activeEmployee.avatar}
+                alt={activeEmployee.name}
+                className="w-20 h-20 rounded-2xl object-cover border-4 border-[#087F96] shadow-lg flex-shrink-0"
+              />
+              <div className="space-y-1.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="text-2xl font-black text-[#0B2A4A]">{activeEmployee.name}</h3>
+                  <span className="px-3 py-1 bg-emerald-100 text-emerald-900 text-xs font-bold rounded-full font-mono border border-emerald-300">
+                    +{activeEmployee.competencyScore}p Yetkinlik Skoru
+                  </span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-900 text-xs font-extrabold rounded-full font-mono border border-blue-300">
+                    {activeEmployee.department}
+                  </span>
                 </div>
-              );
-            })}
+                <p className="text-xs sm:text-sm text-gray-600 font-medium">
+                  Mevcut Pozisyon: <strong>{activeEmployee.currentRole}</strong> • {activeEmployee.city}
+                </p>
 
-            {/* LOAD MORE BUTTON */}
-            {filteredEmployees.length > displayLimit && (
-              <button
-                onClick={() => setDisplayLimit(prev => prev + 50)}
-                className="w-full py-3 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-extrabold rounded-2xl text-xs shadow-md transition-all flex items-center justify-center space-x-2 border border-[#087F96]/30 cursor-pointer mt-2"
-              >
-                <span>Daha Fazla Çalışan Göster (+50 Personel)</span>
-                <span className="text-[10px] opacity-75 font-mono">({displayLimit} / {filteredEmployees.length} Gösteriliyor)</span>
-              </button>
-            )}
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <span className="bg-[#0B2A4A] text-white text-xs font-bold font-mono px-3.5 py-1.5 rounded-xl flex items-center space-x-1.5 shadow-xs">
+                    <Calendar className="w-3.5 h-3.5 text-amber-300" />
+                    <span>İşe Başlangıç: <strong>{activeEmployee.startDate}</strong></span>
+                  </span>
+                  <span className="bg-blue-100 text-blue-900 border border-blue-300 text-xs font-bold font-mono px-3.5 py-1.5 rounded-xl">
+                    Mevcut Şirket Kıdemi: <strong>{activeEmployee.tenure}</strong>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Target Role Card */}
+            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-5 rounded-2xl shadow-lg space-y-1 text-center sm:text-right w-full sm:w-auto shrink-0 border border-emerald-400">
+              <div className="text-xs font-bold uppercase text-emerald-100">Önerilen Terfi Hedefi</div>
+              <div className="text-base font-black text-white">{activeEmployee.recommendedRole}</div>
+              <div className="text-xs font-mono font-bold text-amber-300">
+                Uyum Oranı: %{activeEmployee.matchPercentage}
+              </div>
+            </div>
           </div>
+
+          {/* VISUAL SCORE EVOLUTION PROGRESS BAR GRAPH */}
+          <div className="space-y-2.5 pt-2">
+            <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-[#0B2A4A]">
+              <span className="flex items-center space-x-2">
+                <TrendingUp className="w-5 h-5 text-emerald-600" />
+                <span>Kariyer Yetkinlik Skoru İlerleme Grafiği (Geçmiş ➔ Gelecek Vizyonu)</span>
+              </span>
+              <span className="font-mono text-[#087F96] font-black">%60p ➔ %{activeEmployee.competencyScore}p ➔ %98p</span>
+            </div>
+
+            <div className="h-5 w-full bg-gray-100 rounded-full overflow-hidden p-0.5 border border-gray-200 flex shadow-inner">
+              <div 
+                className="bg-gradient-to-r from-blue-500 via-[#087F96] via-emerald-500 to-teal-400 h-full rounded-full transition-all duration-1000 flex items-center justify-end pr-3 text-[10px] font-mono font-black text-white shadow-md"
+                style={{ width: `${Math.min(100, Math.max(20, activeEmployee.competencyScore))}%` }}
+              >
+                %{activeEmployee.competencyScore} Canlı Puan
+              </div>
+            </div>
+
+            <div className="flex justify-between text-xs font-mono text-gray-500 pt-0.5">
+              <span>2020: Stajyer (%60)</span>
+              <span>2022: Şirkete Giriş (%78)</span>
+              <span className="font-bold text-emerald-700">2026: Mevcut (%{activeEmployee.competencyScore})</span>
+              <span className="font-bold text-blue-700">2027: Hedef Terfi (%{Math.min(100, activeEmployee.competencyScore + 6)})</span>
+              <span>2028+: Vizyon (%98)</span>
+            </div>
+          </div>
+
         </div>
 
-        {/* Right Column: Visual Chronological Career Timeline & Score Chart */}
-        <div className="lg:col-span-2 space-y-6">
-          
-          {/* Active Employee Header Summary Card */}
-          <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-md space-y-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
-              <div className="flex items-center space-x-4">
-                <img
-                  src={activeEmployee.avatar}
-                  alt={activeEmployee.name}
-                  className="w-16 h-16 rounded-2xl object-cover border-4 border-[#087F96] shadow-lg flex-shrink-0"
-                />
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <h3 className="text-xl font-black text-[#0B2A4A]">{activeEmployee.name}</h3>
-                    <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full font-mono">
-                      +{activeEmployee.competencyScore}p Yetkinlik Skoru
-                    </span>
-                    <span className="px-2.5 py-0.5 bg-blue-100 text-blue-900 text-[10px] font-extrabold rounded-full font-mono">
-                      {activeEmployee.department}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-600 font-medium">
-                    Mevcut Pozisyon: <strong>{activeEmployee.currentRole}</strong> • {activeEmployee.city}
-                  </p>
-
-                  <div className="flex flex-wrap items-center gap-2 pt-1">
-                    <span className="bg-[#0B2A4A] text-white text-[10px] font-bold font-mono px-3 py-1 rounded-lg flex items-center space-x-1">
-                      <Calendar className="w-3 h-3 text-amber-300" />
-                      <span>İşe Başlangıç: <strong>{activeEmployee.startDate}</strong></span>
-                    </span>
-                    <span className="bg-blue-100 text-blue-900 border border-blue-300 text-[10px] font-bold font-mono px-3 py-1 rounded-lg">
-                      Mevcut Şirket Kıdemi: <strong>{activeEmployee.tenure}</strong>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Target Role Card */}
-              <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-2xl shadow-md space-y-1 text-center sm:text-right w-full sm:w-auto shrink-0">
-                <div className="text-[10px] font-bold uppercase text-emerald-100">Önerilen Terfi Hedefi</div>
-                <div className="text-sm font-black text-white">{activeEmployee.recommendedRole}</div>
-                <div className="text-[10px] font-mono font-bold text-amber-300">
-                  Uyum Oranı: %{activeEmployee.matchPercentage}
-                </div>
-              </div>
+        {/* CHRONOLOGICAL CAREER TIMELINE GRAPH CARD (GENİŞ VE BÜYÜK YATAY KRONOLOJİK YOL HARİTASI) */}
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-6 w-full">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+            <div className="space-y-1">
+              <h3 className="font-black text-xl text-[#0B2A4A] flex items-center space-x-2">
+                <Milestone className="w-6 h-6 text-[#087F96]" />
+                <span>Yatay Kronolojik Kariyer Haritası & Yolculuk Zaman Çizelgesi</span>
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-500">
+                {activeEmployee.name} için geçmiş tecrübelerden gelecek terfi hedeflerine kronolojik yatay ilerleme akışı.
+              </p>
             </div>
 
-            {/* VISUAL SCORE EVOLUTION PROGRESS BAR GRAPH */}
-            <div className="space-y-2 pt-2">
-              <div className="flex items-center justify-between text-xs font-bold text-[#0B2A4A]">
-                <span className="flex items-center space-x-1.5">
-                  <TrendingUp className="w-4 h-4 text-emerald-600" />
-                  <span>Kariyer Yetkinlik Skoru İlerleme Grafiği (Geçmiş ➔ Gelecek)</span>
-                </span>
-                <span className="font-mono text-[#087F96]">%60p ➔ %{activeEmployee.competencyScore}p ➔ %98p</span>
-              </div>
-
-              <div className="h-4 w-full bg-gray-100 rounded-full overflow-hidden p-0.5 border border-gray-200 flex">
-                <div 
-                  className="bg-gradient-to-r from-blue-400 via-[#087F96] to-emerald-500 h-full rounded-full transition-all duration-1000 flex items-center justify-end pr-2 text-[9px] font-mono font-black text-white"
-                  style={{ width: `${Math.min(100, Math.max(20, activeEmployee.competencyScore))}%` }}
-                >
-                  %{activeEmployee.competencyScore} Canlı Puan
-                </div>
-              </div>
-
-              <div className="flex justify-between text-[10px] font-mono text-gray-500 pt-0.5">
-                <span>2020: Stajyer (%60)</span>
-                <span>2022: Şirkete Giriş (%78)</span>
-                <span className="font-bold text-emerald-700">2026: Mevcut (%{activeEmployee.competencyScore})</span>
-                <span className="font-bold text-blue-700">2027: Hedef Terfi (%{Math.min(100, activeEmployee.competencyScore + 6)})</span>
-                <span>2028+: Vizyon (%98)</span>
-              </div>
-            </div>
-
+            <span className="px-4 py-1.5 bg-emerald-100 text-emerald-800 text-xs font-mono font-bold rounded-full border border-emerald-300 whitespace-nowrap shadow-xs">
+              Geniş Ekran Yatay İlerleme Akışı ⚡
+            </span>
           </div>
 
-          {/* CHRONOLOGICAL CAREER TIMELINE GRAPH CARD (YATAY KRONOLOJİK YOL HARİTASI) */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
-              <div className="space-y-1">
-                <h3 className="font-black text-lg text-[#0B2A4A] flex items-center space-x-2">
-                  <Milestone className="w-5 h-5 text-[#087F96]" />
-                  <span>Yatay Kronolojik Kariyer Haritası & Yolculuk Zaman Çizelgesi</span>
-                </h3>
-                <p className="text-xs text-gray-500">
-                  {activeEmployee.name} için geçmiş tecrübelerden gelecek terfi hedeflerine kronolojik yatay ilerleme akışı.
-                </p>
-              </div>
-
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-mono font-bold rounded-full border border-emerald-300 whitespace-nowrap">
-                Yatay İlerleme Akışı ⚡
-              </span>
-            </div>
-
-            {/* 1. HORIZONTAL STEPPER PROGRESS LINE (YATAY TARİHLİ KRONOLOJİ ZAMAN DİZGİSİ) */}
-            <div className="overflow-x-auto pb-4 pt-2">
-              <div className="min-w-[850px] space-y-6">
-                
-                {/* Horizontal Bar Connecting Line with Circles */}
-                <div className="relative flex items-center justify-between px-6 py-4">
-                  {/* Connecting Line */}
-                  <div className="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-2 bg-gradient-to-r from-blue-600 via-[#087F96] via-emerald-500 via-amber-400 to-purple-600 rounded-full shadow-xs z-0" />
-
-                  {careerTimelineMilestones.map((ms, idx) => {
-                    const isCompleted = ms.status === 'completed';
-                    const isCurrent = ms.status === 'current';
-                    const isTarget = ms.status === 'target';
-                    const isVision = ms.status === 'vision';
-
-                    return (
-                      <div key={idx} className="relative z-10 flex flex-col items-center group cursor-pointer">
-                        {/* Date Pill above circle */}
-                        <div className={`text-[10px] font-mono font-black px-2.5 py-1 rounded-full border shadow-sm mb-2 transition-all group-hover:scale-110 whitespace-nowrap ${
-                          isCurrent
-                            ? 'bg-emerald-600 text-white border-emerald-400 ring-2 ring-emerald-300'
-                            : isTarget
-                            ? 'bg-amber-400 text-slate-950 border-amber-300 ring-2 ring-amber-200'
-                            : isVision
-                            ? 'bg-purple-700 text-white border-purple-400'
-                            : 'bg-[#0B2A4A] text-white border-gray-300'
-                        }`}>
-                          {ms.date}
-                        </div>
-
-                        {/* Circle Node */}
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shadow-lg border-4 transition-transform group-hover:scale-115 ${
-                          isCurrent
-                            ? 'bg-emerald-500 text-white border-white ring-4 ring-emerald-400/40 scale-110'
-                            : isTarget
-                            ? 'bg-amber-400 text-slate-950 border-white ring-4 ring-amber-400/40 scale-105'
-                            : isVision
-                            ? 'bg-purple-600 text-white border-white ring-4 ring-purple-400/30'
-                            : 'bg-[#0B2A4A] text-white border-white'
-                        }`}>
-                          {isCurrent ? <Flag className="w-5 h-5" /> :
-                           isTarget ? <Target className="w-5 h-5" /> :
-                           isVision ? <Crown className="w-5 h-5" /> :
-                           <Check className="w-5 h-5" />}
-                        </div>
-
-                        {/* Title label below circle */}
-                        <div className="text-center mt-2 max-w-[130px]">
-                          <div className="text-[11px] font-extrabold text-[#0B2A4A] line-clamp-1" title={ms.title}>{ms.title}</div>
-                          <div className="text-[9.5px] text-gray-500 font-bold line-clamp-1">{ms.role}</div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* 2. HORIZONTAL MILESTONE CARDS (YATAY KARTLAR AKIŞI) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
-                  {careerTimelineMilestones.map((ms, idx) => {
-                    const isCurrent = ms.status === 'current';
-                    const isTarget = ms.status === 'target';
-                    const isVision = ms.status === 'vision';
-
-                    return (
-                      <div
-                        key={idx}
-                        className={`p-4 rounded-2xl border-2 transition-all space-y-2.5 flex flex-col justify-between hover:scale-[1.02] shadow-xs ${
-                          isCurrent
-                            ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-400 shadow-md ring-2 ring-emerald-300/50'
-                            : isTarget
-                            ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-300 shadow-md'
-                            : isVision
-                            ? 'bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-300'
-                            : 'bg-gray-50 border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-mono font-black text-[#087F96] bg-blue-100 px-2 py-0.5 rounded-md">
-                              {ms.date}
-                            </span>
-                            <span className={`text-[9.5px] font-mono font-black px-2 py-0.5 rounded-lg ${
-                              ms.score >= 90 ? 'bg-emerald-600 text-white' :
-                              ms.score >= 80 ? 'bg-blue-600 text-white' :
-                              ms.score >= 70 ? 'bg-amber-500 text-slate-950' : 'bg-gray-700 text-white'
-                            }`}>
-                              %{ms.score} Puan
-                            </span>
-                          </div>
-
-                          <div>
-                            <h4 className="font-extrabold text-xs text-[#0B2A4A] leading-snug">{ms.title}</h4>
-                            <p className="text-[11px] text-gray-700 font-bold mt-0.5">
-                              {ms.role}
-                            </p>
-                            <div className="text-[10px] text-gray-500 font-medium">{ms.company}</div>
-                          </div>
-
-                          <p className="text-[11px] text-gray-600 leading-snug">
-                            {ms.description}
-                          </p>
-                        </div>
-
-                        <div className="pt-2 border-t border-gray-200/60 space-y-2">
-                          <div className="flex flex-wrap gap-1">
-                            {ms.badges.map((badge, bIdx) => (
-                              <span key={bIdx} className="text-[9px] font-bold text-gray-700 bg-white border border-gray-300 px-2 py-0.5 rounded-full flex items-center space-x-1">
-                                <Sparkles className="w-2.5 h-2.5 text-amber-500" />
-                                <span>{badge}</span>
-                              </span>
-                            ))}
-                          </div>
-
-                          <div className={`text-[9.5px] font-mono font-bold px-2 py-1 rounded-md text-center border ${
-                            isCurrent ? 'bg-emerald-100 text-emerald-900 border-emerald-300 font-black' :
-                            isTarget ? 'bg-amber-100 text-amber-900 border-amber-300 font-black' :
-                            isVision ? 'bg-purple-100 text-purple-900 border-purple-300 font-black' :
-                            'bg-gray-200 text-gray-700 border-gray-300'
-                          }`}>
-                            {ms.statusLabel}
-                          </div>
-                        </div>
-
-                      </div>
-                    );
-                  })}
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-
-          {/* 30-60-90 DAY INDIVIDUAL DEVELOPMENT ACTION PLAN */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-4">
-            <h3 className="font-extrabold text-base text-[#0B2A4A] flex items-center space-x-2 border-b border-gray-100 pb-3">
-              <Target className="w-5 h-5 text-[#087F96]" />
-              <span>90 Günlük Bireysel Gelişim Aksiyon Planı & Hedef Takvimi</span>
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* 1. HORIZONTAL STEPPER PROGRESS LINE (YATAY TARİHLİ KRONOLOJİ ZAMAN DİZGİSİ) */}
+          <div className="overflow-x-auto pb-4 pt-2">
+            <div className="min-w-[900px] space-y-8">
               
-              <div className="p-4 bg-blue-50/60 border-2 border-blue-200 rounded-2xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-black text-blue-900 bg-blue-200 px-2 py-0.5 rounded-md">
-                    1. AŞAMA (30 GÜN)
-                  </span>
-                  <span className="text-[9px] font-bold text-blue-700">Ağustos 2026</span>
-                </div>
-                <h4 className="font-extrabold text-xs text-[#0B2A4A]">Saha Koçluğu & Yetkinlik Denetimi</h4>
-                <p className="text-[11px] text-gray-600 leading-snug">
-                  Mevcut reyon ve kasa operasyonlarında eksik kalan 2 mikro eğitimin tamamlanması ve mentör koçluğu.
-                </p>
-                <div className="text-[9.5px] font-mono font-bold text-blue-800 pt-1 border-t border-blue-200">
-                  Hedef: %100 Tamamlama
-                </div>
+              {/* Horizontal Bar Connecting Line with Circles */}
+              <div className="relative flex items-center justify-between px-8 py-6">
+                {/* Connecting Line */}
+                <div className="absolute left-12 right-12 top-1/2 -translate-y-1/2 h-3 bg-gradient-to-r from-blue-600 via-[#087F96] via-emerald-500 via-amber-400 to-purple-600 rounded-full shadow-sm z-0" />
+
+                {careerTimelineMilestones.map((ms, idx) => {
+                  const isCurrent = ms.status === 'current';
+                  const isTarget = ms.status === 'target';
+                  const isVision = ms.status === 'vision';
+
+                  return (
+                    <div key={idx} className="relative z-10 flex flex-col items-center group cursor-pointer">
+                      {/* Date Pill above circle */}
+                      <div className={`text-xs font-mono font-black px-3.5 py-1.5 rounded-full border shadow-md mb-3 transition-all group-hover:scale-110 whitespace-nowrap ${
+                        isCurrent
+                          ? 'bg-emerald-600 text-white border-emerald-400 ring-4 ring-emerald-300 scale-105'
+                          : isTarget
+                          ? 'bg-amber-400 text-slate-950 border-amber-300 ring-4 ring-amber-200'
+                          : isVision
+                          ? 'bg-purple-700 text-white border-purple-400'
+                          : 'bg-[#0B2A4A] text-white border-gray-300'
+                      }`}>
+                        {ms.date}
+                      </div>
+
+                      {/* Circle Node */}
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm shadow-xl border-4 transition-transform group-hover:scale-115 ${
+                        isCurrent
+                          ? 'bg-emerald-500 text-white border-white ring-4 ring-emerald-400/40 scale-110'
+                          : isTarget
+                          ? 'bg-amber-400 text-slate-950 border-white ring-4 ring-amber-400/40 scale-105'
+                          : isVision
+                          ? 'bg-purple-600 text-white border-white ring-4 ring-purple-400/30'
+                          : 'bg-[#0B2A4A] text-white border-white'
+                      }`}>
+                        {isCurrent ? <Flag className="w-6 h-6" /> :
+                         isTarget ? <Target className="w-6 h-6" /> :
+                         isVision ? <Crown className="w-6 h-6" /> :
+                         <Check className="w-6 h-6" />}
+                      </div>
+
+                      {/* Title label below circle */}
+                      <div className="text-center mt-3 max-w-[140px]">
+                        <div className="text-xs font-extrabold text-[#0B2A4A] line-clamp-1" title={ms.title}>{ms.title}</div>
+                        <div className="text-[10px] text-gray-500 font-bold line-clamp-1">{ms.role}</div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
-              <div className="p-4 bg-emerald-50/60 border-2 border-emerald-200 rounded-2xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-black text-emerald-900 bg-emerald-200 px-2 py-0.5 rounded-md">
-                    2. AŞAMA (60 GÜN)
-                  </span>
-                  <span className="text-[9px] font-bold text-emerald-700">Eylül 2026</span>
-                </div>
-                <h4 className="font-extrabold text-xs text-[#0B2A4A]">İleri Bütçe & Fire Minimizasyonu</h4>
-                <p className="text-[11px] text-gray-600 leading-snug">
-                  Terfi hedefi için gerekli finansal marj ve stok devir hızı uzmanlık eğitiminin başarıyla geçilmesi.
-                </p>
-                <div className="text-[9.5px] font-mono font-bold text-emerald-800 pt-1 border-t border-emerald-200">
-                  Hedef: %90+ Sınav Skoru
-                </div>
-              </div>
+              {/* 2. HORIZONTAL MILESTONE CARDS (FERAH GENİŞ 6 KARTLIK IZGARA) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 pt-2">
+                {careerTimelineMilestones.map((ms, idx) => {
+                  const isCurrent = ms.status === 'current';
+                  const isTarget = ms.status === 'target';
+                  const isVision = ms.status === 'vision';
 
-              <div className="p-4 bg-amber-50/60 border-2 border-amber-200 rounded-2xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-black text-amber-900 bg-amber-200 px-2 py-0.5 rounded-md">
-                    3. AŞAMA (90 GÜN)
-                  </span>
-                  <span className="text-[9px] font-bold text-amber-700">Ekim 2026</span>
-                </div>
-                <h4 className="font-extrabold text-xs text-[#0B2A4A]">Terfi Komitesi Mülakatı</h4>
-                <p className="text-[11px] text-gray-600 leading-snug">
-                  {activeEmployee.recommendedRole} rolüne geçiş için İK direktörü ve bölge müdürü ile terfi değerlendirmesi.
-                </p>
-                <div className="text-[9.5px] font-mono font-bold text-amber-900 pt-1 border-t border-amber-200">
-                  Hedef: Resmi Terfi Onayı 🎯
-                </div>
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-4 rounded-2xl border-2 transition-all space-y-3 flex flex-col justify-between hover:scale-[1.02] shadow-xs ${
+                        isCurrent
+                          ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-400 shadow-md ring-2 ring-emerald-300/50'
+                          : isTarget
+                          ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-300 shadow-md'
+                          : isVision
+                          ? 'bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-300'
+                          : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-mono font-black text-[#087F96] bg-blue-100 px-2 py-0.5 rounded-md">
+                            {ms.date}
+                          </span>
+                          <span className={`text-[10px] font-mono font-black px-2 py-0.5 rounded-lg ${
+                            ms.score >= 90 ? 'bg-emerald-600 text-white' :
+                            ms.score >= 80 ? 'bg-blue-600 text-white' :
+                            ms.score >= 70 ? 'bg-amber-500 text-slate-950' : 'bg-gray-700 text-white'
+                          }`}>
+                            %{ms.score} Puan
+                          </span>
+                        </div>
+
+                        <div>
+                          <h4 className="font-extrabold text-xs text-[#0B2A4A] leading-snug">{ms.title}</h4>
+                          <p className="text-[11px] text-gray-700 font-bold mt-0.5">
+                            {ms.role}
+                          </p>
+                          <div className="text-[10px] text-gray-500 font-medium">{ms.company}</div>
+                        </div>
+
+                        <p className="text-[11px] text-gray-600 leading-snug">
+                          {ms.description}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-gray-200/60 space-y-2">
+                        <div className="flex flex-wrap gap-1">
+                          {ms.badges.map((badge, bIdx) => (
+                            <span key={bIdx} className="text-[9px] font-bold text-gray-700 bg-white border border-gray-300 px-2 py-0.5 rounded-full flex items-center space-x-1">
+                              <Sparkles className="w-2.5 h-2.5 text-amber-500" />
+                              <span>{badge}</span>
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className={`text-[9.5px] font-mono font-bold px-2 py-1 rounded-md text-center border ${
+                          isCurrent ? 'bg-emerald-100 text-emerald-900 border-emerald-300 font-black' :
+                          isTarget ? 'bg-amber-100 text-amber-900 border-amber-300 font-black' :
+                          isVision ? 'bg-purple-100 text-purple-900 border-purple-300 font-black' :
+                          'bg-gray-200 text-gray-700 border-gray-300'
+                        }`}>
+                          {ms.statusLabel}
+                        </div>
+                      </div>
+
+                    </div>
+                  );
+                })}
               </div>
 
             </div>
           </div>
 
+        </div>
+
+        {/* 30-60-90 DAY INDIVIDUAL DEVELOPMENT ACTION PLAN (GENİŞ EKRAN) */}
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-4 w-full">
+          <h3 className="font-extrabold text-lg text-[#0B2A4A] flex items-center space-x-2 border-b border-gray-100 pb-3">
+            <Target className="w-5 h-5 text-[#087F96]" />
+            <span>90 Günlük Bireysel Gelişim Aksiyon Planı & Hedef Takvimi</span>
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div className="p-5 bg-blue-50/60 border-2 border-blue-200 rounded-2xl space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-black text-blue-900 bg-blue-200 px-2.5 py-0.5 rounded-md">
+                  1. AŞAMA (30 GÜN)
+                </span>
+                <span className="text-xs font-bold text-blue-700">Ağustos 2026</span>
+              </div>
+              <h4 className="font-extrabold text-sm text-[#0B2A4A]">Saha Koçluğu & Yetkinlik Denetimi</h4>
+              <p className="text-xs text-gray-600 leading-snug">
+                Mevcut reyon ve kasa operasyonlarında eksik kalan 2 mikro eğitimin tamamlanması ve mentör koçluğu.
+              </p>
+              <div className="text-xs font-mono font-bold text-blue-800 pt-2 border-t border-blue-200">
+                Hedef: %100 Tamamlama
+              </div>
+            </div>
+
+            <div className="p-5 bg-emerald-50/60 border-2 border-emerald-200 rounded-2xl space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-black text-emerald-900 bg-emerald-200 px-2.5 py-0.5 rounded-md">
+                  2. AŞAMA (60 GÜN)
+                </span>
+                <span className="text-xs font-bold text-emerald-700">Eylül 2026</span>
+              </div>
+              <h4 className="font-extrabold text-sm text-[#0B2A4A]">İleri Bütçe & Fire Minimizasyonu</h4>
+              <p className="text-xs text-gray-600 leading-snug">
+                Terfi hedefi için gerekli finansal marj ve stok devir hızı uzmanlık eğitiminin başarıyla geçilmesi.
+              </p>
+              <div className="text-xs font-mono font-bold text-emerald-800 pt-2 border-t border-emerald-200">
+                Hedef: %90+ Sınav Skoru
+              </div>
+            </div>
+
+            <div className="p-5 bg-amber-50/60 border-2 border-amber-200 rounded-2xl space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-black text-amber-900 bg-amber-200 px-2.5 py-0.5 rounded-md">
+                  3. AŞAMA (90 GÜN)
+                </span>
+                <span className="text-xs font-bold text-amber-700">Ekim 2026</span>
+              </div>
+              <h4 className="font-extrabold text-sm text-[#0B2A4A]">Terfi Komitesi Mülakatı</h4>
+              <p className="text-xs text-gray-600 leading-snug">
+                {activeEmployee.recommendedRole} rolüne geçiş için İK direktörü ve bölge müdürü ile terfi değerlendirmesi.
+              </p>
+              <div className="text-xs font-mono font-bold text-amber-900 pt-2 border-t border-amber-200">
+                Hedef: Resmi Terfi Onayı 🎯
+              </div>
+            </div>
+
+          </div>
         </div>
 
       </div>
