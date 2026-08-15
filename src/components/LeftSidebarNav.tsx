@@ -106,14 +106,14 @@ export default function LeftSidebarNav() {
       }`}>
         
         {/* TOP BRAND HEADER */}
-        <div className="p-5 border-b border-white/10 space-y-3 flex-shrink-0 bg-[#0B2A4A]/60">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="block">
-              <Logo variant="dark" size="md" showSubtext={true} />
+        <div className="p-4 border-b border-white/10 flex-shrink-0 bg-[#0B2A4A]/80">
+          <div className="flex items-center justify-between space-x-2">
+            <Link href="/" className="block w-full">
+              <Logo variant="dark" size="full" showSubtext={true} />
             </Link>
             <button
               onClick={() => setIsOpenMobile(false)}
-              className="xl:hidden text-gray-400 hover:text-white p-1"
+              className="xl:hidden text-gray-400 hover:text-white p-1 shrink-0"
             >
               <X className="h-5 w-5" />
             </button>
