@@ -14,7 +14,8 @@ import {
   CheckCircle2,
   Sparkles,
   ChevronRight,
-  BadgeCheck
+  BadgeCheck,
+  UserCheck
 } from 'lucide-react';
 import { Instructor } from '@/data/instructorsData';
 
@@ -140,23 +141,34 @@ export default function InstructorProfileModal({ instructor, isOpen, onClose }: 
         </div>
 
         {/* Modal Actions */}
-        <div className="pt-4 border-t border-gray-200 flex items-center justify-between">
+        <div className="pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-colors"
+            className="w-full sm:w-auto px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-colors"
           >
             Kapat
           </button>
 
-          <a
-            href={instructor.linkedinUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="px-6 py-2.5 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow transition-all flex items-center space-x-1.5"
-          >
-            <ExternalLink className="w-4 h-4" />
-            <span>LinkedIn Profilini İncele</span>
-          </a>
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
+            <Link
+              href={`/egitmenler/${instructor.id || 'ahmet-celik'}`}
+              onClick={onClose}
+              className="px-5 py-2.5 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-extrabold rounded-xl text-xs shadow transition-all flex items-center space-x-1"
+            >
+              <UserCheck className="w-4 h-4 text-amber-400" />
+              <span>Detaylı Profil Sayfasına Git</span>
+            </Link>
+
+            <a
+              href={instructor.linkedinUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="px-5 py-2.5 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs shadow transition-all flex items-center space-x-1.5"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span>LinkedIn</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

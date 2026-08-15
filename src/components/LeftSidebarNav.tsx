@@ -27,7 +27,6 @@ import {
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
-// Added "Çalışan Kariyer Planlaması" under İK Çözümleri submenu as requested
 const HR_SUBMENU = [
   { name: 'Çalışan Özgeçmiş & Deneyim ve Eğitim Karnesi', path: '/ik-cozumlari/calisan-ozgecmis-egitim-karnesi' },
   { name: 'Çalışan Kariyer Planlaması', path: '/ik-cozumlari/calisan-kariyer-planlamasi' },
@@ -39,21 +38,34 @@ const HR_SUBMENU = [
   { name: 'Çalışan Gelişim Karnesi', path: '/ik-cozumlari/gelisim-karnesi' }
 ];
 
+const INSTRUCTORS_SUBMENU = [
+  { name: '🌟 Tüm Eğitmenlerimiz', path: '/egitmenler' },
+  { name: 'Ahmet Çelik (Kurucu & Stratejist)', path: '/egitmenler/ahmet-celik' },
+  { name: 'Zeynep Kaya (İK & Akademi Dir.)', path: '/egitmenler/zeynep-kaya' },
+  { name: 'Dr. Mehmet Yılmaz (Yapay Zekâ Lead)', path: '/egitmenler/dr-mehmet-yilmaz' },
+  { name: 'Selin Arslan (CRM & Deneyim Dir.)', path: '/egitmenler/selin-arslan' },
+  { name: 'Prof. Dr. Hakan Erdem (Satın Alma Stratejisti)', path: '/egitmenler/prof-hakan-erdem' },
+  { name: 'Can Demirel (Lojistik & Stok Müdürü)', path: '/egitmenler/can-demirel' }
+];
+
+// Renamed "Akademi Eğitmen Kadromuz" to "Eğitmenlerimiz" as requested
 const MENU_ITEMS = [
   { name: 'Ana Sayfa', path: '/', icon: Home },
   { name: 'Eğitim Kataloğu', path: '/egitimler', icon: BookOpen },
   { name: 'İK Çözümleri', path: '/ik-cozumlari', icon: Briefcase, isDropdown: true },
-  { name: 'Kariyer Haritası', path: '/kariyer-yollari', icon: Map, badge: '15 Basamak' },
-  { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', icon: Target, badge: '15 Soru' },
-  { name: 'Yapay Zekâ', path: '/yapay-zeka', icon: Bot, badge: 'Yeni' },
-  { name: 'Admin Paneli', path: '/admin', icon: ShieldCheck, badge: 'Yönetici' },
-  { name: 'Aday & Yetenek Havuzu', path: '/yetkinlik-aday-havuzu', icon: Users, badge: 'Yakında' }
+  { name: 'Kariyer Haritası', path: '/kariyer-yollari', icon: Map },
+  { name: 'Kariyer Seviyeni Öğren', path: '/kariyer-seviyeni-ogren', icon: Target },
+  { name: 'Yapay Zekâ', path: '/yapay-zeka', icon: Bot },
+  { name: 'Admin Paneli', path: '/admin', icon: ShieldCheck },
+  { name: 'Aday & Yetenek Havuzu', path: '/yetkinlik-aday-havuzu', icon: Users },
+  { name: 'Eğitmenlerimiz', path: '/egitmenler', icon: GraduationCap, isInstructorsDropdown: true }
 ];
 
 export default function LeftSidebarNav() {
   const pathname = usePathname();
   const [isOpenMobile, setIsOpenMobile] = useState(false);
   const [isHrOpen, setIsHrOpen] = useState(false);
+  const [isInstructorsOpen, setIsInstructorsOpen] = useState(true);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -85,7 +97,7 @@ export default function LeftSidebarNav() {
         />
       )}
 
-      {/* LEFT VERTICAL SIDEBAR (Desktop Fixed Left + Mobile Slide Panel) */}
+      {/* LEFT VERTICAL SIDEBAR */}
       <aside className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#061B33] text-white border-r border-[#087F96]/30 flex flex-col justify-between shadow-2xl transition-transform duration-300 ${
         isOpenMobile ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'
       }`}>
@@ -105,7 +117,7 @@ export default function LeftSidebarNav() {
           </div>
         </div>
 
-        {/* MIDDLE VERTICAL MENU (TOP TO BOTTOM STACKED / YUKARIDAN AŞAĞIYA) */}
+        {/* MIDDLE VERTICAL MENU */}
         <div className="flex-1 overflow-y-auto p-4 space-y-1.5 custom-scrollbar">
           <div className="text-[10px] font-black text-[#087F96] uppercase tracking-wider px-3 mb-2">
             Platform Menüsü
@@ -115,6 +127,48 @@ export default function LeftSidebarNav() {
             const Icon = item.icon;
             const isActive = pathname === item.path;
 
+            // Eğitmenlerimiz Dropdown Submenu
+            if (item.isInstructorsDropdown) {
+              return (
+                <div key={item.name} className="space-y-1">
+                  <button
+                    onClick={() => setIsInstructorsOpen(!isInstructorsOpen)}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all ${
+                      pathname.startsWith('/egitmenler')
+                        ? 'bg-[#087F96] text-white shadow-md'
+                        : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Icon className="h-4 w-4 text-amber-400" />
+                      <span>{item.name}</span>
+                    </div>
+                    <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isInstructorsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {/* Accordion Submenu for Instructors */}
+                  {isInstructorsOpen && (
+                    <div className="pl-6 space-y-1 py-1 border-l-2 border-amber-400/50 ml-4 animate-in fade-in duration-150">
+                      {INSTRUCTORS_SUBMENU.map((sub) => (
+                        <Link
+                          key={sub.name}
+                          href={sub.path}
+                          className={`block px-3 py-1.5 rounded-lg text-[11px] font-bold transition-colors ${
+                            pathname === sub.path
+                              ? 'text-amber-300 bg-white/10 font-extrabold'
+                              : 'text-gray-300 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          • {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            // İK Çözümleri Dropmenu
             if (item.isDropdown) {
               return (
                 <div key={item.name} className="space-y-1">
@@ -171,66 +225,23 @@ export default function LeftSidebarNav() {
                   }`} />
                   <span>{item.name}</span>
                 </div>
-
-                {item.badge && (
-                  <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase font-mono ${
-                    item.badge === '15 Soru' ? 'bg-emerald-500 text-white' : 
-                    item.badge === 'Yeni' ? 'bg-[#E11D48] text-white' : 'bg-amber-400 text-slate-950'
-                  }`}>
-                    {item.badge}
-                  </span>
-                )}
               </Link>
             );
           })}
         </div>
 
-        {/* BOTTOM ACTION BUTTONS */}
-        <div className="p-4 border-t border-white/10 space-y-2 flex-shrink-0 bg-[#0B2A4A]/80">
-          <button
-            onClick={() => {
-              if (typeof window !== 'undefined') {
-                window.dispatchEvent(new Event('open_visitor_profile_modal'));
-              }
-            }}
-            className="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 border border-blue-400/40 cursor-pointer"
-          >
-            <User className="h-3.5 w-3.5 text-white" />
-            <span>👤 Çalışan Girişi</span>
-          </button>
-
-          <Link
-            href="/ik-cozumlari/egitim-yonetimi"
-            className="w-full py-2 px-3 bg-purple-700 hover:bg-purple-800 text-white font-extrabold rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 border border-purple-400/40"
-          >
-            <GraduationCap className="h-3.5 w-3.5 text-purple-200" />
-            <span>🎓 Eğitmen Girişi</span>
-          </Link>
-
-          {/* 👑 Admin Paneli Button right under Eğitmen Girişi */}
-          <Link
-            href="/admin"
-            className="w-full py-2 px-3 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-xl text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 border border-amber-300"
-          >
-            <Crown className="h-3.5 w-3.5 text-slate-950" />
-            <span>👑 Admin Paneli (Yönetici)</span>
-          </Link>
-
+        {/* BOTTOM BRANDING FOOTER */}
+        <div className="p-4 border-t border-white/10 space-y-2 flex-shrink-0 bg-[#0B2A4A]/80 text-center">
           <Link
             href="/kurumsal-cozumler"
-            className="w-full py-2.5 px-3 bg-[#E11D48] hover:bg-[#BE123C] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center space-x-2"
+            className="w-full py-2 px-3 bg-[#E11D48] hover:bg-[#BE123C] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center space-x-2"
           >
             <Building2 className="h-4 w-4" />
-            <span>Kurumsal Solutions</span>
+            <span>Kurumsal Çözümler</span>
           </Link>
-
-          <Link
-            href="/kurumsal-demo"
-            className="w-full py-2 px-3 bg-white/5 hover:bg-white/10 text-amber-300 hover:text-amber-200 font-bold rounded-xl text-[11px] transition-all flex items-center justify-center space-x-1.5 border border-white/10"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-amber-300" />
-            <span>Kurumsal Demo Talep Et</span>
-          </Link>
+          <p className="text-[10px] text-gray-400 font-medium pt-1">
+            Giriş portalları sağ üst menü çubuğuna taşınmıştır.
+          </p>
         </div>
 
       </aside>

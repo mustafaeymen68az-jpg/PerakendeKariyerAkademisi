@@ -10,7 +10,8 @@ import {
   ShieldCheck,
   Users,
   Award,
-  BarChart3
+  BarChart3,
+  Calendar
 } from 'lucide-react';
 
 export default function CorporateDemoPage() {
@@ -25,11 +26,18 @@ export default function CorporateDemoPage() {
     storeCount: '1-10',
     subSector: 'Gıda Perakendesi',
     solutionInterest: 'Yetkinlik & Terfi Yönetimi',
+    meetingDate: '',
+    meetingTime: '10:00',
+    kvkkAccepted: false,
     message: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.kvkkAccepted) {
+      alert('Lütfen KVKK aydınlatma metnini onaylayınız.');
+      return;
+    }
     setSubmitted(true);
   };
 
@@ -202,17 +210,57 @@ export default function CorporateDemoPage() {
                         <option value="Diğer">Diğer Perakende Sektörleri</option>
                       </select>
                     </div>
+
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Uygun Görüşme Tarihi</label>
+                      <input
+                        type="date"
+                        value={formData.meetingDate}
+                        onChange={(e) => setFormData({ ...formData, meetingDate: e.target.value })}
+                        className="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#0B2A4A] focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-gray-700 mb-1">Uygun Görüşme Saati</label>
+                      <select
+                        value={formData.meetingTime}
+                        onChange={(e) => setFormData({ ...formData, meetingTime: e.target.value })}
+                        className="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#0B2A4A] focus:outline-none"
+                      >
+                        <option value="10:00">10:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:30">16:30</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div>
                     <label className="block font-bold text-gray-700 mb-1">İlgilenilen Çözüm / Notlar</label>
                     <textarea
-                      rows={3}
+                      rows={2}
                       placeholder="Şirketinizdeki terfi, eğitim veya yedekleme ihtiyaçlarınız hakkında kısaca bilgi yazabilirsiniz..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       className="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#0B2A4A] focus:outline-none"
                     />
+                  </div>
+
+                  <div className="flex items-[#0B2A4A] space-x-2 pt-1">
+                    <input
+                      type="checkbox"
+                      id="kvkkCheck"
+                      checked={formData.kvkkAccepted}
+                      onChange={(e) => setFormData({ ...formData, kvkkAccepted: e.target.checked })}
+                      className="w-4 h-4 rounded text-[#0B2A4A] focus:ring-[#0B2A4A]"
+                    />
+                    <label htmlFor="kvkkCheck" className="text-[11px] text-gray-600 font-medium">
+                      <span>Kişisel verilerimin işlenmesine ilişkin </span>
+                      <a href="/kvkk" target="_blank" className="text-[#087F96] underline font-bold">KVKK Aydınlatma Metnini</a>
+                      <span> okudum ve kabul ediyorum.</span>
+                    </label>
                   </div>
 
                   <button

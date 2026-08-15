@@ -5,26 +5,46 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { 
   Search, 
-  Filter, 
   BookOpen, 
-  Clock, 
   ChevronRight, 
-  Award, 
-  Layers, 
-  Users, 
-  Sparkles, 
   CheckCircle2, 
-  LayoutGrid, 
-  List as ListIcon, 
-  Table as TableIcon,
+  CheckSquare,
+  Square,
+  PlusCircle,
+  Download,
+  Send,
+  X,
+  Sparkles,
+  User,
+  ExternalLink,
+  ArrowUpDown,
+  ChevronDown,
+  Filter,
+  Briefcase,
+  Check,
   UserCheck,
-  Video,
-  FileText
+  Eye,
+  EyeOff,
+  DollarSign,
+  Tag,
+  CreditCard,
+  Coins,
+  ShoppingCart,
+  Clock,
+  Trash2,
+  ArrowRight,
+  ShieldCheck,
+  Award,
+  GraduationCap,
+  FileCheck,
+  FileText,
+  FileSpreadsheet,
+  FileCode
 } from 'lucide-react';
 import { DEPARTMENTS_DATA } from '@/data/departmentsData';
 import CourseDetailModal, { DetailedCourse } from '@/components/CourseDetailModal';
 import { getDetailedCourseData } from '@/data/courseDetailsData';
-import { getInstructorForCourse, Instructor } from '@/data/instructorsData';
+import { getInstructorForCourse, Instructor, INSTRUCTORS_DATA } from '@/data/instructorsData';
 import { getCourseImage } from '@/data/courseImages';
 import InstructorProfileModal from '@/components/InstructorProfileModal';
 
@@ -32,47 +52,218 @@ interface CourseItem {
   id: string;
   title: string;
   category: string;
+  subCategory: string;
   deptId: string;
   department: string;
-  year: '1. Yıl' | '2. Yıl';
-  duration: number; // hours
-  position: string;
-  level: 'Temel Seviye' | 'Görev Yetkinliği' | 'İleri Seviye' | 'Stratejik Yönetim';
+  duration: number;
+  level: string;
+  isMandatory: boolean;
   description: string;
   slug: string;
 }
 
-// Helper function to resolve exact top-level category name matching CATEGORY_LIST tabs
-const resolveCategoryName = (dept: any, courseTitle: string): string => {
-  const dId = (dept.id || '').toLowerCase();
-  const dName = (dept.name || '').toLowerCase();
-  const cat = (dept.category || '').toLowerCase();
-  const title = (courseTitle || '').toLowerCase();
+// DYNAMIC PRICING CALCULATION ACCORDING TO POSITION STATUS & COURSE IMPORTANCE
+const calculateCoursePrice = (course: CourseItem) => {
+  const titleLower = (course.title || '').toLowerCase();
+  const levelLower = (course.level || '').toLowerCase();
+  const deptLower = (course.department || '').toLowerCase();
 
-  if (dId.includes('satinalma') || dName.includes('satın alma') || title.includes('satın alma') || title.includes('kategori')) {
-    return 'Satın Alma ve Kategori';
+  let basePrice = 2400;
+
+  // 1. Position Status Weighting
+  if (
+    deptLower.includes('ceo') || 
+    deptLower.includes('genel müdür') || 
+    deptLower.includes('direktör') || 
+    deptLower.includes('satın alma müdürü') || 
+    deptLower.includes('bölge müdürü')
+  ) {
+    basePrice = 8500;
+  } else if (
+    deptLower.includes('mağaza müdürü') || 
+    deptLower.includes('kategori') || 
+    deptLower.includes('ik') || 
+    deptLower.includes('crm') || 
+    deptLower.includes('lojistik')
+  ) {
+    basePrice = 4800;
+  } else if (
+    deptLower.includes('vardiya') || 
+    deptLower.includes('şef') || 
+    deptLower.includes('uzman')
+  ) {
+    basePrice = 3200;
+  } else {
+    // Basic Operational
+    basePrice = 1850;
   }
-  if (dId.includes('lojistik') || dId.includes('stok') || dName.includes('lojistik') || dName.includes('depo') || title.includes('lojistik') || title.includes('stok devir')) {
-    return 'Lojistik ve Tedarik';
+
+  // 2. Level Multiplier
+  if (levelLower.includes('stratejik')) {
+    basePrice *= 1.4;
+  } else if (levelLower.includes('ileri')) {
+    basePrice *= 1.25;
+  } else if (levelLower.includes('görev')) {
+    basePrice *= 1.1;
   }
-  if (dId.includes('pazarlama') || dId.includes('satis') || dName.includes('pazarlama') || dName.includes('satış') || title.includes('pazarlama') || title.includes('merchandising') || title.includes('crm')) {
-    return 'Satış ve Pazarlama';
+
+  // 3. Special Keyword Premium
+  if (titleLower.includes('yapay zeka') || titleLower.includes('power bi') || titleLower.includes('sql')) {
+    basePrice += 2400;
+  } else if (titleLower.includes('terfi') || titleLower.includes('strateji') || titleLower.includes('audit') || titleLower.includes('p&l')) {
+    basePrice += 1800;
+  } else if (titleLower.includes('fire') || titleLower.includes('soğuk zincir') || titleLower.includes('omnichannel')) {
+    basePrice += 1200;
   }
-  if (dId.includes('ik') || dId.includes('insan-kaynaklari') || dName.includes('insan kaynak') || title.includes('insan kaynak') || title.includes('terfi') || title.includes('ise alim')) {
-    return 'İnsan Kaynakları';
+
+  // 4. Duration Adder
+  basePrice += (course.duration || 12) * 45;
+
+  // 5. Mandatory multiplier
+  if (course.isMandatory) {
+    basePrice *= 1.1;
   }
-  if (dId.includes('veri') || dId.includes('yazilim') || dId.includes('dijital') || cat.includes('teknoloji') || cat.includes('dijital') || title.includes('yapay zeka') || title.includes('prompt') || title.includes('sql') || title.includes('powerbi')) {
-    return 'Dijitalleşme';
+
+  // Round to clean 50s (e.g. ₺3,450 or ₺5,800)
+  const finalPrice = Math.round(basePrice / 50) * 50;
+
+  let badge = 'Standart';
+  let badgeColor = 'bg-blue-100 text-blue-800 border-blue-200';
+  if (finalPrice >= 8000) {
+    badge = 'Executive';
+    badgeColor = 'bg-[#0B2A4A] text-amber-300 border-amber-400 font-black';
+  } else if (finalPrice >= 4500) {
+    badge = 'Yönetici';
+    badgeColor = 'bg-purple-100 text-purple-900 border-purple-300 font-bold';
+  } else if (finalPrice >= 2800) {
+    badge = 'Uzmanlık';
+    badgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300 font-bold';
   }
-  return 'Mağaza Yönetimi ve Operasyon';
+
+  return {
+    price: finalPrice,
+    formatted: `₺${finalPrice.toLocaleString('tr-TR')}`,
+    badge,
+    badgeColor
+  };
 };
 
-// Generate complete catalog dataset dynamically from 26 DEPARTMENTS_DATA (200+ total courses)
+// CERTIFICATION BADGE HELPER: ÜNİVERSİTE SERTİFİKALI / EĞİTMEN SERTİFİKALI / SERTİFİKASIZ
+const getCourseCertBadge = (course: CourseItem, price: number) => {
+  const titleLower = (course.title || '').toLowerCase();
+  const deptLower = (course.department || '').toLowerCase();
+
+  if (
+    price >= 7000 || 
+    titleLower.includes('yapay zeka') || 
+    titleLower.includes('power bi') || 
+    titleLower.includes('sql') || 
+    titleLower.includes('terfi') || 
+    titleLower.includes('strateji') || 
+    deptLower.includes('ceo') || 
+    deptLower.includes('direktör') || 
+    deptLower.includes('satın alma')
+  ) {
+    return {
+      type: 'universite',
+      label: '🎓 Üniversite Sertifikalı',
+      shortLabel: '🎓 Üniversite',
+      color: 'bg-purple-900 text-purple-100 border-purple-400 font-black',
+      badgeClass: 'bg-purple-100 text-purple-900 border-purple-300 font-extrabold',
+      icon: GraduationCap
+    };
+  }
+
+  if (course.duration <= 16 && !course.isMandatory && price <= 2500) {
+    return {
+      type: 'sertifikasiz',
+      label: '⚪ Sertifikasız',
+      shortLabel: '⚪ Sertifikasız',
+      color: 'bg-gray-100 text-gray-600 border-gray-300 font-medium',
+      badgeClass: 'bg-gray-100 text-gray-600 border-gray-300 font-medium',
+      icon: X
+    };
+  }
+
+  return {
+    type: 'egitmen',
+    label: '📜 Eğitmen Sertifikalı',
+    shortLabel: '📜 Eğitmen',
+    color: 'bg-emerald-100 text-emerald-900 border-emerald-300 font-extrabold',
+    badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300 font-extrabold',
+    icon: Award
+  };
+};
+
+// CLEAN MAIN DOMAIN CATEGORIES HIERARCHY
+const HIERARCHY = [
+  { id: 'all', name: 'Tüm Eğitimler' },
+  { id: 'taze_gida', name: '🥦 Taze Gıda Reyonları' },
+  { id: 'reyon_elemanlari', name: '🛒 Reyon Elemanları' },
+  { id: 'saha_magaza', name: '🏬 Saha & Mağaza Yönetimi' },
+  { id: 'satinalma_lojistik', name: '📦 Satın Alma & Lojistik' },
+  { id: 'pazarlama_satis_crm', name: '📣 Pazarlama & Satış & CRM' },
+  { id: 'yapay_zeka', name: '🤖 Yapay Zekâ & Dijital' },
+  { id: 'ik_egitmenlik', name: '👥 İK & İç Eğitmenlik' },
+];
+
+const resolveCategoryMapping = (dept: any, courseTitle: string) => {
+  const title = (courseTitle || '').toLowerCase();
+  const dName = (dept.name || '').toLowerCase();
+
+  if (title.includes('taze') || title.includes('manav') || title.includes('et') || title.includes('sarkuteri') || title.includes('firin') || title.includes('unlu') || title.includes('fire') || dName.includes('taze')) {
+    let subCat = 'Soğuk Zincir & Fire';
+    if (title.includes('et') || title.includes('sarkuteri')) subCat = 'Et & Şarküteri';
+    else if (title.includes('manav') || title.includes('meyve')) subCat = 'Manav & Meyve-Sebze';
+    else if (title.includes('firin') || title.includes('unlu')) subCat = 'Unlu Mamuller & Fırın';
+    return { category: '🥦 Taze Gıda Reyonları', catId: 'taze_gida', subCategory: subCat };
+  }
+
+  if (title.includes('kasiyer') || title.includes('kasa') || title.includes('pos') || title.includes('etiket') || title.includes('reyon') || dName.includes('kasiyer') || dName.includes('reyon')) {
+    let subCat = 'Tanzim Teşhir';
+    if (title.includes('kasa') || title.includes('pos')) subCat = 'Kasa & POS';
+    else if (title.includes('etiket') || title.includes('sayim')) subCat = 'Stok Devir & Etiket';
+    else if (title.includes('iletisim') || title.includes('musteri')) subCat = 'Müşteri İletişimi';
+    return { category: '🛒 Reyon Elemanları', catId: 'reyon_elemanlari', subCategory: subCat };
+  }
+
+  if (title.includes('satın alma') || title.includes('kategori') || title.includes('tedarik') || title.includes('lojistik') || title.includes('depo') || dName.includes('satın alma') || dName.includes('lojistik')) {
+    let subCat = 'Kategori Yönetimi & Marj';
+    if (title.includes('tedarikci') || title.includes('pazarlik')) subCat = 'Tedarikçi Pazarlığı';
+    else if (title.includes('depo') || title.includes('stok') || title.includes('lojistik')) subCat = 'Depo & Lojistik';
+    return { category: '📦 Satın Alma & Lojistik', catId: 'satinalma_lojistik', subCategory: subCat };
+  }
+
+  if (title.includes('pazarlama') || title.includes('satis') || title.includes('crm') || title.includes('sadakat') || title.includes('merchandising') || title.includes('omnichannel')) {
+    let subCat = 'Müşteri Sadakati (CRM)';
+    if (title.includes('visual') || title.includes('magaza ici')) subCat = 'Visual Merchandising';
+    else if (title.includes('dijital') || title.includes('omnichannel')) subCat = 'Dijital Perakende & Omnichannel';
+    return { category: '📣 Pazarlama & Satış & CRM', catId: 'pazarlama_satis_crm', subCategory: subCat };
+  }
+
+  if (title.includes('yapay zeka') || title.includes('prompt') || title.includes('veri') || title.includes('power bi') || title.includes('sql') || title.includes('tahmin')) {
+    let subCat = 'Perakendede Yapay Zekâ';
+    if (title.includes('siparis') || title.includes('tahmin')) subCat = 'Otomatik Sipariş & Tahmin';
+    else if (title.includes('power bi') || title.includes('analitik')) subCat = 'Veri Analitiği & Power BI';
+    return { category: '🤖 Yapay Zekâ & Dijital', catId: 'yapay_zeka', subCategory: subCat };
+  }
+
+  if (title.includes('ik') || title.includes('insan kaynak') || title.includes('egitmen') || title.includes('terfi') || title.includes('mülakat')) {
+    let subCat = 'İç Eğitmen Yetiştirme';
+    if (title.includes('terfi') || title.includes('yetkinlik')) subCat = 'Terfi Komitesi & Yetkinlik';
+    return { category: '👥 İK & İç Eğitmenlik', catId: 'ik_egitmenlik', subCategory: subCat };
+  }
+
+  let subCat = 'Mağaza Müdürlüğü & P&L';
+  if (dName.includes('bolge') || title.includes('audit')) subCat = 'Bölge Müdürlüğü & Audit';
+  else if (title.includes('vardiya') || title.includes('lider')) subCat = 'Vardiya & Ekip Liderliği';
+  return { category: '🏬 Saha & Mağaza Yönetimi', catId: 'saha_magaza', subCategory: subCat };
+};
+
 const BUILD_FULL_CATALOG = (): CourseItem[] => {
   const courses: CourseItem[] = [];
 
   DEPARTMENTS_DATA.forEach((dept) => {
-    // Year 1 Courses
     dept.year1Courses.forEach((cName, idx) => {
       const slug = cName
         .toLowerCase()
@@ -85,24 +276,23 @@ const BUILD_FULL_CATALOG = (): CourseItem[] => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
 
-      const resolvedCategory = resolveCategoryName(dept, cName);
+      const mapped = resolveCategoryMapping(dept, cName);
 
       courses.push({
         id: `dept_${dept.id}_y1_${idx}`,
         title: cName,
-        category: resolvedCategory,
+        category: mapped.category,
+        subCategory: mapped.subCategory,
         deptId: dept.id,
         department: dept.name,
-        year: '1. Yıl',
         duration: 12 + idx * 4,
-        position: dept.name,
         level: idx === 0 ? 'Temel Seviye' : 'Görev Yetkinliği',
+        isMandatory: idx % 2 === 0,
         description: `${dept.name} pozisyonu için 1. yıl müfredatı kapsamındaki ${cName} eğitim modülü. ${dept.description}`,
         slug: slug || `egitim-${dept.id}-y1-${idx}`
       });
     });
 
-    // Year 2 Courses
     dept.year2Courses.forEach((cName, idx) => {
       const slug = cName
         .toLowerCase()
@@ -115,18 +305,18 @@ const BUILD_FULL_CATALOG = (): CourseItem[] => {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
 
-      const resolvedCategory = resolveCategoryName(dept, cName);
+      const mapped = resolveCategoryMapping(dept, cName);
 
       courses.push({
         id: `dept_${dept.id}_y2_${idx}`,
         title: cName,
-        category: resolvedCategory,
+        category: mapped.category,
+        subCategory: mapped.subCategory,
         deptId: dept.id,
         department: dept.name,
-        year: '2. Yıl',
         duration: 20 + idx * 6,
-        position: dept.name,
         level: idx >= 2 ? 'Stratejik Yönetim' : 'İleri Seviye',
+        isMandatory: idx === 0,
         description: `${dept.name} pozisyonu için 2. yıl müfredatı kapsamındaki ${cName} eğitim modülü. ${dept.description}`,
         slug: slug || `egitim-${dept.id}-y2-${idx}`
       });
@@ -138,24 +328,36 @@ const BUILD_FULL_CATALOG = (): CourseItem[] => {
 
 const ALL_COURSES = BUILD_FULL_CATALOG();
 
-const CATEGORY_LIST = [
-  'Tümü',
-  'Mağaza Yönetimi ve Operasyon',
-  'Satın Alma ve Kategori',
-  'Lojistik ve Tedarik',
-  'Satış ve Pazarlama',
-  'İnsan Kaynakları',
-  'Dijitalleşme'
-];
+const ALL_INSTRUCTORS = Object.values(INSTRUCTORS_DATA);
 
 function EgitimlerCatalogContent() {
   const searchParams = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Tümü');
-  const [selectedDept, setSelectedDept] = useState('Tümü');
-  const [selectedYear, setSelectedYear] = useState<'Tümü' | '1. Yıl' | '2. Yıl'>('Tümü');
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'table'>('grid');
+  const [positionSearchQuery, setPositionSearchQuery] = useState('');
+  const [selectedMainCatId, setSelectedMainCatId] = useState('all');
+
+  // HEADER DROPDOWN FILTERS
+  const [instructorFilter, setInstructorFilter] = useState('all');
+  const [positionFilter, setPositionFilter] = useState('all');
+  const [kapsamFilter, setKapsamFilter] = useState('all');
+  const [certFilter, setCertFilter] = useState('all');
+  const [levelFilter, setLevelFilter] = useState('all');
+
+  // FILTER EXCLUSIVELY TO SHOW ONLY SELECTED COURSES
+  const [showOnlySelected, setShowOnlySelected] = useState(false);
+
+  const [sortField, setSortField] = useState<'title' | 'department' | 'duration' | 'price'>('title');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // MULTI-SELECTION CHECKBOX STATE
+  const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
+  
+  // SHOPPING CART STATE & DRAWER MODAL
+  const [cartItemIds, setCartItemIds] = useState<string[]>([]);
+  const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+
+  const [notificationMsg, setNotificationMsg] = useState<string | null>(null);
 
   const [selectedCourseDetail, setSelectedCourseDetail] = useState<DetailedCourse | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -163,58 +365,476 @@ function EgitimlerCatalogContent() {
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   const [isInstructorModalOpen, setIsInstructorModalOpen] = useState(false);
 
-  // Helper to calculate total courses per category
-  const getCategoryCount = (catName: string) => {
-    if (catName === 'Tümü') return ALL_COURSES.length;
-    return ALL_COURSES.filter((c) => c.category === catName).length;
+  // Active Main Category Object
+  const currentMainCatObj = useMemo(() => {
+    return HIERARCHY.find((c) => c.id === selectedMainCatId) || HIERARCHY[0];
+  }, [selectedMainCatId]);
+
+  // Filtered positions list based on position search input
+  const filteredPositionsList = useMemo(() => {
+    if (!positionSearchQuery) return DEPARTMENTS_DATA;
+    return DEPARTMENTS_DATA.filter((d) =>
+      d.name.toLowerCase().includes(positionSearchQuery.toLowerCase())
+    );
+  }, [positionSearchQuery]);
+
+  // TOTAL SELECTED BUDGET (TL) & TOTAL HOURS (SAAT) CALCULATION
+  const selectedTotals = useMemo(() => {
+    let budget = 0;
+    let hours = 0;
+    selectedCourseIds.forEach((id) => {
+      const course = ALL_COURSES.find((c) => c.id === id);
+      if (course) {
+        budget += calculateCoursePrice(course).price;
+        hours += course.duration || 0;
+      }
+    });
+    return { budget, hours, count: selectedCourseIds.length };
+  }, [selectedCourseIds]);
+
+  // CART TOTALS CALCULATION
+  const cartTotals = useMemo(() => {
+    let budget = 0;
+    let hours = 0;
+    cartItemIds.forEach((id) => {
+      const course = ALL_COURSES.find((c) => c.id === id);
+      if (course) {
+        budget += calculateCoursePrice(course).price;
+        hours += course.duration || 0;
+      }
+    });
+    return { budget, hours, count: cartItemIds.length };
+  }, [cartItemIds]);
+
+  // Course Count Helpers
+  const getMainCategoryCount = (catId: string) => {
+    if (catId === 'all') return ALL_COURSES.length;
+    const obj = HIERARCHY.find(c => c.id === catId);
+    if (!obj) return 0;
+    return ALL_COURSES.filter(c => c.category === obj.name).length;
   };
 
-  // Sync with URL Search Parameters
-  useEffect(() => {
-    const deptParam = searchParams.get('dept');
-    const catParam = searchParams.get('cat');
+  const getPositionCourseCount = (deptId: string) => {
+    return ALL_COURSES.filter((c) => c.deptId === deptId || c.department === deptId).length;
+  };
 
-    if (deptParam) {
-      setSelectedDept(deptParam);
-      setSelectedCategory('Tümü');
-    }
-    if (catParam) {
-      setSelectedDept('Tümü');
-      if (catParam === 'dijitallestirme') setSelectedCategory('Dijitalleşme');
-      else if (catParam === 'magaza') setSelectedCategory('Mağaza Yönetimi ve Operasyon');
-      else if (catParam === 'satinalma') setSelectedCategory('Satın Alma ve Kategori');
-      else if (catParam === 'lojistik') setSelectedCategory('Lojistik ve Tedarik');
-      else if (catParam === 'satis') setSelectedCategory('Satış ve Pazarlama');
-      else if (catParam === 'ik') setSelectedCategory('İnsan Kaynakları');
-    }
-  }, [searchParams]);
-
-  // Filter Catalog Courses
+  // Filter & Sort Courses including Certification Badge & Level Filter
   const filteredCourses = useMemo(() => {
-    return ALL_COURSES.filter((course) => {
+    const list = ALL_COURSES.filter((course) => {
+      if (showOnlySelected && !selectedCourseIds.includes(course.id)) {
+        return false;
+      }
+
+      const priceInfo = calculateCoursePrice(course);
+      const certBadge = getCourseCertBadge(course, priceInfo.price);
+
       const matchesSearch =
         searchQuery === '' ||
         course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesCategory =
-        selectedCategory === 'Tümü' || course.category === selectedCategory;
+      const matchesMainCategory =
+        selectedMainCatId === 'all' || course.category === currentMainCatObj.name;
 
-      const matchesDept =
-        selectedDept === 'Tümü' || course.deptId === selectedDept;
+      const instructorObj = getInstructorForCourse(course.slug || course.id, course.category);
+      const matchesInstructor =
+        instructorFilter === 'all' || instructorObj.id === instructorFilter || instructorObj.name === instructorFilter;
 
-      const matchesYear =
-        selectedYear === 'Tümü' || course.year === selectedYear;
+      const matchesPosition =
+        positionFilter === 'all' || course.deptId === positionFilter || course.department === positionFilter;
 
-      return matchesSearch && matchesCategory && matchesDept && matchesYear;
+      const matchesKapsam =
+        kapsamFilter === 'all' ||
+        (kapsamFilter === 'Zorunlu' && course.isMandatory) ||
+        (kapsamFilter === 'Önerilen' && !course.isMandatory);
+
+      const matchesCert =
+        certFilter === 'all' || certBadge.type === certFilter;
+
+      const matchesLevel =
+        levelFilter === 'all' || priceInfo.badge === levelFilter;
+
+      return (
+        matchesSearch &&
+        matchesMainCategory &&
+        matchesInstructor &&
+        matchesPosition &&
+        matchesKapsam &&
+        matchesCert &&
+        matchesLevel
+      );
     });
-  }, [searchQuery, selectedCategory, selectedDept, selectedYear]);
 
-  const activeDepartmentObject = useMemo(() => {
-    if (selectedDept === 'Tümü') return null;
-    return DEPARTMENTS_DATA.find((d) => d.id === selectedDept);
-  }, [selectedDept]);
+    return list.sort((a, b) => {
+      if (sortField === 'price') {
+        const priceA = calculateCoursePrice(a).price;
+        const priceB = calculateCoursePrice(b).price;
+        return sortOrder === 'asc' ? priceA - priceB : priceB - priceA;
+      }
+      let valA = a[sortField];
+      let valB = b[sortField];
+      if (typeof valA === 'string') {
+        return sortOrder === 'asc'
+          ? (valA as string).localeCompare(valB as string, 'tr')
+          : (valB as string).localeCompare(valA as string, 'tr');
+      }
+      return sortOrder === 'asc' ? (valA as number) - (valB as number) : (valB as number) - (valA as number);
+    });
+  }, [searchQuery, selectedMainCatId, currentMainCatObj, instructorFilter, positionFilter, kapsamFilter, certFilter, levelFilter, showOnlySelected, selectedCourseIds, sortField, sortOrder]);
+
+  // DISPLAYED TOTALS FOR TABLE FOOTER (TFOOT): IF COURSES CHECKED -> SELECTED TOTAL, ELSE -> FILTERED TOTAL
+  const displayedTotals = useMemo(() => {
+    if (selectedCourseIds.length > 0) {
+      return selectedTotals;
+    }
+    let budget = 0;
+    let hours = 0;
+    filteredCourses.forEach((c) => {
+      budget += calculateCoursePrice(c).price;
+      hours += c.duration || 0;
+    });
+    return { budget, hours, count: filteredCourses.length };
+  }, [selectedCourseIds, selectedTotals, filteredCourses]);
+
+  const getCoursesForExport = () => {
+    if (selectedCourseIds.length > 0) {
+      return ALL_COURSES.filter(c => selectedCourseIds.includes(c.id));
+    }
+    return filteredCourses;
+  };
+
+  // 100% PERFECT TURKISH CHARACTER EXCEL (.xls XML) EXPORT
+  const exportToExcel = () => {
+    const coursesToExport = getCoursesForExport();
+    let totalHours = 0;
+    let totalPrice = 0;
+
+    const tableRowsHtml = coursesToExport.map((c, idx) => {
+      const priceInfo = calculateCoursePrice(c);
+      const certBadge = getCourseCertBadge(c, priceInfo.price);
+      const instructor = getInstructorForCourse(c.slug || c.id, c.category);
+      totalHours += c.duration;
+      totalPrice += priceInfo.price;
+
+      return `
+        <tr>
+          <td style="text-align: center; border: 1px solid #CCC; padding: 6px;">${idx + 1}</td>
+          <td style="font-weight: bold; color: #0B2A4A; border: 1px solid #CCC; padding: 6px;">${c.title}</td>
+          <td style="border: 1px solid #CCC; padding: 6px;">${c.department}</td>
+          <td style="border: 1px solid #CCC; padding: 6px;">${instructor.name}</td>
+          <td style="text-align: center; border: 1px solid #CCC; padding: 6px;">${c.duration} Sa</td>
+          <td style="text-align: right; font-weight: bold; color: #087F96; border: 1px solid #CCC; padding: 6px;">₺${priceInfo.price.toLocaleString('tr-TR')} TL</td>
+          <td style="text-align: center; border: 1px solid #CCC; padding: 6px;">${priceInfo.badge}</td>
+          <td style="border: 1px solid #CCC; padding: 6px;">${certBadge.label}</td>
+          <td style="text-align: center; border: 1px solid #CCC; padding: 6px;">${c.isMandatory ? 'Zorunlu' : 'Önerilen'}</td>
+        </tr>
+      `;
+    }).join('');
+
+    const excelHtml = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <!--[if gte mso 9]>
+        <xml>
+          <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+              <x:ExcelWorksheet>
+                <x:Name>Eğitim Teklifi</x:Name>
+                <x:WorksheetOptions>
+                  <x:DisplayGridlines/>
+                </x:WorksheetOptions>
+              </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+          </x:ExcelWorkbook>
+        </xml>
+        <![endif]-->
+        <style>
+          body { font-family: Calibri, Arial, sans-serif; }
+          table { border-collapse: collapse; width: 100%; }
+          th { background-color: #0B2A4A; color: #FFFFFF; font-weight: bold; text-align: left; padding: 8px; border: 1px solid #0B2A4A; }
+          td { padding: 6px; border: 1px solid #CCC; }
+          .tfoot { background-color: #F4F7F9; font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        <h2 style="color: #0B2A4A;">PERAKENDE KARİYER AKADEMİSİ - KURUMSAL EĞİTİM LİSTESİ</h2>
+        <p><b>Tarih:</b> ${new Date().toLocaleDateString('tr-TR')} | <b>Toplam Ders:</b> ${coursesToExport.length}</p>
+        <table border="1">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Ders Adı</th>
+              <th>Pozisyon</th>
+              <th>Eğitmen</th>
+              <th>Süre</th>
+              <th>Eğitim Ücreti</th>
+              <th>Eğitim Seviyesi</th>
+              <th>Sertifika Akreditasyonu</th>
+              <th>Kapsam</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRowsHtml}
+          </tbody>
+          <tfoot>
+            <tr class="tfoot">
+              <td colspan="4" style="text-align: right; font-weight: bold; border: 1px solid #CCC; padding: 8px;">GENEL TOPLAM SÜRE VE BÜTÇE:</td>
+              <td style="text-align: center; color: #087F96; font-weight: bold; border: 1px solid #CCC; padding: 8px;">${totalHours} Saat</td>
+              <td style="text-align: right; color: #0B2A4A; font-weight: bold; border: 1px solid #CCC; padding: 8px;">₺${totalPrice.toLocaleString('tr-TR')} TL</td>
+              <td colspan="3" style="border: 1px solid #CCC; padding: 8px;"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob(['\ufeff' + excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Perakende_Akademi_Egitim_Teklifi_${new Date().toISOString().slice(0, 10)}.xls`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    triggerActionNotification(`📊 ${coursesToExport.length} Eğitimin Türkçe Karakter Uyumlu Excel Dokümanı İndirildi!`);
+  };
+
+  const exportToWord = () => {
+    const coursesToExport = getCoursesForExport();
+    let totalHours = 0;
+    let totalPrice = 0;
+    
+    const tableRowsHtml = coursesToExport.map((c, idx) => {
+      const priceInfo = calculateCoursePrice(c);
+      const certBadge = getCourseCertBadge(c, priceInfo.price);
+      const instructor = getInstructorForCourse(c.slug || c.id, c.category);
+      totalHours += c.duration;
+      totalPrice += priceInfo.price;
+
+      return `
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${idx + 1}</td>
+          <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; color: #0B2A4A;">${c.title}</td>
+          <td style="padding: 8px; border: 1px solid #ddd;">${c.department}</td>
+          <td style="padding: 8px; border: 1px solid #ddd;">${instructor.name}</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${c.duration} Sa</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; color: #087F96;">₺${priceInfo.price.toLocaleString('tr-TR')} TL</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${priceInfo.badge}</td>
+          <td style="padding: 8px; border: 1px solid #ddd;">${certBadge.label}</td>
+        </tr>
+      `;
+    }).join('');
+
+    const wordHtml = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+      <head><meta charset='utf-8'><title>Kurumsal Eğitim Teklifi</title></head>
+      <body style="font-family: Arial, sans-serif; padding: 25px;">
+        <h1 style="color: #0B2A4A; text-align: center; margin-bottom: 5px;">PERAKENDE KARİYER AKADEMİSİ</h1>
+        <h2 style="color: #087F96; text-align: center; font-size: 16px; margin-top: 0;">Kurumsal Eğitim Teklifi & Müfredat Raporu</h2>
+        <p style="text-align: right; font-size: 11px; color: #666;">Tarih: ${new Date().toLocaleDateString('tr-TR')}</p>
+        <hr style="border: 1px solid #0B2A4A; margin-bottom: 20px;" />
+        <h3>Seçilen Eğitim Detayları ve Bütçe Tablosu</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+          <thead>
+            <tr style="background-color: #0B2A4A; color: white;">
+              <th style="padding: 8px; border: 1px solid #ddd;">#</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Ders Adı</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Pozisyon</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Eğitmen</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Süre</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Ücret</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Seviye</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Sertifika</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRowsHtml}
+          </tbody>
+          <tfoot>
+            <tr style="background-color: #F4F7F9; font-weight: bold;">
+              <td colspan="4" style="padding: 10px; border: 1px solid #ddd; text-align: right;">TOPLAM MÜFREDAT SÜRESİ VE BÜTÇE:</td>
+              <td style="padding: 10px; border: 1px solid #ddd; text-align: center; color: #087F96;">${totalHours} Saat</td>
+              <td style="padding: 10px; border: 1px solid #ddd; text-align: right; color: #0B2A4A; font-size: 14px;">₺${totalPrice.toLocaleString('tr-TR')} TL</td>
+              <td colspan="2" style="padding: 10px; border: 1px solid #ddd;"></td>
+            </tr>
+          </tfoot>
+        </table>
+        <div style="margin-top: 30px; font-size: 11px; color: #555;">
+          <p><strong>Kurumsal Notlar & Bilgilendirme:</strong></p>
+          <ul>
+            <li>Tüm ücretlere KDV dahildir.</li>
+            <li>Üniversite Onaylı eğitimlerde e-Devlet Barkodlu sertifikasyon sunulmaktadır.</li>
+          </ul>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob(['\ufeff', wordHtml], { type: 'application/msword;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Perakende_Akademi_Teklif_${new Date().toISOString().slice(0, 10)}.doc`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    triggerActionNotification(`📝 ${coursesToExport.length} Eğitimin Word (.doc) Dokümanı İndirildi!`);
+  };
+
+  const exportToPdf = () => {
+    const coursesToExport = getCoursesForExport();
+    let totalHours = 0;
+    let totalPrice = 0;
+    
+    const tableRowsHtml = coursesToExport.map((c, idx) => {
+      const priceInfo = calculateCoursePrice(c);
+      const certBadge = getCourseCertBadge(c, priceInfo.price);
+      const instructor = getInstructorForCourse(c.slug || c.id, c.category);
+      totalHours += c.duration;
+      totalPrice += priceInfo.price;
+
+      return `
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${idx + 1}</td>
+          <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; color: #0B2A4A;">${c.title}</td>
+          <td style="padding: 8px; border: 1px solid #ddd;">${c.department}</td>
+          <td style="padding: 8px; border: 1px solid #ddd;">${instructor.name}</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${c.duration} Sa</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; color: #087F96;">₺${priceInfo.price.toLocaleString('tr-TR')} TL</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${priceInfo.badge}</td>
+          <td style="padding: 8px; border: 1px solid #ddd; font-size: 11px;">${certBadge.shortLabel}</td>
+        </tr>
+      `;
+    }).join('');
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Perakende Kariyer Akademisi - Kurumsal Teklif Raporu PDF</title>
+            <style>
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #333; }
+              .header { text-align: center; border-bottom: 3px solid #0B2A4A; padding-bottom: 15px; margin-bottom: 20px; }
+              .title { font-size: 24px; font-weight: 900; color: #0B2A4A; margin: 0; }
+              .subtitle { font-size: 14px; color: #087F96; margin-top: 5px; font-weight: 700; }
+              .meta { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 12px; color: #555; }
+              table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 25px; }
+              th { background-color: #0B2A4A; color: white; padding: 10px; border: 1px solid #0B2A4A; text-align: left; }
+              td { padding: 9px; border: 1px solid #e2e8f0; }
+              .tfoot-row { background-color: #f8fafc; font-weight: bold; }
+              .summary-box { background-color: #f0fdf4; border: 2px solid #22c55e; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; }
+              .footer { margin-top: 40px; font-size: 11px; text-align: center; color: #888; border-top: 1px solid #ddd; padding-top: 10px; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <div class="title">PERAKENDE KARİYER EĞİTİM AKADEMİSİ</div>
+              <div class="subtitle">Resmî Kurumsal Teklif ve Müfredat Raporu</div>
+            </div>
+            <div class="meta">
+              <div><strong>Teklif No:</strong> PKA-2026-${Math.floor(1000 + Math.random() * 9000)}</div>
+              <div><strong>Tarih:</strong> ${new Date().toLocaleDateString('tr-TR')}</div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Ders Adı</th>
+                  <th>Pozisyon</th>
+                  <th>Eğitmen</th>
+                  <th>Süre</th>
+                  <th style="text-align: right;">Ücret</th>
+                  <th>Seviye</th>
+                  <th>Sertifika Türü</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableRowsHtml}
+              </tbody>
+              <tfoot>
+                <tr class="tfoot-row">
+                  <td colspan="4" style="text-align: right; padding: 10px;">TOPLAM MÜFREDAT VE BÜTÇE:</td>
+                  <td style="text-align: center; color: #087F96; font-weight: bold;">${totalHours} Saat</td>
+                  <td style="text-align: right; color: #0B2A4A; font-size: 14px; font-weight: 900;">₺${totalPrice.toLocaleString('tr-TR')} TL</td>
+                  <td colspan="2"></td>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="summary-box">
+              <div>Seçilen Toplam Eğitim: ${coursesToExport.length} Ders</div>
+              <div>Toplam Eğitim Süresi: ${totalHours} Saat</div>
+              <div style="color: #15803d;">Genel Toplam Bütçe: ₺${totalPrice.toLocaleString('tr-TR')} TL</div>
+            </div>
+            <div class="footer">
+              Perakende Kariyer Akademisi © 2026 • Kurumsal Çözümler ve Yetenek Yönetimi Merkezi • e-Devlet Onaylı Eğitim Kataloğu
+            </div>
+            <script>
+              window.onload = function() { window.print(); }
+            </script>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+    triggerActionNotification(`📄 ${coursesToExport.length} Eğitimin PDF Raporu Hazırlandı!`);
+  };
+
+  const handleSelectMainCategory = (catId: string) => {
+    setSelectedMainCatId(catId);
+    setPositionFilter('all');
+  };
+
+  const toggleCourseSelect = (courseId: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setSelectedCourseIds((prev) =>
+      prev.includes(courseId)
+        ? prev.filter((id) => id !== courseId)
+        : [...prev, courseId]
+    );
+  };
+
+  const toggleSelectAllFiltered = () => {
+    const filteredIds = filteredCourses.map((c) => c.id);
+    const allSelected = filteredIds.every((id) => selectedCourseIds.includes(id));
+    if (allSelected) {
+      setSelectedCourseIds((prev) => prev.filter((id) => !filteredIds.includes(id)));
+    } else {
+      setSelectedCourseIds((prev) => Array.from(new Set([...prev, ...filteredIds])));
+    }
+  };
+
+  // Add course to cart
+  const addToCart = (courseId: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (!cartItemIds.includes(courseId)) {
+      setCartItemIds(prev => [...prev, courseId]);
+      const course = ALL_COURSES.find(c => c.id === courseId);
+      triggerActionNotification(`🛒 "${course?.title || 'Eğitim'}" sepetinize eklendi!`);
+    } else {
+      setIsCartModalOpen(true);
+    }
+  };
+
+  // Add selected courses to cart
+  const addSelectedToCart = () => {
+    const idsToAdd = selectedCourseIds.length > 0 ? selectedCourseIds : filteredCourses.map(c => c.id);
+    setCartItemIds(prev => Array.from(new Set([...prev, ...idsToAdd])));
+    triggerActionNotification(`🛒 ${idsToAdd.length} eğitim sepetinize eklendi!`);
+    setIsCartModalOpen(true);
+  };
+
+  const handleSort = (field: 'title' | 'department' | 'duration' | 'price') => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
 
   const handleOpenCourseModal = (course: CourseItem) => {
     const detailed = getDetailedCourseData(course.slug || course.id, course.title, course.category);
@@ -228,54 +848,215 @@ function EgitimlerCatalogContent() {
     setIsInstructorModalOpen(true);
   };
 
-  const handleSelectCategoryTab = (cat: string) => {
-    setSelectedCategory(cat);
-    if (cat !== 'Tümü') {
-      setSelectedDept('Tümü'); // reset position dropdown to prevent empty filtering collision
-    }
+  const triggerActionNotification = (msg: string) => {
+    setNotificationMsg(msg);
+    setTimeout(() => setNotificationMsg(null), 4000);
   };
 
-  const handleSelectDeptDropdown = (deptId: string) => {
-    setSelectedDept(deptId);
-    if (deptId !== 'Tümü') {
-      setSelectedCategory('Tümü'); // reset category tab to prevent empty filtering collision
-    }
-  };
+  const isAllSelected = filteredCourses.length > 0 && filteredCourses.every(c => selectedCourseIds.includes(c.id));
 
   return (
-    <div className="space-y-8">
-      {/* Search and Filters Bar */}
-      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
-        <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-          {/* Search Box */}
-          <div className="relative w-full lg:w-96">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Eğitim adı, pozisyon veya konu ara..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#087F96] focus:bg-white transition-all text-[#0B2A4A] placeholder-gray-400"
-            />
+    <div className="space-y-6">
+      
+      {/* Toast Notification */}
+      {notificationMsg && (
+        <div className="fixed bottom-24 right-6 z-50 bg-[#0B2A4A] text-white px-6 py-3.5 rounded-2xl shadow-2xl border border-emerald-400 flex items-center space-x-3 animate-in fade-in slide-in-from-bottom duration-200">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          <span className="text-xs font-bold">{notificationMsg}</span>
+        </div>
+      )}
+
+      {/* TOP FLOATING / HEADER SHOPPING CART BAR */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gradient-to-r from-[#0B2A4A] via-[#052240] to-[#087F96] p-4 rounded-3xl text-white shadow-lg border border-amber-400/40">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black shadow-md shrink-0">
+            <ShoppingCart className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="text-sm font-black text-amber-300 uppercase tracking-wider flex items-center space-x-2">
+              <span>Perakende Akademi Eğitim Sepeti</span>
+              {cartTotals.count > 0 && (
+                <span className="bg-emerald-500 text-white text-[10px] px-2 py-0.2 rounded-full font-mono">
+                  {cartTotals.count} Eğitmen Dersi
+                </span>
+              )}
+            </div>
+            <div className="text-xs text-gray-200 font-medium">
+              Eğitimleri sepete ekleyebilir, kurumsal fatura veya kredi kartı ile anında satın alabilirsiniz.
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setIsCartModalOpen(true)}
+          className="px-5 py-2.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-2xl text-xs shadow-xl transition-all flex items-center space-x-2 border border-amber-300 cursor-pointer scale-105 hover:scale-110 shrink-0"
+        >
+          <ShoppingCart className="w-4 h-4 text-slate-950" />
+          <span>SEPETİM ({cartTotals.count}) - ₺{cartTotals.budget.toLocaleString('tr-TR')} TL</span>
+          <ArrowRight className="w-4 h-4 text-slate-950" />
+        </button>
+      </div>
+
+      {/* SERTİFİKA ROZET TÜRLERİ & AKREDİTASYON BİLGİLENDİRME KARTI */}
+      <div className="bg-white p-6 rounded-3xl border-2 border-purple-400/60 shadow-md space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-2 text-[#0B2A4A] font-black text-sm uppercase tracking-wider">
+            <Award className="w-5 h-5 text-purple-600" />
+            <span>📜 Eğitim Sertifikasyon Türleri & Akreditasyon Rozetleri</span>
           </div>
 
-          {/* Category Tabs with Course Counts */}
-          <div className="flex items-center space-x-1 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 text-xs">
-            {CATEGORY_LIST.map((cat) => {
-              const count = getCategoryCount(cat);
+          {/* TOP CERTIFICATION FILTER DROPDOWN */}
+          <div className="flex items-center space-x-2 text-xs font-bold text-gray-700">
+            <span>Rozet Süzgeci:</span>
+            <select
+              value={certFilter}
+              onChange={(e) => setCertFilter(e.target.value)}
+              className="bg-purple-50 text-purple-900 font-extrabold text-xs px-3 py-1.5 rounded-xl border border-purple-300 outline-none cursor-pointer"
+            >
+              <option value="all">Sertifika (Tümü)</option>
+              <option value="universite">🎓 Üniversite Sertifikalı</option>
+              <option value="egitmen">📜 Eğitmen Sertifikalı</option>
+              <option value="sertifikasiz">⚪ Sertifikasız</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="p-3 bg-purple-50/80 rounded-2xl border border-purple-300 flex items-start space-x-3">
+            <div className="p-2 rounded-xl bg-purple-900 text-purple-100 font-black shrink-0">
+              <GraduationCap className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-black text-purple-900 block text-xs">🎓 Üniversite Sertifikalı</span>
+              <p className="text-[11px] text-gray-600 font-medium leading-snug">
+                Anlaşmalı Devlet/Vakıf Üniversitesi Onaylı, e-Devlet Barkodlu ve uluslararası geçerli sertifika.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-3 bg-emerald-50/80 rounded-2xl border border-emerald-300 flex items-start space-x-3">
+            <div className="p-2 rounded-xl bg-emerald-700 text-white font-black shrink-0">
+              <Award className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-black text-emerald-900 block text-xs">📜 Eğitmen Sertifikalı</span>
+              <p className="text-[11px] text-gray-600 font-medium leading-snug">
+                Akademi Başeğitmeni Islak/Dijital İmzalı Kurumsal Uzmanlık Sertifikası.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-3 bg-gray-100/90 rounded-2xl border border-gray-300 flex items-start space-x-3">
+            <div className="p-2 rounded-xl bg-gray-400 text-white font-black shrink-0">
+              <X className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-black text-gray-800 block text-xs">⚪ Sertifikasız</span>
+              <p className="text-[11px] text-gray-600 font-medium leading-snug">
+                Hızlı oryantasyon ve temel görev bilgilendirme modülleri (Sertifika verilmez).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* POZİSYON SEÇİM VE ARAMA ÇUBUĞU KARTI */}
+      <div className="bg-gradient-to-r from-blue-900 via-[#0B2A4A] to-[#087F96] p-6 rounded-3xl text-white shadow-md space-y-4 border border-blue-400/30">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-2">
+            <UserCheck className="w-5 h-5 text-amber-400" />
+            <h2 className="text-sm font-black uppercase tracking-wider text-white">
+              🏬 Pozisyon Seçin & Süzün ({DEPARTMENTS_DATA.length} Pozisyon)
+            </h2>
+          </div>
+
+          {/* Position Search Bar */}
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+            <input
+              type="text"
+              placeholder="Pozisyon ara (örn: Manav, Kasiyer, Mağaza Müdürü)..."
+              value={positionSearchQuery}
+              onChange={(e) => setPositionSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-7 py-1.5 bg-white/10 hover:bg-white/20 text-white placeholder-gray-300 text-xs font-semibold rounded-xl border border-white/30 focus:outline-none focus:ring-2 focus:ring-amber-400"
+            />
+            {positionSearchQuery && (
+              <button
+                onClick={() => setPositionSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* POZİSYON SEÇİM BUTONLARI */}
+        <div className="flex flex-wrap items-center gap-2 max-h-40 overflow-y-auto pr-1">
+          <button
+            onClick={() => setPositionFilter('all')}
+            className={`px-3.5 py-1.5 rounded-xl font-extrabold text-xs transition-all flex items-center space-x-1.5 ${
+              positionFilter === 'all'
+                ? 'bg-amber-400 text-slate-950 shadow-md scale-105'
+                : 'bg-white/10 text-white hover:bg-white/20'
+            }`}
+          >
+            <span>Tüm Pozisyonlar</span>
+            <span className="text-[10px] bg-black/20 px-1.5 py-0.2 rounded-full font-mono font-bold">
+              {ALL_COURSES.length}
+            </span>
+          </button>
+
+          {filteredPositionsList.map((dept) => {
+            const count = getPositionCourseCount(dept.id);
+            const isSelected = positionFilter === dept.id || positionFilter === dept.name;
+
+            return (
+              <button
+                key={dept.id}
+                onClick={() => setPositionFilter(isSelected ? 'all' : dept.id)}
+                className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all flex items-center space-x-1.5 border ${
+                  isSelected
+                    ? 'bg-emerald-400 text-slate-950 border-emerald-400 shadow-md scale-105 font-black'
+                    : 'bg-white/10 text-gray-100 border-white/15 hover:bg-white/25 hover:text-white'
+                }`}
+              >
+                <span>{dept.name}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                  isSelected ? 'bg-black/20 text-slate-950' : 'bg-black/30 text-gray-200'
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* HİYERARŞİ KONTROL KARTI (ANA BAŞLIKLAR SEÇİMİ) */}
+      <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm space-y-4">
+        <div>
+          <div className="text-[11px] font-black text-gray-400 uppercase tracking-wider mb-2">
+            Ana Başlık Seçin
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {HIERARCHY.map((cat) => {
+              const count = getMainCategoryCount(cat.id);
+              const isActive = selectedMainCatId === cat.id;
+
               return (
                 <button
-                  key={cat}
-                  onClick={() => handleSelectCategoryTab(cat)}
-                  className={`px-3.5 py-2 rounded-xl font-extrabold whitespace-nowrap transition-all flex items-center space-x-1.5 ${
-                    selectedCategory === cat
-                      ? 'bg-[#087F96] text-white shadow-sm'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-[#0B2A4A]'
+                  key={cat.id}
+                  onClick={() => handleSelectMainCategory(cat.id)}
+                  className={`px-4 py-2.5 rounded-2xl font-black text-xs transition-all flex items-center space-x-2 ${
+                    isActive
+                      ? 'bg-[#087F96] text-white shadow-md scale-105'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-[#0B2A4A]'
                   }`}
                 >
-                  <span>{cat}</span>
-                  <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-black ${
-                    selectedCategory === cat ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'
+                  <span>{cat.name}</span>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'
                   }`}>
                     {count}
                   </span>
@@ -284,360 +1065,729 @@ function EgitimlerCatalogContent() {
             })}
           </div>
         </div>
+      </div>
 
-        {/* Secondary Filter Dropdowns with Position Course Counts */}
-        <div className="pt-4 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4 text-xs font-medium">
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Department Dropdown with Explicit Module Count per Position */}
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-500 font-bold">Pozisyon / Kadro:</span>
-              <select
-                value={selectedDept}
-                onChange={(e) => handleSelectDeptDropdown(e.target.value)}
-                className="bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 font-bold text-[#0B2A4A] focus:outline-none focus:ring-2 focus:ring-[#087F96] text-xs sm:text-sm"
-              >
-                <option value="Tümü">Tüm Perakende Kadroları (26 Pozisyon • {ALL_COURSES.length} Modül)</option>
-                {DEPARTMENTS_DATA.map((dept) => {
-                  const courseCount = ALL_COURSES.filter((c) => c.deptId === dept.id).length || dept.totalCourses;
-                  return (
-                    <option key={dept.id} value={dept.id}>
-                      {dept.name} — {courseCount} Eğitim Modülü ({dept.category})
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
+      {/* TOOLBAR WITH MASTER CHECKBOX & SHOW ONLY SELECTED BUTTON & EXPORT BUTTONS */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-gray-600 bg-white p-4 rounded-2xl border border-gray-200 shadow-xs">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={toggleSelectAllFiltered}
+            className="flex items-center space-x-2 px-3.5 py-2 bg-[#0B2A4A] hover:bg-[#061B33] text-white rounded-xl transition-all shadow-xs border border-white/20"
+          >
+            {isAllSelected ? (
+              <CheckSquare className="w-4 h-4 text-emerald-400" />
+            ) : (
+              <Square className="w-4 h-4 text-gray-300" />
+            )}
+            <span>Tümünü Seç / Seçimi Kaldır ({filteredCourses.length})</span>
+          </button>
 
-            {/* Year Filter Buttons */}
-            <div className="flex items-center space-x-1 bg-gray-100 p-1 rounded-xl">
-              {(['Tümü', '1. Yıl', '2. Yıl'] as const).map((yr) => (
-                <button
-                  key={yr}
-                  onClick={() => setSelectedYear(yr)}
-                  className={`px-3 py-1 rounded-lg font-bold transition-all ${
-                    selectedYear === yr
-                      ? 'bg-white text-[#0B2A4A] shadow-xs'
-                      : 'text-gray-500 hover:text-[#0B2A4A]'
-                  }`}
-                >
-                  {yr}
-                </button>
-              ))}
-            </div>
+          {/* EXPORT BUTTONS GROUP IN TOOLBAR */}
+          <div className="flex items-center space-x-1.5 bg-gray-100 p-1 rounded-xl border border-gray-200">
+            <span className="text-[10px] text-gray-500 font-extrabold px-1.5">DÖKÜMAN İNDİR:</span>
+            
+            <button
+              onClick={exportToPdf}
+              className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-[11px] transition-all flex items-center space-x-1 shadow-xs"
+              title="Seçilen / Listelenen Eğitimleri PDF Olarak İndir"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>PDF</span>
+            </button>
+
+            <button
+              onClick={exportToExcel}
+              className="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-[11px] transition-all flex items-center space-x-1 shadow-xs"
+              title="Seçilen / Listelenen Eğitimleri Türkçe Karakter Uyumlu Excel (.xls) Olarak İndir"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>Excel</span>
+            </button>
+
+            <button
+              onClick={exportToWord}
+              className="px-2.5 py-1.5 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg text-[11px] transition-all flex items-center space-x-1 shadow-xs"
+              title="Seçilen / Listelenen Eğitimleri Word (.doc) Olarak İndir"
+            >
+              <FileCode className="w-3.5 h-3.5" />
+              <span>Word</span>
+            </button>
           </div>
 
-          {(searchQuery || selectedCategory !== 'Tümü' || selectedDept !== 'Tümü' || selectedYear !== 'Tümü') && (
+          {selectedCourseIds.length > 0 && (
+            <button
+              onClick={() => setShowOnlySelected((prev) => !prev)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 shadow-md border cursor-pointer ${
+                showOnlySelected
+                  ? 'bg-amber-400 text-slate-950 border-amber-500 scale-105'
+                  : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
+              }`}
+              title="Tıklayarak sadece seçilen eğitimleri ekranda filtreleyin"
+            >
+              {showOnlySelected ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+              <span>
+                {showOnlySelected
+                  ? `👁️ SEÇİLENLER (${selectedCourseIds.length})`
+                  : `SEÇİLENLERİ GÖSTER (${selectedCourseIds.length})`}
+              </span>
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center space-x-3 text-xs">
+          {(searchQuery || instructorFilter !== 'all' || positionFilter !== 'all' || kapsamFilter !== 'all' || certFilter !== 'all' || levelFilter !== 'all' || showOnlySelected) && (
             <button
               onClick={() => {
                 setSearchQuery('');
-                setSelectedCategory('Tümü');
-                setSelectedDept('Tümü');
-                setSelectedYear('Tümü');
+                setInstructorFilter('all');
+                setPositionFilter('all');
+                setKapsamFilter('all');
+                setCertFilter('all');
+                setLevelFilter('all');
+                setShowOnlySelected(false);
               }}
-              className="text-[#E11D48] hover:underline font-bold text-xs"
+              className="text-rose-600 font-extrabold hover:underline flex items-center space-x-1"
             >
-              Filtreleri Temizle
+              <X className="w-3.5 h-3.5" />
+              <span>Sıfırla</span>
             </button>
           )}
-        </div>
-      </div>
 
-      {/* Active Department Info Banner if Selected */}
-      {activeDepartmentObject && (
-        <div className="bg-[#0B2A4A] text-white p-5 sm:p-6 rounded-2xl border border-[#087F96]/40 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <span className="text-[10px] uppercase font-bold text-amber-300 bg-amber-500/20 px-2.5 py-0.5 rounded-full font-mono">
-              SEÇİLEN KADRO ÖZEL MÜFREDATI: {ALL_COURSES.filter(c => c.deptId === activeDepartmentObject.id).length || activeDepartmentObject.totalCourses} EĞİTİM MODÜLÜ ({activeDepartmentObject.totalHours} SAAT)
-            </span>
-            <h2 className="text-xl font-extrabold">{activeDepartmentObject.name} Eğitim Kataloğu</h2>
-            <p className="text-xs text-gray-200 font-light">{activeDepartmentObject.description}</p>
-          </div>
-          <button
-            onClick={() => handleSelectDeptDropdown('Tümü')}
-            className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap"
-          >
-            Tüm Pozisyonları Göster
-          </button>
-        </div>
-      )}
-
-      {/* Results Toolbar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-gray-600 bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
-        <div>
-          <span>
-            Toplam <strong className="text-[#0B2A4A] font-extrabold text-sm">{filteredCourses.length}</strong> Eğitim Gösteriliyor
+          <span className="text-gray-400 font-medium hidden md:inline">
+            Süre veya fiyat sıralaması için ilgili başlığa tıklayabilirsiniz.
           </span>
         </div>
-
-        <div className="flex items-center space-x-3">
-          <span className="text-gray-400 font-semibold hidden sm:inline">Görünüm:</span>
-          <div className="bg-[#F4F7F9] p-1 rounded-xl flex items-center border border-gray-200 space-x-1">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                viewMode === 'grid'
-                  ? 'bg-[#087F96] text-white shadow-xs'
-                  : 'text-gray-600 hover:text-[#0B2A4A] hover:bg-gray-200/60'
-              }`}
-            >
-              <LayoutGrid className="w-4 h-4" />
-              <span>Kutu</span>
-            </button>
-
-            <button
-              onClick={() => setViewMode('list')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                viewMode === 'list'
-                  ? 'bg-[#087F96] text-white shadow-xs'
-                  : 'text-gray-600 hover:text-[#0B2A4A] hover:bg-gray-200/60'
-              }`}
-            >
-              <ListIcon className="w-4 h-4" />
-              <span>Liste</span>
-            </button>
-
-            <button
-              onClick={() => setViewMode('table')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                viewMode === 'table'
-                  ? 'bg-[#087F96] text-white shadow-xs'
-                  : 'text-gray-600 hover:text-[#0B2A4A] hover:bg-gray-200/60'
-              }`}
-            >
-              <TableIcon className="w-4 h-4" />
-              <span>Tablo</span>
-            </button>
-          </div>
-        </div>
       </div>
 
-      {/* Grid Cards View with Rich Photo Banners */}
+      {/* FLUID FULL-WIDTH TABLE WITH DEDICATED SEVİYE & SERTİFİKA TÜRÜ COLUMNS */}
       {filteredCourses.length > 0 ? (
-        <>
-          {viewMode === 'grid' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
+          <table className="w-full text-left text-xs table-fixed">
+            <thead className="bg-[#0B2A4A] text-white uppercase font-black tracking-wider border-b border-white/10 select-none">
+              <tr>
+                {/* 1. CHECKBOX */}
+                <th
+                  onClick={toggleSelectAllFiltered}
+                  className="py-3 px-1 w-[40px] text-center cursor-pointer hover:bg-white/15 transition-colors border-r border-white/10"
+                  title="Tüm Listeyi Seç / Kaldır"
+                >
+                  <div className="flex items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={isAllSelected}
+                      onChange={() => {}}
+                      className="w-3.5 h-3.5 rounded text-[#087F96] focus:ring-[#087F96] cursor-pointer accent-[#087F96]"
+                    />
+                  </div>
+                </th>
+
+                {/* 2. DERS ADI */}
+                <th className="py-2.5 px-2.5 w-[22%] bg-[#052240] border-r border-white/10">
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between cursor-pointer" onClick={() => handleSort('title')}>
+                      <span className="text-cyan-300 font-black text-[10px] tracking-wider truncate">DERS ADI</span>
+                      <ArrowUpDown className="w-3 h-3 text-cyan-300 shrink-0" />
+                    </div>
+                    {/* LIVE SEARCH INPUT BOX */}
+                    <div className="relative">
+                      <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Ders ara..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-7 pr-5 py-0.5 bg-[#0B2A4A] text-white placeholder-gray-400 text-[10px] font-normal rounded-lg border border-cyan-400/40 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery('')}
+                          className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </th>
+
+                {/* 3. POZİSYON */}
+                <th className="py-2.5 px-2 w-[13%] bg-[#084C74] border-r border-white/20">
+                  <select
+                    value={positionFilter}
+                    onChange={(e) => setPositionFilter(e.target.value)}
+                    className="w-full bg-transparent text-amber-300 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-amber-300 pb-0.5 hover:text-white truncate"
+                  >
+                    <option value="all" className="bg-[#0B2A4A] text-white">🏬 POZİSYON (TÜMÜ)</option>
+                    {DEPARTMENTS_DATA.map((d) => (
+                      <option key={d.id} value={d.id} className="bg-[#0B2A4A] text-amber-300 font-bold">
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                </th>
+
+                {/* 4. EĞİTMEN */}
+                <th className="py-2.5 px-2 w-[12%] bg-[#056B80] border-r border-white/20">
+                  <select
+                    value={instructorFilter}
+                    onChange={(e) => setInstructorFilter(e.target.value)}
+                    className="w-full bg-transparent text-amber-300 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-amber-300 pb-0.5 hover:text-white truncate"
+                  >
+                    <option value="all" className="bg-[#0B2A4A] text-white">🎓 EĞİTMEN (TÜMÜ)</option>
+                    {ALL_INSTRUCTORS.map((inst) => (
+                      <option key={inst.id} value={inst.id} className="bg-[#0B2A4A] text-amber-300 font-bold">
+                        👤 {inst.name}
+                      </option>
+                    ))}
+                  </select>
+                </th>
+
+                {/* 5. SÜRE */}
+                <th
+                  onClick={() => handleSort('duration')}
+                  className="py-3 px-1 w-[45px] text-center cursor-pointer hover:bg-white/10 transition-colors border-r border-white/10"
+                >
+                  <div className="flex items-center justify-center space-x-0.5 text-[10px]">
+                    <span>SÜRE</span>
+                    <ArrowUpDown className="w-2.5 h-2.5 text-cyan-300 shrink-0" />
+                  </div>
+                </th>
+
+                {/* 6. EĞİTİM ÜCRETİ (SADECE ÜCRET) */}
+                <th
+                  onClick={() => handleSort('price')}
+                  className="py-3 px-2 w-[85px] bg-[#084C74] text-right cursor-pointer hover:bg-[#053856] transition-colors border-r border-white/20"
+                  title="Fiyata göre artan/azalan sırala"
+                >
+                  <div className="flex items-center justify-end space-x-0.5 text-amber-300 font-black text-[10px]">
+                    <span>ÜCRET</span>
+                    <ArrowUpDown className="w-2.5 h-2.5 text-amber-300 shrink-0" />
+                  </div>
+                </th>
+
+                {/* 7. 🏷️ DEDICATED SEVİYE COLUMN HEADER WITH DROPDOWN FILTER */}
+                <th className="py-2.5 px-2 w-[100px] bg-[#053856] border-r border-white/20 text-center">
+                  <select
+                    value={levelFilter}
+                    onChange={(e) => setLevelFilter(e.target.value)}
+                    className="w-full bg-transparent text-amber-300 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-amber-300 pb-0.5 hover:text-white text-center truncate"
+                  >
+                    <option value="all" className="bg-[#0B2A4A] text-white">⭐ SEVİYE (TÜMÜ)</option>
+                    <option value="Executive" className="bg-[#0B2A4A] text-amber-300 font-bold">👑 Executive</option>
+                    <option value="Yönetici" className="bg-[#0B2A4A] text-purple-300 font-bold">👔 Yönetici</option>
+                    <option value="Uzmanlık" className="bg-[#0B2A4A] text-emerald-300 font-bold">⭐ Uzmanlık</option>
+                    <option value="Standart" className="bg-[#0B2A4A] text-blue-300 font-bold">🔹 Standart</option>
+                  </select>
+                </th>
+
+                {/* 8. SERTİFİKA TÜRÜ */}
+                <th className="py-2.5 px-2 w-[125px] bg-purple-950 border-r border-purple-400/40 text-center">
+                  <select
+                    value={certFilter}
+                    onChange={(e) => setCertFilter(e.target.value)}
+                    className="w-full bg-transparent text-purple-200 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-purple-300 pb-0.5 hover:text-white text-center truncate"
+                  >
+                    <option value="all" className="bg-[#0B2A4A] text-white">📜 SERTİFİKA TÜRÜ</option>
+                    <option value="universite" className="bg-[#0B2A4A] text-purple-200">🎓 Üniversite</option>
+                    <option value="egitmen" className="bg-[#0B2A4A] text-emerald-200">📜 Eğitmen</option>
+                    <option value="sertifikasiz" className="bg-[#0B2A4A] text-gray-300">⚪ Sertifikasız</option>
+                  </select>
+                </th>
+
+                {/* 9. KAPSAM */}
+                <th className="py-2.5 px-1 w-[55px] text-center border-r border-white/10">
+                  <select
+                    value={kapsamFilter}
+                    onChange={(e) => setKapsamFilter(e.target.value)}
+                    className="w-full bg-transparent text-white font-black text-[10px] uppercase outline-none cursor-pointer border-b border-white/40 pb-0.5 hover:text-cyan-300 text-center"
+                  >
+                    <option value="all" className="bg-[#0B2A4A] text-white">KAPSAM</option>
+                    <option value="Zorunlu" className="bg-[#0B2A4A] text-rose-300">Zorunlu</option>
+                    <option value="Önerilen" className="bg-[#0B2A4A] text-blue-300">Önerilen</option>
+                  </select>
+                </th>
+
+                {/* 10. İŞLEM */}
+                <th className="py-3 px-1 w-[140px] text-center">İŞLEM</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 font-medium">
               {filteredCourses.map((course) => {
                 const instructor = getInstructorForCourse(course.slug || course.id, course.category);
                 const courseImg = getCourseImage(course.title, course.category, course.department);
+                const isSelected = selectedCourseIds.includes(course.id);
+                const isInCart = cartItemIds.includes(course.id);
+                const priceInfo = calculateCoursePrice(course);
+                const certBadge = getCourseCertBadge(course, priceInfo.price);
 
                 return (
-                  <div
+                  <tr
                     key={course.id}
                     onClick={() => handleOpenCourseModal(course)}
-                    className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all flex flex-col justify-between group cursor-pointer hover:-translate-y-1"
+                    className={`hover:bg-blue-50/60 cursor-pointer transition-colors ${
+                      isSelected ? 'bg-emerald-50/90 border-l-4 border-l-emerald-500 font-bold' : ''
+                    }`}
                   >
-                    {/* Top Course Photo Banner */}
-                    <div className="relative h-44 w-full overflow-hidden bg-slate-900">
-                      <img
-                        src={courseImg}
-                        alt={course.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-
-                      {/* Badges on Top */}
-                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between text-[10px] font-bold">
-                        <span className="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full font-mono uppercase border border-white/30">
-                          {course.year}
-                        </span>
-                        <span className="bg-black/50 backdrop-blur-md text-amber-300 font-mono font-bold px-3 py-1 rounded-full border border-white/20">
-                          ⏱️ {course.duration} Saat
-                        </span>
+                    {/* Checkbox */}
+                    <td
+                      className="py-3 px-1 text-center border-r border-gray-100 w-[40px]"
+                      onClick={(e) => toggleCourseSelect(course.id, e)}
+                    >
+                      <div className="flex flex-col items-center justify-center space-y-0.5">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => {}}
+                          className="w-3.5 h-3.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer accent-emerald-600"
+                        />
+                        {isSelected && (
+                          <span className="px-1 py-0.2 bg-emerald-600 text-white font-black text-[8px] rounded-full uppercase tracking-tighter">
+                            ✓
+                          </span>
+                        )}
                       </div>
+                    </td>
 
-                      {/* Department Tag on Photo Bottom */}
-                      <div className="absolute bottom-2.5 left-4 right-4">
-                        <span className="text-[10px] font-extrabold text-emerald-300 uppercase tracking-wider block drop-shadow-md">
-                          🎯 {course.department}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Card Content Body */}
-                    <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                      <div>
-                        <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors leading-snug">
-                          {course.title}
-                        </h3>
-
-                        <p className="text-xs text-gray-600 mt-2.5 line-clamp-3 font-light leading-relaxed">
-                          {course.description}
-                        </p>
-
-                        {/* INSTRUCTOR MINI BADGE (CLICKABLE) */}
-                        <div
-                          onClick={(e) => handleOpenInstructorModal(e, instructor)}
-                          className="mt-4 p-2 bg-gray-50 hover:bg-blue-50 rounded-xl border border-gray-200 flex items-center space-x-2.5 transition-colors"
-                        >
-                          <img
-                            src={instructor.avatar}
-                            alt={instructor.name}
-                            className="w-7 h-7 rounded-lg object-cover border border-[#087F96] flex-shrink-0"
-                          />
-                          <div className="truncate text-left">
-                            <div className="text-[9px] text-[#087F96] font-bold uppercase">Eğitmen:</div>
-                            <div className="text-xs font-bold text-[#0B2A4A] hover:underline truncate">{instructor.name}</div>
+                    {/* DERS ADI */}
+                    <td className="py-2.5 px-2.5 w-[22%] overflow-hidden">
+                      <div className="flex items-start space-x-2">
+                        <div className="relative shrink-0 mt-0.5">
+                          <img src={courseImg} alt={course.title} className="w-8 h-8 rounded-lg object-cover border border-gray-200 shadow-xs" />
+                          {isSelected && (
+                            <div className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 shadow-sm">
+                              <Check className="w-2.5 h-2.5 stroke-[3]" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1 space-y-0.5">
+                          <div className="font-extrabold text-xs text-[#0B2A4A] group-hover:text-[#087F96] leading-tight truncate" title={course.title}>
+                            {course.title}
                           </div>
+                          <span className="text-[10px] text-gray-400 block truncate">{course.subCategory}</span>
                         </div>
                       </div>
+                    </td>
 
-                      <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-xs">
-                        <span className="text-gray-500 font-medium">
-                          {course.level}
-                        </span>
+                    {/* POZİSYON */}
+                    <td className="py-2.5 px-2 text-emerald-800 font-extrabold text-[11px] truncate bg-emerald-50/20" title={course.department}>
+                      {course.department}
+                    </td>
+
+                    {/* EĞİTMEN */}
+                    <td className="py-2.5 px-2 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center space-x-1.5 min-w-0">
+                        <img
+                          src={instructor.avatar}
+                          alt={instructor.name}
+                          className="w-6 h-6 rounded-full object-cover border border-emerald-500 shrink-0"
+                        />
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenCourseModal(course);
-                          }}
-                          className="px-3.5 py-1.5 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl transition-all flex items-center space-x-1 shadow-sm"
+                          onClick={(e) => handleOpenInstructorModal(e, instructor)}
+                          className="font-bold text-[11px] text-[#0B2A4A] hover:text-[#087F96] hover:underline truncate"
+                          title={instructor.name}
                         >
-                          <span>İncele / PDF Gör</span>
-                          <ChevronRight className="h-3.5 w-3.5" />
+                          {instructor.name}
                         </button>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                    </td>
 
-          {/* List Rows View */}
-          {viewMode === 'list' && (
-            <div className="space-y-4">
-              {filteredCourses.map((course) => {
-                const instructor = getInstructorForCourse(course.slug || course.id, course.category);
-                const courseImg = getCourseImage(course.title, course.category, course.department);
+                    {/* SÜRE */}
+                    <td className="py-2.5 px-1 text-center font-mono font-bold text-gray-700 text-xs border-r border-gray-100">{course.duration} Sa</td>
 
-                return (
-                  <div
-                    key={course.id}
-                    onClick={() => handleOpenCourseModal(course)}
-                    className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group cursor-pointer"
-                  >
-                    <div className="flex items-center space-x-4 flex-1">
-                      <img
-                        src={courseImg}
-                        alt={course.title}
-                        className="w-20 h-20 rounded-xl object-cover border border-gray-200 flex-shrink-0"
-                      />
-                      <div className="space-y-1 flex-1">
-                        <div className="flex items-center space-x-2 text-xs">
-                          <span className="bg-[#DDF4F7] text-[#087F96] font-mono font-bold px-2 py-0.5 rounded text-[11px]">
-                            {course.year}
-                          </span>
-                          <span className="text-[#087F96] font-bold text-xs">
-                            {course.department}
-                          </span>
-                          <span className="text-gray-400">•</span>
-                          <span
-                            onClick={(e) => handleOpenInstructorModal(e, instructor)}
-                            className="text-[#0B2A4A] font-bold underline hover:text-[#087F96]"
-                          >
-                            Eğitmen: {instructor.name}
-                          </span>
-                        </div>
-                        <h3 className="font-display font-bold text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors">
-                          {course.title}
-                        </h3>
-                        <p className="text-xs text-gray-600 line-clamp-1 font-light">{course.description}</p>
+                    {/* EĞİTİM ÜCRETİ (CLEAN SINGLE VALUE) */}
+                    <td className="py-2.5 px-2 text-right whitespace-nowrap bg-amber-50/70 border-r border-amber-200/80">
+                      <div className="font-black text-xs text-[#0B2A4A] font-mono">
+                        {priceInfo.formatted}
                       </div>
-                    </div>
+                    </td>
 
-                    <div className="flex items-center space-x-4 shrink-0">
-                      <span className="text-xs font-mono font-bold text-gray-600">⏱️ {course.duration} Saat</span>
+                    {/* 🏷️ DEDICATED SEVİYE BUTTON / BADGE COLUMN */}
+                    <td className="py-2.5 px-2 text-center border-r border-gray-100 w-[100px]" onClick={(e) => e.stopPropagation()}>
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenCourseModal(course);
-                        }}
-                        className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white font-bold rounded-xl text-xs shadow-sm transition-all"
+                        onClick={() => setLevelFilter(levelFilter === priceInfo.badge ? 'all' : priceInfo.badge)}
+                        className={`inline-flex items-center justify-center px-2 py-0.5 rounded-lg text-[10px] border shadow-2xs font-extrabold cursor-pointer transition-transform hover:scale-105 ${priceInfo.badgeColor}`}
+                        title={`Tıklayarak sadece ${priceInfo.badge} seviyesindeki eğitimleri süzün`}
                       >
-                        Ders İncele
+                        {priceInfo.badge}
                       </button>
-                    </div>
-                  </div>
+                    </td>
+
+                    {/* SERTİFİKA TÜRÜ */}
+                    <td className="py-2.5 px-2 text-center border-r border-gray-100 w-[125px]">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] border shadow-2xs ${certBadge.badgeClass}`}>
+                        {certBadge.shortLabel}
+                      </span>
+                    </td>
+
+                    {/* KAPSAM */}
+                    <td className="py-2.5 px-1 text-center border-r border-gray-100">
+                      <span className={`px-1.5 py-0.5 text-[9px] font-black rounded ${
+                        course.isMandatory ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
+                      }`}>
+                        {course.isMandatory ? 'Zorunlu' : 'Önerilen'}
+                      </span>
+                    </td>
+
+                    {/* İŞLEM BUTTONS */}
+                    <td className="py-2.5 px-1 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-center space-x-1">
+                        
+                        {/* ŞİMDİ SATIN AL */}
+                        <button
+                          onClick={() => {
+                            addToCart(course.id);
+                            setIsCartModalOpen(true);
+                          }}
+                          className="px-2 py-1 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-lg shadow-xs transition-all flex items-center space-x-0.5 text-[10px] border border-amber-300"
+                          title="Şimdi Satın Al"
+                        >
+                          <CreditCard className="w-3 h-3" />
+                          <span>Satın Al</span>
+                        </button>
+
+                        {/* SEPETE EKLE */}
+                        <button
+                          onClick={(e) => addToCart(course.id, e)}
+                          className={`p-1 rounded-lg font-bold text-[10px] transition-all border ${
+                            isInCart
+                              ? 'bg-emerald-100 text-emerald-900 border-emerald-300 font-black'
+                              : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
+                          }`}
+                          title={isInCart ? 'Sepetinizde Ekli' : 'Sepete Ekle'}
+                        >
+                          <ShoppingCart className="w-3.5 h-3.5" />
+                        </button>
+
+                        {/* DETAY */}
+                        <button
+                          onClick={() => handleOpenCourseModal(course)}
+                          className="px-1.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-lg text-[10px] border border-gray-200"
+                        >
+                          Detay
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 );
               })}
-            </div>
-          )}
+            </tbody>
 
-          {/* Table View */}
-          {viewMode === 'table' && (
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#0B2A4A] text-white uppercase font-bold tracking-wider">
-                  <tr>
-                    <th className="py-3.5 px-4">Görsel & Eğitim Modülü</th>
-                    <th className="py-3.5 px-4">Kadro / Pozisyon</th>
-                    <th className="py-3.5 px-4">Eğitmen</th>
-                    <th className="py-3.5 px-4">Süre</th>
-                    <th className="py-3.5 px-4 text-right">İşlem</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {filteredCourses.map((course) => {
-                    const instructor = getInstructorForCourse(course.slug || course.id, course.category);
-                    const courseImg = getCourseImage(course.title, course.category, course.department);
+            {/* DEDICATED TABLE SUMMARY FOOTER ROW (TFOOT) DIRECTLY BELOW THE TABLE */}
+            <tfoot className="bg-[#0B2A4A] text-white font-black border-t-2 border-amber-400 select-none">
+              <tr>
+                {/* 1. Checkbox Column Status */}
+                <td className="py-3 px-1 text-center font-mono text-[9px] text-amber-300 border-r border-white/10">
+                  {selectedCourseIds.length > 0 ? `${selectedCourseIds.length} SEÇİLİ` : `${filteredCourses.length} DERS`}
+                </td>
 
-                    return (
-                      <tr
-                        key={course.id}
-                        onClick={() => handleOpenCourseModal(course)}
-                        className="hover:bg-blue-50/50 cursor-pointer transition-colors"
-                      >
-                        <td className="py-3 px-4 flex items-center space-x-3">
-                          <img src={courseImg} alt={course.title} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
-                          <span className="font-bold text-[#0B2A4A]">{course.title}</span>
-                        </td>
-                        <td className="py-3 px-4 text-gray-700 font-medium">{course.department}</td>
-                        <td className="py-3 px-4">
-                          <span
-                            onClick={(e) => handleOpenInstructorModal(e, instructor)}
-                            className="font-bold text-[#087F96] hover:underline"
-                          >
-                            {instructor.name}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 font-mono font-bold text-gray-600">{course.duration} Saat</td>
-                        <td className="py-3 px-4 text-right">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleOpenCourseModal(course);
-                            }}
-                            className="px-3 py-1 bg-[#087F96] text-white font-bold rounded-lg hover:bg-[#056B80]"
-                          >
-                            Detay
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </>
+                {/* 2. Title Column Summary */}
+                <td className="py-3 px-2.5 text-xs text-amber-300 uppercase tracking-wider font-extrabold">
+                  {selectedCourseIds.length > 0
+                    ? `SEÇİLEN (${selectedCourseIds.length}) EĞİTİM TOPLAMI`
+                    : `LİSTELENEN (${filteredCourses.length}) EĞİTİM TOPLAMI`}
+                </td>
+
+                {/* 3. Pozisyon */}
+                <td className="py-3 px-2 text-[10px] text-gray-300 font-bold uppercase truncate border-r border-white/10">
+                  GENEL MÜFREDAT
+                </td>
+
+                {/* 4. Eğitmen */}
+                <td className="py-3 px-2 text-[10px] text-gray-300 font-bold uppercase truncate border-r border-white/10">
+                  AKADEMİ KADROSU
+                </td>
+
+                {/* 5. Süre Total */}
+                <td className="py-3 px-1 text-center font-mono font-black text-cyan-300 text-xs border-r border-white/10">
+                  {displayedTotals.hours} Sa
+                </td>
+
+                {/* 6. ÜCRET TOTAL */}
+                <td className="py-3 px-2 text-right bg-amber-400/25 text-amber-300 font-black text-xs font-mono border-r border-amber-400/50 shadow-inner">
+                  <div className="space-y-0.5">
+                    <div className="text-amber-300 text-xs font-black">
+                      ₺{displayedTotals.budget.toLocaleString('tr-TR')} TL
+                    </div>
+                    <div className="text-[8px] text-amber-200 font-bold uppercase tracking-tighter">
+                      TOPLAM TUTAR
+                    </div>
+                  </div>
+                </td>
+
+                {/* 7. Seviye Footer */}
+                <td className="py-3 px-2 text-center text-[9px] text-amber-200 font-bold border-r border-white/10">
+                  TÜM SEVİYELER
+                </td>
+
+                {/* 8. Sertifika Türü Footer */}
+                <td className="py-3 px-2 text-center text-[9px] text-purple-200 font-bold border-r border-white/10">
+                  AKREDİTE
+                </td>
+
+                {/* 9. Kapsam */}
+                <td className="py-3 px-1 text-center text-[9px] text-gray-300 font-bold border-r border-white/10">
+                  GENEL
+                </td>
+
+                {/* 10. İşlem */}
+                <td className="py-3 px-1 text-center">
+                  <button
+                    onClick={addSelectedToCart}
+                    className="px-2.5 py-1 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-lg text-[10px] shadow-md border border-amber-300 cursor-pointer transition-all hover:scale-105"
+                  >
+                    💳 Toplu Satın Al
+                  </button>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       ) : (
         <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center space-y-4">
           <BookOpen className="h-12 w-12 text-gray-300 mx-auto" />
           <h3 className="text-lg font-bold text-[#0B2A4A]">Aranan Kriterlere Uygun Eğitim Bulunamadı</h3>
           <p className="text-xs text-gray-500 max-w-md mx-auto">
-            Arama teriminizi değiştirmeyi veya filtreleri temizlemeyi deneyebilirsiniz.
+            Arama teriminizi, pozisyon filtresini veya eğitmen süzgecini değiştirmeyi deneyebilirsiniz.
           </p>
         </div>
       )}
 
-      {/* Course Detail Modal */}
+      {/* STICKY BATCH ACTION BAR AT BOTTOM WITH DOCUMENT DOWNLOAD BUTTONS (PDF, EXCEL, WORD) */}
+      {selectedCourseIds.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0B2A4A] text-white px-6 py-4 rounded-3xl shadow-2xl border-2 border-amber-400 flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-6 max-w-5xl w-11/12 animate-in slide-in-from-bottom duration-200">
+          
+          {/* TOTAL HOURS & TOTAL BUDGET DISPLAY */}
+          <div className="flex items-center space-x-4 shrink-0 cursor-pointer" onClick={() => setShowOnlySelected(prev => !prev)}>
+            <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shadow-md">
+              {selectedTotals.count}
+            </span>
+            <div className="space-y-0.5">
+              <div className="text-xs font-black text-amber-300 flex items-center space-x-2">
+                <span>{selectedTotals.count} Eğitim Seçildi</span>
+                <span className="bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 px-2 py-0.2 rounded-md font-mono text-[10px] flex items-center space-x-1 font-black">
+                  <Clock className="w-3 h-3 text-cyan-300" />
+                  <span>TOPLAM: {selectedTotals.hours} SAAT</span>
+                </span>
+              </div>
+              <div className="text-sm text-emerald-400 font-black font-mono flex items-center space-x-1">
+                <Coins className="w-4 h-4 text-amber-400" />
+                <span>TOPLAM TUTAR: ₺{selectedTotals.budget.toLocaleString('tr-TR')} TL</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ACTION BUTTONS: EXPORT PDF, EXCEL, WORD & PURCHASE */}
+          <div className="flex flex-wrap items-center gap-2 w-full justify-end text-xs font-bold">
+            
+            {/* EXPORT DOCUMENT BUTTONS */}
+            <div className="flex items-center space-x-1 bg-white/10 p-1 rounded-xl border border-white/20">
+              <button
+                onClick={exportToPdf}
+                className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg transition-all flex items-center space-x-1"
+                title="Seçilen Eğitimleri PDF Teklif Olarak İndir"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>PDF</span>
+              </button>
+
+              <button
+                onClick={exportToExcel}
+                className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all flex items-center space-x-1"
+                title="Seçilen Eğitimleri Türkçe Karakter Uyumlu Excel Listesi Olarak İndir"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5" />
+                <span>Excel</span>
+              </button>
+
+              <button
+                onClick={exportToWord}
+                className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all flex items-center space-x-1"
+                title="Seçilen Eğitimleri Word Dokümanı Olarak İndir"
+              >
+                <FileCode className="w-3.5 h-3.5" />
+                <span>Word</span>
+              </button>
+            </div>
+
+            {/* SEÇİLENLERİ ŞİMDİ SATIN AL BUTTON */}
+            <button
+              onClick={() => {
+                addSelectedToCart();
+                setIsCartModalOpen(true);
+              }}
+              className="px-4 py-2 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-xl shadow-lg flex items-center space-x-1.5 scale-105 border border-amber-300"
+            >
+              <CreditCard className="w-4 h-4 text-slate-950" />
+              <span>💳 Şimdi Satın Al (₺{selectedTotals.budget.toLocaleString('tr-TR')} TL)</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setSelectedCourseIds([]);
+                setShowOnlySelected(false);
+              }}
+              className="p-2 bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white rounded-xl transition-colors"
+              title="Seçimi Temizle"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* INTERACTIVE SHOPPING CART DRAWER / MODAL WITH DOCUMENT EXPORT */}
+      {isCartModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden border border-gray-200 flex flex-col max-h-[90vh]">
+            
+            {/* Cart Header */}
+            <div className="bg-[#0B2A4A] text-white p-6 flex items-center justify-between border-b border-white/10">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 rounded-xl bg-amber-400 text-slate-950 font-black">
+                  <ShoppingCart className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-black text-white">Eğitim Sepetiniz</h2>
+                  <p className="text-xs text-gray-300">
+                    Seçilen dersler, toplam eğitim saatleri ve ödeme özeti
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsCartModalOpen(false)}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Cart Items List */}
+            <div className="p-6 overflow-y-auto space-y-3 flex-1 custom-scrollbar">
+              {cartItemIds.length > 0 ? (
+                cartItemIds.map((id) => {
+                  const course = ALL_COURSES.find((c) => c.id === id);
+                  if (!course) return null;
+                  const priceInfo = calculateCoursePrice(course);
+                  const certBadge = getCourseCertBadge(course, priceInfo.price);
+                  const instructor = getInstructorForCourse(course.slug || course.id, course.category);
+
+                  return (
+                    <div
+                      key={id}
+                      className="p-4 bg-gray-50 rounded-2xl border border-gray-200 flex items-center justify-between gap-4 hover:border-blue-300 transition-colors"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs font-black text-[#0B2A4A]">{course.title}</span>
+                          <span className={`px-1.5 py-0.2 rounded text-[9px] border ${certBadge.badgeClass}`}>
+                            {certBadge.shortLabel}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-3 text-[11px] text-gray-500 font-medium">
+                          <span>🏬 {course.department}</span>
+                          <span>👤 {instructor.name}</span>
+                          <span className="font-bold text-[#087F96]">⏱️ {course.duration} Saat</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-4 shrink-0">
+                        <div className="text-right">
+                          <div className="font-black text-sm text-[#0B2A4A] font-mono">{priceInfo.formatted}</div>
+                          <span className="text-[9px] text-gray-400 font-bold">KDV Dahil</span>
+                        </div>
+
+                        <button
+                          onClick={() => setCartItemIds(prev => prev.filter(cId => cId !== id))}
+                          className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors"
+                          title="Sepetten Çıkar"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center py-12 space-y-3">
+                  <ShoppingCart className="w-12 h-12 text-gray-300 mx-auto" />
+                  <div className="text-sm font-bold text-gray-700">Sepetinizde henüz eğitim bulunmuyor</div>
+                  <p className="text-xs text-gray-400 max-w-sm mx-auto">
+                    Katalogdaki eğitimlerden seçerek veya "Sepete Ekle" butonuna basarak sepetinize ekleyebilirsiniz.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Cart Footer & Checkout Summary & Export Buttons */}
+            {cartItemIds.length > 0 && (
+              <div className="p-6 bg-blue-50/80 border-t border-gray-200 space-y-4">
+                <div className="flex items-center justify-between text-xs font-bold border-b border-gray-200/80 pb-3">
+                  <span className="text-gray-600 flex items-center space-x-1">
+                    <Clock className="w-4 h-4 text-[#087F96]" />
+                    <span>Toplam Müfredat Süresi:</span>
+                  </span>
+                  <span className="font-black text-[#0B2A4A] font-mono text-sm">{cartTotals.hours} Saat Eğitim</span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                  {/* EXPORT IN CART MODAL */}
+                  <div className="flex items-center space-x-1.5">
+                    <button
+                      onClick={() => exportToPdf()}
+                      className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-[11px] flex items-center space-x-1"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>PDF</span>
+                    </button>
+                    <button
+                      onClick={() => exportToExcel()}
+                      className="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-[11px] flex items-center space-x-1"
+                    >
+                      <FileSpreadsheet className="w-3.5 h-3.5" />
+                      <span>Excel</span>
+                    </button>
+                    <button
+                      onClick={() => exportToWord()}
+                      className="px-2.5 py-1.5 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-xl text-[11px] flex items-center space-x-1"
+                    >
+                      <FileCode className="w-3.5 h-3.5" />
+                      <span>Word</span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <div>
+                      <div className="text-[10px] font-bold text-gray-500">Toplam Tutar:</div>
+                      <div className="text-xl font-black text-[#0B2A4A] font-mono">
+                        ₺{cartTotals.budget.toLocaleString('tr-TR')} TL
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setIsCartModalOpen(false);
+                        triggerActionNotification(`💳 ₺${cartTotals.budget.toLocaleString('tr-TR')} TL tutarındaki ödemeniz başarıyla simüle edildi! Kurs kayıtlarınız profilinize tanımlandı.`);
+                      }}
+                      className="px-5 py-2.5 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-2xl shadow-xl transition-all flex items-center space-x-1.5 text-xs cursor-pointer border border-cyan-400"
+                    >
+                      <ShieldCheck className="w-4 h-4 text-amber-300" />
+                      <span>💳 Satın Al</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <CourseDetailModal
         course={selectedCourseDetail}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
 
-      {/* Instructor Profile Modal */}
       <InstructorProfileModal
         instructor={selectedInstructor}
         isOpen={isInstructorModalOpen}
@@ -649,21 +1799,15 @@ function EgitimlerCatalogContent() {
 
 export default function EgitimlerPage() {
   return (
-    <div className="min-h-screen bg-[#F4F7F9] py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-8 sm:p-12 rounded-3xl border border-[#087F96]/30 shadow-xl text-center space-y-4">
-          <div className="inline-flex items-center space-x-2 bg-white/10 px-4 py-1.5 rounded-full text-xs font-bold text-[#DDF4F7]">
-            <Sparkles className="h-4 w-4 text-emerald-400" />
-            <span>TÜM PERAKENDE POZİSYONLARI MÜFREDATI</span>
-          </div>
-
-          <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
-            Perakende Kariyer Eğitim Kataloğu
+    <div className="min-h-screen bg-[#F4F7F9] py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-8 sm:p-10 rounded-3xl border border-[#087F96]/30 shadow-xl text-center space-y-3">
+          <h1 className="font-display font-black text-3xl sm:text-4xl text-white tracking-tight">
+            Perakende Kariyer Eğitim Kataloğu & Sertifikasyon
           </h1>
 
-          <p className="text-gray-200 text-sm sm:text-base max-w-3xl mx-auto font-light leading-relaxed">
-            Mağaza kasiyerliğinden bölge müdürlüğüne, satın almadan lojistiğe kadar 26 perakende pozisyonu için hazırlanmış <strong>200'den fazla eğitim modülü</strong>, <strong>eğitmen profilleri</strong>, <strong>örnek ders videoları</strong> ve <strong>indirilebilir PDF dokümanları</strong>.
+          <p className="text-gray-200 text-xs sm:text-sm max-w-3xl mx-auto font-light leading-relaxed">
+            Eğitim Seviyeleri (Executive, Yönetici, Uzmanlık, Standart) Ücret sütunundan ayrılarak müstakil bir <strong>SEVİYE</strong> sütun butonuna dönüştürülmüştür.
           </p>
         </div>
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import LeftSidebarNav from '@/components/LeftSidebarNav';
+import TopHeaderBar from '@/components/TopHeaderBar';
 import Footer from '@/components/Footer';
 import VisitorOnboardingModal from '@/components/VisitorOnboardingModal';
 import UserProfileModal from '@/components/UserProfileModal';
@@ -18,8 +19,9 @@ export default function WebsiteLayout({
       {/* Left Vertical Navigation Menu (Stacked Top to Bottom on Far Left) */}
       <LeftSidebarNav />
 
-      {/* Main Content Area Shifted Right on Desktop */}
+      {/* Main Content Area Shifted Right on Desktop with Prominent Top Header Bar */}
       <div className="flex-1 xl:pl-64 flex flex-col min-w-0 transition-all duration-300">
+        <TopHeaderBar />
         <main className="flex-1">
           {children}
         </main>
