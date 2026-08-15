@@ -231,18 +231,22 @@ export default function Header() {
 
           {/* RIGHT SECTION: Portal Login Buttons (Eğitmen Girişi & Çalışan Girişi) */}
           <div className="hidden lg:flex items-center space-x-2 shrink-0 ml-4">
-            {/* Çalışan Girişi Button */}
+            {/* Çalışan / Kullanıcı Profilim Button */}
             <button
               onClick={() => {
                 if (typeof window !== 'undefined') {
-                  window.dispatchEvent(new Event('open_visitor_profile_modal'));
+                  if (visitorProfile) {
+                    window.dispatchEvent(new Event('open_user_profile_details_modal'));
+                  } else {
+                    window.dispatchEvent(new Event('open_visitor_profile_modal'));
+                  }
                 }
               }}
-              className="h-9 px-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs flex items-center space-x-1.5 shadow-md transition-all cursor-pointer whitespace-nowrap border border-blue-400/40"
-              title="Çalışan Girişi & Profilim"
+              className="h-9 px-3 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs flex items-center space-x-1.5 shadow-md transition-all cursor-pointer whitespace-nowrap border border-white/20"
+              title="Profil Bilgilerim ve Karnem"
             >
-              <User className="h-4 w-4 text-white" />
-              <span>{visitorProfile ? `${visitorProfile.firstName} ${visitorProfile.lastName ? visitorProfile.lastName[0] + '.' : ''}` : '👤 Çalışan Girişi'}</span>
+              <User className="h-4 w-4 text-amber-300" />
+              <span>{visitorProfile ? `👤 ${visitorProfile.firstName} ${visitorProfile.lastName || ''}` : '👤 Çalışan Girişi'}</span>
             </button>
 
             {/* Eğitmen Girişi Button */}
