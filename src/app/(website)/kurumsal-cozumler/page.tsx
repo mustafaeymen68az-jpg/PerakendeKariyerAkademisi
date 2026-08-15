@@ -30,6 +30,7 @@ export default function KurumsalCozumlerPage() {
       id: 1,
       title: '1. Kurumsal Eğitim İhtiyaç Analizi',
       subtitle: 'Saha Denetimi & Yetkinlik Haritalama',
+      image: '/images/corp/service_1.jpg',
       desc: 'Saha denetimleri, dijital bilgi ölçüm sınavları ve mağaza gözlemleri ile şirketinizin mevcut yetkinlik haritasını çıkarıyoruz.',
       benefits: [
         'Gereksiz eğitim maliyetlerini sıfırlar, sadece eksik alanlara odaklanır.',
@@ -44,6 +45,7 @@ export default function KurumsalCozumlerPage() {
       id: 2,
       title: '2. Şirkete Özel Akademi Kurulumu',
       subtitle: 'White-Label Kapalı Devre LMS',
+      image: '/images/corp/service_2.jpg',
       desc: 'Kendi logonuz, kurumsal renkleriniz ve şirket alan adınızla (örn. akademi.sirketiniz.com) çalışanlarınıza özel kapalı devre dijital akademi platformu kuruyoruz.',
       benefits: [
         '7/24 Mobil ve Web erişimli, modern perakende öğrenme altyapısı.',
@@ -58,6 +60,7 @@ export default function KurumsalCozumlerPage() {
       id: 3,
       title: '3. İçerik Özelleştirme & Video Production',
       subtitle: 'Operasyon Kitapçığına Özel Eğitimler',
+      image: '/images/corp/service_3.jpg',
       desc: 'Market zincirinizin kendi operasyon El Kitapçığına, reyon standartlarına ve kasa prosedürlerine özel HD video eğitimler ve interaktif SCORM içerikleri üretiyoruz.',
       benefits: [
         'Manav fire önleme, et-şarküteri soğuk zincir ve kasa POS standartlarına tam uyum.',
@@ -72,6 +75,7 @@ export default function KurumsalCozumlerPage() {
       id: 4,
       title: '4. Train The Trainer (İç Eğitmenlik)',
       subtitle: 'Şef & Müdürlerden Başeğitmen Yetiştirme',
+      image: '/images/corp/service_4.jpg',
       desc: 'Kurum içi kıdemli şeflerinizi, mağaza müdürlerinizi ve bölge yöneticilerinizi pedagojik ve teknik açıdan yetiştirerek sertifikalı iç eğitmen haline getiriyoruz.',
       benefits: [
         'Dışarıdan sürekli danışman alma maliyetini tamamen ortadan kaldırır.',
@@ -86,6 +90,7 @@ export default function KurumsalCozumlerPage() {
       id: 5,
       title: '5. Sınav & QR Barkodlu Sertifikasyon',
       subtitle: 'e-Devlet & Doğrulanabilir Dijital Başarı',
+      image: '/images/corp/service_5.jpg',
       desc: 'Modül sonu otomatik değerlendirmeli dijital sınavlar, pratik saha denetimleri ve QR kod ile internetten doğrulanabilir resmi sertifikasyon sistemi.',
       benefits: [
         'Çalışan motivasyonunu ve sertifika alma arzusunu en üst seviyeye çıkarır.',
@@ -100,6 +105,7 @@ export default function KurumsalCozumlerPage() {
       id: 6,
       title: '6. Yetkinlik Matrisi & Yetenek Havuzu',
       subtitle: 'Gerçek Zamanlı İnsan Sermayesi İzleme',
+      image: '/images/corp/service_6.jpg',
       desc: 'Her çalışanınızın 1. yıl ve 2. yıl yetkinlik puanlarını, sınav başarılarını ve reyon performansını tek bir canlı matriste anlık olarak görün.',
       benefits: [
         'Hangi reyon veya şubede kimin ne seviyede olduğunu anında tespit etme.',
@@ -114,6 +120,7 @@ export default function KurumsalCozumlerPage() {
       id: 7,
       title: '7. Kariyer Haritası & Terfi Yedekleme Planı',
       subtitle: '9-Box Matrisi ile Geleceğin Liderleri',
+      image: '/images/corp/service_7.jpg',
       desc: 'Mağaza müdürü veya bölge müdürü adayı olan yüksek potansiyelli (High-Pot) çalışanlarınızı tespit edin ve otomatik 9-Box matrisinde yedekleyin.',
       benefits: [
         'Kritik yönetim pozisyonları boşaldığında dışarıdan aramak yerine içeriden atama.',
@@ -128,6 +135,7 @@ export default function KurumsalCozumlerPage() {
       id: 8,
       title: '8. Eğitim KPI Ölçümü (ROI)',
       subtitle: 'Ciro, Fire ve Sepet Büyüklüğü Analizi',
+      image: '/images/corp/service_8.jpg',
       desc: 'Eğitimlerin mağaza firesine, kasa hızına, sepet büyüklüğüne ve mağaza cirosuna etkisini matematiksel modeller ve veri grafikleriyle kanıtlıyoruz.',
       benefits: [
         'Eğitime harcanan her 1 TL’nin şirkete ciro artışı ve fire tasarrufu olarak geri dönüşü.',
@@ -142,6 +150,7 @@ export default function KurumsalCozumlerPage() {
       id: 9,
       title: '9. Yönetici Dashboardları',
       subtitle: 'Tek Tıkla Stratejik Raporlama',
+      image: '/images/corp/service_9.jpg',
       desc: 'CEO, Genel Müdür, Operasyon Direktörü ve İK Yöneticileri için özel tasarlanmış anlık genel başarı, katılım, fire düşüşü ve mağaza karnesi dashboardları.',
       benefits: [
         'Tüm Türkiye/Bölge şubelerinin eğitim ve yetkinlik durumunu 10 saniyede inceleme.',
@@ -203,14 +212,14 @@ export default function KurumsalCozumlerPage() {
           </div>
         </div>
 
-        {/* 9 ENRICHED CORPORATE SERVICES GRID WITH EXECUTIVE PERSUASION & ROI */}
+        {/* 9 ENRICHED CORPORATE SERVICES GRID WITH HIGH-DEF VISUALS & EXECUTIVE PERSUASION */}
         <div className="space-y-8">
           <div className="text-center space-y-2">
             <span className="text-xs font-black text-[#087F96] uppercase tracking-wider bg-cyan-50 px-3.5 py-1 rounded-full border border-cyan-200">
-              Uçtan Uca Kurumsal Mimarimiz
+              Görsel Destekli Uçtan Uca Mimarimiz
             </span>
             <h2 className="font-display font-black text-2xl sm:text-4xl text-[#0B2A4A]">
-              Kurumsal Akademi Hizmet Paketi Bileşenleri & Faydaları
+              Kurumsal Akademi Hizmet Paketi Bileşenleri & Görselleri
             </h2>
             <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto font-medium">
               Yöneticilerin ve İcra Kurullarının karar alma süreçlerini hızlandıran, verimliliği artıran 9 temel bileşen:
@@ -224,24 +233,30 @@ export default function KurumsalCozumlerPage() {
               return (
                 <div 
                   key={service.id} 
-                  className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-[#087F96] transition-all flex flex-col justify-between space-y-4 group"
+                  className="bg-white border border-gray-200 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:border-[#087F96] transition-all flex flex-col justify-between space-y-4 group overflow-hidden"
                 >
                   <div className="space-y-3">
-                    {/* Header Icon & Title */}
-                    <div className="flex items-center justify-between">
-                      <div className="w-12 h-12 rounded-2xl bg-[#0B2A4A] text-amber-400 flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <span className="text-[10px] font-mono font-black text-[#087F96] bg-cyan-50 px-2.5 py-1 rounded-full border border-cyan-200">
+                    
+                    {/* High-Definition Visual Banner */}
+                    <div className="relative h-44 w-full overflow-hidden rounded-2xl border border-gray-200 shadow-xs">
+                      <img 
+                        src={service.image} 
+                        alt={service.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-3 right-3 bg-[#0B2A4A]/90 text-amber-300 text-[10px] font-mono font-black px-2.5 py-1 rounded-full border border-amber-400/40 shadow-md backdrop-blur-xs">
                         BİLEŞEN #{service.id}
-                      </span>
+                      </div>
+                      <div className="absolute bottom-3 left-3 bg-white/90 text-[#0B2A4A] p-2 rounded-xl border border-white shadow-md">
+                        <Icon className="h-5 w-5 text-[#087F96]" />
+                      </div>
                     </div>
 
                     <div>
-                      <h3 className="font-display font-black text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors">
+                      <h3 className="font-display font-black text-base text-[#0B2A4A] group-hover:text-[#087F96] transition-colors leading-snug">
                         {service.title}
                       </h3>
-                      <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wide">
+                      <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wide mt-0.5">
                         {service.subtitle}
                       </p>
                     </div>
