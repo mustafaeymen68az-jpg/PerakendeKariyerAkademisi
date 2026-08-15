@@ -29,6 +29,7 @@ import Logo from '@/components/Logo';
 
 // Added "Çalışan Kariyer Planlaması" under HR_SUBMENU as requested
 const HR_SUBMENU = [
+  { name: 'Yönetici Admin Paneli (ADMIN)', path: '/admin', desc: 'Kullanıcı veritabanı & sistem yönetimi' },
   { name: 'Yetkinlik Matrisi (PKA TALENT)', path: '/ik-cozumlari/yetkinlik-matrisi', desc: 'Saha & merkez 26 pozisyon matrisi' },
   { name: '3\'lü Yetenek Havuzu', path: '/ik-cozumlari/calisan-kariyer-planlamasi', desc: 'Potansiyel, Terfiye Hazır & Gelişim' },
   { name: '9 Box Talent Matrix', path: '/ik-cozumlari/calisan-kariyer-planlamasi#9-box', desc: 'Performans vs Potansiyel Matrisi' },

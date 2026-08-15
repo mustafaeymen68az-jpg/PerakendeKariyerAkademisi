@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import AdminUserTable from '@/components/AdminUserTable';
 import { 
   Inbox, 
   FileText, 
@@ -412,19 +413,22 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
         {activeTab === 'USERS' && (
           <div className="space-y-6">
             
+            {/* RICH USER & CANDIDATE DATABASE TABLE */}
+            <AdminUserTable />
+
             {/* Screenshot Header Style */}
-            <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-4 pt-6">
               <div className="flex items-center space-x-3">
                 <div className="p-2.5 bg-gray-100 rounded-2xl text-gray-700">
                   <SlidersHorizontal className="h-6 w-6" />
                 </div>
                 <h2 className="font-display font-extrabold text-xl sm:text-2xl text-gray-900">
-                  Kayıtlı Kullanıcılar
+                  Sistem Hesapları & Şifre Yönetimi
                 </h2>
               </div>
 
               <span className="bg-gray-100 text-gray-600 font-extrabold px-4 py-1.5 rounded-full text-xs font-mono">
-                {filteredUsers.length} Toplam Kayıt
+                {filteredUsers.length} Hesabı Yönet
               </span>
             </div>
 
