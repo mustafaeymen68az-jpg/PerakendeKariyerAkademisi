@@ -227,56 +227,59 @@ export default async function HRSolutionDetailPage({ params }: { params: Promise
           <span>Tüm Kurumsal İK Çözümlerine Dön</span>
         </Link>
 
-        {/* Hero Header */}
-        <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-8 sm:p-12 rounded-3xl border border-[#087F96]/30 shadow-xl space-y-4">
-          <div className="inline-flex items-center space-x-2 bg-emerald-500/20 border border-emerald-500/40 px-4 py-1.5 rounded-full text-xs font-bold text-emerald-300">
-            <Sparkles className="h-4 w-4 text-emerald-400" />
-            <span>{data.badge}</span>
-          </div>
-
-          <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
-            {data.title}
-          </h1>
-
-          <p className="text-amber-300 text-sm sm:text-base font-semibold">
-            {data.subtitle}
-          </p>
-
-          <p className="text-gray-200 text-xs sm:text-sm max-w-3xl font-light leading-relaxed">
-            {data.description}
-          </p>
-
-          <div className="flex flex-wrap gap-4 pt-4">
-            <Link
-              href="/kurumsal-demo"
-              className="px-6 py-3 bg-[#E11D48] hover:bg-[#BE123C] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all flex items-center space-x-2"
-            >
-              <span>Bu Modül İçin Kurumsal Demo İste</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-
-
-          </div>
-        </div>
-
-        {/* Key Benefits Grid */}
-        <div className="bg-white p-8 rounded-3xl border border-gray-200 shadow-md space-y-6">
-          <h2 className="text-xl font-extrabold text-[#0B2A4A] flex items-center space-x-2">
-            <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-            <span>{data.title} Temel Kurumsal Faydaları</span>
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {data.benefits.map((b, idx) => (
-              <div key={idx} className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-start space-x-3 text-xs text-gray-800 font-medium">
-                <div className="w-5 h-5 rounded-full bg-[#087F96] text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">
-                  {idx + 1}
-                </div>
-                <span>{b}</span>
+        {/* Hide duplicate outer hero for modules that render their own comprehensive header */}
+        {!(data.slug === 'calisan-kariyer-planlamasi' || data.slug === 'calisan-ozgecmis-egitim-karnesi') && (
+          <>
+            {/* Hero Header */}
+            <div className="bg-gradient-to-r from-[#0B2A4A] via-[#061B33] to-[#087F96] text-white p-8 sm:p-12 rounded-3xl border border-[#087F96]/30 shadow-xl space-y-4">
+              <div className="inline-flex items-center space-x-2 bg-emerald-500/20 border border-emerald-500/40 px-4 py-1.5 rounded-full text-xs font-bold text-emerald-300">
+                <Sparkles className="h-4 w-4 text-emerald-400" />
+                <span>{data.badge}</span>
               </div>
-            ))}
-          </div>
-        </div>
+
+              <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
+                {data.title}
+              </h1>
+
+              <p className="text-amber-300 text-sm sm:text-base font-semibold">
+                {data.subtitle}
+              </p>
+
+              <p className="text-gray-200 text-xs sm:text-sm max-w-3xl font-light leading-relaxed">
+                {data.description}
+              </p>
+
+              <div className="flex flex-wrap gap-4 pt-4">
+                <Link
+                  href="/kurumsal-demo"
+                  className="px-6 py-3 bg-[#E11D48] hover:bg-[#BE123C] text-white font-extrabold rounded-xl text-xs shadow-lg transition-all flex items-center space-x-2"
+                >
+                  <span>Bu Modül İçin Kurumsal Demo İste</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Key Benefits Grid */}
+            <div className="bg-white p-8 rounded-3xl border border-gray-200 shadow-md space-y-6">
+              <h2 className="text-xl font-extrabold text-[#0B2A4A] flex items-center space-x-2">
+                <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+                <span>{data.title} Temel Kurumsal Faydaları</span>
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {data.benefits.map((b, idx) => (
+                  <div key={idx} className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-start space-x-3 text-xs text-gray-800 font-medium">
+                    <div className="w-5 h-5 rounded-full bg-[#087F96] text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">
+                      {idx + 1}
+                    </div>
+                    <span>{b}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Specialized Interactive Modules based on Slug */}
         {(data.slug === 'calisan-kariyer-planlamasi' || data.slug === 'calisan-ozgecmis-egitim-karnesi') && <EmployeeCareerPlanningModule />}

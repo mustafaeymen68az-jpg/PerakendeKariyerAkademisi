@@ -37,7 +37,12 @@ import {
   ExternalLink,
   Info,
   Printer,
-  Download
+  Download,
+  Trophy,
+  AlertCircle,
+  FileWarning,
+  ShieldX,
+  Medal
 } from 'lucide-react';
 
 export interface CompletedTrainingRecord {
@@ -69,6 +74,30 @@ export interface PriorTrainingRecord {
   year: string;
 }
 
+export interface AwardRecord {
+  title: string;
+  category: 'Ödül' | 'Plaket' | 'Rozet' | 'Başarı Belgesi';
+  givenDate: string;
+  organization: string;
+  reason: string;
+}
+
+export interface PromotionRecord {
+  fromRole: string;
+  toRole: string;
+  promotionDate: string;
+  approvedBy: string;
+  note: string;
+}
+
+export interface DisciplineNotice {
+  type: 'Sözlü İkaz' | 'Yazılı Uyarı' | 'Tutanak' | 'Disiplin Cezası';
+  issueDate: string;
+  reason: string;
+  status: 'Sicil Temiz (Zamanaşımı)' | 'Aktif Not' | 'Tutanak İşleme Alındı';
+  issuedBy: string;
+}
+
 export interface EvaluationItem {
   author: string;
   role: string;
@@ -98,6 +127,10 @@ export interface EmployeeCareerRecord {
   previousExperiences: PreviousWorkExperience[];
   priorTrainings: PriorTrainingRecord[];
   completedTrainings: CompletedTrainingRecord[];
+  awards: AwardRecord[];
+  promotions: PromotionRecord[];
+  warnings: DisciplineNotice[];
+  penalties: DisciplineNotice[];
   evaluations: EmployeeEvaluations;
   swot: {
     strengths: string[];
@@ -208,6 +241,55 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
         certificateId: 'PKA-2026-STK-090'
       }
     ],
+    awards: [
+      {
+        title: '2025 Yılı Marmara Bölgesi En Hızlı Kasiyer Ödülü',
+        category: 'Ödül',
+        givenDate: '15 Aralık 2025',
+        organization: 'Perakende Kariyer Akademisi',
+        reason: '%99.2 Hatasız Z-Raporu ve müşteri kasa hızı 1.liği'
+      },
+      {
+        title: 'Sıfır Kayıp & Fire Başarı Plaketi',
+        category: 'Plaket',
+        givenDate: '10 Haziran 2024',
+        organization: 'Mağaza Genel Müdürlüğü',
+        reason: 'Mağaza içi stok devrinde fire minimizasyonu başarısı'
+      },
+      {
+        title: 'Ayın Müşteri Dostu Çalışanı Rozeti',
+        category: 'Rozet',
+        givenDate: '01 Eylül 2023',
+        organization: 'Müşteri Hizmetleri Direktörlüğü',
+        reason: 'En yüksek CSAT (%96) müşteri teşekkür notu'
+      }
+    ],
+    promotions: [
+      {
+        fromRole: 'Kasiyer',
+        toRole: 'Kasa Şefi',
+        promotionDate: '15 Mart 2022',
+        approvedBy: 'Murat Yıldırım (Mağaza Müdürü)',
+        note: 'Kasa işlem hızı ve hatasızlık başarısı ile terfi ettirildi.'
+      },
+      {
+        fromRole: 'Kasa Şefi',
+        toRole: 'Baş Kasiyer',
+        promotionDate: '10 Haziran 2024',
+        approvedBy: 'Ahmet Çelik (İK Direktörü)',
+        note: 'Ekip liderliği ve vardiya sevk yönetimi başarısı ile unvan yükseltildi.'
+      }
+    ],
+    warnings: [
+      {
+        type: 'Sözlü İkaz',
+        issueDate: '12 Ekim 2023',
+        reason: 'Kasa açılış saatinde 5 dakikalık gecikme',
+        status: 'Sicil Temiz (Zamanaşımı)',
+        issuedBy: 'Mağaza Müdürü'
+      }
+    ],
+    penalties: [],
     evaluations: {
       managerReview: {
         author: 'Murat Yıldırım',
@@ -274,646 +356,30 @@ const INITIAL_EMPLOYEES_CAREER_DATA: EmployeeCareerRecord[] = [
     startDate: '10 Ocak 2021',
     tenure: '5 Yıl 7 Ay',
     previousExperiences: [
-      {
-        companyName: 'A101 Marketler',
-        role: 'Satış Elemanı & Kasiyer',
-        duration: '2 Yıl',
-        yearsRange: '2019–2021'
-      }
+      { companyName: 'A101 Marketler', role: 'Satış Elemanı & Kasiyer', duration: '2 Yıl', yearsRange: '2019–2021' }
     ],
     priorTrainings: [
-      {
-        title: 'Reyon Düzeni & Hijyen Sertifikası',
-        institution: 'Tarım İl Müdürlüğü Akademi',
-        instructorName: 'Seda Yılmaz (Gıda Mühendisi)',
-        companyWhereTaken: 'A101 Marketler Dönemi',
-        durationHours: 30,
-        year: '2019'
-      }
+      { title: 'Reyon Düzeni & Hijyen Sertifikası', institution: 'Tarım İl Müdürlüğü Akademi', instructorName: 'Seda Yılmaz', companyWhereTaken: 'A101 Marketler', durationHours: 30, year: '2019' }
     ],
     completedTrainings: [
-      {
-        courseTitle: 'Reyon Teşhir (Planogram) ve 5S Görsel Standartları',
-        duration: '18 Saat',
-        durationHours: 18,
-        completedDate: '05 Ocak 2026',
-        instructorName: 'Dr. Mehmet Yılmaz',
-        institution: 'Perakende Kariyer Akademisi',
-        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
-        score: 95,
-        gradeStatus: 'Üstün Başarı',
-        certificateId: 'PKA-2026-PLAN-095'
-      },
-      {
-        courseTitle: 'Fire Minimizasyonu & FIFO Ürün Devir Mantığı',
-        duration: '16 Saat',
-        durationHours: 16,
-        completedDate: '20 Şubat 2026',
-        instructorName: 'Oğuzhan Kaya (Operasyon Direktörü)',
-        institution: 'Perakende Kariyer Akademisi',
-        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
-        score: 92,
-        gradeStatus: 'Pek İyi',
-        certificateId: 'PKA-2026-FIR-092'
-      },
-      {
-        courseTitle: 'Tedarikçi Sipariş Teslimat & Kalite Kabul Protokolleri',
-        duration: '14 Saat',
-        durationHours: 14,
-        completedDate: '11 Nisan 2026',
-        instructorName: 'Gamze Tekin (Satın Alma Uzmanı)',
-        institution: 'Perakende Kariyer Akademisi',
-        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
-        score: 88,
-        gradeStatus: 'Başarılı',
-        certificateId: 'PKA-2026-TED-088'
-      }
+      { courseTitle: 'Reyon Teşhir (Planogram) ve 5S Görsel Standartları', duration: '18 Saat', durationHours: 18, completedDate: '05 Ocak 2026', instructorName: 'Dr. Mehmet Yılmaz', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 95, gradeStatus: 'Üstün Başarı', certificateId: 'PKA-2026-PLAN-095' }
     ],
+    awards: [
+      { title: 'Sıfır SKT Kaybı ve FIFO Mükemmellik Ödülü', category: 'Ödül', givenDate: '10 Kasım 2025', organization: 'Operasyon Direktörlüğü', reason: 'Taze gıdada sıfır fire başarısı' }
+    ],
+    promotions: [
+      { fromRole: 'Satış Elemanı', toRole: 'Reyon Şefi', promotionDate: '10 Ocak 2021', approvedBy: 'Caner Şahin', note: 'Reyon 5S düzeni ile terfi.' }
+    ],
+    warnings: [],
+    penalties: [],
     evaluations: {
-      managerReview: {
-        author: 'Caner Şahin',
-        role: 'Bölge Mağaza Müdürü (Üst Yönetici)',
-        rating: 4.8,
-        comment: 'Reyon düzeni ve SKT sıfır kayıp performansıyla Ankara mağazalarımızda öne çıkıyor. Kategori yönetimi ve pazarlık modülünü tamamladığında Merkeze geçişe hazırdır.',
-        date: '08 Mayıs 2026'
-      },
-      subordinateReview: {
-        author: 'Emre Aksoy',
-        role: 'Reyon Elemanı (Ekip Çalışanı)',
-        rating: 4.7,
-        comment: 'Reyon dizilimlerini çok açık şekilde öğretiyor. Ekip içinde disiplinli ama her zaman yapıcı.',
-        date: '12 Mayıs 2026'
-      },
-      hrReview: {
-        author: 'Ahmet Çelik',
-        role: 'İnsan Kaynakları Direktörü (İK Yönetimi)',
-        rating: 4.9,
-        comment: 'Zeynep Hanım 91 puan yetkinlik skoruyla Satın Alma & Kategori birimimiz için yüksek potansiyelli aday olarak değerlendirilmiştir.',
-        date: '01 Haziran 2026'
-      }
+      managerReview: { author: 'Caner Şahin', role: 'Bölge Mağaza Müdürü', rating: 4.8, comment: 'Reyon düzeni mükemmel.', date: '08 Mayıs 2026' },
+      subordinateReview: { author: 'Emre Aksoy', role: 'Reyon Elemanı', rating: 4.7, comment: 'Disiplinli ve öğretici.', date: '12 Mayıs 2026' },
+      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 4.9, comment: 'Kategori birimi adayı.', date: '01 Haziran 2026' }
     },
-    swot: {
-      strengths: [
-        'Reyon teşhir (Planogram) ve 5S düzeninde mükemmel uygulama',
-        'Stok devir hızı ve FIFO takibinde sıfır SKT kaybı',
-        'Tedarikçi sipariş teslimat doğrulaması'
-      ],
-      weaknesses: [
-        'Tedarikçi ticari müzakere ve fiyat pazarlığı tecrübesi kısıtlı',
-        'SQL ve Yapay Zekâ veri analiz araçları kullanımı başlangıç seviyesinde'
-      ],
-      opportunities: [
-        'Merkez Satın Alma departmanına yatay geçiş yapma potansiyeli',
-        'Kategori bazlı kar marjını %4 artırma olanağı'
-      ],
-      threats: [
-        'Saha operasyonundan merkez operasyona geçişte adaptasyon süreci'
-      ]
-    },
-    developmentAreas: [
-      'Satın Alma & Kategori Yönetimi 101 Eğitimi',
-      'Yapay Zekâ ile Talep Tahmini ve Sipariş Optimizasyonu',
-      'Tedarikçi Pazarlık ve İkna Teknikleri'
-    ],
-    careerAdvice: [
-      { phase: '1. Ay (Temmuz 2026)', action: 'Satın Alma & Kategori Yönetimi sertifika programı başlanacak.', targetDate: '20 Temmuz 2026' },
-      { phase: '2. Ay (Ağustos 2026)', action: 'Kategori Müdürü ile ortak tedarikçi pazarlık toplantılarına katılım.', targetDate: '15 Ağustos 2026' },
-      { phase: '3. Ay (Eylül 2026)', action: 'Kategori Uzman Yardımcısı kadrosuna atama teklifi sunulacak.', targetDate: '15 Eylül 2026' }
-    ]
-  },
-  {
-    id: 'emp_3',
-    name: 'Dr. Mehmet Yılmaz',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Mağaza Müdürü',
-    recommendedRole: 'Bölge Müdürü (Area Manager)',
-    matchPercentage: 95,
-    competencyScore: 96,
-    city: 'İzmir',
-    experienceYears: 8,
-    startDate: '01 Eylül 2018',
-    tenure: '7 Yıl 11 Ay',
-    previousExperiences: [
-      {
-        companyName: 'Metro Grossmarket',
-        role: 'Mağaza Müdürü Adayı',
-        duration: '3 Yıl 6 Ay',
-        yearsRange: '2014–2018'
-      }
-    ],
-    priorTrainings: [
-      {
-        title: 'İleri Mağaza Yönetimi & P&L Eğitimi',
-        institution: 'İstanbul Perakende Enstitüsü',
-        instructorName: 'Prof. Dr. Tarık Yıldız',
-        companyWhereTaken: 'Metro Grossmarket Dönemi',
-        durationHours: 60,
-        year: '2015'
-      }
-    ],
-    completedTrainings: [
-      {
-        courseTitle: 'Mağaza P&L Finansal Yönetimi & Kar/Zarar Tablosu',
-        duration: '24 Saat',
-        durationHours: 24,
-        completedDate: '10 Ocak 2026',
-        instructorName: 'Prof. Dr. Ahmet Çelik',
-        institution: 'Perakende Kariyer Akademisi',
-        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
-        score: 99,
-        gradeStatus: 'Üstün Başarı',
-        certificateId: 'PKA-2026-PNL-099'
-      },
-      {
-        courseTitle: 'Multi-Store Liderlik ve Bölgesel Ciro Büyütme',
-        duration: '30 Saat',
-        durationHours: 30,
-        completedDate: '18 Mart 2026',
-        instructorName: 'Oğuzhan Kaya (Genel Müdür Yrd.)',
-        institution: 'Perakende Kariyer Akademisi',
-        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
-        score: 96,
-        gradeStatus: 'Üstün Başarı',
-        certificateId: 'PKA-2026-LID-096'
-      },
-      {
-        courseTitle: 'Resmi Kurum İlişkileri & İSG Saha Denetimleri',
-        duration: '16 Saat',
-        durationHours: 16,
-        completedDate: '04 Mayıs 2026',
-        instructorName: 'Hakan Erdem (İSG Başdenetçisi)',
-        institution: 'Perakende Kariyer Akademisi',
-        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
-        score: 94,
-        gradeStatus: 'Pek İyi',
-        certificateId: 'PKA-2026-ISG-094'
-      }
-    ],
-    evaluations: {
-      managerReview: {
-        author: 'Oğuzhan Kaya',
-        role: 'Genel Müdür Yardımcısı (Üst Yönetici)',
-        rating: 5.0,
-        comment: 'Mehmet Bey Ege bölgesinde hedeflerini %118 oranında aşmış, 4 yeni Mağaza Müdürü yetiştirmiştir. Bölge Müdürlüğü pozisyonunda yüksek başarı gösterecektir.',
-        date: '20 Mayıs 2026'
-      },
-      subordinateReview: {
-        author: 'Gamze Tekin',
-        role: 'Mağaza Müdür Yardımcısı (Ekip Çalışanı)',
-        rating: 4.9,
-        comment: 'Bizim kariyer gelişimimize birebir koçluk yapıyor. Mağazadaki her sorunda arkamızda duran gerçek bir lider.',
-        date: '18 Mayıs 2026'
-      },
-      hrReview: {
-        author: 'Ahmet Çelik',
-        role: 'İnsan Kaynakları Direktörü (İK Yönetimi)',
-        rating: 5.0,
-        comment: 'Kıdemli Mağaza Müdürümüz Mehmet Yılmaz 96 puanla Ege Bölge Müdürlüğü aday listesinde 1. sıradadır.',
-        date: '02 Haziran 2026'
-      }
-    },
-    swot: {
-      strengths: [
-        '8 mağazalık bölge ciro hedefini %118 oranında aşma başarısı',
-        'Ekip yetkinlik geliştirme ve iç terfi çıkarma oranı %90',
-        'Üst düzey liderlik, kriz yönetimi ve resmi kurum ilişkileri'
-      ],
-      weaknesses: [
-        'Omnichannel dijital sipariş ve e-ticaret lojistik entegrasyonu',
-        'İngilizce sektörel raporlama ihtiyacı'
-      ],
-      opportunities: [
-        'Ege Bölge Müdürlüğü kadrosuna 1. sıradan adaylık',
-        'Kurumsal Akademi bünyesinde Saha Eğitmeni olma imkanı'
-      ],
-      threats: [
-        'Geniş coğrafi bölge seyahat yoğunluğu'
-      ]
-    },
-    developmentAreas: [
-      'Bölge Yönetimi ve Multi-Store Operasyon Liderliği',
-      'Omnichannel Perakendecilik & Sanal Mağaza Yönetimi',
-      'Stratejik Karar Alma ve Risk Yönetimi'
-    ],
-    careerAdvice: [
-      { phase: '1. Ay (Temmuz 2026)', action: 'Bölge Yönetimi Master Modülü tamamlanacak.', targetDate: '10 Temmuz 2026' },
-      { phase: '2. Ay (Ağustos 2026)', action: 'Bölge Müdür Vekili olarak 12 mağazanın sorumluluğu üstlenilecek.', targetDate: '01 Ağustos 2026' },
-      { phase: '3. Ay (Eylül 2026)', action: 'Resmi Bölge Müdürü terfisi ve yetkinlik pasaportu onayı.', targetDate: '01 Eylül 2026' }
-    ]
-  },
-  {
-    id: 'emp_4',
-    name: 'Ayşe Demir',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Lojistik & Depo Sorumlusu',
-    recommendedRole: 'Tedarik Zinciri & Depo Müdürü',
-    matchPercentage: 88,
-    competencyScore: 86,
-    city: 'Bursa',
-    experienceYears: 4,
-    startDate: '15 Haziran 2022',
-    tenure: '4 Yıl 2 Ay',
-    previousExperiences: [
-      {
-        companyName: 'ŞOK Marketler',
-        role: 'Depo Elemanı',
-        duration: '2 Yıl',
-        yearsRange: '2020–2022'
-      }
-    ],
-    priorTrainings: [
-      {
-        title: 'Depo Yönetimi & İSG Temel Eğitimi',
-        institution: 'Lojistik Derneği Akademi',
-        instructorName: 'Mustafa Aydın (Lojistik Şefi)',
-        companyWhereTaken: 'ŞOK Marketler Dönemi',
-        durationHours: 32,
-        year: '2020'
-      }
-    ],
-    completedTrainings: [
-      {
-        courseTitle: 'Depo Kabul & WMS Otomasyon Yönetimi',
-        duration: '20 Saat',
-        durationHours: 20,
-        completedDate: '14 Şubat 2026',
-        instructorName: 'Caner Şahin (Lojistik Başeğitmeni)',
-        institution: 'Perakende Kariyer Akademisi',
-        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
-        score: 90,
-        gradeStatus: 'Başarılı',
-        certificateId: 'PKA-2026-WMS-090'
-      },
-      {
-        courseTitle: 'Araç Filosu & Sevkiyat Rotalama Sistemleri',
-        duration: '16 Saat',
-        durationHours: 16,
-        completedDate: '22 Nisan 2026',
-        instructorName: 'Seda Yılmaz (Rotalama Uzmanı)',
-        institution: 'Perakende Kariyer Akademisi',
-        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
-        score: 86,
-        gradeStatus: 'Başarılı',
-        certificateId: 'PKA-2026-ROT-086'
-      }
-    ],
-    evaluations: {
-      managerReview: {
-        author: 'Hakan Erdem',
-        role: 'Lojistik Müdürü (Üst Yönetici)',
-        rating: 4.6,
-        comment: 'Ayşe Hanım WMS yazılımını çok etkin kullanıyor, depo hatasızlık oranı %98.5 seviyesindedir. Soğuk zincir lojistiği eğitiminden sonra Şef kadrosuna terfi edecektir.',
-        date: '02 Nisan 2026'
-      },
-      subordinateReview: {
-        author: 'Tarık Yıldız',
-        role: 'Depo Elemanı (Ekip Çalışanı)',
-        rating: 4.5,
-        comment: 'Araç yükleme ve mal kabul çizelgelerini eksiksiz yönetiyor. Ekip arkadaşlarına karşı nazik.',
-        date: '10 Nisan 2026'
-      },
-      hrReview: {
-        author: 'Ahmet Çelik',
-        role: 'İnsan Kaynakları Direktörü (İK Yönetimi)',
-        rating: 4.7,
-        comment: 'Bursa Lojistik Merkezi genişleme projemizde Depo Şefliği adayları arasında 86 puan yetkinlik skoruyla öne çıkmaktadır.',
-        date: '15 Nisan 2026'
-      }
-    },
-    swot: {
-      strengths: [
-        'Depo kabul ve sevkiyat hatasızlık oranı %98.5',
-        'WMS (Warehouse Management System) yazılımı uzmanı',
-        'Araç filosu ve sevkiyat rotalama başarısı'
-      ],
-      weaknesses: [
-        'Soğuk zincir taze gıda antrepo sıcaklık denetimleri',
-        'Grup içi sunum ve hitabet becerisi'
-      ],
-      opportunities: [
-        'Bursa Lojistik Merkezi genişleme projesinde Lojistik Şefliği'
-      ],
-      threats: [
-        'Yakıt ve nakliye maliyet artış baskısı'
-      ]
-    },
-    developmentAreas: [
-      'Soğuk Zincir Lojistiği ve İSG Standartları',
-      'Tedarik Zinciri Veri Analitiği ve Rotalama',
-      'Etkili Sunum ve İletişim Becerileri'
-    ],
-    careerAdvice: [
-      { phase: '1. Ay (Temmuz 2026)', action: 'Soğuk Zincir Lojistiği eğitimi tamamlanacak.', targetDate: '25 Temmuz 2026' },
-      { phase: '2. Ay (Ağustos 2026)', action: 'Lojistik Müdürü koçluğunda haftalık sevkiyat planlama.', targetDate: '20 Ağustos 2026' },
-      { phase: '3. Ay (Eylül 2026)', action: 'Depo & Lojistik Şefi pozisyonuna terfi.', targetDate: '10 Eylül 2026' }
-    ]
-  },
-  {
-    id: 'emp_5',
-    name: 'Ahmet Kaya',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Mağaza Müdür Yardımcısı',
-    recommendedRole: 'Mağaza Müdürü (İzmir Alsancak)',
-    matchPercentage: 94,
-    competencyScore: 88,
-    city: 'İzmir',
-    experienceYears: 5,
-    startDate: '10 Nisan 2021',
-    tenure: '5 Yıl 4 Ay',
-    previousExperiences: [
-      {
-        companyName: 'BİM A.Ş.',
-        role: 'Kasa Şefi',
-        duration: '2 Yıl',
-        yearsRange: '2019–2021'
-      }
-    ],
-    priorTrainings: [
-      {
-        title: 'Mağaza İçi Vardiya Yönetimi',
-        institution: 'MEB Sertifika Programı',
-        instructorName: 'Kemal Sunal',
-        companyWhereTaken: 'BİM A.Ş. Dönemi',
-        durationHours: 30,
-        year: '2019'
-      }
-    ],
-    completedTrainings: [
-      {
-        courseTitle: 'Mağaza Müdürlüğü Terfi Hazırlık Programı',
-        duration: '24 Saat',
-        durationHours: 24,
-        completedDate: '15 Mayıs 2026',
-        instructorName: 'Prof. Dr. Ahmet Çelik',
-        institution: 'Perakende Kariyer Akademisi',
-        companyWhereTaken: 'Mevcut Şirket (Perakende Kariyer Akademi)',
-        score: 88,
-        gradeStatus: 'Pek İyi',
-        certificateId: 'PKA-2026-MUD-088'
-      }
-    ],
-    evaluations: {
-      managerReview: {
-        author: 'Mehmet Yılmaz',
-        role: 'Mağaza Müdürü (Üst Yönetici)',
-        rating: 4.8,
-        comment: 'Ahmet Kaya BeyAlsancak mağazamızda 1. yedek olarak harika bir performans gösteriyor. Mağaza boşaldığında göreve hazırdır.',
-        date: '10 Mayıs 2026'
-      },
-      subordinateReview: {
-        author: 'Burak Çetin',
-        role: 'Baş Kasiyer (Ekip Çalışanı)',
-        rating: 4.7,
-        comment: 'Ekibe her zaman destek veriyor, vardiya dağılımlarında adil.',
-        date: '02 Mayıs 2026'
-      },
-      hrReview: {
-        author: 'Ahmet Çelik',
-        role: 'İnsan Kaynakları Direktörü (İK Yönetimi)',
-        rating: 4.9,
-        comment: 'Ahmet Kaya 88 puan yetkinlik skoruyla İzmir Alsancak Mağaza Müdürlüğü için onaylanmış 1. yedektir.',
-        date: '14 Mayıs 2026'
-      }
-    },
-    swot: {
-      strengths: ['Saha liderliği ve ciro takibi', 'Vardiya sevk yönetimi'],
-      weaknesses: ['İleri Finansal P&L analizleri'],
-      opportunities: ['İzmir Alsancak Mağaza Müdürlüğü terfisi'],
-      threats: ['Yoğun vardiya temposu']
-    },
-    developmentAreas: ['P&L Finansal Bütçe Yönetimi'],
-    careerAdvice: [
-      { phase: '1. Ay (Temmuz 2026)', action: 'Terfi onayı tebliği.', targetDate: '15 Temmuz 2026' }
-    ]
-  },
-  {
-    id: 'emp_6',
-    name: 'Caner Şahin',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Baş Kasiyer',
-    recommendedRole: 'Kasa Operasyon Şefi (İstanbul Kuleli)',
-    matchPercentage: 96,
-    competencyScore: 92,
-    city: 'İstanbul',
-    experienceYears: 4,
-    startDate: '01 Şubat 2022',
-    tenure: '4 Yıl 6 Ay',
-    previousExperiences: [
-      { companyName: 'Migros', role: 'Kasiyer', duration: '2 Yıl', yearsRange: '2020–2022' }
-    ],
-    priorTrainings: [
-      { title: 'Kasa Hijyen ve Hızlı Geçiş', institution: 'Halk Eğitim', instructorName: 'Seda Yılmaz', companyWhereTaken: 'Migros', durationHours: 20, year: '2020' }
-    ],
-    completedTrainings: [
-      { courseTitle: 'Kasa Operasyon Şefliği Master Programı', duration: '18 Saat', durationHours: 18, completedDate: '20 Nisan 2026', instructorName: 'Prof. Dr. Ahmet Çelik', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 92, gradeStatus: 'Pek İyi', certificateId: 'PKA-2026-KAS-092' }
-    ],
-    evaluations: {
-      managerReview: { author: 'Selin Özer', role: 'Kasa Şefi', rating: 4.9, comment: 'Caner Kuleli mağazasında 1. yedek olarak %92 başarı göstermiştir.', date: '12 Mayıs 2026' },
-      subordinateReview: { author: 'Merve Öztürk', role: 'Kasiyer', rating: 4.8, comment: 'Hızlı ve yardımsever.', date: '10 Mayıs 2026' },
-      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 5.0, comment: 'Kasa Şefliği 1. yedek adayı.', date: '15 Mayıs 2026' }
-    },
-    swot: {
-      strengths: ['Hızlı kasa ve Z-Raporu hatasızlığı'],
-      weaknesses: ['Stok devir takibi'],
-      opportunities: ['Kasa Şefliği terfisi'],
-      threats: ['Yoğun kasa sırası']
-    },
-    developmentAreas: ['Stok ve Reyon Yönetimi'],
-    careerAdvice: [{ phase: '1. Ay', action: 'Kasa Şefliği ataması', targetDate: '01 Ağustos 2026' }]
-  },
-  {
-    id: 'emp_7',
-    name: 'Burak Çetin',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Kasiyer & Reyon Elemanı',
-    recommendedRole: 'Baş Kasiyer Adayı (Gelişim Programında)',
-    matchPercentage: 78,
-    competencyScore: 76,
-    city: 'İzmir',
-    experienceYears: 2,
-    startDate: '10 Mart 2024',
-    tenure: '2 Yıl 5 Ay',
-    previousExperiences: [
-      { companyName: 'ŞOK Marketler', role: 'Satış Elemanı', duration: '1 Yıl', yearsRange: '2023–2024' }
-    ],
-    priorTrainings: [
-      { title: 'Temel Hijyen ve Müşteri İlişkileri', institution: 'Halk Eğitim', instructorName: 'Kemal Sunal', companyWhereTaken: 'ŞOK Marketler', durationHours: 16, year: '2023' }
-    ],
-    completedTrainings: [
-      { courseTitle: 'Kasa İşletim ve Müşteri Memnuniyeti', duration: '12 Saat', durationHours: 12, completedDate: '10 Mart 2026', instructorName: 'Zeynep Kaya', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 76, gradeStatus: 'Başarılı', certificateId: 'PKA-2026-KAS-076' }
-    ],
-    evaluations: {
-      managerReview: { author: 'Mehmet Yılmaz', role: 'Mağaza Müdürü', rating: 4.0, comment: 'Burak gayretli ancak yoğun günlerde müşteri iletişimini geliştirmelidir.', date: '01 Nisan 2026' },
-      subordinateReview: { author: 'Ahmet Kaya', role: 'Müdür Yrd.', rating: 4.2, comment: 'Öğrenmeye açık.', date: '05 Nisan 2026' },
-      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 4.1, comment: '76 Puan ile Geliştirilebilir kadro seviyesindedir.', date: '10 Nisan 2026' }
-    },
-    swot: {
-      strengths: ['Hızlı öğrenme ve istek'],
-      weaknesses: ['Zor müşteri yönetimi ve stres kontrolü'],
-      opportunities: ['Baş Kasiyerlik gelişim modülünü tamamlama'],
-      threats: ['Kasa açıklarında dikkat dağınıklığı']
-    },
-    developmentAreas: ['Zor Müşteri İkna ve Çatışma Yönetimi', 'Kasa İşlem Hızı'],
-    careerAdvice: [{ phase: '1. Ay', action: 'İkna eğitimi ve gölge kasiyerlik', targetDate: '01 Eylül 2026' }]
-  },
-  {
-    id: 'emp_8',
-    name: 'Merve Öztürk',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Satış Elemanı',
-    recommendedRole: 'Reyon Şefi Adayı',
-    matchPercentage: 75,
-    competencyScore: 74,
-    city: 'Ankara',
-    experienceYears: 2,
-    startDate: '15 Mayıs 2024',
-    tenure: '2 Yıl 3 Ay',
-    previousExperiences: [
-      { companyName: 'A101', role: 'Reyon Elemanı', duration: '1 Yıl', yearsRange: '2023–2024' }
-    ],
-    priorTrainings: [
-      { title: 'Reyon Düzeni 101', institution: 'MEB', instructorName: 'Seda Yılmaz', companyWhereTaken: 'A101', durationHours: 14, year: '2023' }
-    ],
-    completedTrainings: [
-      { courseTitle: '5S Görsel Standartlar', duration: '14 Saat', durationHours: 14, completedDate: '12 Şubat 2026', instructorName: 'Zeynep Kaya', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 74, gradeStatus: 'Başarılı', certificateId: 'PKA-2026-5S-074' }
-    ],
-    evaluations: {
-      managerReview: { author: 'Caner Şahin', role: 'Şef', rating: 3.9, comment: 'Görsel düzen takibinde gelişime açık.', date: '10 Mart 2026' },
-      subordinateReview: { author: 'Emre Aksoy', role: 'Ekip Arkadaşı', rating: 4.0, comment: 'Uyumlu ve çalışkan.', date: '12 Mart 2026' },
-      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 4.0, comment: '74 Puan (Geliştirilebilir seviye).', date: '20 Mart 2026' }
-    },
-    swot: {
-      strengths: ['Güler yüzlü temsil'],
-      weaknesses: ['FIFO stok devir takibi'],
-      opportunities: ['Reyon Şefliği eğitimi'],
-      threats: ['SKT son gün ürün takibinde atlama']
-    },
-    developmentAreas: ['FIFO ve Son Kullanma Tarihi Takibi'],
-    careerAdvice: [{ phase: '1. Ay', action: 'FIFO eğitimi tamamlama', targetDate: '15 Ağustos 2026' }]
-  },
-  {
-    id: 'emp_9',
-    name: 'Emre Aksoy',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Stajyer Reyon Elemanı',
-    recommendedRole: 'Reyon Elemanı (Orta Performans Takibinde)',
-    matchPercentage: 65,
-    competencyScore: 65,
-    city: 'Bursa',
-    experienceYears: 1,
-    startDate: '01 Eylül 2025',
-    tenure: '11 Ay',
-    previousExperiences: [],
-    priorTrainings: [],
-    completedTrainings: [
-      { courseTitle: 'Oryantasyon & İş Sağlığı Güvenliği', duration: '10 Saat', durationHours: 10, completedDate: '10 Ekim 2025', instructorName: 'Mustafa Aydın', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 65, gradeStatus: 'Başarılı', certificateId: 'PKA-2025-ISG-065' }
-    ],
-    evaluations: {
-      managerReview: { author: 'Ayşe Demir', role: 'Depo Müdürü', rating: 3.5, comment: 'Orta performans (65p). Vardiya saatlerine uyum sağladı ancak hız kazanmalıdır.', date: '10 Ocak 2026' },
-      subordinateReview: { author: 'Tarık Yıldız', role: 'Depo Şefi', rating: 3.6, comment: 'Destek veriliyor.', date: '12 Ocak 2026' },
-      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 3.5, comment: 'Orta seviye gelişim takibi.', date: '15 Ocak 2026' }
-    },
-    swot: {
-      strengths: ['Genç ve dinamik'],
-      weaknesses: ['Ürün etiketleme ve koli yükleme hızı'],
-      opportunities: ['Teknik beceri kazanma'],
-      threats: ['Hatalı barkod okutma']
-    },
-    developmentAreas: ['Saha Hız & Etiket Kontrolü'],
-    careerAdvice: [{ phase: '1. Ay', action: 'Hızlandırma mentörlüğü', targetDate: '01 Eylül 2026' }]
-  },
-  {
-    id: 'emp_10',
-    name: 'Tarık Yıldız',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Depo Destek Elemanı',
-    recommendedRole: 'Depo Elemanı (Orta Seviye)',
-    matchPercentage: 58,
-    competencyScore: 58,
-    city: 'Kocaeli',
-    experienceYears: 1,
-    startDate: '10 Kasım 2025',
-    tenure: '9 Ay',
-    previousExperiences: [],
-    priorTrainings: [],
-    completedTrainings: [
-      { courseTitle: 'Depo Kabul Temel Bilgileri', duration: '8 Saat', durationHours: 8, completedDate: '01 Aralık 2025', instructorName: 'Caner Şahin', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 58, gradeStatus: 'Başarılı', certificateId: 'PKA-2025-DEP-058' }
-    ],
-    evaluations: {
-      managerReview: { author: 'Ayşe Demir', role: 'Lojistik Müdürü', rating: 3.0, comment: '58 Puan orta seviye. Mal kabul evraklarında daha dikkatli olmalı.', date: '15 Şubat 2026' },
-      subordinateReview: { author: 'Emre Aksoy', role: 'Stajyer', rating: 3.2, comment: 'Gelişiyor.', date: '20 Şubat 2026' },
-      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 3.0, comment: 'Orta performans gelişim planı uygulansın.', date: '01 Mart 2026' }
-    },
-    swot: {
-      strengths: ['Fiziksel güç ve taşıma'],
-      weaknesses: ['WMS sistem girişi hataları'],
-      opportunities: ['WMS yazılım eğitimi'],
-      threats: ['İrsaliye uyumsuzluğu']
-    },
-    developmentAreas: ['WMS Yazılım Giriş Becerileri'],
-    careerAdvice: [{ phase: '1. Ay', action: 'WMS birebir pratik eğitimi', targetDate: '10 Eylül 2026' }]
-  },
-  {
-    id: 'emp_11',
-    name: 'Hasan Arslan',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Kasiyer Adayı (Deneme Süresinde)',
-    recommendedRole: 'Temel Perakende Eğitimi (Zayıf Performans / İkaz)',
-    matchPercentage: 45,
-    competencyScore: 45,
-    city: 'İstanbul',
-    experienceYears: 1,
-    startDate: '01 Ocak 2026',
-    tenure: '7 Ay',
-    previousExperiences: [],
-    priorTrainings: [],
-    completedTrainings: [
-      { courseTitle: 'Kasa Oryantasyon Kursu', duration: '6 Saat', durationHours: 6, completedDate: '15 Ocak 2026', instructorName: 'Zeynep Kaya', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 45, gradeStatus: 'Başarılı', certificateId: 'PKA-2026-ORY-045' }
-    ],
-    evaluations: {
-      managerReview: { author: 'Murat Yıldırım', role: 'Mağaza Müdürü', rating: 2.3, comment: 'Zayıf performans (45p). Kasa işlemlerinde sık hata yapıyor, müşteri iletişiminde ikaz verilmiştir.', date: '10 Mart 2026' },
-      subordinateReview: { author: 'Selin Demir', role: 'Kasiyer', rating: 2.5, comment: 'Daha çok pratiğe ihtiyacı var.', date: '12 Mart 2026' },
-      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 2.2, comment: 'Acil gelişim aksiyonu alınmalı, aksi halde deneme sonlandırılacak.', date: '15 Mart 2026' }
-    },
-    swot: {
-      strengths: ['Devamlılık oranı düzgün'],
-      weaknesses: ['Kasa açığı verme riski ve yavaşlık'],
-      opportunities: ['Hızlandırılmış pratik ve mentörlük'],
-      threats: ['Müşteri şikayeti artışı']
-    },
-    developmentAreas: ['Kasa Sistemi Temel Kullanım & İletişim'],
-    careerAdvice: [{ phase: '1. Ay', action: '15 gün mentör eşliğinde kasa denetimi', targetDate: '01 Ağustos 2026' }]
-  },
-  {
-    id: 'emp_12',
-    name: 'Mustafa Aydın',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
-    currentRole: 'Reyon Yardımcı Elemanı',
-    recommendedRole: 'Temel Saha İSG & Temizlik Eğitimi',
-    matchPercentage: 38,
-    competencyScore: 38,
-    city: 'Adana',
-    experienceYears: 1,
-    startDate: '10 Şubat 2026',
-    tenure: '6 Ay',
-    previousExperiences: [],
-    priorTrainings: [],
-    completedTrainings: [
-      { courseTitle: 'Giriş Seviye Saha Eğitimi', duration: '4 Saat', durationHours: 4, completedDate: '20 Şubat 2026', instructorName: 'Seda Yılmaz', institution: 'Perakende Kariyer Akademisi', companyWhereTaken: 'Mevcut Şirket', score: 38, gradeStatus: 'Başarılı', certificateId: 'PKA-2026-SAH-038' }
-    ],
-    evaluations: {
-      managerReview: { author: 'Oğuzhan Kaya', role: 'Bölge Müdürü', rating: 2.0, comment: '38 Puan (Zayıf performans). Reyon dizilimi ve hijyen kurallarına riayet eksik.', date: '01 Nisan 2026' },
-      subordinateReview: { author: 'Gamze Tekin', role: 'Müdür Yrd.', rating: 2.1, comment: 'Takip gerektiriyor.', date: '05 Nisan 2026' },
-      hrReview: { author: 'Ahmet Çelik', role: 'İK Direktörü', rating: 2.0, comment: '30 günlük performans iyileştirme planı başlatıldı.', date: '10 Nisan 2026' }
-    },
-    swot: {
-      strengths: ['Saha ulaşımı kolay'],
-      weaknesses: ['Hijyen ve etiket düzen standartları eksik'],
-      opportunities: ['Temel 5S eğitimi alma'],
-      threats: ['Reyon denetiminde ceza riski']
-    },
-    developmentAreas: ['Temel Reyon Hijyeni ve 5S Standartları'],
-    careerAdvice: [{ phase: '1. Ay', action: '30 günlük performans iyileştirme programı', targetDate: '15 Ağustos 2026' }]
+    swot: { strengths: ['Planogram ve 5S'], weaknesses: ['Tedarikçi pazarlığı'], opportunities: ['Merkez Satın Alma'], threats: ['Merkez geçiş uyumu'] },
+    developmentAreas: ['Satın Alma & Kategori Yönetimi'],
+    careerAdvice: [{ phase: '1. Ay', action: 'Kategori Yönetimi sertifika başlanacak', targetDate: '20 Temmuz 2026' }]
   }
 ];
 
@@ -932,6 +398,23 @@ export default function EmployeeCareerPlanningModule() {
   const [subordinateInput, setSubordinateInput] = useState<string>('');
   const [hrInput, setHrInput] = useState<string>('');
   const [savedSuccessMsg, setSavedSuccessMsg] = useState<string | null>(null);
+
+  // Auto select candidate from URL query param e.g. ?name=Ahmet+Kaya
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const nameParam = params.get('name') || params.get('emp') || params.get('search');
+      if (nameParam) {
+        const matched = employeesData.find(e => e.name.toLowerCase().includes(nameParam.toLowerCase()));
+        if (matched) {
+          setSelectedEmpId(matched.id);
+          setScoreFilterCategory('all');
+        } else {
+          setSearchQuery(nameParam);
+        }
+      }
+    }
+  }, [employeesData]);
 
   const filteredEmployees = useMemo(() => {
     return employeesData.filter(emp => {
@@ -986,7 +469,6 @@ export default function EmployeeCareerPlanningModule() {
       typeCategory: 'post' | 'prior';
     }[] = [];
 
-    // Add Post (Corporate) Trainings
     activeEmployee.completedTrainings.forEach((tr, idx) => {
       list.push({
         id: `post_${idx}`,
@@ -1002,7 +484,6 @@ export default function EmployeeCareerPlanningModule() {
       });
     });
 
-    // Add Prior (External) Trainings
     activeEmployee.priorTrainings.forEach((pt, idx) => {
       list.push({
         id: `prior_${idx}`,
@@ -1028,7 +509,6 @@ export default function EmployeeCareerPlanningModule() {
     setIsModalOpen(true);
   };
 
-  // Handler to update evaluation note dynamically
   const handleSaveEvaluation = (targetType: 'manager' | 'subordinate' | 'hr') => {
     let newComment = '';
     if (targetType === 'manager') newComment = managerInput;
@@ -1073,6 +553,11 @@ export default function EmployeeCareerPlanningModule() {
     setTimeout(() => setSavedSuccessMsg(null), 3500);
   };
 
+  const awardsList = activeEmployee.awards || [];
+  const promotionsList = activeEmployee.promotions || [];
+  const warningsList = activeEmployee.warnings || [];
+  const penaltiesList = activeEmployee.penalties || [];
+
   return (
     <div className="space-y-8">
       
@@ -1085,7 +570,7 @@ export default function EmployeeCareerPlanningModule() {
           </div>
           <h2 className="text-2xl sm:text-4xl font-black text-white">Çalışan Özgeçmiş, Deneyim ve Eğitim Karnesi</h2>
           <p className="text-xs sm:text-sm text-gray-200 font-light max-w-3xl leading-relaxed">
-            Eğitim özet kartlarına tıklayarak çalışanın <strong>hangi eğitmeni hangi kurumdan</strong> ve <strong>hangi şirkette çalışırken aldığını</strong> detaylı döküm tablosunda inceleyebilir ve resmi PDF karnesi olarak indirebilirsiniz.
+            Eğitim özet kartlarına tıklayarak çalışanın <strong>hangi eğitmeni hangi kurumdan</strong> ve <strong>hangi şirkette çalışırken aldığını</strong>, ödülleri, terfileri ve sicil durumunu inceleyebilirsiniz.
           </p>
         </div>
 
@@ -1102,7 +587,7 @@ export default function EmployeeCareerPlanningModule() {
           </button>
 
           <a
-            href={`data:text/plain;charset=utf-8,${encodeURIComponent(`PERAKENDE KARİYER AKADEMİSİ — RESMİ ÇALIŞAN ÖZGEÇMİŞ, DENEYİM VE EĞİTİM KARNESİ\n--------------------------------------------------------------------------------\nAday / Çalışan: ${activeEmployee.name}\nMevcut Pozisyon: ${activeEmployee.currentRole} (${activeEmployee.city})\nİşe Başlangıç Tarihi: ${activeEmployee.startDate}\nMevcut Şirket Kıdemi: ${activeEmployee.tenure}\nÖnerilen Hedef Pozisyon: ${activeEmployee.recommendedRole} (%${activeEmployee.matchPercentage} Uyum)\nYetkinlik Puanı: ${activeEmployee.competencyScore} / 100\n\n================================================================================\n1. DAHA ÖNCE ÇALIŞTIĞI FİRMALAR VE HİZMET SÜRELERİ\n================================================================================\n${activeEmployee.previousExperiences.map(e => `- ${e.companyName}: ${e.role} (${e.duration} | ${e.yearsRange})`).join('\n')}\n\n================================================================================\n2. MEVCUT İŞYERİNDEN ÖNCE ALDIĞI HARİCİ EĞİTİMLER (${activeEmployee.priorTrainings.length} DERS)\n================================================================================\n${activeEmployee.priorTrainings.map(t => `- ${t.title} (${t.durationHours} Saat) | Eğitmen: ${t.instructorName} | Kurum: ${t.institution} | Şirket: ${t.companyWhereTaken}`).join('\n')}\n\n================================================================================\n3. İŞE BAŞLADIKTAN SONRA ŞİRKET İÇİ AKADEMİ EĞİTİMLERİ (${activeEmployee.completedTrainings.length} DERS)\n================================================================================\n${activeEmployee.completedTrainings.map(t => `- ${t.courseTitle} (${t.duration}) | Sınav: %${t.score} (${t.gradeStatus}) | Eğitmen: ${t.instructorName} | Kurum: ${t.institution} | Sertifika: ${t.certificateId}`).join('\n')}\n\n================================================================================\n4. 360° DEĞERLENDİRMELER\n================================================================================\nÜst Yönetici (${activeEmployee.evaluations.managerReview.author}): "${activeEmployee.evaluations.managerReview.comment}"\nEkip Geri Bildirimi (${activeEmployee.evaluations.subordinateReview.author}): "${activeEmployee.evaluations.subordinateReview.comment}"\nİK Yönetimi (${activeEmployee.evaluations.hrReview.author}): "${activeEmployee.evaluations.hrReview.comment}"\n`)}`}
+            href={`data:text/plain;charset=utf-8,${encodeURIComponent(`PERAKENDE KARİYER AKADEMİSİ — RESMİ ÇALIŞAN ÖZGEÇMİŞ, DENEYİM VE EĞİTİM KARNESİ\n--------------------------------------------------------------------------------\nAday / Çalışan: ${activeEmployee.name}\nMevcut Pozisyon: ${activeEmployee.currentRole} (${activeEmployee.city})\nİşe Başlangıç Tarihi: ${activeEmployee.startDate}\nMevcut Şirket Kıdemi: ${activeEmployee.tenure}\nÖnerilen Hedef Pozisyon: ${activeEmployee.recommendedRole} (%${activeEmployee.matchPercentage} Uyum)\nYetkinlik Puanı: ${activeEmployee.competencyScore} / 100\n\n================================================================================\n1. ÖDÜLLER VE PLAKETLER (${awardsList.length} ADET)\n================================================================================\n${awardsList.length > 0 ? awardsList.map(a => `- ${a.title} (${a.category}) | ${a.givenDate} | ${a.organization}`).join('\n') : 'Kayıtlı Ödül/Plaket Bulunmamaktadır'}\n\n================================================================================\n2. TERFİ GEÇMİŞİ (${promotionsList.length} ADET)\n================================================================================\n${promotionsList.length > 0 ? promotionsList.map(p => `- ${p.fromRole} -> ${p.toRole} | ${p.promotionDate} | Onay: ${p.approvedBy}`).join('\n') : 'Henüz iç terfi kaydı bulunmamaktadır'}\n\n================================================================================\n3. UYARILAR VE İKAZLAR (${warningsList.length} ADET)\n================================================================================\n${warningsList.length > 0 ? warningsList.map(w => `- ${w.type} (${w.issueDate}): ${w.reason} | Durum: ${w.status}`).join('\n') : 'Sicili tamamen temizdir (0 Uyarı)'}\n\n================================================================================\n4. CEZALAR VE TUTANAKLAR (${penaltiesList.length} ADET)\n================================================================================\n${penaltiesList.length > 0 ? penaltiesList.map(p => `- ${p.type} (${p.issueDate}): ${p.reason}`).join('\n') : 'Tutanak Sayısı: 0 Adet (Sicili %100 Temizdir)'}\n`)}`}
             download={`${activeEmployee.name.replace(/\s+/g, '_')}_Ozgecmis_Deneyim_Egitim_Karnesi.txt`}
             className="px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl text-xs transition-all flex items-center justify-center space-x-1.5 border border-white/15 whitespace-nowrap"
           >
@@ -1229,7 +714,7 @@ export default function EmployeeCareerPlanningModule() {
                   <div className="flex items-center space-x-2">
                     <h3 className="text-xl font-black text-[#0B2A4A]">{activeEmployee.name}</h3>
                     <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full font-mono">
-                      +{activeEmployee.competencyScore}p Barajı Geçti ✓
+                      +{activeEmployee.competencyScore}p Yetkinlik Skoru
                     </span>
                   </div>
                   <p className="text-xs text-gray-600 font-medium">
@@ -1321,6 +806,163 @@ export default function EmployeeCareerPlanningModule() {
                 </div>
                 <div className="text-lg font-black text-white font-mono mt-1">{trainingSummary.priorCount} Ders ({trainingSummary.priorHours} Sa)</div>
                 <div className="text-[9px] text-[#DDF4F7] mt-1 font-bold">Harici Liste →</div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* 4 SEPARATE SPECIAL LISTS (ÖDÜLLER, PLAKETLER, TERFİLER, UYARILAR, CEZALAR & TUTANAKLAR) */}
+          <div className="space-y-6">
+            <h3 className="font-extrabold text-lg text-[#0B2A4A] flex items-center space-x-2">
+              <Trophy className="w-5 h-5 text-amber-500" />
+              <span>Resmi Sicil, Ödül, Terfi ve Disiplin Karnesi</span>
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* 1. ÖDÜLLER VE PLAKETLER */}
+              <div className="bg-amber-50/60 border-2 border-amber-300 rounded-3xl p-5 space-y-3 shadow-sm">
+                <div className="flex items-center justify-between border-b border-amber-200 pb-2">
+                  <h4 className="font-black text-xs text-amber-900 flex items-center space-x-2">
+                    <Trophy className="w-4 h-4 text-amber-600" />
+                    <span>1. Ödüller ve Plaketler ({awardsList.length})</span>
+                  </h4>
+                  <span className="text-[10px] font-mono font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">
+                    Başarı Karnesi
+                  </span>
+                </div>
+
+                {awardsList.length > 0 ? (
+                  <div className="space-y-2.5">
+                    {awardsList.map((aw, idx) => (
+                      <div key={idx} className="p-3.5 bg-white border border-amber-200 rounded-2xl space-y-1 shadow-xs">
+                        <div className="flex items-center justify-between">
+                          <h5 className="font-extrabold text-xs text-[#0B2A4A]">{aw.title}</h5>
+                          <span className="text-[9px] font-mono font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">
+                            {aw.category}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-gray-600">{aw.reason}</div>
+                        <div className="text-[9px] font-mono text-gray-400 font-bold pt-1 border-t border-gray-100">
+                          Tarih: {aw.givenDate} • {aw.organization}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-white/80 border border-amber-200 rounded-2xl text-center text-xs text-amber-800 italic">
+                    Henüz kayıtlı ödül veya plaket bulunmamaktadır.
+                  </div>
+                )}
+              </div>
+
+              {/* 2. TERFİ GEÇMİŞİ */}
+              <div className="bg-emerald-50/60 border-2 border-emerald-300 rounded-3xl p-5 space-y-3 shadow-sm">
+                <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
+                  <h4 className="font-black text-xs text-emerald-900 flex items-center space-x-2">
+                    <TrendingUp className="w-4 h-4 text-emerald-600" />
+                    <span>2. Terfi Geçmişi ve Unvan Yükselmeleri ({promotionsList.length})</span>
+                  </h4>
+                  <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                    Kariyer Yolu
+                  </span>
+                </div>
+
+                {promotionsList.length > 0 ? (
+                  <div className="space-y-2.5">
+                    {promotionsList.map((pr, idx) => (
+                      <div key={idx} className="p-3.5 bg-white border border-emerald-200 rounded-2xl space-y-1 shadow-xs">
+                        <div className="flex items-center justify-between font-mono text-xs">
+                          <span className="font-bold text-gray-500">{pr.fromRole}</span>
+                          <ChevronRight className="w-4 h-4 text-emerald-600" />
+                          <span className="font-extrabold text-emerald-800">{pr.toRole}</span>
+                        </div>
+                        <p className="text-[11px] text-gray-600 leading-snug">{pr.note}</p>
+                        <div className="text-[9px] font-mono text-emerald-700 font-bold pt-1 border-t border-gray-100">
+                          Terfi Tarihi: {pr.promotionDate} • Onay: {pr.approvedBy}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-white/80 border border-emerald-200 rounded-2xl text-center text-xs text-emerald-800 italic">
+                    Henüz iç terfi kaydı işlenmemiştir.
+                  </div>
+                )}
+              </div>
+
+              {/* 3. UYARILAR VE İKAZLAR */}
+              <div className="bg-orange-50/60 border-2 border-orange-300 rounded-3xl p-5 space-y-3 shadow-sm">
+                <div className="flex items-center justify-between border-b border-orange-200 pb-2">
+                  <h4 className="font-black text-xs text-orange-900 flex items-center space-x-2">
+                    <AlertCircle className="w-4 h-4 text-orange-600" />
+                    <span>3. Sözlü ve Yazılı Uyarılar / İkazlar ({warningsList.length})</span>
+                  </h4>
+                  <span className="text-[10px] font-mono font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md">
+                    İkaz Kaydı
+                  </span>
+                </div>
+
+                {warningsList.length > 0 ? (
+                  <div className="space-y-2.5">
+                    {warningsList.map((wr, idx) => (
+                      <div key={idx} className="p-3.5 bg-white border border-orange-200 rounded-2xl space-y-1 shadow-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-extrabold text-xs text-orange-950">{wr.type}</span>
+                          <span className="text-[9px] font-mono font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                            {wr.status}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-700">{wr.reason}</p>
+                        <div className="text-[9px] font-mono text-gray-500 font-bold pt-1 border-t border-gray-100">
+                          Düzenlenme: {wr.issueDate} • Düzenleyen: {wr.issuedBy}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-white/80 border border-emerald-300 rounded-2xl text-center text-xs text-emerald-800 font-bold flex items-center justify-center space-x-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>Resmi sicili tamamen temizdir. Kayıtlı uyarı bulunmamaktadır.</span>
+                  </div>
+                )}
+              </div>
+
+              {/* 4. CEZALAR VE TUTANAKLAR */}
+              <div className="bg-rose-50/60 border-2 border-rose-300 rounded-3xl p-5 space-y-3 shadow-sm">
+                <div className="flex items-center justify-between border-b border-rose-200 pb-2">
+                  <h4 className="font-black text-xs text-rose-900 flex items-center space-x-2">
+                    <FileWarning className="w-4 h-4 text-rose-600" />
+                    <span>4. Cezalar ve Tutanak Kayıtları ({penaltiesList.length})</span>
+                  </h4>
+                  <span className="text-[10px] font-mono font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-md">
+                    Disiplin Sicili
+                  </span>
+                </div>
+
+                {penaltiesList.length > 0 ? (
+                  <div className="space-y-2.5">
+                    {penaltiesList.map((pn, idx) => (
+                      <div key={idx} className="p-3.5 bg-white border border-rose-200 rounded-2xl space-y-1 shadow-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-extrabold text-xs text-rose-950">{pn.type}</span>
+                          <span className="text-[9px] font-mono font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-md">
+                            {pn.status}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-700">{pn.reason}</p>
+                        <div className="text-[9px] font-mono text-gray-500 font-bold pt-1 border-t border-gray-100">
+                          Tarih: {pn.issueDate} • Veren Birim: {pn.issuedBy}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-white/80 border border-emerald-300 rounded-2xl text-center text-xs text-emerald-800 font-bold flex items-center justify-center space-x-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>Sayılan Tutanak: 0 Adet (Disiplin sicili tamamen temizdir).</span>
+                  </div>
+                )}
               </div>
 
             </div>
