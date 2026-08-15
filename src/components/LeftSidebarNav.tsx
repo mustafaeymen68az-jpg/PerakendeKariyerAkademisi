@@ -35,7 +35,7 @@ const HR_SUBMENU = [
   { name: 'Yetkinlik Matrisi', path: '/ik-cozumlari/yetkinlik-matrisi' },
   { name: 'Terfi Yönetimi', path: '/ik-cozumlari/terfi-yonetimi' },
   { name: 'Yedekleme Planı', path: '/ik-cozumlari/yedekleme-plani' },
-  { name: 'Eğitim Yönetimi', path: '/ik-cozumlari/egitim-yonetimi' },
+  { name: 'Çalışan Eğitim Yönetimi', path: '/ik-cozumlari/egitim-yonetimi' },
   { name: 'Performans & KPI', path: '/ik-cozumlari/performans-kpi' },
   { name: 'Çalışan Gelişim Karnesi', path: '/ik-cozumlari/gelisim-karnesi' }
 ];

@@ -24,6 +24,7 @@ import EnterpriseROICalculator from '@/components/EnterpriseROICalculator';
 import EmployeeCareerPlanningModule from '@/components/EmployeeCareerPlanningModule';
 import EmployeeDevelopmentTimelineModule from '@/components/EmployeeDevelopmentTimelineModule';
 import EmployeePerformanceKPIModule from '@/components/EmployeePerformanceKPIModule';
+import EmployeeTrainingManagementModule from '@/components/EmployeeTrainingManagementModule';
 
 interface HRDetailData {
   slug: string;
@@ -142,20 +143,20 @@ const HR_SOLUTIONS_DATA: Record<string, HRDetailData> = {
 
   'egitim-yonetimi': {
     slug: 'egitim-yonetimi',
-    title: 'Kurumsal Eğitim & LMS Gelişim Yönetimi',
-    badge: '40 Modül • 160 Mikro Ders',
-    subtitle: 'Tüm Şirket Çalışanları İçin Yapılandırılmış Gelişim Yol Yolculuğu',
-    description: 'İş sağlığından kasa sistemlerine, manav fire yönetiminden yapay zekâya kadar 40 ana modül ve 160 mikro eğitimle otomatik atama ve takip.',
+    title: 'Çalışan Eğitim Yönetimi & Kariyer Gelişim Listesi',
+    badge: 'Çalışan Bazlı Takip • Kıdem & Hedef',
+    subtitle: 'Tüm Çalışanların Yetkinlik Puanları, Çalışma Süreleri ve En Yakın Ulaşacağı Kariyer Adımları',
+    description: 'Tüm personelinizin şirket içi kıdem sürelerini, güncel yetkinlik puanlarını ve en yakın terfi hedeflerini liste halinde anlık takip edin.',
     iconName: 'Building2',
     benefits: [
-      'Mobil uyumlu 15 dakikalık mikro öğrenme videoları',
-      'Eğitim tamamlama ve sertifikasyon takip ekranı',
-      'Otomatik yeni işe alım (onboarding) eğitim ataması',
-      'Bölge ve mağaza bazlı eğitim başarı sıralaması'
+      'Çalışan adı, pozisyonu ve yetkinlik puanı dökümü',
+      'Şirket içi kıdem (çalışma süresi) takibi',
+      'En yakın ulaşılacak hedef kariyer adımı ve tahmini süre (30-60-90 gün)',
+      'Detaylı çalışan eğitim karnesi ve atanan modüller'
     ],
     moduleDetails: [
-      { heading: 'Modüler Eğitim Yapısı', text: 'Her perakende kadrosuna özel 1. yıl ve 2. yıl müfredat adımları.' },
-      { heading: 'PDF Doküman ve Video Sınavı', text: 'Eğitim sonlarında interaktif sınavlar ve indirilebilir ders materyalleri.' }
+      { heading: 'Kıdem & Yetkinlik Eşleştirmesi', text: 'Çalışanların şirket içi hizmet süreleri ile aldıkları yetkinlik notlarının kıyaslanması.' },
+      { heading: 'Hedef Kariyer & Ulaşım Süresi', text: 'Çalışanın bir üst unvana geçmesi için kalan tahmini süre hesabı.' }
     ]
   },
 
@@ -236,6 +237,7 @@ export default async function HRSolutionDetailPage({ params }: { params: Promise
         {data.slug === 'yedekleme-plani' && <SuccessionPlanModule />}
         {data.slug === 'yetkinlik-matrisi' && <EnterpriseROICalculator />}
         {data.slug === 'performans-kpi' && <EmployeePerformanceKPIModule />}
+        {data.slug === 'egitim-yonetimi' && <EmployeeTrainingManagementModule />}
 
       </div>
     </div>
