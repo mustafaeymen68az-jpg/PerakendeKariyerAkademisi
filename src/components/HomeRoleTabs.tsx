@@ -24,7 +24,7 @@ export default function HomeRoleTabs() {
           }`}
         >
           <UserCheck className="w-4 h-4" />
-          <span>👤 Çalışan Rolü & Paneli</span>
+          <span>👤 Öğrenci / Çalışan Rolü & Paneli</span>
         </button>
 
         <button
@@ -48,7 +48,7 @@ export default function HomeRoleTabs() {
           }`}
         >
           <GraduationCap className="w-4 h-4" />
-          <span>🎓 Eğitim Müdürü & Eğitmen Rolü</span>
+          <span>🎓 Eğitmen Rolü & Paneli</span>
         </button>
 
         <button
@@ -78,8 +78,8 @@ export default function HomeRoleTabs() {
           <div className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-3xl p-6 max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
               <div>
-                <span className="text-[10px] font-mono font-black text-[#087F96] uppercase tracking-wider block">ÇALIŞAN BAKIŞ AÇISI</span>
-                <h3 className="text-xl font-black text-[#0B2A4A]">Çalışan Paneli & Kariyer GPS</h3>
+                <span className="text-[10px] font-mono font-black text-[#087F96] uppercase tracking-wider block">ÖĞRENCİ & ÇALIŞAN BAKIŞ AÇISI</span>
+                <h3 className="text-xl font-black text-[#0B2A4A]">Öğrenci / Çalışan Paneli & Kariyer GPS</h3>
                 <p className="text-xs text-gray-600 mt-1">
                   Mevcut seviyeni ölç, yetkinlik eksiklerini tamamla, fotoğraflı saha görevi yükle ve açıklanabilir terfi skoru bileşenlerini incele.
                 </p>
@@ -88,7 +88,7 @@ export default function HomeRoleTabs() {
                 href="/panel/calisan"
                 className="px-6 py-3 bg-[#087F96] hover:bg-[#056B80] text-white font-black text-xs rounded-2xl shadow-lg whitespace-nowrap flex items-center space-x-1.5"
               >
-                <span>Tam Ekran Çalışan Portalına Git</span>
+                <span>Tam Ekran Öğrenci / Çalışan Portalına Git</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -122,17 +122,17 @@ export default function HomeRoleTabs() {
           <div className="space-y-6">
             <div className="bg-purple-50 border border-purple-200 rounded-3xl p-6 max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
               <div>
-                <span className="text-[10px] font-mono font-black text-purple-800 uppercase tracking-wider block">EĞİTİM MÜDÜRÜ BAKIŞ AÇISI</span>
-                <h3 className="text-xl font-black text-purple-950">Eğitim Kontrol Merkezi & Soru Bankası</h3>
+                <span className="text-[10px] font-mono font-black text-purple-800 uppercase tracking-wider block">EĞİTMEN BAKIŞ AÇISI</span>
+                <h3 className="text-xl font-black text-purple-950">Eğitmen Paneli & Soru Bankası</h3>
                 <p className="text-xs text-gray-600 mt-1">
-                  SCORM/xAPI uyumlu ders paketleri, soru bankası, otomatik eğitim atamaları ve eğitim sonrası saha KPI etki analizi.
+                  SCORM/xAPI uyumlu ders paketleri, soru bankası, otomatik eğitim atamaları ve eğitmen SWOT analiz yönetim araçları.
                 </p>
               </div>
               <Link
-                href="/panel/egitmen"
+                href="/egitmen"
                 className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-black text-xs rounded-2xl shadow-lg whitespace-nowrap flex items-center space-x-1.5"
               >
-                <span>Tam Ekran Eğitim Portalına Git</span>
+                <span>Tam Ekran Eğitmen Portalına Git</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

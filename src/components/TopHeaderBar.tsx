@@ -171,14 +171,14 @@ export default function TopHeaderBar() {
                 </Link>
               )}
 
-              {/* Çalışan / Katılımcı Paneli */}
+              {/* Öğrenci / Çalışan Paneli */}
               <Link
-                href="/panel"
+                href="/panel/calisan"
                 onClick={() => setIsDropdownOpen(false)}
                 className="flex items-center space-x-2 p-2.5 rounded-2xl text-xs font-bold text-slate-800 hover:bg-blue-50 hover:text-blue-700 transition-colors border border-transparent hover:border-blue-200"
               >
                 <User className="w-4 h-4 text-blue-600" />
-                <span>👤 Çalışan / Katılımcı Paneli</span>
+                <span>👤 Öğrenci / Çalışan Paneli</span>
               </Link>
 
               {/* Eğitmen Paneli */}

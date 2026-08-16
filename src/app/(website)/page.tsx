@@ -83,7 +83,7 @@ export default async function HomePage() {
           {/* 🔴 PROMINENT 4 ROLE BUTTONS GRID IN TOP-CENTER HERO */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto pt-2">
             
-            {/* ROLE 1: ÇALIŞAN */}
+            {/* ROLE 1: ÖĞRENCİ / ÇALIŞAN */}
             <Link
               href="/panel/calisan"
               className="p-5 bg-gradient-to-br from-[#087F96] to-[#056B80] hover:from-[#056B80] hover:to-[#044F5E] text-white rounded-3xl border-2 border-cyan-300/40 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
@@ -98,7 +98,7 @@ export default async function HomePage() {
               </div>
               <div>
                 <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition-colors">
-                  Çalışan Paneli
+                  Öğrenci / Çalışan Paneli
                 </h3>
                 <p className="text-xs text-cyan-100 font-light mt-1">
                   Kariyer GPS, 8 Sekmeli Panel, Görev Yükleme & Açıklanabilir Skor
@@ -137,9 +137,9 @@ export default async function HomePage() {
               </div>
             </Link>
 
-            {/* ROLE 3: EĞİTİM MÜDÜRÜ */}
+            {/* ROLE 3: EĞİTMEN */}
             <Link
-              href="/panel/egitmen"
+              href="/egitmen"
               className="p-5 bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white rounded-3xl border-2 border-purple-300/40 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
             >
               <div className="flex items-center justify-between">
@@ -152,10 +152,10 @@ export default async function HomePage() {
               </div>
               <div>
                 <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition-colors">
-                  Eğitim Müdürü Paneli
+                  Eğitmen Paneli
                 </h3>
                 <p className="text-xs text-purple-100 font-light mt-1">
-                  SCORM LMS, Soru Bankası, Top 5 KPI & Saha Etki Analizi
+                  SCORM LMS, Soru Bankası, Eğitmen SWOT & Saha Etki Analizi
                 </p>
               </div>
               <div className="pt-2 border-t border-white/20 flex items-center justify-between text-xs font-bold text-amber-300">
