@@ -76,31 +76,31 @@ export default async function HomePage() {
             </h1>
 
             <p className="text-gray-200 text-base sm:text-lg font-light leading-relaxed max-w-3xl mx-auto">
-              Aşağıdaki 4 rol butonuna tıklayarak doğrudan kendi rolünüze özel yönetim portalına ve sayfalarına geçiş yapabilirsiniz.
+              Aşağıdaki rol butonlarına tıklayarak doğrudan kendi rolünüze özel yönetim portalına ve sayfalarına geçiş yapabilirsiniz.
             </p>
           </div>
 
-          {/* 🔴 PROMINENT 4 ROLE BUTTONS GRID IN TOP-CENTER HERO */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto pt-2">
+          {/* 🔴 PROMINENT 5 ROLE BUTTONS GRID IN TOP-CENTER HERO */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 max-w-7xl mx-auto pt-2">
             
             {/* ROLE 1: ÖĞRENCİ / ÇALIŞAN */}
             <Link
               href="/panel/calisan"
-              className="p-5 bg-gradient-to-br from-[#087F96] to-[#056B80] hover:from-[#056B80] hover:to-[#044F5E] text-white rounded-3xl border-2 border-cyan-300/40 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
+              className="p-4 sm:p-5 bg-gradient-to-br from-[#087F96] to-[#056B80] hover:from-[#056B80] hover:to-[#044F5E] text-white rounded-3xl border-2 border-cyan-300/40 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
             >
               <div className="flex items-center justify-between">
-                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-inner">
+                <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner">
                   👤
                 </div>
-                <span className="px-2.5 py-1 bg-white/20 rounded-full text-[10px] font-black tracking-wider uppercase font-mono">
+                <span className="px-2 py-0.5 bg-white/20 rounded-full text-[9px] font-black tracking-wider uppercase font-mono">
                   ROL 1
                 </span>
               </div>
               <div>
-                <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition-colors">
+                <h3 className="text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors">
                   Öğrenci / Çalışan Paneli
                 </h3>
-                <p className="text-xs text-cyan-100 font-light mt-1">
+                <p className="text-[11px] text-cyan-100 font-light mt-1 leading-snug">
                   Kariyer GPS, 8 Sekmeli Panel, Görev Yükleme & Açıklanabilir Skor
                 </p>
               </div>
@@ -110,24 +110,51 @@ export default async function HomePage() {
               </div>
             </Link>
 
-            {/* ROLE 2: İK MÜDÜRÜ */}
+            {/* ROLE 2: EĞİTİM MÜDÜRÜ */}
             <Link
-              href="/panel/ik"
-              className="p-5 bg-gradient-to-br from-emerald-600 to-emerald-800 hover:from-emerald-700 hover:to-emerald-900 text-white rounded-3xl border-2 border-emerald-300/40 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
+              href="/ik-cozumlari/egitim-yonetimi"
+              className="p-4 sm:p-5 bg-gradient-to-br from-indigo-600 to-indigo-800 hover:from-indigo-700 hover:to-indigo-900 text-white rounded-3xl border-2 border-indigo-300/40 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
             >
               <div className="flex items-center justify-between">
-                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-inner">
-                  👔
+                <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner">
+                  📊
                 </div>
-                <span className="px-2.5 py-1 bg-white/20 rounded-full text-[10px] font-black tracking-wider uppercase font-mono">
+                <span className="px-2 py-0.5 bg-white/20 rounded-full text-[9px] font-black tracking-wider uppercase font-mono">
                   ROL 2
                 </span>
               </div>
               <div>
-                <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition-colors">
-                  İK Müdürü Paneli
+                <h3 className="text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors">
+                  Eğitim Müdürü Paneli
                 </h3>
-                <p className="text-xs text-emerald-100 font-light mt-1">
+                <p className="text-[11px] text-indigo-100 font-light mt-1 leading-snug">
+                  SCORM LMS, Soru Bankası, Top 5 KPI & Saha Etki Analizi
+                </p>
+              </div>
+              <div className="pt-2 border-t border-white/20 flex items-center justify-between text-xs font-bold text-amber-300">
+                <span>Sayfaya Git</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
+            {/* ROLE 3: İNSAN KAYNAKLARI MÜDÜRÜ (İK) */}
+            <Link
+              href="/panel/ik"
+              className="p-4 sm:p-5 bg-gradient-to-br from-emerald-600 to-emerald-800 hover:from-emerald-700 hover:to-emerald-900 text-white rounded-3xl border-2 border-emerald-300/40 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner">
+                  👔
+                </div>
+                <span className="px-2 py-0.5 bg-white/20 rounded-full text-[9px] font-black tracking-wider uppercase font-mono">
+                  ROL 3
+                </span>
+              </div>
+              <div>
+                <h3 className="text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors">
+                  İnsan Kaynakları Müdürü (İK)
+                </h3>
+                <p className="text-[11px] text-emerald-100 font-light mt-1 leading-snug">
                   9-Box Matrisi, Terfi Komitesi, Risk Sinyalleri & Excel Yükleme
                 </p>
               </div>
@@ -137,51 +164,24 @@ export default async function HomePage() {
               </div>
             </Link>
 
-            {/* ROLE 3: EĞİTMEN */}
-            <Link
-              href="/egitmen"
-              className="p-5 bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white rounded-3xl border-2 border-purple-300/40 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-inner">
-                  🎓
-                </div>
-                <span className="px-2.5 py-1 bg-white/20 rounded-full text-[10px] font-black tracking-wider uppercase font-mono">
-                  ROL 3
-                </span>
-              </div>
-              <div>
-                <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition-colors">
-                  Eğitmen Paneli
-                </h3>
-                <p className="text-xs text-purple-100 font-light mt-1">
-                  SCORM LMS, Soru Bankası, Eğitmen SWOT & Saha Etki Analizi
-                </p>
-              </div>
-              <div className="pt-2 border-t border-white/20 flex items-center justify-between text-xs font-bold text-amber-300">
-                <span>Sayfaya Git</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
-
-            {/* ROLE 4: CEO / ÜST YÖNETİM */}
+            {/* ROLE 4: CEO / GENEL MÜDÜR */}
             <Link
               href="/panel/ceo"
-              className="p-5 bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-950 rounded-3xl border-2 border-amber-200 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
+              className="p-4 sm:p-5 bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-950 rounded-3xl border-2 border-amber-200 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
             >
               <div className="flex items-center justify-between">
-                <div className="w-12 h-12 rounded-2xl bg-slate-950/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-inner">
+                <div className="w-11 h-11 rounded-2xl bg-slate-950/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner">
                   👑
                 </div>
-                <span className="px-2.5 py-1 bg-slate-950/20 text-slate-950 rounded-full text-[10px] font-black tracking-wider uppercase font-mono">
+                <span className="px-2 py-0.5 bg-slate-950/20 text-slate-950 rounded-full text-[9px] font-black tracking-wider uppercase font-mono">
                   ROL 4
                 </span>
               </div>
               <div>
-                <h3 className="text-lg font-black text-slate-950">
-                  CEO / Üst Yönetim
+                <h3 className="text-base sm:text-lg font-black text-slate-950">
+                  CEO / Genel Müdür
                 </h3>
-                <p className="text-xs text-slate-900 font-medium mt-1">
+                <p className="text-[11px] text-slate-900 font-medium mt-1 leading-snug">
                   10 İnsan Sermayesi KPI'sı, 20 Mağaza Simülatörü & ROI
                 </p>
               </div>
@@ -191,6 +191,32 @@ export default async function HomePage() {
               </div>
             </Link>
 
+            {/* ROLE 5: EĞİTMEN */}
+            <Link
+              href="/egitmen"
+              className="p-4 sm:p-5 bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white rounded-3xl border-2 border-purple-300/40 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 group flex flex-col justify-between space-y-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner">
+                  👨‍🏫
+                </div>
+                <span className="px-2 py-0.5 bg-white/20 rounded-full text-[9px] font-black tracking-wider uppercase font-mono">
+                  ROL 5
+                </span>
+              </div>
+              <div>
+                <h3 className="text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors">
+                  Eğitmen Paneli
+                </h3>
+                <p className="text-[11px] text-purple-100 font-light mt-1 leading-snug">
+                  Eğitim Atama, Soru Bankası, Eğitmen SWOT & Sınav Yönetimi
+                </p>
+              </div>
+              <div className="pt-2 border-t border-white/20 flex items-center justify-between text-xs font-bold text-amber-300">
+                <span>Sayfaya Git</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
           </div>
         </div>
       </section>

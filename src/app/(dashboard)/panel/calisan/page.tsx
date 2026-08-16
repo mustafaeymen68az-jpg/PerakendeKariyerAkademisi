@@ -450,32 +450,91 @@ export default function EmployeeDashboardPage() {
           )}
 
           {activeTab === 'competencies' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-4">
-              <h2 className="text-xl font-bold text-white">Yetkinliklerim ve Pasaportum</h2>
-              <p className="text-xs text-gray-300">
-                Kasa operasyonu (%92), Stok takibi (%85), Müşteri ilişkileri (%88), Ekip çalışması (%90).
-              </p>
+            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6">
+              <h2 className="text-xl font-bold text-white">Bireysel Yetkinlik Pasaportum & Radar Skorum</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 space-y-3">
+                  <div className="flex justify-between font-bold text-white">
+                    <span>Kasa Operasyonu & POS Kullanımı</span>
+                    <span className="text-emerald-400">%92 (Usta)</span>
+                  </div>
+                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                    <div className="bg-emerald-400 h-full rounded-full" style={{ width: '92%' }} />
+                  </div>
+                </div>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 space-y-3">
+                  <div className="flex justify-between font-bold text-white">
+                    <span>Stok Takibi & Fire Önleme</span>
+                    <span className="text-cyan-400">%85 (Gelişmiş)</span>
+                  </div>
+                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                    <div className="bg-cyan-400 h-full rounded-full" style={{ width: '85%' }} />
+                  </div>
+                </div>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 space-y-3">
+                  <div className="flex justify-between font-bold text-white">
+                    <span>Müşteri İlişkileri & Kriz Yönetimi</span>
+                    <span className="text-amber-400">%88 (İleri)</span>
+                  </div>
+                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                    <div className="bg-amber-400 h-full rounded-full" style={{ width: '88%' }} />
+                  </div>
+                </div>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 space-y-3">
+                  <div className="flex justify-between font-bold text-white">
+                    <span>Ekip Liderliği & İletişim</span>
+                    <span className="text-purple-400">%90 (Yüksek)</span>
+                  </div>
+                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                    <div className="bg-purple-400 h-full rounded-full" style={{ width: '90%' }} />
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
           {activeTab === 'feedback' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-4">
-              <h2 className="text-xl font-bold text-white">Yönetici Geri Bildirimleri</h2>
-              <div className="p-4 bg-[#061B33] rounded-xl border border-white/10 text-xs space-y-1">
-                <div className="font-bold text-amber-300">Mağaza Müdürü Notu (10 Ağustos 2026):</div>
-                <p className="text-gray-300">"Kasa devir hızındaki artış ve reyon düzeni takdire şayan. Stok eğitimi tamamlandığında terfi adaylığı onaylanacaktır."</p>
+            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6">
+              <h2 className="text-xl font-bold text-white">Yönetici Geri Bildirimleri & Performans Görüşmeleri</h2>
+              <div className="space-y-3 text-xs">
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-emerald-500/30 space-y-2">
+                  <div className="flex justify-between items-center font-bold">
+                    <span className="text-emerald-400">Mağaza Müdürü Notu (10 Ağustos 2026)</span>
+                    <span className="text-gray-400 font-mono">10.08.2026</span>
+                  </div>
+                  <p className="text-gray-300">"Kasa devir hızındaki artış ve reyon düzeni takdire şayan. Stok eğitimi tamamlandığında terfi adaylığı onaylanacaktır."</p>
+                </div>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-cyan-500/30 space-y-2">
+                  <div className="flex justify-between items-center font-bold">
+                    <span className="text-cyan-400">Bölge İK Uzmanı Notu (15 Temmuz 2026)</span>
+                    <span className="text-gray-400 font-mono">15.07.2026</span>
+                  </div>
+                  <p className="text-gray-300">"Müşteri memnuniyet anketi sonuçları 4.9/5 ile bölge birincisi. Terfi süreci başarıyla devam ediyor."</p>
+                </div>
               </div>
             </div>
           )}
 
           {activeTab === 'profile' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-4">
+            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6 text-xs">
               <h2 className="text-xl font-bold text-white">Kişisel ve Kurumsal Profil Bilgilerim</h2>
-              <div className="text-xs text-gray-300 space-y-2">
-                <div><strong>Ad Soyad:</strong> {employeeData.name}</div>
-                <div><strong>E-posta:</strong> ahmet@sayarmarket.com</div>
-                <div><strong>Mağaza / Şube:</strong> {employeeData.store}</div>
-                <div><strong>Departman:</strong> Mağaza Operasyonları</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#061B33] p-5 rounded-2xl border border-white/10">
+                <div className="space-y-2 text-gray-300">
+                  <div><strong className="text-white">Ad Soyad:</strong> {employeeData.name}</div>
+                  <div><strong className="text-white">Unvan:</strong> {employeeData.position}</div>
+                  <div><strong className="text-white">E-posta:</strong> ahmet@sayarmarket.com</div>
+                  <div><strong className="text-white">Telefon:</strong> +90 532 555 0199</div>
+                </div>
+                <div className="space-y-2 text-gray-300">
+                  <div><strong className="text-white">Mağaza / Şube:</strong> {employeeData.store}</div>
+                  <div><strong className="text-white">Şirket Kıdemi:</strong> 2 Yıl 4 Ay</div>
+                  <div><strong className="text-white">Terfi Hazırlık Skoru:</strong> %{employeeData.promotionScore}</div>
+                  <div><strong className="text-white">Hesap Durumu:</strong> Active Employee (PKA Verified)</div>
+                </div>
               </div>
             </div>
           )}

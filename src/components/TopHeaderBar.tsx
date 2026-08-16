@@ -171,7 +171,7 @@ export default function TopHeaderBar() {
                 </Link>
               )}
 
-              {/* Öğrenci / Çalışan Paneli */}
+              {/* 1. Öğrenci / Çalışan Paneli */}
               <Link
                 href="/panel/calisan"
                 onClick={() => setIsDropdownOpen(false)}
@@ -181,24 +181,44 @@ export default function TopHeaderBar() {
                 <span>👤 Öğrenci / Çalışan Paneli</span>
               </Link>
 
-              {/* Eğitmen Paneli */}
+              {/* 2. Eğitim Müdürü Paneli */}
+              <Link
+                href="/ik-cozumlari/egitim-yonetimi"
+                onClick={() => setIsDropdownOpen(false)}
+                className="flex items-center space-x-2 p-2.5 rounded-2xl text-xs font-bold text-slate-800 hover:bg-indigo-50 hover:text-indigo-700 transition-colors border border-transparent hover:border-indigo-200"
+              >
+                <Building2 className="w-4 h-4 text-indigo-600" />
+                <span>📊 Eğitim Müdürü Paneli</span>
+              </Link>
+
+              {/* 3. İnsan Kaynakları Müdürü (İK) Paneli */}
+              <Link
+                href="/panel/ik"
+                onClick={() => setIsDropdownOpen(false)}
+                className="flex items-center space-x-2 p-2.5 rounded-2xl text-xs font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition-colors border border-transparent hover:border-emerald-200"
+              >
+                <Building2 className="w-4 h-4 text-emerald-600" />
+                <span>👔 İK Müdürü Paneli</span>
+              </Link>
+
+              {/* 4. CEO / Genel Müdür Paneli */}
+              <Link
+                href="/panel/ceo"
+                onClick={() => setIsDropdownOpen(false)}
+                className="flex items-center space-x-2 p-2.5 rounded-2xl text-xs font-bold text-slate-800 hover:bg-amber-50 hover:text-amber-700 transition-colors border border-transparent hover:border-amber-200"
+              >
+                <Crown className="w-4 h-4 text-amber-600" />
+                <span>👑 CEO / Genel Müdür</span>
+              </Link>
+
+              {/* 5. Eğitmen Paneli */}
               <Link
                 href="/egitmen"
                 onClick={() => setIsDropdownOpen(false)}
                 className="flex items-center space-x-2 p-2.5 rounded-2xl text-xs font-bold text-slate-800 hover:bg-purple-50 hover:text-purple-700 transition-colors border border-transparent hover:border-purple-200"
               >
                 <GraduationCap className="w-4 h-4 text-purple-600" />
-                <span>🎓 Eğitmen Paneli</span>
-              </Link>
-
-              {/* Kurumsal Panel */}
-              <Link
-                href="/kurumsal"
-                onClick={() => setIsDropdownOpen(false)}
-                className="flex items-center space-x-2 p-2.5 rounded-2xl text-xs font-bold text-slate-800 hover:bg-rose-50 hover:text-rose-700 transition-colors border border-transparent hover:border-rose-200"
-              >
-                <Building2 className="w-4 h-4 text-rose-600" />
-                <span>🏢 Kurumsal Çözümler</span>
+                <span>👨‍🏫 Eğitmen Paneli</span>
               </Link>
             </div>
 
