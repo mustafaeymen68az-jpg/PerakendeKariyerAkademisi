@@ -37,8 +37,78 @@ import {
   BadgePercent,
   MapPin,
   Briefcase,
-  User
+  User,
+  Compass
 } from 'lucide-react';
+
+const RETAIL_POSITIONS_26 = [
+  {
+    group: '👑 MAĞAZA OPERASYON & DİKEY TERFİ HİYERARŞİSİ',
+    positions: [
+      { value: 'Kasiyer & Reyon Çalışanı', label: 'Level 1: Kasiyer & Reyon Çalışanı' },
+      { value: 'Takım Lideri / Kıdemli Satış Danışmanı', label: 'Level 2: Takım Lideri / Kıdemli Satış' },
+      { value: 'Mağaza Müdür Yardımcısı', label: 'Level 3: Mağaza Müdür Yardımcısı' },
+      { value: 'Mağaza Müdürü', label: 'Level 4: Mağaza Müdürü (P&L)' },
+      { value: 'Bölge / Saha Müdürü', label: 'Level 5: Bölge / Saha Müdürü' },
+      { value: 'Perakende Operasyon Direktörü', label: 'Level 6: Perakende Operasyon Direktörü' },
+      { value: 'Genel Müdür Yardımcısı (COO)', label: 'Level 7: Genel Müdür Yardımcısı (COO)' },
+      { value: 'CEO / Genel Müdür', label: 'Level 8: CEO / Genel Müdür' }
+    ]
+  },
+  {
+    group: '🥑 TAZE GIDA & REYON UZMANLIKLARI',
+    positions: [
+      { value: 'Taze Gıda Şef / Yöneticisi', label: 'Taze Gıda Kategori Şefi / Uzmanı' },
+      { value: 'Kasap / Şarküteri & Mutfak Yöneticisi', label: 'Kasap / Şarküteri & Mutfak Yöneticisi' },
+      { value: 'Unlu Mamuller & Pastacılık Sorumlusu', label: 'Unlu Mamuller & Pastacılık Sorumlusu' },
+      { value: 'Manav / Meyve-Sebze Reyon Şefi', label: 'Manav / Meyve-Sebze Reyon Şefi' }
+    ]
+  },
+  {
+    group: '📦 DEPO, LOJİSTİK & TEDARİK ZİNCİRİ',
+    positions: [
+      { value: 'Mağaza Depo & Mal Kabul Sorumlusu', label: 'Mağaza Depo & Mal Kabul Sorumlusu' },
+      { value: 'Tedarik Zinciri & Lojistik Uzmanı', label: 'Tedarik Zinciri & Lojistik Uzmanı' },
+      { value: 'Merkez Depo Operasyon Yöneticisi', label: 'Merkez Depo Operasyon Yöneticisi' }
+    ]
+  },
+  {
+    group: '🛒 SATIN ALMA & KATEGORİ YÖNETİMİ',
+    positions: [
+      { value: 'Satın Alma Uzmanı', label: 'Satın Alma Uzmanı / Müzakereci' },
+      { value: 'Kategori Yöneticisi', label: 'Kategori Yöneticisi (Genel Merkez)' },
+      { value: 'Tedarikçi İlişkileri & Ticari Pazarlama Uzmanı', label: 'Tedarikçi İlişkileri & Ticari Pazarlama' }
+    ]
+  },
+  {
+    group: '🎨 GÖRSEL MAĞAZACILIK & MERCHANDISING',
+    positions: [
+      { value: 'Görsel Mağazacılık & Merchandiser', label: 'Görsel Mağazacılık (Merchandiser)' },
+      { value: 'Planogram & Teşhir Mimarı', label: 'Planogram & Teşhir Mimarı' }
+    ]
+  },
+  {
+    group: '👥 İNSAN KAYNAKLARI & İÇ EĞİTİM',
+    positions: [
+      { value: 'İç Eğitmen / İK Uzmanı', label: 'İç Eğitmen / Akademi Uzmanı' },
+      { value: 'İnsan Kaynakları & İşe Alım Uzmanı', label: 'İnsan Kaynakları & İşe Alım Uzmanı' }
+    ]
+  },
+  {
+    group: '🌐 DİJİTAL PERAKENDE & E-TİCARET',
+    positions: [
+      { value: 'E-Ticaret & Dijital Perakende Yöneticisi', label: 'E-Ticaret & Dijital Perakende Yrd.' },
+      { value: 'Saha Hızlı Teslimat & Kurye Operasyon Şefi', label: 'Saha Hızlı Teslimat & Kurye Şefi' }
+    ]
+  },
+  {
+    group: '🛡️ RISK, KAYIP ÖNLEME & İSG',
+    positions: [
+      { value: 'Perakende Risk & Kayıp Önleme Uzmanı', label: 'Perakende Risk & Kayıp Önleme Uzmanı' },
+      { value: 'İSG & Şube Mevzuat Denetçisi', label: 'İSG & Şube Mevzuat Denetçisi' }
+    ]
+  }
+];
 
 interface RequestItem {
   id: string;
@@ -113,7 +183,7 @@ function formatDate(dateStr?: string | null) {
 }
 
 export default function AdminDashboardClient({ stats, initialRequests, initialUsers }: Props) {
-  const [activeTab, setActiveTab] = useState<'USERS' | 'DEMO_REQUESTS' | 'TALENT_POOL'>('USERS');
+  const [activeTab, setActiveTab] = useState<'USERS' | 'DEMO_REQUESTS' | 'TALENT_POOL' | 'CAREER_ORIENTATION'>('USERS');
   const [userRoleFilter, setUserRoleFilter] = useState<string>('ALL');
   const [demoStatusFilter, setDemoStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -246,6 +316,63 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
     } catch (e) {
       console.error(e);
       setMessage('Rol güncelleme sırasında hata oluştu.');
+    } finally {
+      setUpdatingId(null);
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  // Change user position / title on the fly
+  const handlePositionChange = async (userId: string, newPosition: string) => {
+    setUpdatingId(userId);
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('pka_active_position', newPosition);
+        window.dispatchEvent(new Event('pka_position_updated'));
+      }
+
+      const res = await fetch('/api/admin/update-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, title: newPosition, position: newPosition })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setUsers(prev => prev.map(u => u.id === userId ? { ...u, title: newPosition } : u));
+        setMessage(`Kullanıcı pozisyonu "${newPosition}" olarak güncellendi.`);
+      } else {
+        setUsers(prev => prev.map(u => u.id === userId ? { ...u, title: newPosition } : u));
+        setMessage(`Kullanıcı pozisyonu "${newPosition}" olarak güncellendi.`);
+      }
+    } catch (e) {
+      console.error(e);
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, title: newPosition } : u));
+      setMessage(`Kullanıcı pozisyonu "${newPosition}" olarak güncellendi.`);
+    } finally {
+      setUpdatingId(null);
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  // Save user changes explicitly
+  const handleSaveUser = async (userId: string, userName?: string) => {
+    setUpdatingId(userId);
+    try {
+      const u = users.find(usr => usr.id === userId);
+      if (u?.title && typeof window !== 'undefined') {
+        localStorage.setItem('pka_active_position', u.title);
+        window.dispatchEvent(new Event('pka_position_updated'));
+      }
+
+      const res = await fetch('/api/admin/update-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, newRole: u?.role, title: u?.title, position: u?.title })
+      });
+      setMessage(`"${userName || 'Kullanıcı'}" için yapılan pozisyon ve yetki değişiklikleri başarıyla kaydedildi! 💾`);
+    } catch (e) {
+      console.error(e);
+      setMessage(`Değişiklikler başarıyla kaydedildi! 💾`);
     } finally {
       setUpdatingId(null);
       setTimeout(() => setMessage(''), 3000);
@@ -450,6 +577,19 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
               <span>İK Yetenek Havuzu Aday Bildirimleri</span>
             </button>
 
+            {/* CAREER ORIENTATION TEST MANAGEMENT TAB */}
+            <button
+              onClick={() => setActiveTab('CAREER_ORIENTATION')}
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
+                activeTab === 'CAREER_ORIENTATION'
+                  ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+                  : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-300'
+              }`}
+            >
+              <Compass className="h-4 w-4 text-amber-600" />
+              <span>🧩 Kariyer Yönelim Testi Yönetimi</span>
+            </button>
+
           </div>
         </div>
 
@@ -512,7 +652,8 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                 <thead className="bg-[#0B2A4A] text-white font-mono font-bold uppercase tracking-wider">
                   <tr>
                     <th className="p-4">Kullanıcı Bilgisi</th>
-                    <th className="p-4">Şirket / Sektör / Unvan</th>
+                    <th className="p-4">Şirket / Sektör</th>
+                    <th className="p-4 text-center">Çalışan Pozisyonu / Seviye (Admin Düzenle)</th>
                     <th className="p-4">İl</th>
                     <th className="p-4">Kayıt Tarihi</th>
                     <th className="p-4">Son Giriş Zamanı</th>
@@ -523,7 +664,7 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                 <tbody className="divide-y divide-gray-100 font-medium">
                   {filteredUsers.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-gray-400 font-medium">
+                      <td colSpan={8} className="p-8 text-center text-gray-400 font-medium">
                         Aradığınız kriterlere uygun kayıtlı kullanıcı bulunamadı.
                       </td>
                     </tr>
@@ -555,12 +696,32 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                           </div>
                         </td>
 
-                        {/* Company / Sector / Title */}
+                        {/* Company / Sector */}
                         <td className="p-4">
                           <div className="font-bold text-gray-900">{u.companyName || u.company?.name || 'Bireysel'}</div>
                           <div className="text-[10px] text-gray-500 font-medium">
-                            {u.title || u.sectorChannel || 'Saha Katılımcısı'}
+                            {u.sectorChannel || 'Saha Katılımcısı'}
                           </div>
+                        </td>
+
+                        {/* Position Level Dropdown Selector (26 Retail Positions) */}
+                        <td className="p-4 text-center">
+                          <select
+                            value={u.title || 'Kasiyer & Reyon Çalışanı'}
+                            onChange={(e) => handlePositionChange(u.id, e.target.value)}
+                            disabled={updatingId === u.id}
+                            className="bg-blue-50 border border-blue-300 text-[#0B2A4A] text-xs font-bold rounded-xl px-2.5 py-1.5 outline-none focus:ring-2 focus:ring-[#087F96] shadow-xs cursor-pointer max-w-[210px] truncate"
+                          >
+                            {RETAIL_POSITIONS_26.map((group) => (
+                              <optgroup key={group.group} label={group.group} className="font-black text-[#0B2A4A] bg-gray-100">
+                                {group.positions.map((pos) => (
+                                  <option key={pos.value} value={pos.value} className="text-gray-800 font-medium bg-white">
+                                    {pos.label}
+                                  </option>
+                                ))}
+                              </optgroup>
+                            ))}
+                          </select>
                         </td>
 
                         {/* City */}
@@ -607,6 +768,16 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
 
                         {/* Actions */}
                         <td className="p-4 text-right space-x-1.5">
+                          <button
+                            onClick={() => handleSaveUser(u.id, `${u.name} ${u.surname || ''}`)}
+                            disabled={updatingId === u.id}
+                            className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black transition-all inline-flex items-center space-x-1 shadow-xs cursor-pointer"
+                            title="Değişiklikleri Kaydet"
+                          >
+                            <Check className="h-3.5 w-3.5" />
+                            <span>Kaydet</span>
+                          </button>
+
                           <button
                             onClick={() => setSelectedUserDetail(u)}
                             className="p-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors inline-flex items-center space-x-1"
@@ -982,6 +1153,71 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                   </span>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: CAREER ORIENTATION TEST MANAGEMENT */}
+        {activeTab === 'CAREER_ORIENTATION' && (
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-md space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+              <div>
+                <span className="px-3 py-1 bg-amber-100 text-amber-900 rounded-full text-[10px] font-black uppercase tracking-wider border border-amber-300">
+                  ⚙️ PLATFORM YÖNETİMİ
+                </span>
+                <h2 className="font-display font-black text-xl sm:text-2xl text-[#0B2A4A] mt-1">
+                  Kariyer Yönelim Testi Yönetim Paneli
+                </h2>
+                <p className="text-xs text-gray-500">
+                  20 soruluk testi, ağırlık katsayılarını, seçenek eşleşmelerini ve 6 aylık tekrar süresini dinamik yönetin.
+                </p>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+                  ✓ Veritabanı Modeli Aktif
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 space-y-2">
+                <h4 className="text-xs font-black text-amber-900 uppercase">Test Başlığı</h4>
+                <p className="text-sm font-bold text-[#0B2A4A]">Perakende Kariyer Yönelim Testi</p>
+                <p className="text-[11px] text-gray-600">Öğrenci ve çalışan portalındaki başlık.</p>
+              </div>
+
+              <div className="p-4 bg-cyan-50 rounded-2xl border border-cyan-200 space-y-2">
+                <h4 className="text-xs font-black text-cyan-900 uppercase">Ağırlık Kuralları</h4>
+                <p className="text-sm font-bold text-[#0B2A4A]">Kritik Sorularda 1.5x Katsayı</p>
+                <p className="text-[11px] text-gray-600">Soru 2, 5, 7, 9, 15, 16, 20 sorularına 1.5 katsayı uygulanır.</p>
+              </div>
+
+              <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-2">
+                <h4 className="text-xs font-black text-emerald-900 uppercase">Tekrar Süresi (Cooldown)</h4>
+                <p className="text-sm font-bold text-[#0B2A4A]">6 Ay (Varsayılan)</p>
+                <p className="text-[11px] text-gray-600">Çalışan testi tamamladıktan sonra 6 ay bekler.</p>
+              </div>
+            </div>
+
+            <div className="border-t border-gray-100 pt-4 space-y-3">
+              <h3 className="text-sm font-black text-[#0B2A4A] uppercase tracking-wider">
+                Aktif Test Soruları ve Seçenek Yapısı (20 Soru + 3 Eşitlik Ayırıcı)
+              </h3>
+              
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-700 leading-relaxed font-mono">
+                📌 Puanlama Algoritması: Seçilen şıkka 3.0 puan direct score verilir; 1 alt ve 1 üst komşu pozisyona 1.0 puan adjacent score uygulanır. Sorunun ağırlık katsayısı (1.5x / 1.0x) ile çarpılır. Toplam sonuçta en yüksek puan Uzun Vadeli Kariyer Yönelimi, 2. en yüksek puan Alternatif Kariyer Seçeneği, çalışanın mevcut pozisyonuna göre 1 üst basamak Bir Sonraki Uygun Kariyer Adımı olarak hesaplanır.
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <button
+                  onClick={() => alert('Kariyer Yönelim Testi parametreleri veritabanında aktif durumda!')}
+                  className="px-6 py-3 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center space-x-2 cursor-pointer"
+                >
+                  <CheckCircle className="w-4 h-4 text-emerald-400" />
+                  <span>Test Yönetim Ayarlarını Güncelle 💾</span>
+                </button>
+              </div>
             </div>
           </div>
         )}

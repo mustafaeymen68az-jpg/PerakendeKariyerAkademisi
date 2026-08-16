@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
-    const { userId, newRole, newStatus } = await req.json();
+    const { userId, newRole, newStatus, title, position } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ success: false, message: 'Kullanıcı ID zorunludur.' }, { status: 400 });
@@ -11,6 +11,7 @@ export async function POST(req: Request) {
 
     const dataToUpdate: any = {};
     if (newRole) dataToUpdate.role = newRole;
+    if (title || position) dataToUpdate.title = title || position;
     
     const updatedUser = await prisma.user.update({
       where: { id: userId },

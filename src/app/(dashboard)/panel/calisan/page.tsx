@@ -24,13 +24,23 @@ import {
   MessageSquare,
   FileCheck,
   UserCheck,
+  Users,
   LogOut,
   Calendar
 } from 'lucide-react';
 
+import CareerCompassMain from '@/components/career-compass/CareerCompassMain';
+import MentorshipSection from '@/components/career-compass/MentorshipSection';
+import CareerInterviewsSection from '@/components/career-compass/CareerInterviewsSection';
+import DynamicCareerPathMap from '@/components/career-compass/DynamicCareerPathMap';
+import EmployeeCoursesFullCatalog from '@/components/career-compass/EmployeeCoursesFullCatalog';
+import PersonalSwotWidget from '@/components/career-compass/PersonalSwotWidget';
+import CareerOrientationTestModule from '@/components/career-compass/CareerOrientationTestModule';
+import { Compass } from 'lucide-react';
+
 export default function EmployeeDashboardPage() {
   const [activeTab, setActiveTab] = useState<
-    'home' | 'courses' | 'career' | 'competencies' | 'tasks' | 'feedback' | 'certificates' | 'profile'
+    'home' | 'compass' | 'orientation' | 'courses' | 'career' | 'competencies' | 'swot' | 'tasks' | 'mentor' | 'feedback' | 'achievements' | 'certificates' | 'interviews' | 'profile'
   >('home');
 
   const [showScoreModal, setShowScoreModal] = useState(false);
@@ -49,24 +59,248 @@ export default function EmployeeDashboardPage() {
   // Employee Profile & Score state
   const [employeeData, setEmployeeData] = useState({
     name: 'Ahmet Yılmaz',
-    position: 'Kasiyer & Reyon Görevlisi',
+    position: 'Kasiyer & Reyon Çalışanı',
     store: 'Sayar Marketler - Kadıköy Şubesi',
-    promotionScore: 83.5,
+    promotionScore: 92.0,
     scoreComponents: {
-      training: { score: 90, weight: 20, weighted: 18.0 },
-      exam: { score: 85, weight: 20, weighted: 17.0 },
-      fieldTask: { score: 80, weight: 25, weighted: 20.0 },
-      kpi: { score: 82, weight: 25, weighted: 20.5 },
-      behavioral: { score: 80, weight: 10, weighted: 8.0 },
+      training: { score: 95, weight: 20, weighted: 19.0 },
+      exam: { score: 92, weight: 20, weighted: 18.4 },
+      fieldTask: { score: 90, weight: 25, weighted: 22.5 },
+      kpi: { score: 91, weight: 25, weighted: 22.75 },
+      behavioral: { score: 94, weight: 10, weighted: 9.4 },
     },
     currentCourse: {
-      title: 'Mağaza İçi Stok, Sipariş ve Envanter Yönetimi',
-      progress: 68,
-      lastLesson: 'Modül 3: Emniyet Stoku Hesabı & Fire Önleme',
+      title: 'Kasa Sonu Z-Raporu & Teslimat Tutanağı',
+      progress: 85,
+      lastLesson: 'Modül 2: Kasa Kapanış Tutanağı ve Z-Raporu İncelemesi',
     },
-    missingCompetencies: ['Stok Devir Hızı Hesabı', 'Kasa Sonu Kalibrasyonu'],
-    nextPosition: 'Mağaza Müdür Yardımcısı',
+    missingCompetencies: ['Vardiya Planlaması', 'Kasa Sonu Z-Raporu Denetimi'],
+    nextPosition: 'Takım Lideri',
   });
+
+  // Helper to resolve next position title
+  const getNextPositionTitle = (currentPosition: string) => {
+    const p = currentPosition.toLowerCase();
+    if (p.includes('kasiyer') || p.includes('reyon')) return 'Takım Lideri';
+    if (p.includes('takım lideri')) return 'Mağaza Müdür Yardımcısı';
+    if (p.includes('müdür yardımcısı') || p.includes('müdür yrd')) return 'Mağaza Müdürü';
+    if (p.includes('mağaza müdürü')) return 'Bölge / Saha Müdürü';
+    if (p.includes('bölge') || p.includes('saha müdürü')) return 'Perakende Operasyon Direktörü';
+    if (p.includes('direktör')) return 'Genel Müdür Yardımcısı (COO)';
+    if (p.includes('genel müdür yrd') || p.includes('coo')) return 'CEO / Genel Müdür';
+    return 'Mağaza Müdürü';
+  };
+
+  // Sync active position when changed by Admin in Admin Panel
+  useEffect(() => {
+    const syncPositionFromStorage = () => {
+      const savedPos = localStorage.getItem('pka_active_position');
+      if (savedPos) {
+        const nextPos = getNextPositionTitle(savedPos);
+        setEmployeeData(prev => ({
+          ...prev,
+          position: savedPos,
+          nextPosition: nextPos
+        }));
+      }
+    };
+
+    syncPositionFromStorage();
+    window.addEventListener('pka_position_updated', syncPositionFromStorage);
+    window.addEventListener('storage', syncPositionFromStorage);
+    return () => {
+      window.removeEventListener('pka_position_updated', syncPositionFromStorage);
+      window.removeEventListener('storage', syncPositionFromStorage);
+    };
+  }, []);
+
+  // Dynamic position-specific Field Tasks resolver
+  const getPositionFieldTasks = (posName: string) => {
+    const p = posName.toLowerCase();
+
+    if (p.includes('satın alma') || p.includes('satin alma')) {
+      return [
+        {
+          id: 1,
+          title: 'Tedarikçi Sözleşme & İskonto Katkı Payı Denetimi',
+          description: 'Son 3 ana tedarikçi sözleşmesindeki ticari iskonto oranları ve aksiyon bedelleri denetlendi. Rapor yüklendi.',
+          status: 'COMPLETED',
+          badgeText: 'TAMAMLANDI ✅'
+        },
+        {
+          id: 2,
+          title: 'Tedarikçi Fiyat Değişim & Rakip İnceleme Görseli',
+          description: 'Rakip zincirlerdeki kritik 20 ürünün raf satış fiyatı incelenip karşılaştırmalı liste fotoğrafları eklendi.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        },
+        {
+          id: 3,
+          title: 'Tedarikçi İade Tutanak & Mal Kabul Audit Tutanağı',
+          description: 'Hatalı ve eksik gelen palet sevkiyatının iade tutanağı ve irsaliye görseli taratılıp yüklendi.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        }
+      ];
+    }
+
+    if (p.includes('depo') || p.includes('lojistik') || p.includes('tedarik')) {
+      return [
+        {
+          id: 1,
+          title: 'Merkez Depo Giriş Mal Kabul & RF Sayım Görseli',
+          description: 'Gelen 14 palet gıda dışı ürünün RF el terminali ile sayım dökümü ve kabul fişi taratıldı.',
+          status: 'COMPLETED',
+          badgeText: 'TAMAMLANDI ✅'
+        },
+        {
+          id: 2,
+          title: 'Depo İçi İş Güvenliği & Forklift Şerit Denetimi',
+          description: 'Depo ana koridorlarında sarı güvenlik şeritleri ve emniyet ekipmanları fotoğraflanıp sisteme eklendi.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        },
+        {
+          id: 3,
+          title: 'Şube Sevkiyat Rota & Araç Doluluk Oranı Fotoğrafı',
+          description: 'Sabah şube sevkiyatına çıkan 4 kamyonun palet dizilim ve doluluk oranı fotoğrafları yüklendi.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        }
+      ];
+    }
+
+    if (p.includes('taze gıda') || p.includes('kasap') || p.includes('manav') || p.includes('unlu mamuller')) {
+      return [
+        {
+          id: 1,
+          title: 'Soğuk Hava Deposu & Derece Takip Formu Görseli',
+          description: 'Sabah ve akşam et/süt deposu dijital termometre değerleri fotoğraflanıp karta eklendi.',
+          status: 'COMPLETED',
+          badgeText: 'TAMAMLANDI ✅'
+        },
+        {
+          id: 2,
+          title: 'Taze Gıda Reyon Nemlendirme & Görsel Teşhir Kaydı',
+          description: 'Manav ve şarküteri reyonu açılış teşhiri ile tazelik kontrolü fotoğraflandı.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        },
+        {
+          id: 3,
+          title: 'Taze Gıda İmhayı Önleme & İskonto Etiket Fotoğrafı',
+          description: 'SKT son 2 günü kalan şarküteri ürünlerine sarı etiket basılıp sisteme yüklendi.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        }
+      ];
+    }
+
+    if (p.includes('mağaza müdürü') && !p.includes('yardımcısı') && !p.includes('yrd')) {
+      return [
+        {
+          id: 1,
+          title: 'Sabah Mağaza Açılış & Kasa Ofis Hazırlığı',
+          description: 'Saat 08:30 ana kasa kasaları devir teslim tutanağı ve açılış kontrol listesi yüklendi.',
+          status: 'COMPLETED',
+          badgeText: 'TAMAMLANDI ✅'
+        },
+        {
+          id: 2,
+          title: 'Günlük Mağaza Fire & SKT İskonto Sayım Görseli',
+          description: 'Günlük sarı etiket indirimi uygulanan ürünler ile imha tutanağı fotoğrafı eklendi.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        },
+        {
+          id: 3,
+          title: 'Mağaza İçi Haftalık P&L & Gider Optimizasyon Raporu',
+          description: 'Haftalık enerji kullanımı ve personel puantaj cetveli kontrol edilip tarandı.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        }
+      ];
+    }
+
+    if (p.includes('bölge') || p.includes('saha müdürü')) {
+      return [
+        {
+          id: 1,
+          title: 'Bölge Mağazaları Haftalık Hizmet & Kalite Auditi',
+          description: 'Bölgedeki 6 şubenin kasa hattı ve reyon standartları denetim formu taratıldı.',
+          status: 'COMPLETED',
+          badgeText: 'TAMAMLANDI ✅'
+        },
+        {
+          id: 2,
+          title: 'Bölgesel Rakip Fiyat Karşılaştırma & Kampanya Analizi',
+          description: 'Bölgedeki rakip mağaza insert ve raf fiyatı denetim fotoğrafları eklendi.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        },
+        {
+          id: 3,
+          title: 'Şube Müdürleri Birebir Koçluk Görüşme Tutanakları',
+          description: 'Şube müdürleriyle yapılan haftalık KPI hedef değerlendirme tutanağı sisteme aktarıldı.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        }
+      ];
+    }
+
+    if (p.includes('e-ticaret') || p.includes('dijital') || p.includes('kurye')) {
+      return [
+        {
+          id: 1,
+          title: 'Saha Hızlı Sipariş Toplama (Picking) Süre Denetimi',
+          description: 'Mağaza e-ticaret toplama alanındaki ortalama sipariş hazırlama süre dökümü fotoğraflandı.',
+          status: 'COMPLETED',
+          badgeText: 'TAMAMLANDI ✅'
+        },
+        {
+          id: 2,
+          title: 'Kurye Çanta Hijyen & Sıcaklık Koruma Testi Fotoğrafı',
+          description: 'Hızlı teslimat motor kurye çantalarının izolasyon ve hijyen denetim görselleri yüklendi.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        },
+        {
+          id: 3,
+          title: 'Mobil Uygulama Stok Eşleşme & Hatalı Stok Kaydı',
+          description: 'Mobil e-ticaret stoğu ile mağaza fiziksel stok eşleştirme raporu sisteme eklendi.',
+          status: 'PENDING',
+          badgeText: 'Kanıt Yükle'
+        }
+      ];
+    }
+
+    // Kasiyer & Reyon or default
+    return [
+      {
+        id: 1,
+        title: 'Reyon Fiyat Etiketi ve Barkod Kontrolü',
+        description: '45 Kritik üründe kasa ile raf fiyatı eşleştirildi. Fotoğraf eklendi.',
+        status: 'COMPLETED',
+        badgeText: 'TAMAMLANDI ✅'
+      },
+      {
+        id: 2,
+        title: 'Kasa Sonu Z-Raporu ve Sayım Görseli',
+        description: 'Gün sonu z-raporu ve kasa nakiti teslim tutanağı yüklendi.',
+        status: 'PENDING',
+        badgeText: 'Kanıt Yükle'
+      },
+      {
+        id: 3,
+        title: 'Reyon Teşhir & Planogram Uyumluluk Fotoğrafı',
+        description: 'Reyon ön yüz düzeni ve FIFO tarih kontrolü fotoğrafı sisteme aktarıldı.',
+        status: 'PENDING',
+        badgeText: 'Kanıt Yükle'
+      }
+    ];
+  };
+
+  const activeFieldTasks = getPositionFieldTasks(employeeData.position);
 
   const handleFileUploadMock = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -102,14 +336,6 @@ export default function EmployeeDashboardPage() {
           </div>
 
           <div className="flex items-center space-x-3">
-            <button
-              onClick={() => setShowGoalModal(true)}
-              className="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-black flex items-center space-x-1.5 shadow-md"
-            >
-              <Target className="h-4 w-4" />
-              <span>Hedefim: {selectedGoal}</span>
-            </button>
-
             <Link href="/" className="text-xs text-gray-400 hover:text-white px-2 py-1">
               Ana Siteye Dön
             </Link>
@@ -119,7 +345,7 @@ export default function EmployeeDashboardPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1 grid grid-cols-1 lg:grid-cols-5 gap-6">
         
-        {/* 8 NAV TAB SIDEBAR */}
+        {/* 12 NAV TAB SIDEBAR */}
         <div className="lg:col-span-1 space-y-1 bg-[#0B2A4A] p-3 rounded-2xl border border-white/10 h-fit">
           <div className="px-3 py-2 text-[10px] font-black text-[#087F96] uppercase tracking-wider">
             Çalışan Navigasyonu
@@ -135,6 +361,38 @@ export default function EmployeeDashboardPage() {
             <span>Ana Sayfam</span>
           </button>
 
+          {/* KARİYER PUSULAM HIGHLIGHT TAB */}
+          <button
+            onClick={() => setActiveTab('compass')}
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-extrabold transition-all border ${
+              activeTab === 'compass'
+                ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 border-amber-400 shadow-lg'
+                : 'bg-amber-500/10 text-amber-300 border-amber-400/30 hover:bg-amber-500/20'
+            }`}
+          >
+            <div className="flex items-center space-x-2">
+              <Compass className="h-4 w-4" />
+              <span>Kariyer Pusulam</span>
+            </div>
+            <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-950/40 text-amber-300 font-mono">YENİ</span>
+          </button>
+
+          {/* KARİYER ROTAMI KEŞFET HIGHLIGHT TAB */}
+          <button
+            onClick={() => setActiveTab('orientation')}
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-extrabold transition-all border ${
+              activeTab === 'orientation'
+                ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-950 border-emerald-400 shadow-lg'
+                : 'bg-emerald-500/10 text-emerald-300 border-emerald-400/30 hover:bg-emerald-500/20'
+            }`}
+          >
+            <div className="flex items-center space-x-2">
+              <Compass className="h-4 w-4 text-emerald-300" />
+              <span>Kariyer Rotamı Keşfet</span>
+            </div>
+            <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-950/40 text-emerald-300 font-mono font-bold">TEST</span>
+          </button>
+
           <button
             onClick={() => setActiveTab('courses')}
             className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
@@ -143,16 +401,6 @@ export default function EmployeeDashboardPage() {
           >
             <BookOpen className="h-4 w-4" />
             <span>Eğitimlerim</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('career')}
-            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'career' ? 'bg-[#087F96] text-white shadow-md' : 'text-gray-300 hover:bg-white/5'
-            }`}
-          >
-            <TrendingUp className="h-4 w-4" />
-            <span>Kariyer Yolum</span>
           </button>
 
           <button
@@ -165,6 +413,17 @@ export default function EmployeeDashboardPage() {
             <span>Yetkinliklerim</span>
           </button>
 
+          {/* SWOT ANALIZIM MENU TAB */}
+          <button
+            onClick={() => setActiveTab('swot')}
+            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-extrabold transition-all ${
+              activeTab === 'swot' ? 'bg-[#087F96] text-white shadow-md' : 'text-gray-300 hover:bg-white/5'
+            }`}
+          >
+            <ShieldCheck className="h-4 w-4 text-emerald-300" />
+            <span>SWOT Analizim</span>
+          </button>
+
           <button
             onClick={() => setActiveTab('tasks')}
             className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
@@ -172,7 +431,17 @@ export default function EmployeeDashboardPage() {
             }`}
           >
             <CheckCircle2 className="h-4 w-4" />
-            <span>Görevlerim</span>
+            <span>Saha Görevlerim</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('mentor')}
+            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'mentor' ? 'bg-[#087F96] text-white shadow-md' : 'text-gray-300 hover:bg-white/5'
+            }`}
+          >
+            <Users className="h-4 w-4 text-amber-300" />
+            <span>Koçum / Mentorum</span>
           </button>
 
           <button
@@ -186,6 +455,16 @@ export default function EmployeeDashboardPage() {
           </button>
 
           <button
+            onClick={() => setActiveTab('achievements')}
+            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'achievements' ? 'bg-[#087F96] text-white shadow-md' : 'text-gray-300 hover:bg-white/5'
+            }`}
+          >
+            <Sparkles className="h-4 w-4 text-amber-300" />
+            <span>Başarılarım</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('certificates')}
             className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'certificates' ? 'bg-[#087F96] text-white shadow-md' : 'text-gray-300 hover:bg-white/5'
@@ -193,6 +472,16 @@ export default function EmployeeDashboardPage() {
           >
             <Award className="h-4 w-4" />
             <span>Sertifikalarım</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('interviews')}
+            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'interviews' ? 'bg-[#087F96] text-white shadow-md' : 'text-gray-300 hover:bg-white/5'
+            }`}
+          >
+            <Calendar className="h-4 w-4 text-cyan-300" />
+            <span>Kariyer Görüşmelerim</span>
           </button>
 
           <button
@@ -208,6 +497,36 @@ export default function EmployeeDashboardPage() {
 
         {/* MAIN DASHBOARD CONTENT AREA */}
         <div className="lg:col-span-4 space-y-6">
+          
+          {/* TAB: KARİYER PUSULAM */}
+          {activeTab === 'compass' && (
+            <CareerCompassMain
+              userId={undefined}
+              selectedGoal={selectedGoal}
+              goalType={goalType}
+              onOpenGoalModal={() => setShowGoalModal(true)}
+              onSelectGoal={(goal, type) => {
+                setSelectedGoal(goal);
+                setGoalType(type);
+              }}
+            />
+          )}
+
+          {/* TAB: KARİYER ROTAMI KEŞFET (YÖNELİM TESTİ) */}
+          {activeTab === 'orientation' && (
+            <CareerOrientationTestModule
+              userId="calisan_demo_user"
+              userTitle={employeeData.position}
+              onNavigateToPlan={() => setActiveTab('compass')}
+              onNavigateToReadiness={() => setActiveTab('competencies')}
+            />
+          )}
+
+          {/* TAB: KOÇUM / MENTORUM */}
+          {activeTab === 'mentor' && <MentorshipSection userId={undefined} />}
+
+          {/* TAB: KARİYER GÖRÜŞMELERİM */}
+          {activeTab === 'interviews' && <CareerInterviewsSection />}
           
           {/* TAB 1: ANA SAYFAM */}
           {activeTab === 'home' && (
@@ -228,10 +547,13 @@ export default function EmployeeDashboardPage() {
                   <div className="text-[10px] text-emerald-300 font-semibold">Tıkla & Hesaplama Bileşenlerini Gör</div>
                 </div>
 
-                <div className="bg-[#0B2A4A] p-4 rounded-2xl border border-white/10 space-y-1">
-                  <div className="text-xs text-gray-300 font-bold">Hedef Pozisyon</div>
-                  <div className="text-sm font-black text-amber-300 truncate">{employeeData.nextPosition}</div>
-                  <div className="text-[10px] text-gray-400">Sonraki Aşama</div>
+                <div className="bg-[#0B2A4A] p-4 rounded-2xl border border-amber-400/30 space-y-1 shadow-md">
+                  <div className="text-xs text-gray-300 font-bold flex items-center justify-between">
+                    <span>Nihai Kariyer Hedefim</span>
+                    <span className="text-[10px] text-amber-300 font-mono font-bold">🎯 Aktif Hedef</span>
+                  </div>
+                  <div className="text-sm font-black text-amber-300 truncate">{selectedGoal}</div>
+                  <div className="text-[10px] text-gray-300 font-medium">Sıradaki Terfi: <strong className="text-white">{employeeData.nextPosition}</strong></div>
                 </div>
 
                 <div className="bg-[#0B2A4A] p-4 rounded-2xl border border-white/10 space-y-1">
@@ -332,102 +654,229 @@ export default function EmployeeDashboardPage() {
             </div>
           )}
 
-          {/* TAB 2: EĞİTİMLERİM */}
+          {/* TAB 2: EĞİTİMLERİM & TÜM 15 MODÜL KATALOĞU */}
           {activeTab === 'courses' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6">
-              <h2 className="text-xl font-bold text-white">Eğitimlerim ve Öğrenme İlerlemesi</h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-5 bg-[#061B33] rounded-2xl border border-blue-500/40 space-y-3">
-                  <span className="px-2.5 py-1 bg-rose-500/20 text-rose-300 text-[10px] font-bold rounded-lg border border-rose-500/30">
-                    ZORUNLU EĞİTİM
-                  </span>
-                  <h3 className="text-sm font-bold text-white">Mağaza İçi Stok, Sipariş ve Envanter Yönetimi</h3>
-                  <p className="text-xs text-gray-400">Stok devir hızı, emniyet stoku ve fire azaltma pratikleri.</p>
-                  <div className="flex justify-between items-center pt-2 text-xs">
-                    <span className="text-cyan-300 font-bold">%68 Tamamlandı</span>
-                    <button className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl">
-                      Devam Et
-                    </button>
-                  </div>
-                </div>
-
-                <div className="p-5 bg-[#061B33] rounded-2xl border border-white/10 space-y-3">
-                  <span className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 text-[10px] font-bold rounded-lg border border-emerald-500/30">
-                    ÖNERİLEN EĞİTİM
-                  </span>
-                  <h3 className="text-sm font-bold text-white">Müşteri İletişimi ve Zor Müşteri Yönetimi</h3>
-                  <p className="text-xs text-gray-400">Kasa hattında kriz yönetimi ve şikâyet çözme yetkinlikleri.</p>
-                  <div className="flex justify-between items-center pt-2 text-xs">
-                    <span className="text-gray-400 font-bold">%0 Başlanmadı</span>
-                    <button className="px-3 py-1.5 bg-[#087F96] hover:bg-[#056B80] text-white font-bold text-xs rounded-xl">
-                      Eğitime Başla
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <EmployeeCoursesFullCatalog
+              selectedGoal={selectedGoal}
+              goalType={goalType}
+            />
           )}
 
-          {/* TAB 3: KARİYER YOLUM & HEDEF SEÇİCİ */}
-          {activeTab === 'career' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6">
-              <div className="flex justify-between items-center">
+          {/* TAB 4: YETKİNLİKLERİM & RADAR SERTİFİKASYON */}
+          {activeTab === 'competencies' && (
+            <div className="bg-[#0B2A4A] p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6 shadow-xl">
+              <div className="flex justify-between items-center border-b border-white/10 pb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-white">Kariyer Yolum ve Hedef Pozisyonum</h2>
-                  <p className="text-xs text-gray-400">Dikey terfi ve yatay kariyer geçiş imkânları.</p>
+                  <h2 className="text-xl font-extrabold text-white flex items-center space-x-2">
+                    <Layers className="w-6 h-6 text-amber-400" />
+                    <span>Bireysel Yetkinlik Pasaportum &amp; Yetki Seviyeleri</span>
+                  </h2>
+                  <p className="text-xs text-gray-300">6 Yetkinlik boyutunda 1-5 seviye değerlendirmeleriniz.</p>
                 </div>
-                <button
-                  onClick={() => setShowGoalModal(true)}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl flex items-center space-x-1.5"
-                >
-                  <Target className="h-4 w-4" />
-                  <span>Kariyer Hedefimi Değiştir</span>
-                </button>
               </div>
 
-              <div className="p-5 bg-[#061B33] rounded-2xl border border-white/10 space-y-3 text-xs">
-                <div className="flex items-center space-x-2 text-amber-300 font-bold">
-                  <Sparkles className="h-4 w-4" />
-                  <span>Seçili Kariyer Hedefi: {selectedGoal} ({goalType === 'VERTICAL' ? 'Dikey Terfi Rotası' : 'Yatay Geçiş Rotası'})</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-emerald-500/40 space-y-3">
+                  <div className="flex justify-between font-bold text-white">
+                    <span>Kasa Operasyonu &amp; Gün Sonu</span>
+                    <span className="text-emerald-400 font-mono">Seviye 4 / 5 (Usta)</span>
+                  </div>
+                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                    <div className="bg-emerald-400 h-full rounded-full" style={{ width: '80%' }} />
+                  </div>
+                  <p className="text-[11px] text-gray-300">Kasa nakit mutabakatı ve Z-raporu kalibrasyonunda usta seviyede.</p>
                 </div>
-                <p className="text-gray-300">
-                  {selectedGoal} hedefiniz için gerekli yetkinlik tamamlama oranınız %83.5 düzeyindedir. Eksik kalan 2 modülü tamamlayarak terfi komitesi değerlendirmesine girebilirsiniz.
-                </p>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-cyan-500/40 space-y-3">
+                  <div className="flex justify-between font-bold text-white">
+                    <span>Müşteri Deneyimi &amp; Şikayet Çözümü</span>
+                    <span className="text-cyan-400 font-mono">Seviye 4 / 5 (İleri)</span>
+                  </div>
+                  <div className="w-full bg-white/15 h-2.5 rounded-full overflow-hidden">
+                    <div className="bg-cyan-400 h-full rounded-full" style={{ width: '80%' }} />
+                  </div>
+                  <p className="text-[11px] text-gray-300">Zor müşteri iletişiminde kriz çözme ve memnuniyet odaklı.</p>
+                </div>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-amber-400/40 space-y-3">
+                  <div className="flex justify-between font-bold text-white">
+                    <span>Stok, Envanter &amp; Fire Önleme</span>
+                    <span className="text-amber-400 font-mono">Seviye 2 / 5 (Gelişim Fırsatı)</span>
+                  </div>
+                  <div className="w-full bg-white/15 h-2.5 rounded-full overflow-hidden">
+                    <div className="bg-amber-400 h-full rounded-full" style={{ width: '40%' }} />
+                  </div>
+                  <p className="text-[11px] text-gray-300">Stok devir hızı hesabı ve emniyet stoku modülü devam ediyor.</p>
+                </div>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-purple-500/40 space-y-3">
+                  <div className="flex justify-between font-bold text-white">
+                    <span>Vardiya &amp; İş Gücü Planlaması</span>
+                    <span className="text-purple-400 font-mono">Seviye 3 / 5 (Bağımsız)</span>
+                  </div>
+                  <div className="w-full bg-white/15 h-2.5 rounded-full overflow-hidden">
+                    <div className="bg-purple-400 h-full rounded-full" style={{ width: '60%' }} />
+                  </div>
+                  <p className="text-[11px] text-gray-300">Yoğunluk saatlerine göre haftalık personel vardiyası hazırlayabiliyor.</p>
+                </div>
               </div>
             </div>
           )}
 
-          {/* TAB 5: GÖREVLERİM & SAHA KANIT YÜKLEME */}
+          {/* TAB 4.5: KIŞISEL SWOT ANALIZIM */}
+          {activeTab === 'swot' && (
+            <PersonalSwotWidget selectedGoal={selectedGoal} />
+          )}
+
+          {/* TAB 5: SAHA GÖREVLERİM & KANIT YÜKLEME */}
           {activeTab === 'tasks' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-white">Saha Görevlerim ve Kanıt Yükleme</h2>
+            <div className="bg-[#0B2A4A] p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6 shadow-xl">
+              <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                <div>
+                  <h2 className="text-xl font-extrabold text-white flex items-center space-x-2">
+                    <CheckCircle2 className="w-6 h-6 text-amber-400" />
+                    <span>Saha Görevlerim ve Mağaza Uygulamaları</span>
+                  </h2>
+                  <p className="text-xs text-gray-300">Mağazada bizzat uygulayıp fotoğraflı kanıt yüklediğiniz görevler.</p>
+                </div>
                 <button
                   onClick={() => setShowTaskUploadModal(true)}
-                  className="px-4 py-2 bg-[#087F96] hover:bg-[#056B80] text-white font-bold text-xs rounded-xl flex items-center space-x-1.5"
+                  className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl flex items-center space-x-1.5 shadow-md cursor-pointer transition-all"
                 >
                   <Upload className="h-4 w-4" />
                   <span>Saha Görevi Kanıtı Yükle</span>
                 </button>
               </div>
 
-              <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 flex items-center justify-between text-xs">
-                <div>
-                  <div className="font-bold text-white">Kasa Sonu Z-Raporu ve Etiket Denetimi</div>
-                  <div className="text-gray-400 mt-0.5">Durum: Onay Bekliyor (Yöneticiye İletildi)</div>
-                </div>
-                <span className="px-3 py-1 bg-amber-500/20 text-amber-300 text-[10px] font-bold rounded-lg border border-amber-500/30">
-                  ONAY BEKLİYOR
-                </span>
+              <div className="space-y-3 text-xs">
+                {activeFieldTasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className={`p-4 bg-[#061B33] rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                      task.status === 'COMPLETED'
+                        ? 'border-emerald-500/30'
+                        : 'border-amber-400/30'
+                    }`}
+                  >
+                    <div className="space-y-1">
+                      <div className="font-extrabold text-white text-sm flex items-center space-x-2">
+                        <span>{task.title}</span>
+                      </div>
+                      <div className="text-gray-300 text-xs">{task.description}</div>
+                    </div>
+
+                    {task.status === 'COMPLETED' ? (
+                      <span className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 text-[10px] font-bold rounded-lg border border-emerald-500/30 shrink-0 self-start sm:self-auto">
+                        {task.badgeText}
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => setShowTaskUploadModal(true)}
+                        className="px-3.5 py-2 bg-[#087F96] hover:bg-[#056B80] text-white text-xs font-bold rounded-xl flex items-center space-x-1.5 cursor-pointer shrink-0 shadow-sm self-start sm:self-auto transition-all"
+                      >
+                        <Upload className="h-3.5 w-3.5" />
+                        <span>Kanıt Yükle</span>
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
-          {/* TAB 7: SERTİFİKALARIM & QR DOĞRULAMA */}
+          {/* TAB 8: GERİ BİLDİRİMLERİM */}
+          {activeTab === 'feedback' && (
+            <div className="bg-[#0B2A4A] p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6 shadow-xl">
+              <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                <div>
+                  <h2 className="text-xl font-extrabold text-white flex items-center space-x-2">
+                    <MessageSquare className="w-6 h-6 text-amber-400" />
+                    <span>Geri Bildirimlerim &amp; Yönetici Notları</span>
+                  </h2>
+                  <p className="text-xs text-gray-300">Mağaza müdürünüz ve İK tarafından gelişiminize dair verilen resmi notlar.</p>
+                </div>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-emerald-500/30 space-y-2">
+                  <div className="flex justify-between items-center font-bold">
+                    <span className="text-emerald-400">Mustafa Eymen Kılıç (Mağaza Müdürü Notu)</span>
+                    <span className="text-gray-400 font-mono text-[10px]">10 Ağustos 2026</span>
+                  </div>
+                  <p className="text-gray-300 leading-relaxed font-sans">
+                    "Kasa hattındaki yüksek verimliliği ve müşteri şikayetlerindeki yapıcı yaklaşımı nedeniyle Mağaza Müdür Yardımcılığı havuzuna önerilmiştir. Stok yönetimi modülünü tamamlaması bekleniyor."
+                  </p>
+                </div>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-cyan-500/30 space-y-2">
+                  <div className="flex justify-between items-center font-bold">
+                    <span className="text-cyan-400">Zeynep Karahan (Bölge İK Direktörü Notu)</span>
+                    <span className="text-gray-400 font-mono text-[10px]">15 Temmuz 2026</span>
+                  </div>
+                  <p className="text-gray-300 leading-relaxed font-sans">
+                    "Müşteri memnuniyet anketi sonuçları 4.9/5 ile Kadıköy şubesi birincisi. Terfi süreci başarıyla devam ediyor."
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 9: BAŞARILARIM & ROZETLER */}
+          {activeTab === 'achievements' && (
+            <div className="bg-[#0B2A4A] p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6 shadow-xl">
+              <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                <div>
+                  <h2 className="text-xl font-extrabold text-white flex items-center space-x-2">
+                    <Sparkles className="w-6 h-6 text-amber-400" />
+                    <span>Başarılarım, Rozetlerim &amp; Bölge Sıralamam</span>
+                  </h2>
+                  <p className="text-xs text-gray-300">PKA Akademi sürecinde kazandığınız başarı rozetleri ve puanlarınız.</p>
+                </div>
+                <span className="px-3 py-1.5 bg-amber-400/20 text-amber-300 rounded-full font-mono text-xs font-bold border border-amber-400/40">
+                  🏆 Marmara Bölgesi 3. Sıra
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-amber-400/40 space-y-2 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center font-black text-2xl mx-auto">
+                    ⭐
+                  </div>
+                  <h3 className="font-extrabold text-white text-sm">Kasa Mükemmellik Rozeti</h3>
+                  <p className="text-gray-300 text-[11px]">Kasa hattında 500+ sıfır hata işlemi tamamlama başarısı.</p>
+                </div>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-emerald-500/40 space-y-2 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-black text-2xl mx-auto">
+                    🥬
+                  </div>
+                  <h3 className="font-extrabold text-white text-sm">Taze Gıda Koruyucusu</h3>
+                  <p className="text-gray-300 text-[11px]">Reyon fire oranını 3 ay üst üste %2.5 altında tutma rozeti.</p>
+                </div>
+
+                <div className="p-4 bg-[#061B33] rounded-2xl border border-cyan-400/40 space-y-2 text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-400 flex items-center justify-center font-black text-2xl mx-auto">
+                    📚
+                  </div>
+                  <h3 className="font-extrabold text-white text-sm">Hızlı Öğrenen Lider</h3>
+                  <p className="text-gray-300 text-[11px]">LMS platformunda 12 modülü dereceyle bitirme rozeti.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 10: SERTİFİKALARIM & QR DOĞRULAMA */}
           {activeTab === 'certificates' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6">
-              <h2 className="text-xl font-bold text-white">QR Doğrulamalı Sertifikalarım</h2>
+            <div className="bg-[#0B2A4A] p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6 shadow-xl">
+              <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                <div>
+                  <h2 className="text-xl font-extrabold text-white flex items-center space-x-2">
+                    <Award className="w-6 h-6 text-amber-400" />
+                    <span>QR Doğrulamalı Sertifikalarım</span>
+                  </h2>
+                  <p className="text-xs text-gray-300">Resmi kurumsal ve bireysel PKA sertifikalarınız.</p>
+                </div>
+              </div>
 
               <div className="p-6 bg-[#061B33] rounded-2xl border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="space-y-1 text-center sm:text-left">
@@ -449,87 +898,22 @@ export default function EmployeeDashboardPage() {
             </div>
           )}
 
-          {activeTab === 'competencies' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6">
-              <h2 className="text-xl font-bold text-white">Bireysel Yetkinlik Pasaportum & Radar Skorum</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 space-y-3">
-                  <div className="flex justify-between font-bold text-white">
-                    <span>Kasa Operasyonu & POS Kullanımı</span>
-                    <span className="text-emerald-400">%92 (Usta)</span>
-                  </div>
-                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-emerald-400 h-full rounded-full" style={{ width: '92%' }} />
-                  </div>
-                </div>
-
-                <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 space-y-3">
-                  <div className="flex justify-between font-bold text-white">
-                    <span>Stok Takibi & Fire Önleme</span>
-                    <span className="text-cyan-400">%85 (Gelişmiş)</span>
-                  </div>
-                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-cyan-400 h-full rounded-full" style={{ width: '85%' }} />
-                  </div>
-                </div>
-
-                <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 space-y-3">
-                  <div className="flex justify-between font-bold text-white">
-                    <span>Müşteri İlişkileri & Kriz Yönetimi</span>
-                    <span className="text-amber-400">%88 (İleri)</span>
-                  </div>
-                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-amber-400 h-full rounded-full" style={{ width: '88%' }} />
-                  </div>
-                </div>
-
-                <div className="p-4 bg-[#061B33] rounded-2xl border border-white/10 space-y-3">
-                  <div className="flex justify-between font-bold text-white">
-                    <span>Ekip Liderliği & İletişim</span>
-                    <span className="text-purple-400">%90 (Yüksek)</span>
-                  </div>
-                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-purple-400 h-full rounded-full" style={{ width: '90%' }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'feedback' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6">
-              <h2 className="text-xl font-bold text-white">Yönetici Geri Bildirimleri & Performans Görüşmeleri</h2>
-              <div className="space-y-3 text-xs">
-                <div className="p-4 bg-[#061B33] rounded-2xl border border-emerald-500/30 space-y-2">
-                  <div className="flex justify-between items-center font-bold">
-                    <span className="text-emerald-400">Mağaza Müdürü Notu (10 Ağustos 2026)</span>
-                    <span className="text-gray-400 font-mono">10.08.2026</span>
-                  </div>
-                  <p className="text-gray-300">"Kasa devir hızındaki artış ve reyon düzeni takdire şayan. Stok eğitimi tamamlandığında terfi adaylığı onaylanacaktır."</p>
-                </div>
-
-                <div className="p-4 bg-[#061B33] rounded-2xl border border-cyan-500/30 space-y-2">
-                  <div className="flex justify-between items-center font-bold">
-                    <span className="text-cyan-400">Bölge İK Uzmanı Notu (15 Temmuz 2026)</span>
-                    <span className="text-gray-400 font-mono">15.07.2026</span>
-                  </div>
-                  <p className="text-gray-300">"Müşteri memnuniyet anketi sonuçları 4.9/5 ile bölge birincisi. Terfi süreci başarıyla devam ediyor."</p>
-                </div>
-              </div>
-            </div>
-          )}
-
+          {/* TAB 12: PROFİLİM */}
           {activeTab === 'profile' && (
-            <div className="bg-[#0B2A4A] p-6 rounded-2xl border border-white/10 space-y-6 text-xs">
-              <h2 className="text-xl font-bold text-white">Kişisel ve Kurumsal Profil Bilgilerim</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#061B33] p-5 rounded-2xl border border-white/10">
-                <div className="space-y-2 text-gray-300">
+            <div className="bg-[#0B2A4A] p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6 text-xs shadow-xl">
+              <h2 className="text-xl font-extrabold text-white flex items-center space-x-2">
+                <User className="w-6 h-6 text-amber-400" />
+                <span>Kişisel ve Kurumsal Profil Bilgilerim</span>
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#061B33] p-6 rounded-2xl border border-white/10">
+                <div className="space-y-3 text-gray-300">
                   <div><strong className="text-white">Ad Soyad:</strong> {employeeData.name}</div>
                   <div><strong className="text-white">Unvan:</strong> {employeeData.position}</div>
                   <div><strong className="text-white">E-posta:</strong> ahmet@sayarmarket.com</div>
                   <div><strong className="text-white">Telefon:</strong> +90 532 555 0199</div>
                 </div>
-                <div className="space-y-2 text-gray-300">
+                <div className="space-y-3 text-gray-300">
                   <div><strong className="text-white">Mağaza / Şube:</strong> {employeeData.store}</div>
                   <div><strong className="text-white">Şirket Kıdemi:</strong> 2 Yıl 4 Ay</div>
                   <div><strong className="text-white">Terfi Hazırlık Skoru:</strong> %{employeeData.promotionScore}</div>
@@ -669,61 +1053,112 @@ export default function EmployeeDashboardPage() {
         </div>
       )}
 
-      {/* MODAL 3: KARİYER HEDEFİ SEÇİCİ */}
+      {/* MODAL 3: KARİYER HEDEFİ SEÇİCİ & YOL HARİTASI ASİSTANI */}
       {showGoalModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0B2A4A] border border-white/20 rounded-3xl p-6 max-w-md w-full space-y-4 text-white">
-            <div className="flex justify-between items-center border-b border-white/10 pb-3">
-              <h3 className="text-base font-bold">Kariyer Hedefinizi Belirleyin</h3>
-              <button onClick={() => setShowGoalModal(false)} className="text-gray-400 font-bold">✕</button>
+        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[#0B2A4A] border border-amber-400/50 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-5 text-white shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 rounded-2xl bg-amber-400 text-slate-950 font-black text-xl shadow-md">
+                  🧭
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-white">Kariyer Hedefi Belirleme Rehberi</h3>
+                  <p className="text-[11px] text-amber-300">Gelişim yol haritanızı oluşturmak için hedef pozisyonunuzu seçin.</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowGoalModal(false)}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-all cursor-pointer font-bold"
+              >
+                ✕
+              </button>
             </div>
 
             <div className="space-y-4 text-xs">
               <div>
-                <label className="block text-gray-300 font-bold mb-1">Rota Türü</label>
+                <label className="block text-gray-300 font-bold mb-1.5">Kariyer Rota Türü</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setGoalType('VERTICAL')}
-                    className={`py-2 px-3 rounded-xl font-bold border transition-all ${
-                      goalType === 'VERTICAL' ? 'bg-[#087F96] text-white border-[#087F96]' : 'bg-white/5 border-white/10 text-gray-300'
+                    className={`py-2.5 px-3 rounded-xl font-bold border transition-all cursor-pointer flex items-center justify-center space-x-1.5 ${
+                      goalType === 'VERTICAL' ? 'bg-[#087F96] text-white border-[#087F96] shadow-md' : 'bg-[#061B33] border-white/10 text-gray-300 hover:bg-white/5'
                     }`}
                   >
-                    Dikey Terfi Rotası
+                    <span>👑 Dikey Terfi Rotası</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setGoalType('HORIZONTAL')}
-                    className={`py-2 px-3 rounded-xl font-bold border transition-all ${
-                      goalType === 'HORIZONTAL' ? 'bg-purple-600 text-white border-purple-600' : 'bg-white/5 border-white/10 text-gray-300'
+                    className={`py-2.5 px-3 rounded-xl font-bold border transition-all cursor-pointer flex items-center justify-center space-x-1.5 ${
+                      goalType === 'HORIZONTAL' ? 'bg-purple-600 text-white border-purple-600 shadow-md' : 'bg-[#061B33] border-white/10 text-gray-300 hover:bg-white/5'
                     }`}
                   >
-                    Yatay Geçiş Rotası
+                    <span>🔄 Yatay Geçiş Rotası</span>
                   </button>
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-300 font-bold mb-1">Hedef Pozisyon Seçin</label>
+                <label className="block text-gray-300 font-bold mb-1.5">
+                  Hedef Pozisyon Seçin ({goalType === 'VERTICAL' ? 'Dikey Terfi Hiyerarşisi' : 'Yatay Kariyer Geçiş Departmanları'})
+                </label>
                 <select
                   value={selectedGoal}
                   onChange={(e) => setSelectedGoal(e.target.value)}
-                  className="w-full p-3 bg-[#061B33] border border-white/15 rounded-xl text-white focus:outline-none"
+                  className="w-full p-3 bg-[#061B33] border border-amber-400/50 rounded-xl text-white font-extrabold focus:outline-none focus:border-amber-400 text-xs shadow-inner cursor-pointer"
                 >
-                  <option value="Mağaza Müdür Yardımcısı">Mağaza Müdür Yardımcısı (Dikey)</option>
-                  <option value="Mağaza Müdürü">Mağaza Müdürü (Dikey)</option>
-                  <option value="Bölge Müdürü">Bölge Müdürü (Dikey)</option>
-                  <option value="Satın Alma Uzmanı">Satın Alma Uzmanı (Yatay Geçiş)</option>
-                  <option value="Kategori Yöneticisi">Kategori Yöneticisi (Yatay Geçiş)</option>
-                  <option value="İç Eğitmen / İK Uzmanı">İç Eğitmen / İK Uzmanı (Yatay Geçiş)</option>
+                  {goalType === 'VERTICAL' ? (
+                    <optgroup label="👑 DİKEY TERFİ HİYERARŞİSİ (1-8 SEVİYE)">
+                      <option value="Takım Lideri">Level 2: Mağaza Takım Lideri / Kıdemli Satış Danışmanı (3 Ay)</option>
+                      <option value="Mağaza Müdür Yardımcısı">Level 3: Mağaza Müdür Yardımcısı (Sıradaki Hedef - 3.5 Ay)</option>
+                      <option value="Mağaza Müdürü">Level 4: Mağaza Müdürü (P&amp;L ve Şube Yönetimi - 1.5-2 Yıl)</option>
+                      <option value="Bölge Müdürü">Level 5: Bölge / Saha Müdürü (Çoklu Mağaza Yönetimi - 3-4 Yıl)</option>
+                      <option value="Perakende Operasyon Direktörü">Level 6: Perakende Operasyon Direktörü (5-7 Yıl)</option>
+                      <option value="Genel Müdür Yardımcısı (COO)">Level 7: Genel Müdür Yardımcısı - COO (8-10 Yıl)</option>
+                      <option value="CEO / Genel Müdür">Level 8: CEO / Genel Müdür (Kurumsal Zirve - 10-12 Yıl)</option>
+                    </optgroup>
+                  ) : (
+                    <optgroup label="🔄 YATAY KARİYER GEÇİŞ DEPARTMANLARI">
+                      <option value="Taze Gıda Şef / Yöneticisi">Taze Gıda Kategori Şefi &amp; Uzmanı (Saha Uzmanlık)</option>
+                      <option value="Satın Alma Uzmanı">Satın Alma &amp; Tedarikçi Yönetimi Uzmanı (Genel Merkez)</option>
+                      <option value="Kategori Yöneticisi">Kategori Yöneticisi (Genel Merkez)</option>
+                      <option value="Tedarik Zinciri & Lojistik Uzmanı">Tedarik Zinciri &amp; Depo Operasyon Uzmanı</option>
+                      <option value="İç Eğitmen / İK Uzmanı">İç Eğitmen &amp; Yetenek Gelişim Uzmanı (İK)</option>
+                      <option value="E-Ticaret & Dijital Perakende Yöneticisi">E-Ticaret &amp; Hızlı Teslimat Yöneticisi (Dijital)</option>
+                      <option value="Görsel Mağazacılık & Merchandiser">Görsel Mağazacılık (Merchandiser / Display)</option>
+                      <option value="Perakende Risk & Kayıp Önleme Uzmanı">Kayıp Önleme &amp; İç Denetim Uzmanı</option>
+                    </optgroup>
+                  )}
                 </select>
               </div>
 
+              {/* DYNAMIC ROADMAP PREVIEW CARD */}
+              <div className="p-4 bg-[#061B33] rounded-2xl border border-amber-400/30 space-y-2.5 shadow-md">
+                <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div className="flex items-center space-x-2 text-amber-300 font-bold">
+                    <Target className="w-4 h-4 text-amber-400" />
+                    <span>🎯 Seçilen Hedef: {selectedGoal}</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold border border-emerald-500/30">
+                    Akademi Müfredatı Uyumlu ✅
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-300">
+                  Seçtiğiniz <strong>"{selectedGoal}"</strong> hedefi için gelişim haritanız, zorunlu perakende modülleri, takvimli eğitimler ve terfi skor kartınız otomatik olarak güncellenecektir.
+                </p>
+              </div>
+
               <button
-                onClick={() => setShowGoalModal(false)}
-                className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl shadow-md"
+                onClick={() => {
+                  setShowGoalModal(false);
+                  setActiveTab('compass');
+                }}
+                className="w-full py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black rounded-2xl shadow-lg transition-all cursor-pointer text-xs flex items-center justify-center space-x-2"
               >
-                Kariyer Hedefimi Kaydet
+                <Compass className="w-4 h-4" />
+                <span>🎯 Kariyer Hedefimi Kaydet &amp; Yol Haritasını Başlat</span>
               </button>
             </div>
           </div>
