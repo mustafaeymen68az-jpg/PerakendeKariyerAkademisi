@@ -107,6 +107,19 @@ export default function LoginPage() {
             <Logo variant="light" size="sm" showSubtext={false} />
           </div>
 
+          {/* Auth Tab Switcher */}
+          <div className="flex bg-slate-100 p-1 rounded-2xl">
+            <div className="flex-1 py-2 text-center text-xs font-black text-[#0B2A4A] bg-white rounded-xl shadow-sm">
+              Giriş Yap
+            </div>
+            <Link
+              href="/kayit"
+              className="flex-1 py-2 text-center text-xs font-bold text-slate-500 hover:text-slate-900 rounded-xl transition-all"
+            >
+              İlk Defa Kayıt Ol
+            </Link>
+          </div>
+
           {isCheckingSession ? (
             <div className="py-8 text-center space-y-3">
               <Loader2 className="h-8 w-8 text-[#087F96] animate-spin mx-auto" />

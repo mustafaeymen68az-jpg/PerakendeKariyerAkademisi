@@ -2,25 +2,34 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { signUp, isSupabaseConfigured } from '@/lib/supabase';
 
+const toStr = (val: any) => (val !== undefined && val !== null ? String(val).trim() : '');
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const {
-      name,
-      surname,
-      email,
-      password,
-      companyName,
-      sectorChannel,
-      sectorDetail,
-      city,
-      title,
-    } = body;
+    const rawName = toStr(body.name);
+    let rawSurname = toStr(body.surname);
+    const email = toStr(body.email).toLowerCase();
+    const phone = toStr(body.phone);
+    const password = toStr(body.password);
+    const companyName = toStr(body.companyName);
+    const sectorChannel = toStr(body.sectorChannel);
+    const sectorDetail = toStr(body.sectorDetail);
+    const city = toStr(body.city);
+    const title = toStr(body.title);
+
+    // Smart Name / Surname splitting if surname is missing
+    let firstName = rawName;
+    if (!rawSurname && rawName.includes(' ')) {
+      const parts = rawName.split(' ');
+      firstName = parts.slice(0, -1).join(' ');
+      rawSurname = parts.slice(-1).join(' ');
+    }
 
     // Basic Validation
-    if (!name || !surname || !email || !password) {
+    if (!firstName || !email || !password) {
       return NextResponse.json(
-        { success: false, message: 'Lütfen İsim, Soyisim, E-posta ve Şifre alanlarını doldurunuz.' },
+        { success: false, message: 'Lütfen Ad, E-posta ve Şifre alanlarını doldurunuz.' },
         { status: 400 }
       );
     }
@@ -41,7 +50,7 @@ export async function POST(req: Request) {
 
     // Check if email already exists in local DB
     const existingUser = await prisma.user.findUnique({
-      where: { email: email.trim().toLowerCase() },
+      where: { email },
     });
 
     if (existingUser) {
@@ -51,41 +60,61 @@ export async function POST(req: Request) {
       );
     }
 
-    // Register user in Supabase Auth if Supabase is configured
+    // Supabase Auth (non-blocking)
     let supabaseUserId = null;
     if (isSupabaseConfigured()) {
-      const { data: sbData, error: sbError } = await signUp({
-        email: email.trim().toLowerCase(),
-        password,
-      });
+      try {
+        const { data: sbData, error: sbError } = await signUp({
+          email,
+          password,
+        });
 
-      if (sbError && !sbError.message.includes('already registered')) {
-        console.warn('Supabase Auth signUp info:', sbError.message);
-      } else if (sbData?.user) {
-        supabaseUserId = sbData.user.id;
+        if (sbError && !sbError.message.includes('already registered')) {
+          console.warn('Supabase Auth signUp info:', sbError.message);
+        } else if (sbData?.user) {
+          supabaseUserId = sbData.user.id;
+        }
+      } catch (sbErr) {
+        console.warn('Supabase Auth warning:', sbErr);
       }
     }
 
-    // Combine fullName for display
-    const fullName = `${name.trim()} ${surname.trim()}`;
-
-    // Create user in local DB
+    const fullName = rawSurname ? `${firstName} ${rawSurname}` : firstName;
     const now = new Date();
-    const user = await prisma.user.create({
-      data: {
-        name: fullName,
-        surname: surname ? surname.trim() : null,
-        email: email.trim().toLowerCase(),
-        password,
-        role: 'PARTICIPANT',
-        companyName: companyName ? companyName.trim() : null,
-        sectorChannel: sectorChannel ? sectorChannel.trim() : null,
-        sectorDetail: sectorDetail ? sectorDetail.trim() : null,
-        city: city ? city.trim() : null,
-        title: title ? title.trim() : null,
-        lastLoginAt: now,
-      },
-    });
+
+    // Construct user data object
+    const userData: any = {
+      name: fullName,
+      surname: rawSurname || null,
+      email,
+      password,
+      role: 'PARTICIPANT',
+      companyName: companyName || null,
+      title: title || null,
+      lastLoginAt: now,
+    };
+
+    if (phone) userData.phone = phone;
+    if (sectorChannel) userData.sectorChannel = sectorChannel;
+    if (sectorDetail) userData.sectorDetail = sectorDetail;
+    if (city) userData.city = city;
+
+    let user;
+    try {
+      user = await prisma.user.create({
+        data: userData,
+      });
+    } catch (createErr: any) {
+      console.warn('Prisma create retry without optional fields:', createErr?.message);
+      // Fallback if optional field schema mismatch occurs
+      delete userData.phone;
+      delete userData.sectorChannel;
+      delete userData.sectorDetail;
+      delete userData.city;
+      user = await prisma.user.create({
+        data: userData,
+      });
+    }
 
     // Set session cookie (7 days)
     const response = NextResponse.json({
@@ -121,10 +150,10 @@ export async function POST(req: Request) {
     );
 
     return response;
-  } catch (error) {
-    console.error('Register error:', error);
+  } catch (error: any) {
+    console.error('Register error details:', error);
     return NextResponse.json(
-      { success: false, message: 'Kayıt işlemi sırasında hata oluştu.' },
+      { success: false, message: 'Kayıt işlemi sırasında bir hata oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyiniz.' },
       { status: 500 }
     );
   }

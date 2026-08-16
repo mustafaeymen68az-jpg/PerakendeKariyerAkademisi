@@ -14,6 +14,7 @@ model User {
   role           String           // "ADMIN" | "TRAINER" | "COMPANY_MANAGER" | "DEPT_MANAGER" | "PARTICIPANT"
   lastLoginAt    DateTime?        // Son giriş zamanı - 7 gün kontrolü için
   surname        String?
+  phone          String?
   companyName    String?
   sectorChannel  String?
   sectorDetail   String?
