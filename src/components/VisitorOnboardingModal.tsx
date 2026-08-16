@@ -7,6 +7,16 @@ import {
   Search, Play, GraduationCap, ChevronRight, Check
 } from 'lucide-react';
 
+export interface VisitorProfile {
+  firstName: string;
+  lastName: string;
+  companyName: string;
+  sectorChannel: string;
+  jobRole: string;
+  city: string;
+  createdAt?: string;
+}
+
 interface RecommendedTraining {
   id: string;
   title: string;
@@ -177,7 +187,6 @@ export default function VisitorOnboardingModal() {
 
   const handleStartCorporate = () => {
     setActiveTab('CORPORATE');
-    setCorpStep(1);
     setErrorMsg(null);
     logAnalytics('onboarding_started', { type: 'CORPORATE' });
   };
