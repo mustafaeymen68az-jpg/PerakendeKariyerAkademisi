@@ -33,7 +33,8 @@ import {
   MessageSquareQuote,
   CheckSquare,
   GraduationCap,
-  BookOpen
+  BookOpen,
+  Calendar
 } from 'lucide-react';
 
 interface CareerTimelineStep {
@@ -55,6 +56,7 @@ interface BadgeItem {
   title: string;
   icon: string;
   category: string;
+  earnedDate: string;
 }
 
 interface SWOTMatrix {
@@ -140,14 +142,14 @@ const EXECUTIVE_CANDIDATES: Record<string, ExecutiveCandidate> = {
         description: 'Önceki İş Yeri • Perakende temel kasa ve operasyon deneyimi.'
       },
       {
-        year: 'Ocak 2023',
+        year: '15 Ocak 2023',
         title: 'Reyon Sorumlusu',
         company: 'PKA (Kadıköy Şubesi)',
         type: 'JOIN',
         description: 'Şirkete İşe Başlangıç • %88 Giriş Yetkinlik Puanı.'
       },
       {
-        year: 'Ağustos 2024',
+        year: '10 Ağustos 2024',
         title: 'Mağaza Müdür Yardımcısı',
         company: 'Kadıköy Şubesi',
         type: 'PROMOTION',
@@ -180,10 +182,10 @@ const EXECUTIVE_CANDIDATES: Record<string, ExecutiveCandidate> = {
       'Kriz Yönetimi & Saha Audit'
     ],
     completedCoursesDetails: [
-      { title: 'P&L Mağaza Bütçe Yönetimi Uzmanlığı', durationHours: 32, score: 98, grade: 'PKA Derece', completedDate: 'Mayıs 2025', category: 'FİNANS & YÖNETİM' },
-      { title: 'Ekip Liderliği & Süreç Yönetimi', durationHours: 24, score: 96, grade: 'Üstün Başarı', completedDate: 'Mart 2025', category: 'LİDERLİK' },
-      { title: 'Fire Minimizasyonu & Marj Artırımı', durationHours: 16, score: 95, grade: 'PKA Başarı', completedDate: 'Ağustos 2024', category: 'OPERASYON' },
-      { title: 'Perakende Saha Auditi & Kriz Yönetimi', durationHours: 20, score: 94, grade: 'Tamamlandı', completedDate: 'Ocak 2024', category: 'SAHA YÖNETİMİ' }
+      { title: 'P&L Mağaza Bütçe Yönetimi Uzmanlığı', durationHours: 32, score: 98, grade: 'PKA Derece', completedDate: '14 Mayıs 2025', category: 'FİNANS & YÖNETİM' },
+      { title: 'Ekip Liderliği & Süreç Yönetimi', durationHours: 24, score: 96, grade: 'Üstün Başarı', completedDate: '22 Mart 2025', category: 'LİDERLİK' },
+      { title: 'Fire Minimizasyonu & Marj Artırımı', durationHours: 16, score: 95, grade: 'PKA Başarı', completedDate: '10 Ağustos 2024', category: 'OPERASYON' },
+      { title: 'Perakende Saha Auditi & Kriz Yönetimi', durationHours: 20, score: 94, grade: 'Tamamlandı', completedDate: '18 Ocak 2024', category: 'SAHA YÖNETİMİ' }
     ],
     recommendedCourses: [
       {
@@ -212,15 +214,15 @@ const EXECUTIVE_CANDIDATES: Record<string, ExecutiveCandidate> = {
       }
     ],
     certificates: [
-      { title: 'PKA Resmi Mağaza Yönetimi & P&L Bütçeleme Sertifikası', code: 'PKA-2025-9841', date: 'Mayıs 2025', issuer: 'PKA Kurumsal Akademi' },
-      { title: 'Saha Auditi & Fire Minimizasyonu Uzmanlık Sertifikası', code: 'PKA-2024-8120', date: 'Ağustos 2024', issuer: 'PKA Operasyon Direktörlüğü' },
-      { title: 'Liderlik ve Müşteri İlişkileri Sertifikası', code: 'PKA-2023-4412', date: 'Aralık 2023', issuer: 'PKA Yetenek Yönetimi' }
+      { title: 'PKA Resmi Mağaza Yönetimi & P&L Bütçeleme Sertifikası', code: 'PKA-2025-9841', date: '14 Mayıs 2025', issuer: 'PKA Kurumsal Akademi' },
+      { title: 'Saha Auditi & Fire Minimizasyonu Uzmanlık Sertifikası', code: 'PKA-2024-8120', date: '10 Ağustos 2024', issuer: 'PKA Operasyon Direktörlüğü' },
+      { title: 'Liderlik ve Müşteri İlişkileri Sertifikası', code: 'PKA-2023-4412', date: '12 Aralık 2023', issuer: 'PKA Yetenek Yönetimi' }
     ],
     badges: [
-      { title: 'Bölge Ciro Rekortmeni', icon: '🏆', category: 'PERFORMANS' },
-      { title: 'Sıfır Fire Ustalık Rozeti', icon: '⚡', category: 'OPERASYON' },
-      { title: 'Akademi Derece Rozeti', icon: '🎓', category: 'EĞİTİM' },
-      { title: '4.9 CSAT Müşteri Yıldızı', icon: '⭐', category: 'MEMNUNİYET' }
+      { title: 'Bölge Ciro Rekortmeni', icon: '🏆', category: 'PERFORMANS', earnedDate: '30 Haziran 2025' },
+      { title: 'Sıfır Fire Ustalık Rozeti', icon: '⚡', category: 'OPERASYON', earnedDate: '15 Ağustos 2024' },
+      { title: 'Akademi Derece Rozeti', icon: '🎓', category: 'EĞİTİM', earnedDate: '14 Mayıs 2025' },
+      { title: '4.9 CSAT Müşteri Yıldızı', icon: '⭐', category: 'MEMNUNİYET', earnedDate: '10 Ocak 2025' }
     ],
     swot: {
       strengths: [
@@ -277,14 +279,14 @@ const EXECUTIVE_CANDIDATES: Record<string, ExecutiveCandidate> = {
         description: 'Önceki İş Yeri • Kasa hattı operasyonu.'
       },
       {
-        year: 'Nisan 2024',
+        year: '10 Nisan 2024',
         title: 'Kasiyer',
         company: 'PKA (Beşiktaş Şubesi)',
         type: 'JOIN',
         description: 'Şirkete İşe Başlangıç • %85 Giriş Notu.'
       },
       {
-        year: 'Ocak 2025',
+        year: '20 Ocak 2025',
         title: 'Kasa Şefi / Eğitmen',
         company: 'Beşiktaş Çarşı Şubesi',
         type: 'PROMOTION',
@@ -317,10 +319,10 @@ const EXECUTIVE_CANDIDATES: Record<string, ExecutiveCandidate> = {
       'Aday Personel Oryantasyon Eğitmenliği'
     ],
     completedCoursesDetails: [
-      { title: 'Kasa Sistemleri & Gün Sonu Mutabakatı', durationHours: 28, score: 99, grade: 'Bölge 1.\'si', completedDate: 'Ocak 2025', category: 'KASA HATTI' },
-      { title: 'Müşteri İlişkileri & Şikayet Yönetimi', durationHours: 16, score: 94, grade: 'Üstün Başarı', completedDate: 'Kasım 2024', category: 'MÜŞTERİ HİZMETLERİ' },
-      { title: 'Reyon Düzeni & 5S Saha Protokolü', durationHours: 12, score: 92, grade: 'Tamamlandı', completedDate: 'Eylül 2024', category: 'MAĞAZA OPERASYON' },
-      { title: 'Aday Personel Oryantasyon Eğitmenliği', durationHours: 20, score: 96, grade: 'Eğitmen Sertifikalı', completedDate: 'Haziran 2024', category: 'ORYANTASYON' }
+      { title: 'Kasa Sistemleri & Gün Sonu Mutabakatı', durationHours: 28, score: 99, grade: 'Bölge 1.\'si', completedDate: '20 Ocak 2025', category: 'KASA HATTI' },
+      { title: 'Müşteri İlişkileri & Şikayet Yönetimi', durationHours: 16, score: 94, grade: 'Üstün Başarı', completedDate: '15 Kasım 2024', category: 'MÜŞTERİ HİZMETLERİ' },
+      { title: 'Reyon Düzeni & 5S Saha Protokolü', durationHours: 12, score: 92, grade: 'Tamamlandı', completedDate: '10 Eylül 2024', category: 'MAĞAZA OPERASYON' },
+      { title: 'Aday Personel Oryantasyon Eğitmenliği', durationHours: 20, score: 96, grade: 'Eğitmen Sertifikalı', completedDate: '05 Haziran 2024', category: 'ORYANTASYON' }
     ],
     recommendedCourses: [
       {
@@ -349,14 +351,14 @@ const EXECUTIVE_CANDIDATES: Record<string, ExecutiveCandidate> = {
       }
     ],
     certificates: [
-      { title: 'Kasa Sistemleri & Gün Sonu Mutabakat Sertifikası', code: 'PKA-2025-3312', date: 'Ocak 2025', issuer: 'PKA Kasa Akademisi' },
-      { title: 'Müşteri Kriz Yönetimi Uzmanlık Sertifikası', code: 'PKA-2024-1109', date: 'Kasım 2024', issuer: 'PKA İletişim Birimi' },
-      { title: 'İç Eğitmen Oryantasyon Sertifikası', code: 'PKA-2024-7712', date: 'Haziran 2024', issuer: 'PKA Yetenek Yönetimi' }
+      { title: 'Kasa Sistemleri & Gün Sonu Mutabakat Sertifikası', code: 'PKA-2025-3312', date: '20 Ocak 2025', issuer: 'PKA Kasa Akademisi' },
+      { title: 'Müşteri Kriz Yönetimi Uzmanlık Sertifikası', code: 'PKA-2024-1109', date: '15 Kasım 2024', issuer: 'PKA İletişim Birimi' },
+      { title: 'İç Eğitmen Oryantasyon Sertifikası', code: 'PKA-2024-7712', date: '05 Haziran 2024', issuer: 'PKA Yetenek Yönetimi' }
     ],
     badges: [
-      { title: 'Bölge Kasa Hızı 1.\'si', icon: '🥇', category: 'PERFORMANS' },
-      { title: 'Yılın İç Eğitmen Rozeti', icon: '👨‍🏫', category: 'EĞİTİM' },
-      { title: '%100 Z-Raporu Uyum Rozeti', icon: '🎯', category: 'OPERASYON' }
+      { title: 'Bölge Kasa Hızı 1.\'si', icon: '🥇', category: 'PERFORMANS', earnedDate: '28 Şubat 2025' },
+      { title: 'Yılın İç Eğitmen Rozeti', icon: '👨‍🏫', category: 'EĞİTİM', earnedDate: '10 Aralık 2024' },
+      { title: '%100 Z-Raporu Uyum Rozeti', icon: '🎯', category: 'OPERASYON', earnedDate: '20 Ocak 2025' }
     ],
     swot: {
       strengths: [
@@ -411,14 +413,14 @@ const EXECUTIVE_CANDIDATES: Record<string, ExecutiveCandidate> = {
         description: 'Önceki İş Yeri • Mağaza operasyon yönetimi.'
       },
       {
-        year: 'Şubat 2022',
+        year: '15 Şubat 2022',
         title: 'Mağaza Müdürü',
         company: 'PKA (Tunalı Şubesi)',
         type: 'JOIN',
         description: 'Şirkete İşe Başlangıç • Tunalı Şube Yönetimi.'
       },
       {
-        year: 'Temmuz 2024',
+        year: '15 Temmuz 2024',
         title: 'Kıdemli Mağaza Müdürü & Mentor',
         company: 'Tunalı Hilmi Şubesi',
         type: 'PROMOTION',
@@ -451,10 +453,10 @@ const EXECUTIVE_CANDIDATES: Record<string, ExecutiveCandidate> = {
       'Bölge İK ve Yetenek Yedekleme'
     ],
     completedCoursesDetails: [
-      { title: 'Çoklu Mağaza Operasyon Yönetimi', durationHours: 40, score: 96, grade: 'Üst Düzey Yönetim', completedDate: 'Temmuz 2024', category: 'BÖLGE YÖNETİMİ' },
-      { title: 'Bölgesel Ciro ve Pazar Payı Stratejileri', durationHours: 32, score: 95, grade: 'PKA Liderlik', completedDate: 'Kasım 2023', category: 'FİNANS & STRATEJİ' },
-      { title: 'Yöneticinin Koçluk & Mentorluk Rolü', durationHours: 24, score: 94, grade: 'Üstün Başarı', completedDate: 'Eylül 2022', category: 'LİDERLİK KOÇLUĞU' },
-      { title: 'Bölge İK & Yetenek Yedekleme Planı', durationHours: 20, score: 95, grade: 'Tamamlandı', completedDate: 'Ocak 2023', category: 'YETENEK PLANLAMA' }
+      { title: 'Çoklu Mağaza Operasyon Yönetimi', durationHours: 40, score: 96, grade: 'Üst Düzey Yönetim', completedDate: '15 Temmuz 2024', category: 'BÖLGE YÖNETİMİ' },
+      { title: 'Bölgesel Ciro ve Pazar Payı Stratejileri', durationHours: 32, score: 95, grade: 'PKA Liderlik', completedDate: '10 Kasım 2023', category: 'FİNANS & STRATEJİ' },
+      { title: 'Yöneticinin Koçluk & Mentorluk Rolü', durationHours: 24, score: 94, grade: 'Üstün Başarı', completedDate: '05 Eylül 2022', category: 'LİDERLİK KOÇLUĞU' },
+      { title: 'Bölge İK & Yetenek Yedekleme Planı', durationHours: 20, score: 95, grade: 'Tamamlandı', completedDate: '12 Ocak 2023', category: 'YETENEK PLANLAMA' }
     ],
     recommendedCourses: [
       {
@@ -483,14 +485,14 @@ const EXECUTIVE_CANDIDATES: Record<string, ExecutiveCandidate> = {
       }
     ],
     certificates: [
-      { title: 'Çoklu Mağaza ve Bölge Yönetim Sertifikası', code: 'PKA-2024-9901', date: 'Temmuz 2024', issuer: 'PKA Üst Yönetim Akademi' },
-      { title: 'P&L ve Finansal Strateji Sertifikası', code: 'PKA-2023-8812', date: 'Kasım 2023', issuer: 'PKA Finans Direktörlüğü' },
-      { title: 'Yöneticinin Koçluk & Mentorluk Sertifikası', code: 'PKA-2022-4411', date: 'Eylül 2022', issuer: 'PKA İK Kurulu' }
+      { title: 'Çoklu Mağaza ve Bölge Yönetim Sertifikası', code: 'PKA-2024-9901', date: '15 Temmuz 2024', issuer: 'PKA Üst Yönetim Akademi' },
+      { title: 'P&L ve Finansal Strateji Sertifikası', code: 'PKA-2023-8812', date: '10 Kasım 2023', issuer: 'PKA Finans Direktörlüğü' },
+      { title: 'Yöneticinin Koçluk & Mentorluk Sertifikası', code: 'PKA-2022-4411', date: '05 Eylül 2022', issuer: 'PKA İK Kurulu' }
     ],
     badges: [
-      { title: '₺24.8M Yıllık Ciro Lideri', icon: '👑', category: 'PERFORMANS' },
-      { title: '5 Müdür Yardımcısı Yetiştiren Mentor', icon: '👥', category: 'LİDERLİK' },
-      { title: '%6.8 Şirket En Düşük Turnover', icon: '🛡️', category: 'RETANSİYON' }
+      { title: '₺24.8M Yıllık Ciro Lideri', icon: '👑', category: 'PERFORMANS', earnedDate: '31 Aralık 2025' },
+      { title: '5 Müdür Yardımcısı Yetiştiren Mentor', icon: '👥', category: 'LİDERLİK', earnedDate: '15 Temmuz 2024' },
+      { title: '%6.8 Şirket En Düşük Turnover', icon: '🛡️', category: 'RETANSİYON', earnedDate: '10 Ekim 2024' }
     ],
     swot: {
       strengths: [
@@ -662,7 +664,7 @@ export default function CEODashboardPage() {
               <div className="flex justify-between items-center">
                 <div>
                   <h2 className="text-xl font-bold text-amber-300">Geleceğin Genel Müdür & Bölge Müdürü Aday Pipeline'ı</h2>
-                  <p className="text-xs text-gray-300 mt-1">Aday kartlarına tıklayarak alması gereken eğitim önerilerini, sertifikalarını, başarı rozetlerini ve yönetici yorumlarını detaylı inceleyin.</p>
+                  <p className="text-xs text-gray-300 mt-1">Aday kartlarına tıklayarak tarihleriyle birlikte eğitimlerini, sertifikalarını, başarı rozetlerini ve yönetici yorumlarını detaylı inceleyin.</p>
                 </div>
                 <span className="px-3 py-1 bg-amber-400/20 text-amber-300 border border-amber-400/30 rounded-xl text-xs font-black">
                   3 Lider Adayı Canlı Takipte
@@ -694,7 +696,7 @@ export default function CEODashboardPage() {
 
                   <div className="pt-2 border-t border-white/10 text-[11px] text-gray-400 space-y-1">
                     <div>• Ciro Artışı: +%18.4 (Şube Rekoru)</div>
-                    <div>• Gelişim Önerileri: 3 Atanabilir Modül</div>
+                    <div>• Eğitim &amp; Sertifika Tarihleri Eklendi</div>
                   </div>
                 </div>
 
@@ -721,7 +723,7 @@ export default function CEODashboardPage() {
 
                   <div className="pt-2 border-t border-white/10 text-[11px] text-gray-400 space-y-1">
                     <div>• Kasa Hızı: %98.2 (Bölge 1.'si)</div>
-                    <div>• Gelişim Önerileri: 3 Atanabilir Modül</div>
+                    <div>• Eğitim &amp; Rozet Tarihleri Eklendi</div>
                   </div>
                 </div>
 
@@ -748,7 +750,7 @@ export default function CEODashboardPage() {
 
                   <div className="pt-2 border-t border-white/10 text-[11px] text-gray-400 space-y-1">
                     <div>• Mağaza Cirosu: ₺24.8M (+%22)</div>
-                    <div>• Gelişim Önerileri: 3 Atanabilir Modül</div>
+                    <div>• Eğitim &amp; Rozet Tarihleri Eklendi</div>
                   </div>
                 </div>
 
@@ -852,7 +854,7 @@ export default function CEODashboardPage() {
         </div>
       </div>
 
-      {/* 🔴 MODAL: YÖNETİCİ ADAY DETAY, EĞİTİM ÖNERİLERİ LİSTESİ, TAMAMLANAN EĞİTİMLER, SERTİFİKALAR, SWOT VE TIMELINE */}
+      {/* 🔴 MODAL: YÖNETİCİ ADAY DETAY, TARİHLERİYLE EĞİTİMLER, SERTİFİKALAR, ROZETLER VE KANBAN TIMELINE */}
       {selectedCandidate && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#0B2A4A] border border-amber-400/40 rounded-3xl p-6 sm:p-8 max-w-4xl w-full space-y-6 text-white shadow-2xl animate-in fade-in duration-200 max-h-[90vh] overflow-y-auto">
@@ -939,11 +941,11 @@ export default function CEODashboardPage() {
               </div>
             </div>
 
-            {/* 📚 2. ALDIĞI KURUM İÇİ EĞİTİMLER, SÜRELERİ VE SINAV PUANLARI */}
+            {/* 📚 2. ALDIĞI KURUM İÇİ EĞİTİMLER, SÜRELERİ, SINAV PUANLARI VE TAMAMLAMA TARİHİ */}
             <div className="space-y-3 text-xs">
               <span className="font-bold text-cyan-300 block flex items-center space-x-1.5">
                 <GraduationCap className="h-4 w-4 text-cyan-400" />
-                <span>Aldığı Kurum İçi Eğitimler, Süreleri &amp; Sınav Başarı Puanları:</span>
+                <span>Aldığı Kurum İçi Eğitimler, Süreleri, Puanları &amp; Tamamlama Tarihleri:</span>
               </span>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -962,10 +964,13 @@ export default function CEODashboardPage() {
                     <div className="flex items-center justify-between text-[10px] text-gray-300 pt-2 border-t border-white/10 font-mono">
                       <span className="flex items-center space-x-1">
                         <Clock className="h-3.5 w-3.5 text-amber-300" />
-                        <span>Eğitim Süresi: {crs.durationHours} Saat</span>
+                        <span>Süre: {crs.durationHours} Saat</span>
                       </span>
                       <span className="text-cyan-300 font-bold">{crs.grade}</span>
-                      <span className="text-gray-400">{crs.completedDate}</span>
+                      <span className="text-amber-300 font-bold flex items-center space-x-1">
+                        <Calendar className="h-3 w-3 text-amber-300" />
+                        <span>{crs.completedDate}</span>
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -1084,19 +1089,25 @@ export default function CEODashboardPage() {
               </div>
             </div>
 
-            {/* 🎖️ 6. BAŞARI ROZETLERİ (BADGES) */}
+            {/* 🎖️ 6. BAŞARI ROZETLERİ (BADGES WITH DATES) */}
             <div className="space-y-2 text-xs">
               <span className="font-bold text-amber-300 block flex items-center space-x-1">
                 <Sparkles className="h-4 w-4 text-amber-300" />
-                <span>Kazanılan Başarı &amp; Liderlik Rozetleri:</span>
+                <span>Kazanılan Başarı &amp; Liderlik Rozetleri ve Kazanılma Tarihleri:</span>
               </span>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                 {selectedCandidate.badges.map((bdg, bIdx) => (
-                  <div key={bIdx} className="p-3 bg-[#061B33] rounded-2xl border border-amber-400/30 flex items-center space-x-2.5">
-                    <span className="text-2xl">{bdg.icon}</span>
-                    <div>
-                      <div className="font-extrabold text-white text-[11px] leading-tight">{bdg.title}</div>
-                      <span className="text-[9px] text-amber-300 font-mono uppercase">{bdg.category}</span>
+                  <div key={bIdx} className="p-3 bg-[#061B33] rounded-2xl border border-amber-400/30 space-y-1.5">
+                    <div className="flex items-center space-x-2.5">
+                      <span className="text-2xl">{bdg.icon}</span>
+                      <div>
+                        <div className="font-extrabold text-white text-[11px] leading-tight">{bdg.title}</div>
+                        <span className="text-[9px] text-amber-300 font-mono uppercase">{bdg.category}</span>
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-gray-400 pt-1 border-t border-white/10 font-mono flex items-center space-x-1">
+                      <Calendar className="h-3 w-3 text-amber-300" />
+                      <span>Kazanılma Tarihi: {bdg.earnedDate}</span>
                     </div>
                   </div>
                 ))}
@@ -1177,18 +1188,25 @@ export default function CEODashboardPage() {
               </div>
             </div>
 
-            {/* 📜 8. QR DOĞRULAMALI SERTİFİKALARI */}
+            {/* 📜 8. QR DOĞRULAMALI SERTİFİKALARI (WITH DATES) */}
             <div className="space-y-2 text-xs">
               <span className="font-bold text-purple-300 block flex items-center space-x-1">
                 <Award className="h-4 w-4 text-purple-400" />
-                <span>Doğrulanmış Resmi PKA Sertifikaları:</span>
+                <span>Doğrulanmış Resmi PKA Sertifikaları ve Veriliş Tarihleri:</span>
               </span>
               <div className="space-y-2">
                 {selectedCandidate.certificates.map((crt, cIdx) => (
-                  <div key={cIdx} className="p-3 bg-[#061B33] rounded-2xl border border-purple-500/30 flex items-center justify-between">
+                  <div key={cIdx} className="p-3.5 bg-[#061B33] rounded-2xl border border-purple-500/30 flex items-center justify-between">
                     <div className="space-y-0.5">
                       <div className="font-bold text-white text-xs">{crt.title}</div>
-                      <div className="text-[10px] text-gray-400">{crt.issuer} • Veriliş: {crt.date}</div>
+                      <div className="text-[10px] text-gray-300 flex items-center space-x-2 font-mono">
+                        <span>{crt.issuer}</span>
+                        <span>•</span>
+                        <span className="text-amber-300 flex items-center space-x-1">
+                          <Calendar className="h-3 w-3" />
+                          <span>Sertifika Veriliş Tarihi: {crt.date}</span>
+                        </span>
+                      </div>
                     </div>
                     <div className="flex items-center space-x-2 bg-white text-slate-950 px-2.5 py-1 rounded-xl shrink-0 font-mono text-[10px] font-bold">
                       <QrCode className="h-4 w-4 text-[#0B2A4A]" />
@@ -1231,11 +1249,11 @@ export default function CEODashboardPage() {
               </button>
 
               <button
-                onClick={() => alert(`${selectedCandidate.name} için detaylı PDF yetenek karnesi, eğitim önerileri ve SWOT analizi indirildi.`)}
+                onClick={() => alert(`${selectedCandidate.name} için detaylı PDF yetenek karnesi, eğitim tarihleri ve SWOT analizi indirildi.`)}
                 className="w-full sm:w-auto px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl flex items-center justify-center space-x-2 cursor-pointer border border-white/15"
               >
                 <Download className="h-4 w-4" />
-                <span>Eğitim Önerileri &amp; PDF İndir</span>
+                <span>Tarihli Eğitim Karnesi &amp; PDF İndir</span>
               </button>
             </div>
 
