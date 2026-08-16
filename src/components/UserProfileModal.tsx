@@ -52,12 +52,14 @@ export default function UserProfileModal() {
   };
 
   useEffect(() => {
-    loadProfile();
-    window.addEventListener('pka_profile_updated', loadProfile);
-    window.addEventListener('open_user_profile_details_modal', () => setIsOpen(true));
+    const handleLoad = () => loadProfile();
+    handleLoad();
+    window.addEventListener('pka_profile_updated', handleLoad);
+    const handleOpenModal = () => setIsOpen(true);
+    window.addEventListener('open_user_profile_details_modal', handleOpenModal);
     return () => {
-      window.removeEventListener('pka_profile_updated', loadProfile);
-      window.removeEventListener('open_user_profile_details_modal', () => setIsOpen(true));
+      window.removeEventListener('pka_profile_updated', handleLoad);
+      window.removeEventListener('open_user_profile_details_modal', handleOpenModal);
     };
   }, []);
 

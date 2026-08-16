@@ -29,13 +29,18 @@ export default async function AdminDashboardPage() {
   let pendingRequestCount = 0;
   let totalCompanies = 0;
   let totalStudents = 0;
+  let totalUsers = 0;
+  let adminUsersCount = 0;
   let requests: any[] = [];
+  let initialUsers: any[] = [];
 
   try {
     totalTrainings = await prisma.training.count();
     pendingRequestCount = await prisma.trainingRequest.count({ where: { status: 'BEKLIYOR' } });
     totalCompanies = await prisma.company.count();
     totalStudents = await prisma.user.count({ where: { role: 'PARTICIPANT' } });
+    totalUsers = await prisma.user.count();
+    adminUsersCount = await prisma.user.count({ where: { role: 'ADMIN' } });
 
     requests = await prisma.trainingRequest.findMany({
       orderBy: { createdAt: 'desc' },
@@ -45,6 +50,33 @@ export default async function AdminDashboardPage() {
         }
       }
     });
+
+    const rawUsers = await prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        email: true,
+        password: true,
+        role: true,
+        title: true,
+        companyName: true,
+        sectorChannel: true,
+        sectorDetail: true,
+        city: true,
+        lastLoginAt: true,
+        createdAt: true,
+        company: { select: { name: true } },
+        department: { select: { name: true } }
+      }
+    });
+
+    initialUsers = rawUsers.map(u => ({
+      ...u,
+      createdAt: u.createdAt ? new Date(u.createdAt).toISOString() : new Date().toISOString(),
+      lastLoginAt: u.lastLoginAt ? new Date(u.lastLoginAt).toISOString() : null,
+    }));
   } catch (error) {
     console.error('Error fetching admin dashboard data:', error);
   }
@@ -55,9 +87,12 @@ export default async function AdminDashboardPage() {
         totalTrainings,
         pendingRequestCount,
         totalCompanies,
-        totalStudents
+        totalStudents,
+        totalUsers,
+        adminUsersCount
       }}
       initialRequests={requests}
+      initialUsers={initialUsers}
     />
   );
 }

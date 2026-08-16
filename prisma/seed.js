@@ -78,6 +78,13 @@ function toSlug(text) {
 
 async function main() {
   console.log('Clearing database tables...');
+  await prisma.analyticsEvent.deleteMany();
+  await prisma.recommendationRule.deleteMany();
+  await prisma.careerGoal.deleteMany();
+  await prisma.userRole.deleteMany();
+  await prisma.systemRole.deleteMany();
+  await prisma.professionalPosition.deleteMany();
+  await prisma.corporatePackage.deleteMany();
   await prisma.auditLog.deleteMany();
   await prisma.notification.deleteMany();
   await prisma.document.deleteMany();
@@ -319,6 +326,154 @@ async function main() {
     }
   }
 
+  console.log('Seeding System Roles...');
+  const studentRole = await prisma.systemRole.create({ data: { name: 'STUDENT', description: 'Öğrenci Yetkisi' } });
+  const instructorRole = await prisma.systemRole.create({ data: { name: 'INSTRUCTOR', description: 'Eğitmen Yetkisi' } });
+  const orgAdminRole = await prisma.systemRole.create({ data: { name: 'ORGANIZATION_ADMIN', description: 'Kurum Yöneticisi Yetkisi' } });
+  const platformAdminRole = await prisma.systemRole.create({ data: { name: 'PLATFORM_ADMIN', description: 'Platform Yöneticisi Yetkisi' } });
+
+  console.log('Seeding Professional Positions...');
+  const posData = [
+    // Mağaza operasyonu
+    { name: 'Kasiyer', group: 'STORE_OPERATIONS', level: 1 },
+    { name: 'Reyon satış elemanı', group: 'STORE_OPERATIONS', level: 1 },
+    { name: 'Satış danışmanı', group: 'STORE_OPERATIONS', level: 1 },
+    { name: 'Müşteri hizmetleri çalışanı', group: 'STORE_OPERATIONS', level: 1 },
+    // Taze gıda
+    { name: 'Kasap reyonu çalışanı', group: 'FRESH_FOOD', level: 1 },
+    { name: 'Şarküteri çalışanı', group: 'FRESH_FOOD', level: 1 },
+    { name: 'Meyve-sebze çalışanı', group: 'FRESH_FOOD', level: 1 },
+    { name: 'Unlu mamuller çalışanı', group: 'FRESH_FOOD', level: 1 },
+    { name: 'Taze gıda yöneticisi', group: 'FRESH_FOOD', level: 2 },
+    // Mağaza yönetimi
+    { name: 'Takım lideri', group: 'STORE_MANAGEMENT', level: 2 },
+    { name: 'Mağaza müdür yardımcısı', group: 'STORE_MANAGEMENT', level: 3 },
+    { name: 'Mağaza müdürü', group: 'STORE_MANAGEMENT', level: 4 },
+    // Saha yönetimi
+    { name: 'Bölge müdürü', group: 'FIELD_MANAGEMENT', level: 5 },
+    { name: 'Operasyon müdürü', group: 'FIELD_MANAGEMENT', level: 6 },
+    // Merkez departmanları
+    { name: 'Satın alma ve kategori yönetimi', group: 'HEADQUARTERS', level: 3 },
+    { name: 'Lojistik ve depo', group: 'HEADQUARTERS', level: 2 },
+    { name: 'Finans', group: 'HEADQUARTERS', level: 3 },
+    { name: 'Muhasebe', group: 'HEADQUARTERS', level: 2 },
+    { name: 'İnsan kaynakları', group: 'HEADQUARTERS', level: 3 },
+    { name: 'Bilgi işlem', group: 'HEADQUARTERS', level: 3 },
+    { name: 'Raporlama / BI', group: 'HEADQUARTERS', level: 3 },
+    { name: 'Pazarlama ve CRM', group: 'HEADQUARTERS', level: 3 },
+    { name: 'E-ticaret', group: 'HEADQUARTERS', level: 3 },
+    { name: 'Güvenlik ve kayıp önleme', group: 'HEADQUARTERS', level: 2 },
+    { name: 'Teknik bakım ve idari işler', group: 'HEADQUARTERS', level: 2 },
+    // Üst yönetim
+    { name: 'Genel müdür', group: 'EXECUTIVE', level: 7 },
+    { name: 'CEO', group: 'EXECUTIVE', level: 8 },
+    { name: 'İşletme sahibi', group: 'EXECUTIVE', level: 8 },
+    // Diğer
+    { name: 'Henüz çalışmıyorum', group: 'OTHER', level: 0 },
+    { name: 'Diğer', group: 'OTHER', level: 0 }
+  ];
+
+  const createdPositions = {};
+  for (const p of posData) {
+    const pos = await prisma.professionalPosition.create({
+      data: {
+        name: p.name,
+        group: p.group,
+        careerLevel: p.level
+      }
+    });
+    createdPositions[p.name] = pos;
+  }
+
+  // Link next positions for clear roadmap
+  if (createdPositions['Kasiyer'] && createdPositions['Mağaza müdür yardımcısı']) {
+    await prisma.professionalPosition.update({
+      where: { id: createdPositions['Kasiyer'].id },
+      data: { nextPositionId: createdPositions['Mağaza müdür yardımcısı'].id }
+    });
+  }
+  if (createdPositions['Reyon satış elemanı'] && createdPositions['Takım lideri']) {
+    await prisma.professionalPosition.update({
+      where: { id: createdPositions['Reyon satış elemanı'].id },
+      data: { nextPositionId: createdPositions['Takım lideri'].id }
+    });
+  }
+  if (createdPositions['Mağaza müdür yardımcısı'] && createdPositions['Mağaza müdürü']) {
+    await prisma.professionalPosition.update({
+      where: { id: createdPositions['Mağaza müdür yardımcısı'].id },
+      data: { nextPositionId: createdPositions['Mağaza müdürü'].id }
+    });
+  }
+
+  console.log('Seeding Career Goals...');
+  const goalsData = [
+    "Mevcut görevimde uzmanlaşmak",
+    "Bir üst pozisyona hazırlanmak",
+    "Yönetici olmak",
+    "Farklı bir departmana geçmek",
+    "Sertifika almak",
+    "Ekibimi geliştirmek",
+    "Henüz karar vermedim"
+  ];
+  const createdGoals = {};
+  for (const g of goalsData) {
+    const goal = await prisma.careerGoal.create({ data: { title: g } });
+    createdGoals[g] = goal;
+  }
+
+  console.log('Seeding Corporate Packages...');
+  const starterPackage = await prisma.corporatePackage.create({
+    data: {
+      name: "Başlangıç Akademi Paketi",
+      maxUsers: 25,
+      maxStores: 3,
+      price: 14900,
+      features: JSON.stringify(["Temel Eğitim Kütüphanesi", "İlerleme Raporları", "Standart Destek"])
+    }
+  });
+
+  const growthPackage = await prisma.corporatePackage.create({
+    data: {
+      name: "Büyüme & Perakende Liderlik Paketi",
+      maxUsers: 100,
+      maxStores: 15,
+      price: 39900,
+      features: JSON.stringify(["Tüm Eğitim Kütüphanesi", "KPI Raporlama", "Özel Şirket Eğitmeni Atama", "Talent Matrix 9-Box"])
+    }
+  });
+
+  console.log('Seeding Recommendation Rules...');
+  const sampleTrainings = await prisma.training.findMany({ take: 5 });
+  const sampleTrainingIds = JSON.stringify(sampleTrainings.map(t => t.id));
+
+  await prisma.recommendationRule.create({
+    data: {
+      title: "Kasiyerlikten Mağaza Yönetimine Yükselme Rotası",
+      positionId: createdPositions['Kasiyer']?.id,
+      targetPositionId: createdPositions['Mağaza müdür yardımcısı']?.id,
+      careerGoalId: createdGoals['Bir üst pozisyona hazırlanmak']?.id,
+      recommendedTrainingIds: sampleTrainingIds,
+      recommendedPathTitle: "Kasa Operasyonlarından Ekip Liderliğine Gelişim Programı",
+      competencies: JSON.stringify(["Kasa Hattı Yönetimi", "Müşteri Deneyimi", "Stok Ve Bulunurluk", "İletişim & Vardiya Yönetimi"]),
+      estimatedHours: 24,
+      moduleCount: 6
+    }
+  });
+
+  await prisma.recommendationRule.create({
+    data: {
+      title: "Reyon Satış Uzmanlığı & Takım Liderliği",
+      positionId: createdPositions['Reyon satış elemanı']?.id,
+      targetPositionId: createdPositions['Takım lideri']?.id,
+      careerGoalId: createdGoals['Yönetici olmak']?.id,
+      recommendedTrainingIds: sampleTrainingIds,
+      recommendedPathTitle: "Saha Satış Yetkinlikleri ve Ekip Liderliği",
+      competencies: JSON.stringify(["Reyon Düzeni & Tanzim", "Perakende Matematiği", "Müşteri Sadakati", "Ekip Koçluğu"]),
+      estimatedHours: 18,
+      moduleCount: 4
+    }
+  });
+
   console.log('Seeding Companies & Branches...');
   const sayar = await prisma.company.create({
     data: {
@@ -326,7 +481,9 @@ async function main() {
       logo: "/companies/sayar.png",
       industry: "Gıda Perakendeciliği",
       subCount: 18,
-      employeeCount: 350
+      employeeCount: 350,
+      packageId: growthPackage.id,
+      licenseLimit: 100
     }
   });
 
@@ -343,9 +500,12 @@ async function main() {
       name: "Admin Kullanıcı",
       email: "admin@perakendemuhendisi.com",
       password: "admin123",
-      role: "ADMIN"
+      role: "ADMIN",
+      professionalPositionId: createdPositions['Operasyon müdürü']?.id,
+      customerType: "INDIVIDUAL"
     }
   });
+  await prisma.userRole.create({ data: { userId: admin.id, roleId: platformAdminRole.id } });
 
   const manager = await prisma.user.create({
     data: {
@@ -354,9 +514,12 @@ async function main() {
       password: "company123",
       role: "COMPANY_MANAGER",
       companyId: sayar.id,
-      branchId: branchCent.id
+      branchId: branchCent.id,
+      professionalPositionId: createdPositions['CEO']?.id,
+      customerType: "CORPORATE"
     }
   });
+  await prisma.userRole.create({ data: { userId: manager.id, roleId: orgAdminRole.id } });
 
   const participant = await prisma.user.create({
     data: {
@@ -366,9 +529,14 @@ async function main() {
       role: "PARTICIPANT",
       companyId: sayar.id,
       branchId: branchMain.id,
-      departmentId: createdDepts['Kasiyer'].id
+      departmentId: createdDepts['Kasiyer'].id,
+      professionalPositionId: createdPositions['Kasiyer']?.id,
+      targetPositionId: createdPositions['Mağaza müdür yardımcısı']?.id,
+      careerGoalId: createdGoals['Bir üst pozisyona hazırlanmak']?.id,
+      customerType: "INDIVIDUAL"
     }
   });
+  await prisma.userRole.create({ data: { userId: participant.id, roleId: studentRole.id } });
 
   // Seed a few default KPI Definitions
   console.log('Seeding KPI Definitions...');

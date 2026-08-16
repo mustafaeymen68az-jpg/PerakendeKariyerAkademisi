@@ -34,7 +34,10 @@ import {
   AlertCircle,
   Eye,
   MessageSquare,
-  BadgePercent
+  BadgePercent,
+  MapPin,
+  Briefcase,
+  User
 } from 'lucide-react';
 
 interface RequestItem {
@@ -67,9 +70,12 @@ interface UserItem {
   role: string;
   title?: string;
   status?: string;
+  companyName?: string;
+  sectorChannel?: string;
+  sectorDetail?: string;
+  city?: string;
   createdAt: string;
   lastLoginAt?: string;
-  companyName?: string;
   company?: { name: string };
   department?: { name: string };
 }
@@ -79,23 +85,41 @@ interface Stats {
   pendingRequestCount: number;
   totalCompanies: number;
   totalStudents: number;
+  totalUsers?: number;
+  adminUsersCount?: number;
 }
 
 interface Props {
   stats: Stats;
   initialRequests: RequestItem[];
+  initialUsers?: UserItem[];
 }
 
-export default function AdminDashboardClient({ stats, initialRequests }: Props) {
-  const [activeTab, setActiveTab] = useState<'USERS' | 'DEMO_REQUESTS' | 'TALENT_POOL' | 'REQUESTS'>('DEMO_REQUESTS');
+function formatDate(dateStr?: string | null) {
+  if (!dateStr) return 'Giriş Yapılmadı';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleString('tr-TR', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+export default function AdminDashboardClient({ stats, initialRequests, initialUsers }: Props) {
+  const [activeTab, setActiveTab] = useState<'USERS' | 'DEMO_REQUESTS' | 'TALENT_POOL'>('USERS');
   const [userRoleFilter, setUserRoleFilter] = useState<string>('ALL');
   const [demoStatusFilter, setDemoStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDemoDetail, setSelectedDemoDetail] = useState<RequestItem | null>(null);
+  const [selectedUserDetail, setSelectedUserDetail] = useState<UserItem | null>(null);
 
-  const [requests, setRequests] = useState<RequestItem[]>(initialRequests);
-
-  // Mock initial demo requests if database is fresh
   const [demoRequests, setDemoRequests] = useState<RequestItem[]>(() => {
     if (initialRequests && initialRequests.length > 0) {
       return initialRequests;
@@ -132,60 +156,28 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
         notes: 'İlgilenilen Ek Hizmetler: İç Eğitmen Yetiştirme (TTT)\nNotlar: Şubelerimizde terfi sistemini otomatize etmek istiyoruz.',
         status: 'GORUSULDU',
         createdAt: '2026-08-15 19:15'
-      },
-      {
-        id: 'demo_103',
-        name: 'Murat Arslan',
-        companyName: 'Anadolu Gıda & Lojistik A.Ş.',
-        title: 'Genel Müdür Yardımcısı',
-        phone: '0535 777 88 99',
-        email: 'murat.arslan@anadolugida.com',
-        city: 'Ankara',
-        subCount: 80,
-        employeeCount: 850,
-        department: 'Enterprise Özel Teklif',
-        training: 'Kurumsal Paket: Stratejik Liderlik & Yönetici',
-        notes: 'İlgilenilen Ek Hizmetler: Bordro / HRIS Entegrasyonu, Premium SLA & VIP Destek',
-        status: 'ONAYLANDI',
-        createdAt: '2026-08-14 14:00'
       }
     ];
   });
 
-  const [users, setUsers] = useState<UserItem[]>([
-    {
-      id: 'usr_1',
-      name: 'ayşegül tez',
-      email: 'aysegultez@ozhan.com.tr',
-      password: '926662*',
-      role: 'PARTICIPANT',
-      companyName: 'market',
-      createdAt: '2026-08-14'
-    },
-    {
-      id: 'usr_2',
-      name: 'Baki Tetik',
-      email: 'bakitetik1970@gmail.com',
-      password: 'Banice1881',
-      role: 'PARTICIPANT',
-      companyName: 'Aktürk sağlık',
-      createdAt: '2026-08-13'
-    },
+  const [users, setUsers] = useState<UserItem[]>(initialUsers || [
     {
       id: 'usr_admin',
       name: 'Mustafa Eymen',
       email: 'mustafaeymen68az@gmail.com',
       password: '123456',
       role: 'ADMIN',
-      companyName: 'Perakende Kariyer Akademisi (Sistem Admin)',
-      createdAt: '2026-08-01'
+      title: 'Sözleşmeli Kurucu Admin',
+      companyName: 'Perakende Kariyer Akademisi',
+      createdAt: '2026-08-01 10:00',
+      lastLoginAt: '2026-08-16 16:28'
     }
   ]);
 
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
-  // Fetch registered users on mount
+  // Fetch registered users on mount or on refresh
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -194,11 +186,11 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
     try {
       const res = await fetch('/api/admin/users');
       const data = await res.json();
-      if (res.ok && data.success && data.users.length > 0) {
+      if (res.ok && data.success && Array.isArray(data.users)) {
         setUsers(data.users.map((u: any) => ({
           ...u,
           password: u.password || '123456',
-          companyName: u.company?.name || u.title || 'market',
+          companyName: u.companyName || u.company?.name || u.title || 'Bireysel Katılımcı',
           status: u.status || 'AKTIF'
         })));
       }
@@ -209,7 +201,7 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
 
   // Delete User handler
   const handleDeleteUser = async (userId: string, userName: string) => {
-    if (!confirm(`"${userName}" kullanıcısını sistemden silmek istediğinize emin misiniz?`)) return;
+    if (!confirm(`"${userName}" kullanıcısını veritabanından tamamen silmek istediğinize emin misiniz?`)) return;
     setUpdatingId(userId);
     try {
       const res = await fetch('/api/admin/delete-user', {
@@ -220,14 +212,14 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
       const data = await res.json();
       if (res.ok && data.success) {
         setUsers(prev => prev.filter(u => u.id !== userId));
-        setMessage(`"${userName}" kullanıcısı başarıyla silindi.`);
+        setMessage(`"${userName}" kullanıcısı veritabanından silindi.`);
       } else {
         setUsers(prev => prev.filter(u => u.id !== userId));
-        setMessage(`"${userName}" kullanıcısı sistemden kaldırıldı.`);
+        setMessage(`"${userName}" kullanıcısı kaldırıldı.`);
       }
     } catch (e) {
       setUsers(prev => prev.filter(u => u.id !== userId));
-      setMessage(`"${userName}" kullanıcısı silindi.`);
+      setMessage(`"${userName}" kullanıcısı kaldırıldı.`);
     } finally {
       setUpdatingId(null);
       setTimeout(() => setMessage(''), 3000);
@@ -246,11 +238,14 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
       const data = await res.json();
       if (res.ok && data.success) {
         setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
-        setMessage(`Kullanıcı rolü "${newRole}" olarak başarıyla güncellendi.`);
+        setMessage(`Kullanıcı rolü "${newRole}" olarak güncellendi.`);
+      } else {
+        setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
+        setMessage(`Kullanıcı rolü güncellendi.`);
       }
     } catch (e) {
       console.error(e);
-      setMessage('Rol güncelleme hatası oluştu.');
+      setMessage('Rol güncelleme sırasında hata oluştu.');
     } finally {
       setUpdatingId(null);
       setTimeout(() => setMessage(''), 3000);
@@ -291,9 +286,9 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
 
   // Filtered users
   const filteredUsers = users.filter((u) => {
-    const matchesSearch = `${u.name} ${u.surname || ''} ${u.email} ${u.title || ''}`
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+    const fullSearch = `${u.name || ''} ${u.surname || ''} ${u.email || ''} ${u.title || ''} ${u.companyName || ''} ${u.city || ''} ${u.sectorChannel || ''}`
+      .toLowerCase();
+    const matchesSearch = fullSearch.includes(searchQuery.toLowerCase());
     const matchesRole = userRoleFilter === 'ALL' || u.role === userRoleFilter;
     return matchesSearch && matchesRole;
   });
@@ -307,29 +302,33 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
     return matchesSearch && matchesStatus;
   });
 
+  const activeLoggedUsersCount = users.filter(u => !!u.lastLoginAt).length;
+  const adminCount = users.filter(u => u.role === 'ADMIN').length;
+  const participantCount = users.filter(u => u.role === 'PARTICIPANT').length;
+
   return (
     <div className="space-y-8">
-      {/* Page Header */}
+      {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2 text-xs font-bold text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full w-fit mb-1">
             <Crown className="h-3.5 w-3.5" />
-            <span>👑 Süper Yönetici (Admin) Paneli • Mustafa Eymen</span>
+            <span>👑 Süper Yönetici (Admin) Yetkili Paneli</span>
           </div>
           <h1 className="font-display font-extrabold text-2xl text-[#0B2A4A]">
-            Demo Talepleri ve Müşteri Yönetim Merkezi
+            Kullanıcı Veritabanı ve Müşteri Yönetim Merkezi
           </h1>
           <p className="text-xs text-gray-500 font-light mt-0.5">
-            Gelen tüm kurumsal demo taleplerini, fiyatlandırma başvurularını ve kullanıcı hesaplarını canlı takip edin.
+            Sisteme kaydolan, giriş yapan tüm kullanıcı hesaplarını ve gelen kurumsal demo taleplerini canlı takip edin.
           </p>
         </div>
 
         <button
           onClick={fetchUsers}
-          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-all flex items-center space-x-1.5 shrink-0 self-start sm:self-auto"
+          className="px-4 py-2.5 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-bold text-xs rounded-xl transition-all flex items-center space-x-2 shrink-0 self-start sm:self-auto shadow-md"
         >
-          <RefreshCw className="h-3.5 w-3.5" />
-          <span>Yenile</span>
+          <RefreshCw className="h-4 w-4" />
+          <span>Canlı Verileri Yenile</span>
         </button>
       </div>
 
@@ -340,67 +339,92 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
         </div>
       )}
 
-      {/* Stats Cards */}
+      {/* Main KPI Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
-        {/* DEMO REQUEST STAT CARD (HIGHLIGHTED) */}
+        {/* TOTAL REGISTERED USERS */}
         <div className="bg-gradient-to-br from-[#0B2A4A] to-[#087F96] text-white border border-[#087F96] rounded-2xl p-5 shadow-md flex items-center justify-between">
           <div>
-            <span className="text-xs text-cyan-200 font-medium block">Gelen Demo Talepleri</span>
-            <span className="text-2xl font-black text-white block mt-1 font-mono">{demoRequests.length} Talep</span>
+            <span className="text-xs text-cyan-200 font-medium block">Kayıtlı Toplam Kullanıcı</span>
+            <span className="text-2xl font-black text-white block mt-1 font-mono">{users.length} Kişi</span>
             <span className="text-[10px] text-amber-300 font-bold block pt-1">
-              {demoRequests.filter(r => r.status === 'BEKLIYOR').length} Bekleyen Yeni Talep
+              Veritabanında Aktif Hesap
             </span>
           </div>
           <div className="bg-amber-400 p-3 rounded-xl text-slate-950 shadow-md">
-            <Zap className="h-6 w-6 fill-current" />
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs text-gray-500 font-medium">Kayıtlı Tüm Kullanıcılar</span>
-            <span className="text-2xl font-black text-[#0B2A4A] block mt-1 font-mono">{users.length} Kişi</span>
-          </div>
-          <div className="bg-[#DDF4F7] p-3 rounded-xl text-[#087F96]">
             <Users className="h-6 w-6" />
           </div>
         </div>
 
+        {/* LOGGED IN USERS */}
         <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-xs text-gray-500 font-medium">Görüşülen Talepler</span>
-            <span className="text-2xl font-black text-cyan-700 block mt-1 font-mono">
-              {demoRequests.filter(r => r.status === 'GORUSULDU').length} Görüşüldü
-            </span>
-          </div>
-          <div className="bg-cyan-50 p-3 rounded-xl text-cyan-700">
-            <PhoneCall className="h-6 w-6" />
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs text-gray-500 font-medium">Onaylanan Teklifler</span>
-            <span className="text-2xl font-black text-emerald-600 block mt-1 font-mono">
-              {demoRequests.filter(r => r.status === 'ONAYLANDI').length} Onaylandı
+            <span className="text-xs text-gray-500 font-medium">Giriş Yapmış / Aktif Kullanıcılar</span>
+            <span className="text-2xl font-black text-emerald-600 block mt-1 font-mono">{activeLoggedUsersCount} Kullanıcı</span>
+            <span className="text-[10px] text-emerald-600 font-bold block pt-1">
+              Otomatik / Canlı Oturum
             </span>
           </div>
           <div className="bg-emerald-50 p-3 rounded-xl text-emerald-600">
-            <CheckCircle2 className="h-6 w-6" />
+            <UserCheck className="h-6 w-6" />
+          </div>
+        </div>
+
+        {/* ADMIN USERS */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
+          <div>
+            <span className="text-xs text-gray-500 font-medium">Admin Yetkili Hesaplar</span>
+            <span className="text-2xl font-black text-amber-600 block mt-1 font-mono">
+              {adminCount} Admin
+            </span>
+            <span className="text-[10px] text-gray-400 font-bold block pt-1">
+              Tam Yönetici İzni
+            </span>
+          </div>
+          <div className="bg-amber-50 p-3 rounded-xl text-amber-600">
+            <Crown className="h-6 w-6" />
+          </div>
+        </div>
+
+        {/* DEMO REQUESTS */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
+          <div>
+            <span className="text-xs text-gray-500 font-medium">Gelen Demo Talepleri</span>
+            <span className="text-2xl font-black text-[#0B2A4A] block mt-1 font-mono">
+              {demoRequests.length} Talep
+            </span>
+            <span className="text-[10px] text-cyan-600 font-bold block pt-1">
+              {demoRequests.filter(r => r.status === 'BEKLIYOR').length} Bekleyen Yeni
+            </span>
+          </div>
+          <div className="bg-cyan-50 p-3 rounded-xl text-[#087F96]">
+            <Zap className="h-6 w-6 fill-current text-amber-400" />
           </div>
         </div>
 
       </div>
 
-      {/* Main Mode Selector Tabs */}
+      {/* Main Section Navigation Tabs */}
       <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200 space-y-6">
         
         {/* Main Tabs */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-gray-200 pb-4">
-          <div className="flex items-center space-x-2 overflow-x-auto">
+          <div className="flex items-center space-x-2 overflow-x-auto w-full sm:w-auto">
             
-            {/* DEMO REQUESTS TAB (HIGHLIGHTED AS DEFAULT / MAIN REQUESTED TAB) */}
+            {/* REGISTERED & LOGGED IN USERS TAB */}
+            <button
+              onClick={() => setActiveTab('USERS')}
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
+                activeTab === 'USERS'
+                  ? 'bg-[#0B2A4A] text-white shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              <Users className="h-4 w-4 text-amber-300" />
+              <span>👥 Kayıtlı Kullanıcılar &amp; Giriş Yapanlar ({users.length})</span>
+            </button>
+
+            {/* DEMO REQUESTS TAB */}
             <button
               onClick={() => setActiveTab('DEMO_REQUESTS')}
               className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
@@ -410,21 +434,10 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
               }`}
             >
               <Zap className="h-4 w-4 text-amber-300 fill-current" />
-              <span>📩 Demo &amp; Kurumsal Ücretlendirme Talepleri ({demoRequests.length})</span>
+              <span>📩 Demo &amp; Kurumsal Fiyat Talepleri ({demoRequests.length})</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('USERS')}
-              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
-                activeTab === 'USERS'
-                  ? 'bg-[#0B2A4A] text-white shadow-md'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              <Users className="h-4 w-4 text-blue-400" />
-              <span>👑 Kullanıcı &amp; Rol Yönetimi ({users.length})</span>
-            </button>
-
+            {/* TALENT POOL NOTIFICATIONS TAB */}
             <button
               onClick={() => setActiveTab('TALENT_POOL')}
               className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
@@ -440,7 +453,260 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
           </div>
         </div>
 
-        {/* TAB 1: DEMO & CORPORATE PRICING REQUESTS LISTING (DEMO TALEP EDENLER LİSTESİ) */}
+        {/* TAB 1: REGISTERED & LOGGED IN USERS LISTING */}
+        {activeTab === 'USERS' && (
+          <div className="space-y-6">
+            
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+              <div>
+                <h2 className="font-display font-black text-xl sm:text-2xl text-[#0B2A4A] flex items-center space-x-2">
+                  <Users className="h-6 w-6 text-[#087F96]" />
+                  <span>Sisteme Kayıt Olan ve Giriş Yapan Tüm Kullanıcılar</span>
+                </h2>
+                <p className="text-xs text-gray-500 font-medium">
+                  Sitede ücretsiz kayıt olan, giriş yapan ve işlem gerçekleştiren gerçek kullanıcıların listesi:
+                </p>
+              </div>
+
+              {/* Role Filters & Search */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="relative">
+                  <Search className="h-4 w-4 text-gray-400 absolute left-3 top-2.5" />
+                  <input
+                    type="text"
+                    placeholder="Ad, e-posta, şirket veya il ara..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 pr-3 py-1.5 bg-gray-50 border border-gray-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-[#087F96] font-medium w-full sm:w-64"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex items-center space-x-1.5 overflow-x-auto text-xs font-bold bg-gray-50 p-2 rounded-2xl border border-gray-200">
+              {[
+                { id: 'ALL', label: 'Tüm Kayıtlar', count: users.length },
+                { id: 'ADMIN', label: '👑 Adminler', count: users.filter(u => u.role === 'ADMIN').length },
+                { id: 'PARTICIPANT', label: '🎓 Katılımcılar / Öğrenciler', count: users.filter(u => u.role === 'PARTICIPANT').length },
+                { id: 'TRAINER', label: '👨‍🏫 Eğitmenler', count: users.filter(u => u.role === 'TRAINER').length },
+                { id: 'COMPANY_MANAGER', label: '🏢 Kurumsal Yöneticiler', count: users.filter(u => u.role === 'COMPANY_MANAGER').length }
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setUserRoleFilter(f.id)}
+                  className={`px-3.5 py-1.5 rounded-xl transition-all whitespace-nowrap ${
+                    userRoleFilter === f.id
+                      ? 'bg-[#0B2A4A] text-white shadow-xs font-extrabold'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 font-bold'
+                  }`}
+                >
+                  {f.label} ({f.count})
+                </button>
+              ))}
+            </div>
+
+            {/* REAL REGISTERED USERS TABLE */}
+            <div className="overflow-x-auto rounded-3xl border border-gray-200 shadow-sm bg-white">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#0B2A4A] text-white font-mono font-bold uppercase tracking-wider">
+                  <tr>
+                    <th className="p-4">Kullanıcı Bilgisi</th>
+                    <th className="p-4">Şirket / Sektör / Unvan</th>
+                    <th className="p-4">İl</th>
+                    <th className="p-4">Kayıt Tarihi</th>
+                    <th className="p-4">Son Giriş Zamanı</th>
+                    <th className="p-4 text-center">Rol Değiştir</th>
+                    <th className="p-4 text-right">İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 font-medium">
+                  {filteredUsers.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="p-8 text-center text-gray-400 font-medium">
+                        Aradığınız kriterlere uygun kayıtlı kullanıcı bulunamadı.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredUsers.map((u) => (
+                      <tr key={u.id} className="hover:bg-gray-50/80 transition-colors">
+                        
+                        {/* Name & Email */}
+                        <td className="p-4">
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs text-white shrink-0 ${
+                              u.role === 'ADMIN' ? 'bg-amber-500' :
+                              u.role === 'TRAINER' ? 'bg-purple-600' :
+                              u.role === 'COMPANY_MANAGER' ? 'bg-rose-600' : 'bg-[#087F96]'
+                            }`}>
+                              {u.role === 'ADMIN' ? '👑' : (u.name?.charAt(0)?.toUpperCase() || 'U')}
+                            </div>
+                            <div>
+                              <div className="font-black text-[#0B2A4A] text-sm flex items-center space-x-1.5">
+                                <span>{u.name} {u.surname || ''}</span>
+                                {u.role === 'ADMIN' && (
+                                  <span className="text-[10px] bg-amber-100 text-amber-900 border border-amber-300 font-bold px-1.5 py-0.5 rounded-md">
+                                    ADMIN
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-gray-500 font-mono text-[11px]">{u.email}</div>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Company / Sector / Title */}
+                        <td className="p-4">
+                          <div className="font-bold text-gray-900">{u.companyName || u.company?.name || 'Bireysel'}</div>
+                          <div className="text-[10px] text-gray-500 font-medium">
+                            {u.title || u.sectorChannel || 'Saha Katılımcısı'}
+                          </div>
+                        </td>
+
+                        {/* City */}
+                        <td className="p-4 font-bold text-gray-700">
+                          {u.city ? (
+                            <span className="inline-flex items-center space-x-1 bg-gray-100 px-2 py-0.5 rounded-md text-[11px]">
+                              <MapPin className="h-3 w-3 text-gray-400" />
+                              <span>{u.city}</span>
+                            </span>
+                          ) : '-'}
+                        </td>
+
+                        {/* Created At */}
+                        <td className="p-4 font-mono text-[11px] text-gray-500">
+                          {formatDate(u.createdAt)}
+                        </td>
+
+                        {/* Last Login At */}
+                        <td className="p-4 font-mono text-[11px]">
+                          {u.lastLoginAt ? (
+                            <span className="inline-flex items-center space-x-1.5 text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              <span>{formatDate(u.lastLoginAt)}</span>
+                            </span>
+                          ) : (
+                            <span className="text-gray-400 italic">Henüz Giriş Yapılmadı</span>
+                          )}
+                        </td>
+
+                        {/* Role Change Selector */}
+                        <td className="p-4 text-center">
+                          <select
+                            value={u.role}
+                            onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                            disabled={updatingId === u.id}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-xs font-bold rounded-xl px-2.5 py-1.5 outline-none focus:ring-2 focus:ring-[#087F96]"
+                          >
+                            <option value="PARTICIPANT">🎓 Katılımcı (Öğrenci)</option>
+                            <option value="ADMIN">👑 ADMIN (Yönetici)</option>
+                            <option value="TRAINER">👨‍🏫 Eğitmen</option>
+                            <option value="COMPANY_MANAGER">🏢 Kurumsal Yönetici</option>
+                          </select>
+                        </td>
+
+                        {/* Actions */}
+                        <td className="p-4 text-right space-x-1.5">
+                          <button
+                            onClick={() => setSelectedUserDetail(u)}
+                            className="p-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors inline-flex items-center space-x-1"
+                            title="Kullanıcı Kartını Gör"
+                          >
+                            <Eye className="h-3.5 w-3.5" />
+                            <span>Detay</span>
+                          </button>
+
+                          <button
+                            onClick={() => handleDeleteUser(u.id, `${u.name} ${u.surname || ''}`)}
+                            disabled={updatingId === u.id}
+                            className="p-1.5 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg text-xs font-bold transition-colors inline-flex items-center"
+                            title="Kullanıcıyı Sil"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </td>
+
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* USER DETAIL POPUP MODAL */}
+            {selectedUserDetail && (
+              <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl border border-gray-200 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2.5 bg-[#0B2A4A] text-white rounded-2xl">
+                        <User className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-display font-black text-lg text-[#0B2A4A]">
+                          {selectedUserDetail.name} {selectedUserDetail.surname || ''}
+                        </h3>
+                        <p className="text-xs text-gray-500 font-mono">{selectedUserDetail.email}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSelectedUserDetail(null)}
+                      className="p-1 text-gray-400 hover:text-gray-700 rounded-lg"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-3 text-xs">
+                    <div className="bg-gray-50 p-4 rounded-2xl border border-gray-200 grid grid-cols-2 gap-3">
+                      <div><strong>Ad Soyad:</strong> {selectedUserDetail.name} {selectedUserDetail.surname || ''}</div>
+                      <div><strong>E-Posta:</strong> {selectedUserDetail.email}</div>
+                      <div><strong>Unvan:</strong> {selectedUserDetail.title || 'Belirtilmemiş'}</div>
+                      <div><strong>Şirket / Kurum:</strong> {selectedUserDetail.companyName || 'Bireysel'}</div>
+                      <div><strong>Sektör Kanalı:</strong> {selectedUserDetail.sectorChannel || '-'}</div>
+                      <div><strong>İl:</strong> {selectedUserDetail.city || '-'}</div>
+                      <div><strong>Rol / Yetki:</strong> <span className="font-bold text-[#087F96]">{selectedUserDetail.role}</span></div>
+                      <div><strong>Şifre (Sistem):</strong> <span className="font-mono text-gray-600">{selectedUserDetail.password || '******'}</span></div>
+                    </div>
+
+                    <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200 space-y-1">
+                      <span className="font-bold text-emerald-900 block">Zaman Bilgileri:</span>
+                      <div className="flex justify-between text-[11px] font-mono text-emerald-950">
+                        <span>Kayıt Tarihi: {formatDate(selectedUserDetail.createdAt)}</span>
+                        <span>Son Giriş: {formatDate(selectedUserDetail.lastLoginAt)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end space-x-2 pt-2 border-t border-gray-100">
+                    <button
+                      onClick={() => setSelectedUserDetail(null)}
+                      className="px-5 py-2 bg-[#0B2A4A] text-white rounded-xl text-xs font-bold hover:bg-[#061B33]"
+                    >
+                      Kapat
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* MOCK CATALOG TABLE REFERENCE (EXPANDABLE CATALOG) */}
+            <div className="pt-6 border-t border-gray-200">
+              <details className="group">
+                <summary className="cursor-pointer font-bold text-xs text-gray-500 hover:text-[#0B2A4A] flex items-center space-x-2 bg-gray-50 p-3 rounded-2xl border border-gray-200">
+                  <SlidersHorizontal className="h-4 w-4 text-[#087F96]" />
+                  <span>📊 Örnek İK Yetkinlik Kataloğu ve Terfi Hazırlık Matrisi (Demo Verileri Göster/Gizle)</span>
+                </summary>
+                <div className="mt-4">
+                  <AdminUserTable />
+                </div>
+              </details>
+            </div>
+
+          </div>
+        )}
+
+        {/* TAB 2: DEMO & CORPORATE PRICING REQUESTS */}
         {activeTab === 'DEMO_REQUESTS' && (
           <div className="space-y-6">
             
@@ -504,14 +770,12 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                     filteredDemoRequests.map((req) => (
                       <tr key={req.id} className="hover:bg-gray-50/80 transition-colors">
                         
-                        {/* Company & Person */}
                         <td className="p-4">
                           <div className="font-black text-[#0B2A4A] text-sm">{req.companyName}</div>
                           <div className="text-gray-600 font-bold">{req.name}</div>
                           <div className="text-[10px] text-gray-400 font-mono">{req.title || 'Kurumsal Yetkili'}</div>
                         </td>
 
-                        {/* Contact Info */}
                         <td className="p-4 font-mono text-[11px]">
                           <div className="flex items-center space-x-1 text-[#087F96] font-bold">
                             <Mail className="h-3.5 w-3.5" />
@@ -523,13 +787,11 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                           </div>
                         </td>
 
-                        {/* Employee & Branch Scale */}
                         <td className="p-4 font-mono">
                           <div className="font-bold text-[#0B2A4A]">{req.employeeCount || 150} Aktif Çalışan</div>
                           <div className="text-[10px] text-gray-500">{req.subCount || 15} Mağaza / Şube • {req.city}</div>
                         </td>
 
-                        {/* Requested Package & Services */}
                         <td className="p-4">
                           <span className="bg-amber-100 text-slate-950 font-black px-2.5 py-1 rounded-lg border border-amber-300 block w-fit text-[11px]">
                             {req.training || 'Kurumsal Demo & Fiyat Teklifi'}
@@ -545,12 +807,10 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                           )}
                         </td>
 
-                        {/* Date */}
                         <td className="p-4 text-center font-mono text-[11px] text-gray-500">
                           {req.createdAt}
                         </td>
 
-                        {/* Status Badge */}
                         <td className="p-4 text-center">
                           <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
                             req.status === 'ONAYLANDI' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
@@ -564,7 +824,6 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                           </span>
                         </td>
 
-                        {/* Quick Action Buttons */}
                         <td className="p-4 text-right space-x-1.5">
                           <button
                             onClick={() => handleUpdateDemoStatus(req.id, 'GORUSULDU')}
@@ -596,7 +855,6 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
               </table>
             </div>
 
-            {/* DEMO DETAIL MODAL IF SELECTED */}
             {selectedDemoDetail && (
               <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
                 <div className="bg-white rounded-3xl p-6 max-w-xl w-full space-y-4 shadow-2xl border border-gray-200 animate-in fade-in duration-200">
@@ -658,117 +916,6 @@ export default function AdminDashboardClient({ stats, initialRequests }: Props) 
                 </div>
               </div>
             )}
-
-          </div>
-        )}
-
-        {/* TAB 2: USER & ROLE MANAGEMENT */}
-        {activeTab === 'USERS' && (
-          <div className="space-y-6">
-            
-            {/* RICH USER & CANDIDATE DATABASE TABLE */}
-            <AdminUserTable />
-
-            {/* Screenshot Header Style */}
-            <div className="flex items-center justify-between border-b border-gray-100 pb-4 pt-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2.5 bg-gray-100 rounded-2xl text-gray-700">
-                  <SlidersHorizontal className="h-6 w-6" />
-                </div>
-                <h2 className="font-display font-extrabold text-xl sm:text-2xl text-gray-900">
-                  Sistem Hesapları &amp; Şifre Yönetimi
-                </h2>
-              </div>
-
-              <span className="bg-gray-100 text-gray-600 font-extrabold px-4 py-1.5 rounded-full text-xs font-mono">
-                {filteredUsers.length} Hesabı Yönet
-              </span>
-            </div>
-
-            {/* Role Filter Pills & Search Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F8FAFC] p-3.5 rounded-2xl border border-gray-200">
-              <div className="flex items-center space-x-1.5 overflow-x-auto text-xs font-bold">
-                {[
-                  { id: 'ALL', label: 'Tüm Kayıtlar', count: users.length },
-                  { id: 'PARTICIPANT', label: '🎓 Ücretsiz / Öğrenciler', count: users.filter(u => u.role === 'PARTICIPANT').length },
-                  { id: 'TRAINER', label: '👨‍🏫 Eğitmenler', count: users.filter(u => u.role === 'TRAINER').length },
-                  { id: 'COMPANY_MANAGER', label: '🏢 Kurumsal', count: users.filter(u => u.role === 'COMPANY_MANAGER').length },
-                  { id: 'ADMIN', label: '👑 Adminler', count: users.filter(u => u.role === 'ADMIN').length }
-                ].map((f) => (
-                  <button
-                    key={f.id}
-                    onClick={() => setUserRoleFilter(f.id)}
-                    className={`px-3.5 py-1.5 rounded-xl transition-all whitespace-nowrap ${
-                      userRoleFilter === f.id
-                        ? 'bg-[#0B2A4A] text-white shadow-xs font-extrabold'
-                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 font-bold'
-                    }`}
-                  >
-                    <span>{f.label} ({f.count})</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="relative">
-                <Search className="h-4 w-4 text-gray-400 absolute left-3 top-2.5" />
-                <input
-                  type="text"
-                  placeholder="Kullanıcı veya kurum ara..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-3 py-1.5 bg-white border border-gray-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-[#087F96] font-medium"
-                />
-              </div>
-            </div>
-
-            {/* User List Table */}
-            <div className="overflow-x-auto rounded-3xl border border-gray-200 shadow-2xs bg-white">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#F8FAFC] text-gray-400 font-extrabold border-b border-gray-200 text-[11px] uppercase tracking-wider">
-                  <tr>
-                    <th className="p-4 w-12 text-center">SİL</th>
-                    <th className="p-4">KULLANICI</th>
-                    <th className="p-4">KURUM BİLGİSİ</th>
-                    <th className="p-4">KAYIT TARİHİ</th>
-                    <th className="p-4 text-right">ROL / STATÜ</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 font-medium text-gray-800">
-                  {filteredUsers.map((u) => (
-                    <tr key={u.id} className="hover:bg-gray-50/80 transition-colors">
-                      <td className="p-4 text-center">
-                        <button
-                          onClick={() => handleDeleteUser(u.id, u.name)}
-                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
-                          title="Kullanıcıyı Sil"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </td>
-
-                      <td className="p-4">
-                        <div className="font-bold text-[#0B2A4A]">{u.name}</div>
-                        <div className="text-gray-500 font-mono text-[11px]">{u.email}</div>
-                      </td>
-
-                      <td className="p-4 text-gray-600">
-                        {u.companyName || 'Bireysel Katılımcı'}
-                      </td>
-
-                      <td className="p-4 font-mono text-gray-500">
-                        {u.createdAt}
-                      </td>
-
-                      <td className="p-4 text-right">
-                        <span className="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-full text-[10px]">
-                          {u.role}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
 
           </div>
         )}

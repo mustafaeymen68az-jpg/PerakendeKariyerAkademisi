@@ -38,8 +38,116 @@ model User {
   avatar         String?          // Profil fotoğrafı URL
   cvUrl          String?          // Özgeçmiş döküman bağlantısı
   assignedCourses String?         // Atadığı veya uzmanı olduğu eğitimlerin kaydı
+
+  // Yeni Tanımlanan Alanlar
+  customerType           String?                 @default("INDIVIDUAL") // "INDIVIDUAL" | "CORPORATE"
+  professionalPositionId String?
+  professionalPosition   ProfessionalPosition?   @relation("UserPosition", fields: [professionalPositionId], references: [id])
+  targetPositionId       String?
+  targetPosition         ProfessionalPosition?   @relation("UserTargetPosition", fields: [targetPositionId], references: [id])
+  careerGoalId           String?
+  careerGoal             CareerGoal?             @relation("UserCareerGoal", fields: [careerGoalId], references: [id])
+  customPosition         String?
+  storeRegion            String?
+  accountStatus          String                  @default("ACTIVE") // "ACTIVE" | "PENDING" | "SUSPENDED"
+  managerId              String?
+  onboardingCompleted    Boolean                 @default(false)
+  userRoles              UserRole[]
+  analyticsEvents        AnalyticsEvent[]
+
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
+}
+
+model SystemRole {
+  id          String     @id @default(uuid())
+  name        String     @unique // "STUDENT" | "INSTRUCTOR" | "ORGANIZATION_ADMIN" | "PLATFORM_ADMIN"
+  description String?
+  userRoles   UserRole[]
+}
+
+model UserRole {
+  id        String     @id @default(uuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roleId    String
+  role      SystemRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+
+  @@unique([userId, roleId])
+}
+
+model ProfessionalPosition {
+  id                  String                 @id @default(uuid())
+  name                String
+  group               String                 // "STORE_OPERATIONS" | "FRESH_FOOD" | "STORE_MANAGEMENT" | "FIELD_MANAGEMENT" | "HEADQUARTERS" | "EXECUTIVE" | "OTHER"
+  departmentId        String?
+  department          Department?            @relation(fields: [departmentId], references: [id])
+  careerLevel         Int                    @default(1)
+  nextPositionId      String?
+  nextPosition        ProfessionalPosition?  @relation("PositionNext", fields: [nextPositionId], references: [id])
+  previousPositions   ProfessionalPosition[] @relation("PositionNext")
+  active              Boolean                @default(true)
+  
+  users               User[]                 @relation("UserPosition")
+  targetUsers         User[]                 @relation("UserTargetPosition")
+  recommendationRules RecommendationRule[]   @relation("RulePosition")
+  targetRules         RecommendationRule[]   @relation("RuleTargetPosition")
+  
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+}
+
+model CareerGoal {
+  id                  String                 @id @default(uuid())
+  title               String
+  description         String?
+  users               User[]                 @relation("UserCareerGoal")
+  recommendationRules RecommendationRule[]
+  createdAt           DateTime               @default(now())
+}
+
+model RecommendationRule {
+  id                    String                @id @default(uuid())
+  title                 String
+  positionId            String?
+  position              ProfessionalPosition? @relation("RulePosition", fields: [positionId], references: [id])
+  targetPositionId      String?
+  targetPosition        ProfessionalPosition? @relation("RuleTargetPosition", fields: [targetPositionId], references: [id])
+  departmentId          String?
+  department            Department?           @relation(fields: [departmentId], references: [id])
+  careerGoalId          String?
+  careerGoal            CareerGoal?           @relation(fields: [careerGoalId], references: [id])
+  recommendedTrainingIds String               // JSON array string
+  recommendedPathTitle  String?
+  competencies          String?               // JSON array or comma separated
+  estimatedHours        Int                   @default(16)
+  moduleCount           Int                   @default(5)
+  active                Boolean               @default(true)
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+}
+
+model CorporatePackage {
+  id          String    @id @default(uuid())
+  name        String
+  maxUsers    Int       @default(50)
+  maxStores   Int       @default(10)
+  price       Float?
+  features    String?   // JSON string
+  active      Boolean   @default(true)
+  companies   Company[]
+  createdAt   DateTime  @default(now())
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid())
+  eventName String
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  metadata  String?  // JSON string
+  ipAddress String?
+  createdAt DateTime @default(now())
 }
 
 model Company {
@@ -49,6 +157,10 @@ model Company {
   industry      String?
   subCount      Int               @default(0) // Şube sayısı
   employeeCount Int               @default(0) // Çalışan sayısı
+  packageId     String?
+  package       CorporatePackage? @relation(fields: [packageId], references: [id])
+  licenseLimit  Int               @default(10)
+  status        String            @default("ACTIVE") // "ACTIVE" | "PENDING_DEMO" | "EXPIRED"
   branches      Branch[]
   users         User[]
   requests      TrainingRequest[]
@@ -67,15 +179,17 @@ model Branch {
 }
 
 model Department {
-  id          String       @id @default(uuid())
-  name        String       @unique
-  slug        String       @unique
-  description String?
-  trainings   Training[]   // Many-to-many
-  users       User[]
-  kpis        KpiDefinition[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id                  String               @id @default(uuid())
+  name                String               @unique
+  slug                String               @unique
+  description         String?
+  trainings           Training[]           // Many-to-many
+  users               User[]
+  positions           ProfessionalPosition[]
+  recommendationRules RecommendationRule[]
+  kpis                KpiDefinition[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
 }
 
 model Category {

@@ -27,6 +27,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import Logo from '@/components/Logo';
+import RoleSwitcher from '@/components/RoleSwitcher';
 
 // 4 Main Role Portals for Top Right Header Access
 const TOP_ROLE_BUTTONS = [
@@ -91,7 +92,7 @@ export default function Header() {
     const checkSession = () => {
       if (typeof window !== 'undefined') {
         const cookies = document.cookie.split('; ');
-        const sessionCookie = cookies.find(row => row.startsWith('pka_user_session='));
+        const sessionCookie = cookies.find(row => row.startsWith('user_session=')) || cookies.find(row => row.startsWith('pka_user_session='));
         if (sessionCookie) {
           try {
             const data = JSON.parse(decodeURIComponent(sessionCookie.split('=')[1]));
@@ -132,8 +133,14 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    document.cookie = 'user_session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     document.cookie = 'pka_user_session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {
+      console.error('Logout error:', e);
+    }
     setSessionUser(null);
     router.push('/');
   };
@@ -264,21 +271,26 @@ export default function Header() {
           <div className="hidden lg:flex items-center space-x-2 shrink-0 ml-4">
             {sessionUser ? (
               <div className="flex items-center space-x-2">
+                {sessionUser.availableRoles && sessionUser.availableRoles.length > 0 && (
+                  <RoleSwitcher
+                    activeRole={sessionUser.activeRole || 'STUDENT'}
+                    availableRoles={sessionUser.availableRoles}
+                  />
+                )}
                 <Link
                   href={
-                    sessionUser.role === 'ADMIN' || sessionUser.role === 'SUPER_ADMIN' ? '/panel/admin' :
-                    sessionUser.role === 'EXECUTIVE' ? '/panel/ceo' :
-                    sessionUser.role === 'HR_MANAGER' || sessionUser.role === 'COMPANY_ADMIN' || sessionUser.role === 'COMPANY_MANAGER' ? '/panel/ik' :
-                    sessionUser.role === 'TRAINER' || sessionUser.role === 'TRAINING_MANAGER' ? '/panel/egitmen' : '/panel/calisan'
+                    sessionUser.activeRole === 'PLATFORM_ADMIN' || sessionUser.role === 'ADMIN' ? '/admin' :
+                    sessionUser.activeRole === 'ORGANIZATION_ADMIN' || sessionUser.role === 'COMPANY_MANAGER' ? '/kurumsal' :
+                    sessionUser.activeRole === 'INSTRUCTOR' || sessionUser.role === 'TRAINER' ? '/egitmen' : '/panel'
                   }
                   className="h-9 px-3.5 bg-[#087F96] hover:bg-[#056B80] text-white font-extrabold rounded-xl text-xs flex items-center space-x-1.5 shadow-md transition-all whitespace-nowrap border border-white/20"
                 >
                   <User className="h-3.5 w-3.5 text-amber-300" />
-                  <span>{sessionUser.name} (Paneline Git)</span>
+                  <span>{sessionUser.name}</span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="h-9 w-9 bg-red-600/80 hover:bg-red-700 text-white rounded-xl flex items-center justify-center transition-colors"
+                  className="h-9 w-9 bg-red-600/80 hover:bg-red-700 text-white rounded-xl flex items-center justify-center transition-colors cursor-pointer"
                   title="Oturumu Kapat"
                 >
                   <LogOut className="h-4 w-4" />

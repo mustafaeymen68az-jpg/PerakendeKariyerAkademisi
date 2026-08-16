@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { signUp, isSupabaseConfigured } from '@/lib/supabase';
 
 export async function POST(req: Request) {
   try {
@@ -38,9 +39,9 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if email already exists
+    // Check if email already exists in local DB
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: email.trim().toLowerCase() },
     });
 
     if (existingUser) {
@@ -50,10 +51,25 @@ export async function POST(req: Request) {
       );
     }
 
+    // Register user in Supabase Auth if Supabase is configured
+    let supabaseUserId = null;
+    if (isSupabaseConfigured()) {
+      const { data: sbData, error: sbError } = await signUp({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      if (sbError && !sbError.message.includes('already registered')) {
+        console.warn('Supabase Auth signUp info:', sbError.message);
+      } else if (sbData?.user) {
+        supabaseUserId = sbData.user.id;
+      }
+    }
+
     // Combine fullName for display
     const fullName = `${name.trim()} ${surname.trim()}`;
 
-    // Create user in DB
+    // Create user in local DB
     const now = new Date();
     const user = await prisma.user.create({
       data: {
@@ -75,7 +91,7 @@ export async function POST(req: Request) {
     const response = NextResponse.json({
       success: true,
       user: {
-        id: user.id,
+        id: supabaseUserId || user.id,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -88,7 +104,7 @@ export async function POST(req: Request) {
     response.cookies.set(
       'user_session',
       JSON.stringify({
-        id: user.id,
+        id: supabaseUserId || user.id,
         name: user.name,
         email: user.email,
         role: user.role,

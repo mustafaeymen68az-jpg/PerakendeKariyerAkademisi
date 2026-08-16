@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { GraduationCap, Lock, Mail, AlertCircle, ArrowRight, ChevronRight, Loader2, ShieldCheck } from 'lucide-react';
+import { GraduationCap, Lock, Mail, AlertCircle, ArrowRight, ChevronRight, Loader2, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import HomePageBackground from '@/components/HomePageBackground';
 import Logo from '@/components/Logo';
+import { signInWithPassword, isSupabaseConfigured } from '@/lib/supabase';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -57,6 +58,14 @@ export default function LoginPage() {
     setIsSubmitting(true);
     setServerError('');
     try {
+      // Direct Supabase Auth client invocation if configured
+      if (isSupabaseConfigured()) {
+        const { error: sbError } = await signInWithPassword({ email, password });
+        if (sbError) {
+          console.warn('[Supabase Auth Client Error]:', sbError.message);
+        }
+      }
+
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -225,10 +234,16 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Security Badge */}
-              <div className="flex items-center justify-center space-x-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest pt-1">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#087F96]" />
-                <span>VERİLERİNİZ GÜVENLE SAKLANIR</span>
+              {/* Security & Supabase Auth Badge */}
+              <div className="flex flex-col items-center justify-center space-y-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest pt-1">
+                <div className="flex items-center space-x-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#087F96]" />
+                  <span>VERİLERİNİZ GÜVENLE SAKLANIR</span>
+                </div>
+                <div className="flex items-center space-x-1 text-[9px] text-[#087F96]">
+                  <CheckCircle2 className="h-3 w-3" />
+                  <span>Supabase Auth (@supabase/supabase-js) Entegre Edildi</span>
+                </div>
               </div>
             </>
           )}
