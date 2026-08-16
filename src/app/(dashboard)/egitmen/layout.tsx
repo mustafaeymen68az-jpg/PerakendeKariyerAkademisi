@@ -21,7 +21,8 @@ import {
   User,
   CheckSquare,
   Sparkles,
-  BookOpenCheck
+  BookOpenCheck,
+  Star
 } from 'lucide-react';
 
 export default function EgitmenLayout({ children }: { children: React.ReactNode }) {
@@ -35,7 +36,8 @@ export default function EgitmenLayout({ children }: { children: React.ReactNode 
     { name: 'Döküman & Medya Yükle', href: '/egitmen/dokumanlar', icon: Upload },
     { name: 'Sınav Hazırlama', href: '/egitmen/sinavlar', icon: HelpCircle },
     { name: 'Sınav Sonuçları', href: '/egitmen/sonuclar', icon: Award },
-    { name: 'Öğrenci SWOT Analizi', href: '/egitmen/swot', icon: Target },
+    { name: 'Öğrenci SWOT Analizi', href: '/egitmen/swot?tab=student', icon: Target },
+    { name: 'Eğitmen SWOT Analizi', href: '/egitmen/swot?tab=trainer', icon: Star },
     { name: 'Öğrenciye Mesaj & Soru', href: '/egitmen/mesajlar', icon: MessageSquare },
   ];
 
