@@ -34,11 +34,18 @@ export default async function AdminDashboardPage() {
   let requests: any[] = [];
   let initialUsers: any[] = [];
 
-  let visitorStats = {
+  let visitorStats: {
+    totalVisitors: number;
+    registeredVisitors: number;
+    guestVisitors: number;
+    activeNow: number;
+    topLocations?: { city: string; country: string; count: number }[];
+  } = {
     totalVisitors: 0,
     registeredVisitors: 0,
     guestVisitors: 0,
-    activeNow: 0
+    activeNow: 0,
+    topLocations: []
   };
   let initialVisitors: any[] = [];
 
@@ -52,11 +59,26 @@ export default async function AdminDashboardPage() {
 
     // Visitors data
     const fifteenMinsAgo = new Date(Date.now() - 15 * 60 * 1000);
+
+    const cityGroups = await prisma.siteVisit.groupBy({
+      by: ['city', 'country'],
+      _count: { id: true },
+      orderBy: { _count: { id: 'desc' } },
+      take: 6
+    });
+
+    const topLocations = cityGroups.map(g => ({
+      city: g.city || 'Bilinmiyor',
+      country: g.country || 'Türkiye',
+      count: g._count.id
+    }));
+
     visitorStats = {
       totalVisitors: await prisma.siteVisit.count(),
       registeredVisitors: await prisma.siteVisit.count({ where: { isRegistered: true } }),
       guestVisitors: await prisma.siteVisit.count({ where: { isRegistered: false } }),
-      activeNow: await prisma.siteVisit.count({ where: { lastActiveAt: { gte: fifteenMinsAgo } } })
+      activeNow: await prisma.siteVisit.count({ where: { lastActiveAt: { gte: fifteenMinsAgo } } }),
+      topLocations
     };
 
     const rawVisitors = await prisma.siteVisit.findMany({
@@ -94,6 +116,8 @@ export default async function AdminDashboardPage() {
       path: v.path,
       pageTitle: v.pageTitle,
       referrer: v.referrer,
+      city: v.city || v.user?.city || 'İstanbul',
+      country: v.country || 'Türkiye',
       visitCount: v.visitCount,
       lastActiveAt: v.lastActiveAt ? new Date(v.lastActiveAt).toISOString() : new Date().toISOString(),
       createdAt: v.createdAt ? new Date(v.createdAt).toISOString() : new Date().toISOString(),

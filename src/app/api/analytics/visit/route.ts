@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { cookies } from 'next/headers';
+import { getLocationFromIp } from '@/lib/geo';
 
 function parseUserAgent(ua: string) {
   let deviceType = 'Masaüstü';
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
     let userName: string | null = null;
     let userEmail: string | null = null;
     let userRole: string | null = null;
+    let userCity: string | null = null;
     let isRegistered = false;
 
     if (sessionCookie?.value) {
@@ -66,12 +68,18 @@ export async function POST(req: Request) {
           userName = userObj.name ? `${userObj.name} ${userObj.surname || ''}`.trim() : userObj.email;
           userEmail = userObj.email;
           userRole = userObj.role;
+          userCity = userObj.city || null;
           isRegistered = true;
         }
       } catch {
         // Invalid session cookie format
       }
     }
+
+    // Geolocation Resolution
+    const geo = await getLocationFromIp(ipAddress, req.headers);
+    const city = userCity || geo.city || 'İstanbul';
+    const country = geo.country || 'Türkiye';
 
     // Check existing visit session in last 30 minutes
     const thirtyMinsAgo = new Date(Date.now() - 30 * 60 * 1000);
@@ -91,6 +99,8 @@ export async function POST(req: Request) {
           pageTitle: pageTitle || existingVisit.pageTitle,
           lastActiveAt: new Date(),
           visitCount: existingVisit.visitCount + 1,
+          city: existingVisit.city || city,
+          country: existingVisit.country || country,
           ...(isRegistered && !existingVisit.isRegistered ? {
             userId,
             userName,
@@ -120,6 +130,8 @@ export async function POST(req: Request) {
         path: path || '/',
         pageTitle: pageTitle || '',
         referrer: referrer || '',
+        city,
+        country,
         visitCount: 1,
         lastActiveAt: new Date()
       }
@@ -131,3 +143,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, message: 'Ziyaret kaydedilemedi' }, { status: 500 });
   }
 }
+

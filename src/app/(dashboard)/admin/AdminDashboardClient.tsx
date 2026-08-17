@@ -174,10 +174,18 @@ interface VisitorItem {
   path: string;
   pageTitle?: string | null;
   referrer?: string | null;
+  city?: string | null;
+  country?: string | null;
   visitCount: number;
   lastActiveAt: string;
   createdAt: string;
   user?: any;
+}
+
+interface LocationStat {
+  city: string;
+  country: string;
+  count: number;
 }
 
 interface Stats {
@@ -191,6 +199,7 @@ interface Stats {
   registeredVisitors?: number;
   guestVisitors?: number;
   activeNow?: number;
+  topLocations?: LocationStat[];
 }
 
 interface Props {
@@ -227,11 +236,18 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
 
   // Visitors State
   const [visitors, setVisitors] = useState<VisitorItem[]>(initialVisitors || []);
-  const [visitorStats, setVisitorStats] = useState({
+  const [visitorStats, setVisitorStats] = useState<{
+    totalVisitors: number;
+    registeredVisitors: number;
+    guestVisitors: number;
+    activeNow: number;
+    topLocations?: LocationStat[];
+  }>({
     totalVisitors: stats.totalVisitors || 0,
     registeredVisitors: stats.registeredVisitors || 0,
     guestVisitors: stats.guestVisitors || 0,
     activeNow: stats.activeNow || 0,
+    topLocations: stats.topLocations || []
   });
   const [visitorFilter, setVisitorFilter] = useState<'ALL' | 'ACTIVE_NOW' | 'REGISTERED' | 'UNREGISTERED'>('ALL');
   const [selectedVisitorDetail, setSelectedVisitorDetail] = useState<VisitorItem | null>(null);
@@ -336,9 +352,12 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
 
   useEffect(() => {
     if (activeTab === 'VISITORS') {
-      fetchVisitors();
+      const timer = setTimeout(() => {
+        fetchVisitors();
+      }, 300);
+      return () => clearTimeout(timer);
     }
-  }, [visitorFilter, activeTab]);
+  }, [visitorFilter, searchQuery, activeTab]);
 
   // Delete User handler
   const handleDeleteUser = async (userId: string, userName: string) => {
@@ -804,7 +823,7 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="İsim, IP, Sayfa, Cihaz ara..."
+                  placeholder="İsim, Şehir, Ülke, IP, Sayfa ara..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-[#087F96] focus:outline-none transition-all"
@@ -854,6 +873,28 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                 </div>
               </div>
             </div>
+
+            {/* Top Visitor Locations Breakdown */}
+            {visitorStats.topLocations && visitorStats.topLocations.length > 0 && (
+              <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl flex flex-wrap items-center gap-2">
+                <div className="flex items-center space-x-1.5 text-xs font-black text-[#0B2A4A] mr-2">
+                  <MapPin className="h-4 w-4 text-rose-500" />
+                  <span>Öne Çıkan Ziyaretçi Konumları:</span>
+                </div>
+                {visitorStats.topLocations.map((loc, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-700 shadow-2xs"
+                  >
+                    <span className="text-slate-800 font-extrabold">{loc.city}</span>
+                    <span className="text-gray-400 text-[10px]">({loc.country})</span>
+                    <span className="bg-rose-50 text-rose-700 font-black text-[10px] px-1.5 py-0.5 rounded-md border border-rose-100">
+                      {loc.count} Ziyaret
+                    </span>
+                  </span>
+                ))}
+              </div>
+            )}
 
             {/* Visitor Type Sub-Filters & Bulk Clear */}
             <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
@@ -917,6 +958,7 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                 <thead className="bg-[#0B2A4A] text-white uppercase text-[10px] tracking-wider font-extrabold">
                   <tr>
                     <th className="p-4">Ziyaretçi Bilgisi</th>
+                    <th className="p-4">Konum (Şehir / Ülke)</th>
                     <th className="p-4">Ziyaret Tipi / Durum</th>
                     <th className="p-4">Son Gezilen Sayfa</th>
                     <th className="p-4">Cihaz &amp; Tarayıcı</th>
@@ -929,14 +971,14 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                 <tbody className="divide-y divide-gray-100 bg-white font-medium text-gray-700">
                   {isLoadingVisitors ? (
                     <tr>
-                      <td colSpan={8} className="p-8 text-center text-gray-400">
+                      <td colSpan={9} className="p-8 text-center text-gray-400">
                         <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-[#087F96]" />
                         Ziyaretçi verileri güncelleniyor...
                       </td>
                     </tr>
                   ) : visitors.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="p-8 text-center text-gray-400">
+                      <td colSpan={9} className="p-8 text-center text-gray-400">
                         Henüz kayıtlı ziyaretçi verisi bulunamadı. Sitede gezindikçe burası otomatik güncellenir.
                       </td>
                     </tr>
@@ -963,6 +1005,21 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                                 </span>
                                 <span className="text-[10px] text-gray-400 font-mono block">
                                   {v.userEmail || `Session: ${v.sessionId.substring(0, 16)}...`}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Location (City & Country) */}
+                          <td className="p-4">
+                            <div className="flex items-center space-x-1.5">
+                              <MapPin className="h-4 w-4 text-rose-500 shrink-0" />
+                              <div>
+                                <span className="font-extrabold text-slate-800 block text-xs">
+                                  {v.city || 'İstanbul'}
+                                </span>
+                                <span className="text-[10px] text-gray-500 font-medium block">
+                                  {v.country || 'Türkiye'}
                                 </span>
                               </div>
                             </div>
@@ -1755,6 +1812,19 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
             </div>
 
             <div className="space-y-3 text-xs">
+              {/* Location Badge Box */}
+              <div className="bg-rose-50/80 p-3.5 rounded-2xl border border-rose-100 flex items-center space-x-3">
+                <div className="p-2 bg-rose-100 text-rose-600 rounded-xl shrink-0">
+                  <MapPin className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-rose-800 font-extrabold uppercase block">Ziyaretçi Konumu (Lokasyon)</span>
+                  <span className="font-extrabold text-[#0B2A4A] text-sm block">
+                    📍 {selectedVisitorDetail.city || 'İstanbul'}, {selectedVisitorDetail.country || 'Türkiye'}
+                  </span>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-100">
                 <div>
                   <span className="text-[10px] text-gray-400 font-bold uppercase block">Ziyaretçi Tipi</span>

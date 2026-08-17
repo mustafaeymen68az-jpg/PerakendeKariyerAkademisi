@@ -34,6 +34,20 @@ export async function GET(req: Request) {
     const guestVisitors = await prisma.siteVisit.count({ where: { isRegistered: false } });
     const activeNow = await prisma.siteVisit.count({ where: { lastActiveAt: { gte: fifteenMinsAgo } } });
 
+    // Compute top locations
+    const cityGroups = await prisma.siteVisit.groupBy({
+      by: ['city', 'country'],
+      _count: { id: true },
+      orderBy: { _count: { id: 'desc' } },
+      take: 6
+    });
+
+    const topLocations = cityGroups.map(g => ({
+      city: g.city || 'Bilinmiyor',
+      country: g.country || 'Türkiye',
+      count: g._count.id
+    }));
+
     // Build filter condition
     let whereCondition: any = {};
 
@@ -55,7 +69,9 @@ export async function GET(req: Request) {
         { path: { contains: q } },
         { pageTitle: { contains: q } },
         { browser: { contains: q } },
-        { deviceType: { contains: q } }
+        { deviceType: { contains: q } },
+        { city: { contains: q } },
+        { country: { contains: q } }
       ];
     }
 
@@ -95,6 +111,8 @@ export async function GET(req: Request) {
       path: v.path,
       pageTitle: v.pageTitle,
       referrer: v.referrer,
+      city: v.city || v.user?.city || 'İstanbul',
+      country: v.country || 'Türkiye',
       visitCount: v.visitCount,
       lastActiveAt: v.lastActiveAt.toISOString(),
       createdAt: v.createdAt.toISOString(),
@@ -107,7 +125,8 @@ export async function GET(req: Request) {
         totalVisitors,
         registeredVisitors,
         guestVisitors,
-        activeNow
+        activeNow,
+        topLocations
       },
       visitors: formattedVisitors
     });
