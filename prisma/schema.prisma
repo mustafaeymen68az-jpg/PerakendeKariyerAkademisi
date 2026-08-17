@@ -55,6 +55,7 @@ model User {
   onboardingCompleted    Boolean                 @default(false)
   userRoles              UserRole[]
   analyticsEvents        AnalyticsEvent[]
+  siteVisits             SiteVisit[]
 
   careerProfile            UserCareerProfile?
   competencyAssessments    UserCompetencyAssessment[]
@@ -794,6 +795,34 @@ model CareerOrientationResult {
   createdAt             DateTime                     @default(now())
 }
 
+model SiteVisit {
+  id           String   @id @default(uuid())
+  sessionId    String
+  userId       String?
+  userEmail    String?
+  userName     String?
+  userRole     String?
+  isRegistered Boolean  @default(false)
+  ipAddress    String?
+  userAgent    String?
+  deviceType   String?  // "Masaüstü" | "Mobil" | "Tablet"
+  browser      String?  // "Chrome" | "Safari" | "Firefox" | "Edge" vb.
+  os           String?  // "Windows" | "iOS" | "Android" | "Mac" vb.
+  path         String   // E.g. "/", "/egitimler", "/kariyer-pusulasi"
+  pageTitle    String?
+  referrer     String?
+  city         String?
+  country      String?
+  visitCount   Int      @default(1)
+  lastActiveAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
-
+  @@index([sessionId])
+  @@index([userId])
+  @@index([isRegistered])
+  @@index([lastActiveAt])
+  @@index([createdAt])
+}

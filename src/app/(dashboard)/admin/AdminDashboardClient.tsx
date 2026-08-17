@@ -38,7 +38,15 @@ import {
   MapPin,
   Briefcase,
   User,
-  Compass
+  Compass,
+  Globe,
+  Activity,
+  Laptop,
+  Smartphone,
+  Tablet,
+  Ghost,
+  ExternalLink,
+  ShieldCheck
 } from 'lucide-react';
 
 const RETAIL_POSITIONS_26 = [
@@ -150,6 +158,28 @@ interface UserItem {
   department?: { name: string };
 }
 
+interface VisitorItem {
+  id: string;
+  sessionId: string;
+  userId?: string | null;
+  userEmail?: string | null;
+  userName?: string | null;
+  userRole?: string | null;
+  isRegistered: boolean;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  deviceType?: string | null;
+  browser?: string | null;
+  os?: string | null;
+  path: string;
+  pageTitle?: string | null;
+  referrer?: string | null;
+  visitCount: number;
+  lastActiveAt: string;
+  createdAt: string;
+  user?: any;
+}
+
 interface Stats {
   totalTrainings: number;
   pendingRequestCount: number;
@@ -157,12 +187,17 @@ interface Stats {
   totalStudents: number;
   totalUsers?: number;
   adminUsersCount?: number;
+  totalVisitors?: number;
+  registeredVisitors?: number;
+  guestVisitors?: number;
+  activeNow?: number;
 }
 
 interface Props {
   stats: Stats;
   initialRequests: RequestItem[];
   initialUsers?: UserItem[];
+  initialVisitors?: VisitorItem[];
 }
 
 function formatDate(dateStr?: string | null) {
@@ -182,13 +217,25 @@ function formatDate(dateStr?: string | null) {
   }
 }
 
-export default function AdminDashboardClient({ stats, initialRequests, initialUsers }: Props) {
-  const [activeTab, setActiveTab] = useState<'USERS' | 'DEMO_REQUESTS' | 'TALENT_POOL' | 'CAREER_ORIENTATION'>('USERS');
+export default function AdminDashboardClient({ stats, initialRequests, initialUsers, initialVisitors }: Props) {
+  const [activeTab, setActiveTab] = useState<'USERS' | 'VISITORS' | 'DEMO_REQUESTS' | 'TALENT_POOL' | 'CAREER_ORIENTATION'>('USERS');
   const [userRoleFilter, setUserRoleFilter] = useState<string>('ALL');
   const [demoStatusFilter, setDemoStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDemoDetail, setSelectedDemoDetail] = useState<RequestItem | null>(null);
   const [selectedUserDetail, setSelectedUserDetail] = useState<UserItem | null>(null);
+
+  // Visitors State
+  const [visitors, setVisitors] = useState<VisitorItem[]>(initialVisitors || []);
+  const [visitorStats, setVisitorStats] = useState({
+    totalVisitors: stats.totalVisitors || 0,
+    registeredVisitors: stats.registeredVisitors || 0,
+    guestVisitors: stats.guestVisitors || 0,
+    activeNow: stats.activeNow || 0,
+  });
+  const [visitorFilter, setVisitorFilter] = useState<'ALL' | 'ACTIVE_NOW' | 'REGISTERED' | 'UNREGISTERED'>('ALL');
+  const [selectedVisitorDetail, setSelectedVisitorDetail] = useState<VisitorItem | null>(null);
+  const [isLoadingVisitors, setIsLoadingVisitors] = useState(false);
 
   const [demoRequests, setDemoRequests] = useState<RequestItem[]>(() => {
     if (initialRequests && initialRequests.length > 0) {
@@ -269,6 +316,30 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
     }
   };
 
+  const fetchVisitors = async () => {
+    setIsLoadingVisitors(true);
+    try {
+      const res = await fetch(`/api/admin/visitors?filter=${visitorFilter}&search=${encodeURIComponent(searchQuery)}`);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setVisitors(data.visitors);
+        if (data.stats) {
+          setVisitorStats(data.stats);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoadingVisitors(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'VISITORS') {
+      fetchVisitors();
+    }
+  }, [visitorFilter, activeTab]);
+
   // Delete User handler
   const handleDeleteUser = async (userId: string, userName: string) => {
     if (!confirm(`"${userName}" kullanıcısını veritabanından tamamen silmek istediğinize emin misiniz?`)) return;
@@ -282,16 +353,95 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
       const data = await res.json();
       if (res.ok && data.success) {
         setUsers(prev => prev.filter(u => u.id !== userId));
-        setMessage(`"${userName}" kullanıcısı veritabanından silindi.`);
+        setMessage(`"${userName}" kullanıcısı veritabanından silindi. 🗑️`);
       } else {
         setUsers(prev => prev.filter(u => u.id !== userId));
-        setMessage(`"${userName}" kullanıcısı kaldırıldı.`);
+        setMessage(`"${userName}" kullanıcısı kaldırıldı. 🗑️`);
       }
     } catch (e) {
       setUsers(prev => prev.filter(u => u.id !== userId));
-      setMessage(`"${userName}" kullanıcısı kaldırıldı.`);
+      setMessage(`"${userName}" kullanıcısı kaldırıldı. 🗑️`);
     } finally {
       setUpdatingId(null);
+      if (selectedUserDetail?.id === userId) setSelectedUserDetail(null);
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  // Delete Visitor handler
+  const handleDeleteVisitor = async (id: string, visitorName?: string) => {
+    if (!confirm(`"${visitorName || 'Bu ziyaretçi'}" kaydını silmek istediğinize emin misiniz?`)) return;
+    setUpdatingId(id);
+    try {
+      const res = await fetch('/api/admin/delete-visitor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setVisitors(prev => prev.filter(v => v.id !== id));
+        setVisitorStats(prev => ({
+          ...prev,
+          totalVisitors: Math.max(0, prev.totalVisitors - 1)
+        }));
+        setMessage('Ziyaretçi kaydı veritabanından silindi. 🗑️');
+      }
+    } catch (e) {
+      console.error(e);
+      setMessage('Ziyaretçi kaydı silindi. 🗑️');
+    } finally {
+      setUpdatingId(null);
+      if (selectedVisitorDetail?.id === id) setSelectedVisitorDetail(null);
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  // Clear All Visitors handler
+  const handleDeleteAllVisitors = async () => {
+    if (!confirm('TÜM ziyaretçi geçmişini veritabanından tamamen silmek istediğinize emin misiniz? Bu işlem geri alınamaz!')) return;
+    try {
+      const res = await fetch('/api/admin/delete-visitor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deleteAll: true })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setVisitors([]);
+        setVisitorStats({ totalVisitors: 0, registeredVisitors: 0, guestVisitors: 0, activeNow: 0 });
+        setMessage('Tüm ziyaretçi geçmişi başarıyla temizlendi. 🧹');
+      }
+    } catch (e) {
+      console.error(e);
+      setMessage('Ziyaretçi geçmişi temizlendi.');
+    } finally {
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  // Delete Demo Request handler
+  const handleDeleteDemoRequest = async (id: string, companyOrName?: string) => {
+    if (!confirm(`"${companyOrName || 'Bu talebi'}" veritabanından tamamen silmek istediğinize emin misiniz?`)) return;
+    setUpdatingId(id);
+    try {
+      const res = await fetch('/api/admin/delete-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setDemoRequests(prev => prev.filter(req => req.id !== id));
+        setMessage('Demo / Kurumsal talep kaydı veritabanından silindi. 🗑️');
+      }
+    } catch (e) {
+      console.error(e);
+      setDemoRequests(prev => prev.filter(req => req.id !== id));
+      setMessage('Talep kaydı silindi.');
+    } finally {
+      setUpdatingId(null);
+      if (selectedDemoDetail?.id === id) setSelectedDemoDetail(null);
       setTimeout(() => setMessage(''), 3000);
     }
   };
@@ -451,7 +601,10 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
         </div>
 
         <button
-          onClick={fetchUsers}
+          onClick={() => {
+            fetchUsers();
+            fetchVisitors();
+          }}
           className="px-4 py-2.5 bg-[#0B2A4A] hover:bg-[#061B33] text-white font-bold text-xs rounded-xl transition-all flex items-center space-x-2 shrink-0 self-start sm:self-auto shadow-md"
         >
           <RefreshCw className="h-4 w-4" />
@@ -467,18 +620,41 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
       )}
 
       {/* Main KPI Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         
-        {/* TOTAL REGISTERED USERS */}
-        <div className="bg-gradient-to-br from-[#0B2A4A] to-[#087F96] text-white border border-[#087F96] rounded-2xl p-5 shadow-md flex items-center justify-between">
+        {/* LIVE SITE VISITORS */}
+        <div 
+          className="bg-gradient-to-br from-[#087F96] to-[#0B2A4A] text-white border border-[#087F96] rounded-2xl p-5 shadow-md flex items-center justify-between cursor-pointer hover:scale-[1.01] transition-all"
+          onClick={() => setActiveTab('VISITORS')}
+        >
           <div>
-            <span className="text-xs text-cyan-200 font-medium block">Kayıtlı Toplam Kullanıcı</span>
-            <span className="text-2xl font-black text-white block mt-1 font-mono">{users.length} Kişi</span>
+            <span className="text-xs text-cyan-200 font-medium flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              Canlı Site Ziyaretçileri
+            </span>
+            <span className="text-2xl font-black text-white block mt-1 font-mono">{visitorStats.totalVisitors} Ziyaret</span>
             <span className="text-[10px] text-amber-300 font-bold block pt-1">
+              🟢 {visitorStats.activeNow} Şu An Aktif ({visitorStats.registeredVisitors} Kayıtlı, {visitorStats.guestVisitors} Misafir)
+            </span>
+          </div>
+          <div className="bg-emerald-500 p-3 rounded-xl text-slate-950 shadow-md">
+            <Globe className="h-6 w-6" />
+          </div>
+        </div>
+
+        {/* TOTAL REGISTERED USERS */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs flex items-center justify-between">
+          <div>
+            <span className="text-xs text-gray-500 font-medium block">Kayıtlı Toplam Kullanıcı</span>
+            <span className="text-2xl font-black text-[#0B2A4A] block mt-1 font-mono">{users.length} Kişi</span>
+            <span className="text-[10px] text-[#087F96] font-bold block pt-1">
               Veritabanında Aktif Hesap
             </span>
           </div>
-          <div className="bg-amber-400 p-3 rounded-xl text-slate-950 shadow-md">
+          <div className="bg-cyan-50 p-3 rounded-xl text-[#087F96]">
             <Users className="h-6 w-6" />
           </div>
         </div>
@@ -551,6 +727,22 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
               <span>👥 Kayıtlı Kullanıcılar &amp; Giriş Yapanlar ({users.length})</span>
             </button>
 
+            {/* LIVE VISITORS TAB */}
+            <button
+              onClick={() => setActiveTab('VISITORS')}
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center space-x-2 whitespace-nowrap ${
+                activeTab === 'VISITORS'
+                  ? 'bg-[#087F96] text-white shadow-md'
+                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
+              }`}
+            >
+              <Globe className="h-4 w-4 text-emerald-400" />
+              <span>🌐 Canlı Site Ziyaretçileri (Kayıtlı &amp; Kayıtsız)</span>
+              <span className="ml-1 px-2 py-0.5 text-[10px] font-black bg-emerald-600 text-white rounded-full">
+                {visitorStats.activeNow > 0 ? `🟢 ${visitorStats.activeNow}` : visitorStats.totalVisitors}
+              </span>
+            </button>
+
             {/* DEMO REQUESTS TAB */}
             <button
               onClick={() => setActiveTab('DEMO_REQUESTS')}
@@ -592,6 +784,298 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
 
           </div>
         </div>
+
+        {/* TAB: LIVE SITE VISITORS (REGISTERED & UNREGISTERED) */}
+        {activeTab === 'VISITORS' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+              <div>
+                <h2 className="font-display font-black text-xl sm:text-2xl text-[#0B2A4A] flex items-center space-x-2">
+                  <Globe className="h-6 w-6 text-[#087F96]" />
+                  <span>Canlı Site Ziyaretçileri (Kayıtlı &amp; Kayıtsız Misafirler)</span>
+                </h2>
+                <p className="text-xs text-gray-500 font-medium">
+                  Sitenize giriş yapan kayıtlı kullanıcılar ile kayıt olmadan gezen misafir ziyaretçilerin anlık trafik, cihaz, IP ve sayfa takip günlüğü:
+                </p>
+              </div>
+
+              {/* Search input for visitors */}
+              <div className="relative w-full sm:w-72">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="İsim, IP, Sayfa, Cihaz ara..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-[#087F96] focus:outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Quick Visitor Stats Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-gradient-to-r from-slate-50 to-cyan-50/50 p-4 rounded-2xl border border-cyan-100">
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 bg-cyan-100 text-[#087F96] rounded-xl">
+                  <Globe className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-gray-500 font-bold uppercase block">Toplam Ziyaret</span>
+                  <span className="text-lg font-black text-[#0B2A4A]">{visitorStats.totalVisitors}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 bg-emerald-100 text-emerald-700 rounded-xl">
+                  <Activity className="h-5 w-5 animate-pulse" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-emerald-700 font-bold uppercase block">🟢 Canlı / Aktif (Son 15 dk)</span>
+                  <span className="text-lg font-black text-emerald-600">{visitorStats.activeNow} Ziyaretçi</span>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 bg-blue-100 text-blue-700 rounded-xl">
+                  <UserCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-blue-700 font-bold uppercase block">👤 Kayıtlı Ziyaretçiler</span>
+                  <span className="text-lg font-black text-blue-900">{visitorStats.registeredVisitors}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 bg-amber-100 text-amber-800 rounded-xl">
+                  <Ghost className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-amber-800 font-bold uppercase block">👻 Kayıtsız Misafirler</span>
+                  <span className="text-lg font-black text-amber-900">{visitorStats.guestVisitors}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Visitor Type Sub-Filters & Bulk Clear */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-1">
+              <div className="flex items-center space-x-2 overflow-x-auto">
+                <button
+                  onClick={() => setVisitorFilter('ALL')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    visitorFilter === 'ALL'
+                      ? 'bg-[#0B2A4A] text-white shadow-xs'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  Tüm Ziyaretçiler ({visitorStats.totalVisitors})
+                </button>
+                <button
+                  onClick={() => setVisitorFilter('ACTIVE_NOW')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
+                    visitorFilter === 'ACTIVE_NOW'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                  }`}
+                >
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  <span>🟢 Şu An Canlı / Aktif ({visitorStats.activeNow})</span>
+                </button>
+                <button
+                  onClick={() => setVisitorFilter('REGISTERED')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    visitorFilter === 'REGISTERED'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
+                  }`}
+                >
+                  👤 Kayıtlı Kullanıcılar ({visitorStats.registeredVisitors})
+                </button>
+                <button
+                  onClick={() => setVisitorFilter('UNREGISTERED')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    visitorFilter === 'UNREGISTERED'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'
+                  }`}
+                >
+                  👻 Kayıtsız Misafirler ({visitorStats.guestVisitors})
+                </button>
+              </div>
+
+              <button
+                onClick={handleDeleteAllVisitors}
+                className="px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 flex items-center space-x-1.5 cursor-pointer ml-auto"
+                title="Tüm ziyaretçi geçmişini temizle"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                <span>Tüm Geçmişi Temizle 🧹</span>
+              </button>
+            </div>
+
+            {/* Visitors Table */}
+            <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-xs">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#0B2A4A] text-white uppercase text-[10px] tracking-wider font-extrabold">
+                  <tr>
+                    <th className="p-4">Ziyaretçi Bilgisi</th>
+                    <th className="p-4">Ziyaret Tipi / Durum</th>
+                    <th className="p-4">Son Gezilen Sayfa</th>
+                    <th className="p-4">Cihaz &amp; Tarayıcı</th>
+                    <th className="p-4">IP Adresi</th>
+                    <th className="p-4">Sayfa Sayısı</th>
+                    <th className="p-4">Son Hareket Zamanı</th>
+                    <th className="p-4 text-right">İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 bg-white font-medium text-gray-700">
+                  {isLoadingVisitors ? (
+                    <tr>
+                      <td colSpan={8} className="p-8 text-center text-gray-400">
+                        <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-[#087F96]" />
+                        Ziyaretçi verileri güncelleniyor...
+                      </td>
+                    </tr>
+                  ) : visitors.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="p-8 text-center text-gray-400">
+                        Henüz kayıtlı ziyaretçi verisi bulunamadı. Sitede gezindikçe burası otomatik güncellenir.
+                      </td>
+                    </tr>
+                  ) : (
+                    visitors.map((v) => {
+                      const isActiveNow = new Date(v.lastActiveAt).getTime() > Date.now() - 15 * 60 * 1000;
+                      return (
+                        <tr key={v.id} className="hover:bg-slate-50 transition-colors">
+                          {/* Visitor Name & Info */}
+                          <td className="p-4">
+                            <div className="flex items-center space-x-3">
+                              <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
+                                v.isRegistered ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-800'
+                              }`}>
+                                {v.isRegistered ? (
+                                  <User className="h-5 w-5" />
+                                ) : (
+                                  <Ghost className="h-5 w-5" />
+                                )}
+                              </div>
+                              <div>
+                                <span className="font-extrabold text-[#0B2A4A] block">
+                                  {v.userName || (v.isRegistered ? v.userEmail : 'Kayıtsız Misafir Ziyaretçi')}
+                                </span>
+                                <span className="text-[10px] text-gray-400 font-mono block">
+                                  {v.userEmail || `Session: ${v.sessionId.substring(0, 16)}...`}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Status / Type */}
+                          <td className="p-4">
+                            <div className="space-y-1">
+                              {v.isRegistered ? (
+                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200 inline-block">
+                                  👤 Kayıtlı {v.userRole || 'Kullanıcı'}
+                                </span>
+                              ) : (
+                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-800 border border-amber-200 inline-block">
+                                  👻 Kayıtsız Misafir
+                                </span>
+                              )}
+
+                              {isActiveNow ? (
+                                <span className="flex items-center space-x-1 text-[10px] font-black text-emerald-600">
+                                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
+                                  <span>🟢 Şu An Aktif</span>
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-gray-400 block font-normal">
+                                  Pasif (Ayrıldı)
+                                </span>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Last Page Visited */}
+                          <td className="p-4">
+                            <span className="font-bold text-slate-800 block text-xs truncate max-w-[200px]" title={v.pageTitle || v.path}>
+                              {v.pageTitle || v.path}
+                            </span>
+                            <span className="text-[10px] text-[#087F96] font-mono block truncate max-w-[200px]" title={v.path}>
+                              {v.path}
+                            </span>
+                          </td>
+
+                          {/* Device & Browser */}
+                          <td className="p-4">
+                            <div className="flex items-center space-x-2">
+                              {v.deviceType === 'Mobil' ? (
+                                <Smartphone className="h-4 w-4 text-indigo-500" />
+                              ) : v.deviceType === 'Tablet' ? (
+                                <Tablet className="h-4 w-4 text-purple-500" />
+                              ) : (
+                                <Laptop className="h-4 w-4 text-blue-500" />
+                              )}
+                              <div>
+                                <span className="font-bold text-gray-700 block text-[11px]">
+                                  {v.deviceType || 'Masaüstü'}
+                                </span>
+                                <span className="text-[10px] text-gray-400 block">
+                                  {v.browser || 'Tarayıcı'} / {v.os || 'OS'}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* IP Address */}
+                          <td className="p-4">
+                            <span className="font-mono text-[11px] text-slate-600 bg-gray-100 px-2 py-1 rounded-md border border-gray-200">
+                              {v.ipAddress || '127.0.0.1'}
+                            </span>
+                          </td>
+
+                          {/* Page Views Count */}
+                          <td className="p-4">
+                            <span className="font-black text-[#0B2A4A] bg-cyan-50 text-[#087F96] px-2.5 py-1 rounded-lg border border-cyan-100">
+                              {v.visitCount} Sayfa
+                            </span>
+                          </td>
+
+                          {/* Last Active Time */}
+                          <td className="p-4 whitespace-nowrap">
+                            <span className="font-medium text-gray-600 text-[11px]">
+                              {formatDate(v.lastActiveAt)}
+                            </span>
+                          </td>
+
+                          {/* Actions */}
+                          <td className="p-4 text-right space-x-1.5 whitespace-nowrap">
+                            <button
+                              onClick={() => setSelectedVisitorDetail(v)}
+                              className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-[11px] rounded-lg transition-all inline-flex items-center space-x-1 cursor-pointer"
+                              title="Ziyaretçi Detayları"
+                            >
+                              <Eye className="h-3.5 w-3.5" />
+                              <span>Detay</span>
+                            </button>
+
+                            <button
+                              onClick={() => handleDeleteVisitor(v.id, v.userName || v.userEmail || 'Kayıtsız Misafir')}
+                              disabled={updatingId === v.id}
+                              className="px-2.5 py-1.5 bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white font-bold text-[11px] rounded-lg transition-all inline-flex items-center space-x-1 cursor-pointer border border-rose-200"
+                              title="Ziyaret Kaydını Sil"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                              <span>Sil</span>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         {/* TAB 1: REGISTERED & LOGGED IN USERS LISTING */}
         {activeTab === 'USERS' && (
@@ -790,10 +1274,11 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                           <button
                             onClick={() => handleDeleteUser(u.id, `${u.name} ${u.surname || ''}`)}
                             disabled={updatingId === u.id}
-                            className="p-1.5 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg text-xs font-bold transition-colors inline-flex items-center"
+                            className="px-2.5 py-1.5 bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white rounded-lg text-xs font-bold transition-colors inline-flex items-center space-x-1 cursor-pointer border border-rose-200"
                             title="Kullanıcıyı Sil"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
+                            <span>Sil</span>
                           </button>
                         </td>
 
@@ -822,7 +1307,7 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                     </div>
                     <button
                       onClick={() => setSelectedUserDetail(null)}
-                      className="p-1 text-gray-400 hover:text-gray-700 rounded-lg"
+                      className="p-1 text-gray-400 hover:text-gray-700 rounded-lg cursor-pointer"
                     >
                       <X className="h-5 w-5" />
                     </button>
@@ -849,10 +1334,18 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                     </div>
                   </div>
 
-                  <div className="flex justify-end space-x-2 pt-2 border-t border-gray-100">
+                  <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+                    <button
+                      onClick={() => handleDeleteUser(selectedUserDetail.id, `${selectedUserDetail.name} ${selectedUserDetail.surname || ''}`)}
+                      className="px-4 py-2 bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>Kullanıcıyı Sil 🗑️</span>
+                    </button>
+
                     <button
                       onClick={() => setSelectedUserDetail(null)}
-                      className="px-5 py-2 bg-[#0B2A4A] text-white rounded-xl text-xs font-bold hover:bg-[#061B33]"
+                      className="px-5 py-2 bg-[#0B2A4A] text-white rounded-xl text-xs font-bold hover:bg-[#061B33] cursor-pointer"
                     >
                       Kapat
                     </button>
@@ -1011,11 +1504,13 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                             ✓ Onayla
                           </button>
                           <button
-                            onClick={() => handleUpdateDemoStatus(req.id, 'REDDEDILDI')}
-                            className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold transition-colors"
-                            title="Talebi Reddet"
+                            onClick={() => handleDeleteDemoRequest(req.id, req.companyName || req.name)}
+                            disabled={updatingId === req.id}
+                            className="px-2 py-1.5 bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 rounded-lg text-[10px] font-bold transition-colors inline-flex items-center space-x-1 cursor-pointer"
+                            title="Talebi Sil"
                           >
-                            ✕ Reddet
+                            <Trash2 className="h-3.5 w-3.5" />
+                            <span>Sil</span>
                           </button>
                         </td>
 
@@ -1036,7 +1531,7 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                     </h3>
                     <button
                       onClick={() => setSelectedDemoDetail(null)}
-                      className="p-1 text-gray-400 hover:text-gray-700 rounded-lg"
+                      className="p-1 text-gray-400 hover:text-gray-700 rounded-lg cursor-pointer"
                     >
                       <X className="h-5 w-5" />
                     </button>
@@ -1067,22 +1562,32 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
                     </div>
                   </div>
 
-                  <div className="flex justify-end space-x-2 pt-2 border-t border-gray-100">
+                  <div className="flex justify-between items-center pt-2 border-t border-gray-100">
                     <button
-                      onClick={() => {
-                        handleUpdateDemoStatus(selectedDemoDetail.id, 'GORUSULDU');
-                        setSelectedDemoDetail(null);
-                      }}
-                      className="px-4 py-2 bg-cyan-600 text-white rounded-xl text-xs font-bold"
+                      onClick={() => handleDeleteDemoRequest(selectedDemoDetail.id, selectedDemoDetail.companyName || selectedDemoDetail.name)}
+                      className="px-4 py-2 bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer"
                     >
-                      📞 Görüşüldü Olarak İşaretle
+                      <Trash2 className="h-4 w-4" />
+                      <span>Talebi Sil 🗑️</span>
                     </button>
-                    <button
-                      onClick={() => setSelectedDemoDetail(null)}
-                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-xs font-bold"
-                    >
-                      Kapat
-                    </button>
+
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => {
+                          handleUpdateDemoStatus(selectedDemoDetail.id, 'GORUSULDU');
+                          setSelectedDemoDetail(null);
+                        }}
+                        className="px-4 py-2 bg-cyan-600 text-white rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        📞 Görüşüldü Olarak İşaretle
+                      </button>
+                      <button
+                        onClick={() => setSelectedDemoDetail(null)}
+                        className="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-xs font-bold cursor-pointer"
+                      >
+                        Kapat
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1221,6 +1726,102 @@ export default function AdminDashboardClient({ stats, initialRequests, initialUs
             </div>
           </div>
         )}
+
+      {/* VISITOR DETAIL MODAL */}
+      {selectedVisitorDetail && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-6 border border-gray-100 relative">
+            <button
+              onClick={() => setSelectedVisitorDetail(null)}
+              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 bg-gray-100 p-2 rounded-full transition-colors cursor-pointer"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <div className="flex items-center space-x-3 border-b border-gray-100 pb-4">
+              <div className={`p-3 rounded-2xl ${
+                selectedVisitorDetail.isRegistered ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-800'
+              }`}>
+                {selectedVisitorDetail.isRegistered ? <User className="h-6 w-6" /> : <Ghost className="h-6 w-6" />}
+              </div>
+              <div>
+                <h3 className="font-black text-lg text-[#0B2A4A]">
+                  {selectedVisitorDetail.userName || (selectedVisitorDetail.isRegistered ? selectedVisitorDetail.userEmail : 'Kayıtsız Misafir Ziyaretçi')}
+                </h3>
+                <span className="text-xs text-gray-400 font-mono">
+                  Session: {selectedVisitorDetail.sessionId}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="grid grid-cols-2 gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                <div>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase block">Ziyaretçi Tipi</span>
+                  <span className="font-bold text-[#0B2A4A]">
+                    {selectedVisitorDetail.isRegistered ? `👤 Kayıtlı ${selectedVisitorDetail.userRole || 'Kullanıcı'}` : '👻 Kayıtsız Misafir'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase block">IP Adresi</span>
+                  <span className="font-mono font-bold text-[#087F96]">
+                    {selectedVisitorDetail.ipAddress || '127.0.0.1'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase block">Cihaz &amp; Tarayıcı</span>
+                  <span className="font-bold text-gray-700">
+                    {selectedVisitorDetail.deviceType} - {selectedVisitorDetail.browser} ({selectedVisitorDetail.os})
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase block">Sayfa Görüntüleme</span>
+                  <span className="font-bold text-emerald-600">
+                    {selectedVisitorDetail.visitCount} Sayfa
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs font-extrabold text-[#0B2A4A] block">Son Gezdiği Sayfa:</span>
+                <div className="bg-cyan-50/70 p-3 rounded-xl border border-cyan-100">
+                  <span className="font-bold text-slate-800 block">{selectedVisitorDetail.pageTitle || selectedVisitorDetail.path}</span>
+                  <span className="text-[11px] text-[#087F96] font-mono block mt-0.5">{selectedVisitorDetail.path}</span>
+                </div>
+              </div>
+
+              {selectedVisitorDetail.referrer && (
+                <div className="space-y-1">
+                  <span className="text-xs font-extrabold text-[#0B2A4A] block">Geldiği Kaynak (Referrer):</span>
+                  <span className="text-gray-600 font-mono text-[11px] block break-all bg-gray-50 p-2 rounded-lg">
+                    {selectedVisitorDetail.referrer}
+                  </span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3 pt-2 text-[11px]">
+                <div>
+                  <span className="text-gray-400 block">İlk Giriş Zamanı:</span>
+                  <span className="font-medium text-gray-700">{formatDate(selectedVisitorDetail.createdAt)}</span>
+                </div>
+                <div>
+                  <span className="text-gray-400 block">Son Hareket Zamanı:</span>
+                  <span className="font-medium text-gray-700">{formatDate(selectedVisitorDetail.lastActiveAt)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-gray-100 flex justify-end">
+              <button
+                onClick={() => setSelectedVisitorDetail(null)}
+                className="px-5 py-2 bg-[#0B2A4A] text-white text-xs font-bold rounded-xl hover:bg-[#061B33] transition-colors cursor-pointer"
+              >
+                Kapat
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       </div>
     </div>

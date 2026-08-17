@@ -23,6 +23,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.perakendekariyer.com"),
 };
 
+import VisitorTracker from "@/components/VisitorTracker";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="tr" className={`${inter.variable} ${montserrat.variable} scroll-smooth`}>
       <body className="bg-[#F4F7F9] text-[#1D2A38] font-sans antialiased min-h-screen flex flex-col">
+        <VisitorTracker />
         {children}
       </body>
     </html>

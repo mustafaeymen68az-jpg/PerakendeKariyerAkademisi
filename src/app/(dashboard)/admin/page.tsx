@@ -34,6 +34,14 @@ export default async function AdminDashboardPage() {
   let requests: any[] = [];
   let initialUsers: any[] = [];
 
+  let visitorStats = {
+    totalVisitors: 0,
+    registeredVisitors: 0,
+    guestVisitors: 0,
+    activeNow: 0
+  };
+  let initialVisitors: any[] = [];
+
   try {
     totalTrainings = await prisma.training.count();
     pendingRequestCount = await prisma.trainingRequest.count({ where: { status: 'BEKLIYOR' } });
@@ -41,6 +49,56 @@ export default async function AdminDashboardPage() {
     totalStudents = await prisma.user.count({ where: { role: 'PARTICIPANT' } });
     totalUsers = await prisma.user.count();
     adminUsersCount = await prisma.user.count({ where: { role: 'ADMIN' } });
+
+    // Visitors data
+    const fifteenMinsAgo = new Date(Date.now() - 15 * 60 * 1000);
+    visitorStats = {
+      totalVisitors: await prisma.siteVisit.count(),
+      registeredVisitors: await prisma.siteVisit.count({ where: { isRegistered: true } }),
+      guestVisitors: await prisma.siteVisit.count({ where: { isRegistered: false } }),
+      activeNow: await prisma.siteVisit.count({ where: { lastActiveAt: { gte: fifteenMinsAgo } } })
+    };
+
+    const rawVisitors = await prisma.siteVisit.findMany({
+      orderBy: { lastActiveAt: 'desc' },
+      take: 100,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            surname: true,
+            email: true,
+            role: true,
+            title: true,
+            companyName: true,
+            city: true
+          }
+        }
+      }
+    });
+
+    initialVisitors = rawVisitors.map(v => ({
+      id: v.id,
+      sessionId: v.sessionId,
+      userId: v.userId,
+      userEmail: v.userEmail || v.user?.email || null,
+      userName: v.userName || (v.user ? `${v.user.name} ${v.user.surname || ''}`.trim() : null),
+      userRole: v.userRole || v.user?.role || null,
+      isRegistered: v.isRegistered,
+      ipAddress: v.ipAddress,
+      userAgent: v.userAgent,
+      deviceType: v.deviceType,
+      browser: v.browser,
+      os: v.os,
+      path: v.path,
+      pageTitle: v.pageTitle,
+      referrer: v.referrer,
+      visitCount: v.visitCount,
+      lastActiveAt: v.lastActiveAt ? new Date(v.lastActiveAt).toISOString() : new Date().toISOString(),
+      createdAt: v.createdAt ? new Date(v.createdAt).toISOString() : new Date().toISOString(),
+      user: v.user
+    }));
 
     requests = await prisma.trainingRequest.findMany({
       orderBy: { createdAt: 'desc' },
@@ -89,10 +147,12 @@ export default async function AdminDashboardPage() {
         totalCompanies,
         totalStudents,
         totalUsers,
-        adminUsersCount
+        adminUsersCount,
+        ...visitorStats
       }}
       initialRequests={requests}
       initialUsers={initialUsers}
+      initialVisitors={initialVisitors}
     />
   );
 }
