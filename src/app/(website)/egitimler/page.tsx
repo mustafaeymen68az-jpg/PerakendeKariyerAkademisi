@@ -39,7 +39,12 @@ import {
   FileCheck,
   FileText,
   FileSpreadsheet,
-  FileCode
+  FileCode,
+  ChevronUp,
+  FolderOpen,
+  Layers,
+  LayoutGrid,
+  List
 } from 'lucide-react';
 import { DEPARTMENTS_DATA } from '@/data/departmentsData';
 import CourseDetailModal, { DetailedCourse } from '@/components/CourseDetailModal';
@@ -365,6 +370,25 @@ function EgitimlerCatalogContent() {
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   const [isInstructorModalOpen, setIsInstructorModalOpen] = useState(false);
 
+  // VIEW MODE: POSITION GROUPED OR FLAT TABLE
+  const [viewMode, setViewMode] = useState<'grouped' | 'flat'>('grouped');
+  const [expandedPositionIds, setExpandedPositionIds] = useState<string[]>(() => DEPARTMENTS_DATA.map((d) => d.id));
+
+  const togglePositionExpand = (deptId: string) => {
+    setExpandedPositionIds((prev) =>
+      prev.includes(deptId) ? prev.filter((id) => id !== deptId) : [...prev, deptId]
+    );
+  };
+
+  const toggleExpandAllPositions = () => {
+    const allIds = DEPARTMENTS_DATA.map((d) => d.id);
+    if (expandedPositionIds.length === allIds.length) {
+      setExpandedPositionIds([]);
+    } else {
+      setExpandedPositionIds(allIds);
+    }
+  };
+
   // Active Main Category Object
   const currentMainCatObj = useMemo(() => {
     return HIERARCHY.find((c) => c.id === selectedMainCatId) || HIERARCHY[0];
@@ -482,6 +506,19 @@ function EgitimlerCatalogContent() {
       return sortOrder === 'asc' ? (valA as number) - (valB as number) : (valB as number) - (valA as number);
     });
   }, [searchQuery, selectedMainCatId, currentMainCatObj, instructorFilter, positionFilter, kapsamFilter, certFilter, levelFilter, showOnlySelected, selectedCourseIds, sortField, sortOrder]);
+
+  // GROUPED COURSES BY DEPARTMENT / POSITION
+  const groupedCoursesByDepartment = useMemo(() => {
+    return DEPARTMENTS_DATA.map((dept) => {
+      const courses = filteredCourses.filter(
+        (c) => c.deptId === dept.id || c.department === dept.name
+      );
+      return {
+        dept,
+        courses
+      };
+    }).filter((group) => group.courses.length > 0);
+  }, [filteredCourses]);
 
   // DISPLAYED TOTALS FOR TABLE FOOTER (TFOOT): IF COURSES CHECKED -> SELECTED TOTAL, ELSE -> FILTERED TOTAL
   const displayedTotals = useMemo(() => {
@@ -785,7 +822,10 @@ function EgitimlerCatalogContent() {
 
   const handleSelectMainCategory = (catId: string) => {
     setSelectedMainCatId(catId);
-    setPositionFilter('all');
+    if (catId === 'all') {
+      setViewMode('grouped');
+      setExpandedPositionIds(DEPARTMENTS_DATA.map((d) => d.id));
+    }
   };
 
   const toggleCourseSelect = (courseId: string, e?: React.MouseEvent) => {
@@ -854,6 +894,359 @@ function EgitimlerCatalogContent() {
   };
 
   const isAllSelected = filteredCourses.length > 0 && filteredCourses.every(c => selectedCourseIds.includes(c.id));
+
+  const renderCourseTable = (courseList: CourseItem[], showTableFooter: boolean = false) => {
+    const isListAllSelected = courseList.length > 0 && courseList.every((c) => selectedCourseIds.includes(c.id));
+
+    return (
+      <div className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
+        <table className="w-full text-left text-xs table-fixed">
+          <thead className="bg-[#0B2A4A] text-white uppercase font-black tracking-wider border-b border-white/10 select-none">
+            <tr>
+              <th
+                onClick={() => {
+                  const listIds = courseList.map((c) => c.id);
+                  const allSel = listIds.every((id) => selectedCourseIds.includes(id));
+                  if (allSel) {
+                    setSelectedCourseIds((prev) => prev.filter((id) => !listIds.includes(id)));
+                  } else {
+                    setSelectedCourseIds((prev) => Array.from(new Set([...prev, ...listIds])));
+                  }
+                }}
+                className="py-3 px-1 w-[40px] text-center cursor-pointer hover:bg-white/15 transition-colors border-r border-white/10"
+                title="Tüm Listeyi Seç / Kaldır"
+              >
+                <div className="flex items-center justify-center">
+                  <input
+                    type="checkbox"
+                    checked={isListAllSelected}
+                    onChange={() => {}}
+                    className="w-3.5 h-3.5 rounded text-[#087F96] focus:ring-[#087F96] cursor-pointer accent-[#087F96]"
+                  />
+                </div>
+              </th>
+
+              <th className="py-2.5 px-2.5 w-[22%] bg-[#052240] border-r border-white/10">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between cursor-pointer" onClick={() => handleSort('title')}>
+                    <span className="text-cyan-300 font-black text-[10px] tracking-wider truncate">DERS ADI</span>
+                    <ArrowUpDown className="w-3 h-3 text-cyan-300 shrink-0" />
+                  </div>
+                  <div className="relative">
+                    <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Ders ara..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-7 pr-5 py-0.5 bg-[#0B2A4A] text-white placeholder-gray-400 text-[10px] font-normal rounded-lg border border-cyan-400/40 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery('')}
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </th>
+
+              <th className="py-2.5 px-2 w-[13%] bg-[#084C74] border-r border-white/20">
+                <select
+                  value={positionFilter}
+                  onChange={(e) => setPositionFilter(e.target.value)}
+                  className="w-full bg-transparent text-amber-300 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-amber-300 pb-0.5 hover:text-white truncate"
+                >
+                  <option value="all" className="bg-[#0B2A4A] text-white">🏬 POZİSYON (TÜMÜ)</option>
+                  {DEPARTMENTS_DATA.map((d) => (
+                    <option key={d.id} value={d.id} className="bg-[#0B2A4A] text-amber-300 font-bold">
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+              </th>
+
+              <th className="py-2.5 px-2 w-[12%] bg-[#056B80] border-r border-white/20">
+                <select
+                  value={instructorFilter}
+                  onChange={(e) => setInstructorFilter(e.target.value)}
+                  className="w-full bg-transparent text-amber-300 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-amber-300 pb-0.5 hover:text-white truncate"
+                >
+                  <option value="all" className="bg-[#0B2A4A] text-white">🎓 EĞİTMEN (TÜMÜ)</option>
+                  {ALL_INSTRUCTORS.map((inst) => (
+                    <option key={inst.id} value={inst.id} className="bg-[#0B2A4A] text-amber-300 font-bold">
+                      👤 {inst.name}
+                    </option>
+                  ))}
+                </select>
+              </th>
+
+              <th
+                onClick={() => handleSort('duration')}
+                className="py-3 px-1 w-[45px] text-center cursor-pointer hover:bg-white/10 transition-colors border-r border-white/10"
+              >
+                <div className="flex items-center justify-center space-x-0.5 text-[10px]">
+                  <span>SÜRE</span>
+                  <ArrowUpDown className="w-2.5 h-2.5 text-cyan-300 shrink-0" />
+                </div>
+              </th>
+
+              <th
+                onClick={() => handleSort('price')}
+                className="py-3 px-2 w-[85px] bg-[#084C74] text-right cursor-pointer hover:bg-[#053856] transition-colors border-r border-white/20"
+                title="Fiyata göre artan/azalan sırala"
+              >
+                <div className="flex items-center justify-end space-x-0.5 text-amber-300 font-black text-[10px]">
+                  <span>ÜCRET</span>
+                  <ArrowUpDown className="w-2.5 h-2.5 text-amber-300 shrink-0" />
+                </div>
+              </th>
+
+              <th className="py-2.5 px-2 w-[100px] bg-[#053856] border-r border-white/20 text-center">
+                <select
+                  value={levelFilter}
+                  onChange={(e) => setLevelFilter(e.target.value)}
+                  className="w-full bg-transparent text-amber-300 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-amber-300 pb-0.5 hover:text-white text-center truncate"
+                >
+                  <option value="all" className="bg-[#0B2A4A] text-white">⭐ SEVİYE (TÜMÜ)</option>
+                  <option value="Executive" className="bg-[#0B2A4A] text-amber-300 font-bold">👑 Executive</option>
+                  <option value="Yönetici" className="bg-[#0B2A4A] text-purple-300 font-bold">👔 Yönetici</option>
+                  <option value="Uzmanlık" className="bg-[#0B2A4A] text-emerald-300 font-bold">⭐ Uzmanlık</option>
+                  <option value="Standart" className="bg-[#0B2A4A] text-blue-300 font-bold">🔹 Standart</option>
+                </select>
+              </th>
+
+              <th className="py-2.5 px-2 w-[125px] bg-purple-950 border-r border-purple-400/40 text-center">
+                <select
+                  value={certFilter}
+                  onChange={(e) => setCertFilter(e.target.value)}
+                  className="w-full bg-transparent text-purple-200 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-purple-300 pb-0.5 hover:text-white text-center truncate"
+                >
+                  <option value="all" className="bg-[#0B2A4A] text-white">📜 SERTİFİKA TÜRÜ</option>
+                  <option value="universite" className="bg-[#0B2A4A] text-purple-200">🎓 Üniversite</option>
+                  <option value="egitmen" className="bg-[#0B2A4A] text-emerald-200">📜 Eğitmen</option>
+                  <option value="sertifikasiz" className="bg-[#0B2A4A] text-gray-300">⚪ Sertifikasız</option>
+                </select>
+              </th>
+
+              <th className="py-2.5 px-1 w-[55px] text-center border-r border-white/10">
+                <select
+                  value={kapsamFilter}
+                  onChange={(e) => setKapsamFilter(e.target.value)}
+                  className="w-full bg-transparent text-white font-black text-[10px] uppercase outline-none cursor-pointer border-b border-white/40 pb-0.5 hover:text-cyan-300 text-center"
+                >
+                  <option value="all" className="bg-[#0B2A4A] text-white">KAPSAM</option>
+                  <option value="Zorunlu" className="bg-[#0B2A4A] text-rose-300">Zorunlu</option>
+                  <option value="Önerilen" className="bg-[#0B2A4A] text-blue-300">Önerilen</option>
+                </select>
+              </th>
+
+              <th className="py-3 px-1 w-[140px] text-center">İŞLEM</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 font-medium">
+            {courseList.map((course) => {
+              const instructor = getInstructorForCourse(course.slug || course.id, course.category);
+              const courseImg = getCourseImage(course.title, course.category, course.department);
+              const isSelected = selectedCourseIds.includes(course.id);
+              const isInCart = cartItemIds.includes(course.id);
+              const priceInfo = calculateCoursePrice(course);
+              const certBadge = getCourseCertBadge(course, priceInfo.price);
+
+              return (
+                <tr
+                  key={course.id}
+                  onClick={() => handleOpenCourseModal(course)}
+                  className={`hover:bg-blue-50/60 cursor-pointer transition-colors ${
+                    isSelected ? 'bg-emerald-50/90 border-l-4 border-l-emerald-500 font-bold' : ''
+                  }`}
+                >
+                  <td
+                    className="py-3 px-1 text-center border-r border-gray-100 w-[40px]"
+                    onClick={(e) => toggleCourseSelect(course.id, e)}
+                  >
+                    <div className="flex flex-col items-center justify-center space-y-0.5">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => {}}
+                        className="w-3.5 h-3.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer accent-emerald-600"
+                      />
+                      {isSelected && (
+                        <span className="px-1 py-0.2 bg-emerald-600 text-white font-black text-[8px] rounded-full uppercase tracking-tighter">
+                          ✓
+                        </span>
+                      )}
+                    </div>
+                  </td>
+
+                  <td className="py-2.5 px-2.5 w-[22%] overflow-hidden">
+                    <div className="flex items-start space-x-2">
+                      <div className="relative shrink-0 mt-0.5">
+                        <img src={courseImg} alt={course.title} className="w-8 h-8 rounded-lg object-cover border border-gray-200 shadow-xs" />
+                        {isSelected && (
+                          <div className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 shadow-sm">
+                            <Check className="w-2.5 h-2.5 stroke-[3]" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="font-extrabold text-xs text-[#0B2A4A] group-hover:text-[#087F96] leading-tight truncate" title={course.title}>
+                          {course.title}
+                        </div>
+                        <span className="text-[10px] text-gray-400 block truncate">{course.subCategory}</span>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td className="py-2.5 px-2 text-emerald-800 font-extrabold text-[11px] truncate bg-emerald-50/20" title={course.department}>
+                    {course.department}
+                  </td>
+
+                  <td className="py-2.5 px-2 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center space-x-1.5 min-w-0">
+                      <img
+                        src={instructor.avatar}
+                        alt={instructor.name}
+                        className="w-6 h-6 rounded-full object-cover border border-emerald-500 shrink-0"
+                      />
+                      <button
+                        onClick={(e) => handleOpenInstructorModal(e, instructor)}
+                        className="font-bold text-[11px] text-[#0B2A4A] hover:text-[#087F96] hover:underline truncate"
+                        title={instructor.name}
+                      >
+                        {instructor.name}
+                      </button>
+                    </div>
+                  </td>
+
+                  <td className="py-2.5 px-1 text-center font-mono font-bold text-gray-700 text-xs border-r border-gray-100">{course.duration} Sa</td>
+
+                  <td className="py-2.5 px-2 text-right whitespace-nowrap bg-amber-50/70 border-r border-amber-200/80">
+                    <div className="font-black text-xs text-[#0B2A4A] font-mono">
+                      {priceInfo.formatted}
+                    </div>
+                  </td>
+
+                  <td className="py-2.5 px-2 text-center border-r border-gray-100 w-[100px]" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => setLevelFilter(levelFilter === priceInfo.badge ? 'all' : priceInfo.badge)}
+                      className={`inline-flex items-center justify-center px-2 py-0.5 rounded-lg text-[10px] border shadow-2xs font-extrabold cursor-pointer transition-transform hover:scale-105 ${priceInfo.badgeColor}`}
+                      title={`Tıklayarak sadece ${priceInfo.badge} seviyesindeki eğitimleri süzün`}
+                    >
+                      {priceInfo.badge}
+                    </button>
+                  </td>
+
+                  <td className="py-2.5 px-2 text-center border-r border-gray-100 w-[125px]">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] border shadow-2xs ${certBadge.badgeClass}`}>
+                      {certBadge.shortLabel}
+                    </span>
+                  </td>
+
+                  <td className="py-2.5 px-1 text-center border-r border-gray-100">
+                    <span className={`px-1.5 py-0.5 text-[9px] font-black rounded ${
+                      course.isMandatory ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {course.isMandatory ? 'Zorunlu' : 'Önerilen'}
+                    </span>
+                  </td>
+
+                  <td className="py-2.5 px-1 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-center space-x-1">
+                      <button
+                        onClick={() => {
+                          addToCart(course.id);
+                          setIsCartModalOpen(true);
+                        }}
+                        className="px-2 py-1 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-lg shadow-xs transition-all flex items-center space-x-0.5 text-[10px] border border-amber-300"
+                        title="Şimdi Satın Al"
+                      >
+                        <CreditCard className="w-3 h-3" />
+                        <span>Satın Al</span>
+                      </button>
+
+                      <button
+                        onClick={(e) => addToCart(course.id, e)}
+                        className={`p-1 rounded-lg font-bold text-[10px] transition-all border ${
+                          isInCart
+                            ? 'bg-emerald-100 text-emerald-900 border-emerald-300 font-black'
+                            : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
+                        }`}
+                        title={isInCart ? 'Sepetinizde Ekli' : 'Sepete Ekle'}
+                      >
+                        <ShoppingCart className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => handleOpenCourseModal(course)}
+                        className="px-1.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-lg text-[10px] border border-gray-200"
+                      >
+                        Detay
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+
+          {showTableFooter && (
+            <tfoot className="bg-[#0B2A4A] text-white font-black border-t-2 border-amber-400 select-none">
+              <tr>
+                <td className="py-3 px-1 text-center font-mono text-[9px] text-amber-300 border-r border-white/10">
+                  {selectedCourseIds.length > 0 ? `${selectedCourseIds.length} SEÇİLİ` : `${courseList.length} DERS`}
+                </td>
+                <td className="py-3 px-2.5 text-xs text-amber-300 uppercase tracking-wider font-extrabold">
+                  {selectedCourseIds.length > 0
+                    ? `SEÇİLEN (${selectedCourseIds.length}) EĞİTİM TOPLAMI`
+                    : `LİSTELENEN (${courseList.length}) EĞİTİM TOPLAMI`}
+                </td>
+                <td className="py-3 px-2 text-[10px] text-gray-300 font-bold uppercase truncate border-r border-white/10">
+                  GENEL MÜFREDAT
+                </td>
+                <td className="py-3 px-2 text-[10px] text-gray-300 font-bold uppercase truncate border-r border-white/10">
+                  AKADEMİ KADROSU
+                </td>
+                <td className="py-3 px-1 text-center font-mono font-black text-cyan-300 text-xs border-r border-white/10">
+                  {displayedTotals.hours} Sa
+                </td>
+                <td className="py-3 px-2 text-right bg-amber-400/25 text-amber-300 font-black text-xs font-mono border-r border-amber-400/50 shadow-inner">
+                  <div className="space-y-0.5">
+                    <div className="text-amber-300 text-xs font-black">
+                      ₺{displayedTotals.budget.toLocaleString('tr-TR')} TL
+                    </div>
+                    <div className="text-[8px] text-amber-200 font-bold uppercase tracking-tighter">
+                      TOPLAM TUTAR
+                    </div>
+                  </div>
+                </td>
+                <td className="py-3 px-2 text-center text-[9px] text-amber-200 font-bold border-r border-white/10">
+                  TÜM SEVİYELER
+                </td>
+                <td className="py-3 px-2 text-center text-[9px] text-purple-200 font-bold border-r border-white/10">
+                  AKREDİTE
+                </td>
+                <td className="py-3 px-1 text-center text-[9px] text-gray-300 font-bold border-r border-white/10">
+                  GENEL
+                </td>
+                <td className="py-3 px-1 text-center">
+                  <button
+                    onClick={addSelectedToCart}
+                    className="px-2.5 py-1 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-lg text-[10px] shadow-md border border-amber-300 cursor-pointer transition-all hover:scale-105"
+                  >
+                    💳 Toplu Satın Al
+                  </button>
+                </td>
+              </tr>
+            </tfoot>
+          )}
+        </table>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -945,7 +1338,6 @@ function EgitimlerCatalogContent() {
               </p>
             </div>
           </div>
-
           <div className="p-3 bg-gray-100/90 rounded-2xl border border-gray-300 flex items-start space-x-3">
             <div className="p-2 rounded-xl bg-gray-400 text-white font-black shrink-0">
               <X className="w-5 h-5" />
@@ -960,110 +1352,87 @@ function EgitimlerCatalogContent() {
         </div>
       </div>
 
-      {/* POZİSYON SEÇİM VE ARAMA ÇUBUĞU KARTI */}
-      <div className="bg-gradient-to-r from-blue-900 via-[#0B2A4A] to-[#087F96] p-6 rounded-3xl text-white shadow-md space-y-4 border border-blue-400/30">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center space-x-2">
-            <UserCheck className="w-5 h-5 text-amber-400" />
-            <h2 className="text-sm font-black uppercase tracking-wider text-white">
-              🏬 Pozisyon Seçin & Süzün ({DEPARTMENTS_DATA.length} Pozisyon)
-            </h2>
+      {/* TEK ARAMA ÇUBUĞU VE POZİSYON / KATEGORİ SEÇİM KARTI */}
+      <div className="bg-gradient-to-r from-blue-900 via-[#0B2A4A] to-[#087F96] p-6 rounded-3xl text-white shadow-xl space-y-4 border border-blue-400/40">
+        
+        {/* TEK ARAMA ÇUBUĞU VEYA POZİSYON MENÜSÜNDEN SEÇİM ROW */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          
+          <div className="flex items-center space-x-3 shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black shadow-md shrink-0">
+              <UserCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-sm font-black uppercase tracking-wider text-white flex items-center space-x-2">
+                <span>Tek Arama Çubuğunda Pozisyona Göre Eğitim Seçimi</span>
+              </h2>
+              <p className="text-xs text-gray-200 font-medium">
+                Kutuya yazarak veya menüden seçerek {ALL_COURSES.length} eğitimi pozisyon bazlı süzün
+              </p>
+            </div>
           </div>
 
-          {/* Position Search Bar */}
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
-            <input
-              type="text"
-              placeholder="Pozisyon ara (örn: Manav, Kasiyer, Mağaza Müdürü)..."
-              value={positionSearchQuery}
-              onChange={(e) => setPositionSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-7 py-1.5 bg-white/10 hover:bg-white/20 text-white placeholder-gray-300 text-xs font-semibold rounded-xl border border-white/30 focus:outline-none focus:ring-2 focus:ring-amber-400"
-            />
-            {positionSearchQuery && (
-              <button
-                onClick={() => setPositionSearchQuery('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* POZİSYON SEÇİM BUTONLARI */}
-        <div className="flex flex-wrap items-center gap-2 max-h-40 overflow-y-auto pr-1">
-          <button
-            onClick={() => setPositionFilter('all')}
-            className={`px-3.5 py-1.5 rounded-xl font-extrabold text-xs transition-all flex items-center space-x-1.5 ${
-              positionFilter === 'all'
-                ? 'bg-amber-400 text-slate-950 shadow-md scale-105'
-                : 'bg-white/10 text-white hover:bg-white/20'
-            }`}
-          >
-            <span>Tüm Pozisyonlar</span>
-            <span className="text-[10px] bg-black/20 px-1.5 py-0.2 rounded-full font-mono font-bold">
-              {ALL_COURSES.length}
-            </span>
-          </button>
-
-          {filteredPositionsList.map((dept) => {
-            const count = getPositionCourseCount(dept.id);
-            const isSelected = positionFilter === dept.id || positionFilter === dept.name;
-
-            return (
-              <button
-                key={dept.id}
-                onClick={() => setPositionFilter(isSelected ? 'all' : dept.id)}
-                className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all flex items-center space-x-1.5 border ${
-                  isSelected
-                    ? 'bg-emerald-400 text-slate-950 border-emerald-400 shadow-md scale-105 font-black'
-                    : 'bg-white/10 text-gray-100 border-white/15 hover:bg-white/25 hover:text-white'
-                }`}
-              >
-                <span>{dept.name}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                  isSelected ? 'bg-black/20 text-slate-950' : 'bg-black/30 text-gray-200'
-                }`}>
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* HİYERARŞİ KONTROL KARTI (ANA BAŞLIKLAR SEÇİMİ) */}
-      <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm space-y-4">
-        <div>
-          <div className="text-[11px] font-black text-gray-400 uppercase tracking-wider mb-2">
-            Ana Başlık Seçin
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {HIERARCHY.map((cat) => {
-              const count = getMainCategoryCount(cat.id);
-              const isActive = selectedMainCatId === cat.id;
-
-              return (
+          {/* SINGLE UNIFIED SEARCH INPUT + POSITION SELECT DROPDOWN */}
+          <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
+            
+            {/* 1. SINGLE LIVE SEARCH INPUT */}
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+              <input
+                type="text"
+                placeholder="Pozisyon veya ders ara (örn: Manav, Kasiyer)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-8 py-2.5 bg-white/10 hover:bg-white/20 text-white placeholder-gray-300 text-xs font-bold rounded-2xl border border-white/30 focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner"
+              />
+              {searchQuery && (
                 <button
-                  key={cat.id}
-                  onClick={() => handleSelectMainCategory(cat.id)}
-                  className={`px-4 py-2.5 rounded-2xl font-black text-xs transition-all flex items-center space-x-2 ${
-                    isActive
-                      ? 'bg-[#087F96] text-white shadow-md scale-105'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-[#0B2A4A]'
-                  }`}
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white"
                 >
-                  <span>{cat.name}</span>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'
-                  }`}>
-                    {count}
-                  </span>
+                  <X className="w-4 h-4" />
                 </button>
-              );
-            })}
+              )}
+            </div>
+
+            {/* 2. SINGLE POSITION & CATEGORY DROPDOWN SELECT */}
+            <div className="relative w-full sm:w-72">
+              <select
+                value={positionFilter !== 'all' ? positionFilter : selectedMainCatId}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  const isMainCat = HIERARCHY.some((h) => h.id === val);
+                  if (isMainCat) {
+                    handleSelectMainCategory(val);
+                    setPositionFilter('all');
+                  } else {
+                    setPositionFilter(val);
+                  }
+                }}
+                className="w-full py-2.5 px-3.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs rounded-2xl border border-amber-300 outline-none cursor-pointer shadow-md transition-all truncate"
+              >
+                <option value="all" className="bg-[#0B2A4A] text-white font-bold">
+                  🎓 Tüm Pozisyonlar ve Eğitimler ({ALL_COURSES.length} Ders)
+                </option>
+                <optgroup label="── 🏢 ANA POZİSYON KATEGORİLERİ ──" className="bg-[#0B2A4A] text-amber-300 font-extrabold">
+                  {HIERARCHY.filter(h => h.id !== 'all').map(h => (
+                    <option key={h.id} value={h.id} className="bg-[#0B2A4A] text-cyan-200 font-bold">
+                      {h.name} ({getMainCategoryCount(h.id)} Ders)
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="── 🏬 TÜM POZİSYON KADROLARI ──" className="bg-[#052240] text-emerald-300 font-extrabold">
+                  {DEPARTMENTS_DATA.map(d => (
+                    <option key={d.id} value={d.id} className="bg-[#0B2A4A] text-white font-medium">
+                      🏬 {d.name} ({getPositionCourseCount(d.id)} Ders)
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+            </div>
+
           </div>
+
         </div>
       </div>
 
@@ -1114,6 +1483,49 @@ function EgitimlerCatalogContent() {
             </button>
           </div>
 
+          {/* VIEW MODE TOGGLE & POSITION GROUPING CONTROLS */}
+          <div className="flex items-center space-x-1 bg-gray-100 p-1 rounded-xl border border-gray-200">
+            <button
+              onClick={() => {
+                setViewMode('grouped');
+                setExpandedPositionIds(DEPARTMENTS_DATA.map((d) => d.id));
+              }}
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-extrabold transition-all flex items-center space-x-1.5 cursor-pointer ${
+                viewMode === 'grouped'
+                  ? 'bg-[#0B2A4A] text-white shadow-xs'
+                  : 'text-gray-600 hover:text-[#0B2A4A] hover:bg-gray-200'
+              }`}
+              title="Eğitimleri pozisyonlarına göre gruplayarak göster"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Pozisyona Göre Aç ({groupedCoursesByDepartment.length} Pozisyon)</span>
+            </button>
+
+            <button
+              onClick={() => setViewMode('flat')}
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-extrabold transition-all flex items-center space-x-1.5 cursor-pointer ${
+                viewMode === 'flat'
+                  ? 'bg-[#0B2A4A] text-white shadow-xs'
+                  : 'text-gray-600 hover:text-[#0B2A4A] hover:bg-gray-200'
+              }`}
+              title="Tüm eğitimleri düz tablo halinde göster"
+            >
+              <List className="w-3.5 h-3.5" />
+              <span>Düz Liste</span>
+            </button>
+
+            {viewMode === 'grouped' && (
+              <button
+                onClick={toggleExpandAllPositions}
+                className="px-2.5 py-1.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-lg text-[11px] transition-all flex items-center space-x-1 shadow-xs cursor-pointer ml-1"
+                title="Tüm pozisyon kartlarını aç veya kapat"
+              >
+                <FolderOpen className="w-3.5 h-3.5" />
+                <span>{expandedPositionIds.length === DEPARTMENTS_DATA.length ? 'Tümünü Daralt' : 'Tümünü Aç'}</span>
+              </button>
+            )}
+          </div>
+
           {selectedCourseIds.length > 0 && (
             <button
               onClick={() => setShowOnlySelected((prev) => !prev)}
@@ -1159,389 +1571,79 @@ function EgitimlerCatalogContent() {
         </div>
       </div>
 
-      {/* FLUID FULL-WIDTH TABLE WITH DEDICATED SEVİYE & SERTİFİKA TÜRÜ COLUMNS */}
+      {/* FLUID FULL-WIDTH TABLE / POSITION GROUPED CARDS */}
       {filteredCourses.length > 0 ? (
-        <div className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
-          <table className="w-full text-left text-xs table-fixed">
-            <thead className="bg-[#0B2A4A] text-white uppercase font-black tracking-wider border-b border-white/10 select-none">
-              <tr>
-                {/* 1. CHECKBOX */}
-                <th
-                  onClick={toggleSelectAllFiltered}
-                  className="py-3 px-1 w-[40px] text-center cursor-pointer hover:bg-white/15 transition-colors border-r border-white/10"
-                  title="Tüm Listeyi Seç / Kaldır"
+        viewMode === 'grouped' ? (
+          <div className="space-y-6">
+            {groupedCoursesByDepartment.map(({ dept, courses }) => {
+              const isExpanded = expandedPositionIds.includes(dept.id);
+              const deptTotalHours = courses.reduce((sum, c) => sum + (c.duration || 0), 0);
+
+              return (
+                <div
+                  key={dept.id}
+                  className="bg-white border-2 border-slate-200 hover:border-[#087F96]/40 rounded-3xl overflow-hidden shadow-sm transition-all space-y-0"
                 >
-                  <div className="flex items-center justify-center">
-                    <input
-                      type="checkbox"
-                      checked={isAllSelected}
-                      onChange={() => {}}
-                      className="w-3.5 h-3.5 rounded text-[#087F96] focus:ring-[#087F96] cursor-pointer accent-[#087F96]"
-                    />
-                  </div>
-                </th>
-
-                {/* 2. DERS ADI */}
-                <th className="py-2.5 px-2.5 w-[22%] bg-[#052240] border-r border-white/10">
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between cursor-pointer" onClick={() => handleSort('title')}>
-                      <span className="text-cyan-300 font-black text-[10px] tracking-wider truncate">DERS ADI</span>
-                      <ArrowUpDown className="w-3 h-3 text-cyan-300 shrink-0" />
-                    </div>
-                    {/* LIVE SEARCH INPUT BOX */}
-                    <div className="relative">
-                      <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
-                      <input
-                        type="text"
-                        placeholder="Ders ara..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-7 pr-5 py-0.5 bg-[#0B2A4A] text-white placeholder-gray-400 text-[10px] font-normal rounded-lg border border-cyan-400/40 focus:outline-none focus:ring-1 focus:ring-amber-400"
-                      />
-                      {searchQuery && (
-                        <button
-                          onClick={() => setSearchQuery('')}
-                          className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </th>
-
-                {/* 3. POZİSYON */}
-                <th className="py-2.5 px-2 w-[13%] bg-[#084C74] border-r border-white/20">
-                  <select
-                    value={positionFilter}
-                    onChange={(e) => setPositionFilter(e.target.value)}
-                    className="w-full bg-transparent text-amber-300 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-amber-300 pb-0.5 hover:text-white truncate"
+                  {/* Position Accordion Card Header */}
+                  <div
+                    onClick={() => togglePositionExpand(dept.id)}
+                    className="bg-gradient-to-r from-[#0B2A4A] via-[#052240] to-[#087F96] text-white p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:brightness-110 transition-all select-none border-b border-white/10"
                   >
-                    <option value="all" className="bg-[#0B2A4A] text-white">🏬 POZİSYON (TÜMÜ)</option>
-                    {DEPARTMENTS_DATA.map((d) => (
-                      <option key={d.id} value={d.id} className="bg-[#0B2A4A] text-amber-300 font-bold">
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
-                </th>
-
-                {/* 4. EĞİTMEN */}
-                <th className="py-2.5 px-2 w-[12%] bg-[#056B80] border-r border-white/20">
-                  <select
-                    value={instructorFilter}
-                    onChange={(e) => setInstructorFilter(e.target.value)}
-                    className="w-full bg-transparent text-amber-300 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-amber-300 pb-0.5 hover:text-white truncate"
-                  >
-                    <option value="all" className="bg-[#0B2A4A] text-white">🎓 EĞİTMEN (TÜMÜ)</option>
-                    {ALL_INSTRUCTORS.map((inst) => (
-                      <option key={inst.id} value={inst.id} className="bg-[#0B2A4A] text-amber-300 font-bold">
-                        👤 {inst.name}
-                      </option>
-                    ))}
-                  </select>
-                </th>
-
-                {/* 5. SÜRE */}
-                <th
-                  onClick={() => handleSort('duration')}
-                  className="py-3 px-1 w-[45px] text-center cursor-pointer hover:bg-white/10 transition-colors border-r border-white/10"
-                >
-                  <div className="flex items-center justify-center space-x-0.5 text-[10px]">
-                    <span>SÜRE</span>
-                    <ArrowUpDown className="w-2.5 h-2.5 text-cyan-300 shrink-0" />
-                  </div>
-                </th>
-
-                {/* 6. EĞİTİM ÜCRETİ (SADECE ÜCRET) */}
-                <th
-                  onClick={() => handleSort('price')}
-                  className="py-3 px-2 w-[85px] bg-[#084C74] text-right cursor-pointer hover:bg-[#053856] transition-colors border-r border-white/20"
-                  title="Fiyata göre artan/azalan sırala"
-                >
-                  <div className="flex items-center justify-end space-x-0.5 text-amber-300 font-black text-[10px]">
-                    <span>ÜCRET</span>
-                    <ArrowUpDown className="w-2.5 h-2.5 text-amber-300 shrink-0" />
-                  </div>
-                </th>
-
-                {/* 7. 🏷️ DEDICATED SEVİYE COLUMN HEADER WITH DROPDOWN FILTER */}
-                <th className="py-2.5 px-2 w-[100px] bg-[#053856] border-r border-white/20 text-center">
-                  <select
-                    value={levelFilter}
-                    onChange={(e) => setLevelFilter(e.target.value)}
-                    className="w-full bg-transparent text-amber-300 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-amber-300 pb-0.5 hover:text-white text-center truncate"
-                  >
-                    <option value="all" className="bg-[#0B2A4A] text-white">⭐ SEVİYE (TÜMÜ)</option>
-                    <option value="Executive" className="bg-[#0B2A4A] text-amber-300 font-bold">👑 Executive</option>
-                    <option value="Yönetici" className="bg-[#0B2A4A] text-purple-300 font-bold">👔 Yönetici</option>
-                    <option value="Uzmanlık" className="bg-[#0B2A4A] text-emerald-300 font-bold">⭐ Uzmanlık</option>
-                    <option value="Standart" className="bg-[#0B2A4A] text-blue-300 font-bold">🔹 Standart</option>
-                  </select>
-                </th>
-
-                {/* 8. SERTİFİKA TÜRÜ */}
-                <th className="py-2.5 px-2 w-[125px] bg-purple-950 border-r border-purple-400/40 text-center">
-                  <select
-                    value={certFilter}
-                    onChange={(e) => setCertFilter(e.target.value)}
-                    className="w-full bg-transparent text-purple-200 font-black text-[10px] uppercase outline-none cursor-pointer border-b border-purple-300 pb-0.5 hover:text-white text-center truncate"
-                  >
-                    <option value="all" className="bg-[#0B2A4A] text-white">📜 SERTİFİKA TÜRÜ</option>
-                    <option value="universite" className="bg-[#0B2A4A] text-purple-200">🎓 Üniversite</option>
-                    <option value="egitmen" className="bg-[#0B2A4A] text-emerald-200">📜 Eğitmen</option>
-                    <option value="sertifikasiz" className="bg-[#0B2A4A] text-gray-300">⚪ Sertifikasız</option>
-                  </select>
-                </th>
-
-                {/* 9. KAPSAM */}
-                <th className="py-2.5 px-1 w-[55px] text-center border-r border-white/10">
-                  <select
-                    value={kapsamFilter}
-                    onChange={(e) => setKapsamFilter(e.target.value)}
-                    className="w-full bg-transparent text-white font-black text-[10px] uppercase outline-none cursor-pointer border-b border-white/40 pb-0.5 hover:text-cyan-300 text-center"
-                  >
-                    <option value="all" className="bg-[#0B2A4A] text-white">KAPSAM</option>
-                    <option value="Zorunlu" className="bg-[#0B2A4A] text-rose-300">Zorunlu</option>
-                    <option value="Önerilen" className="bg-[#0B2A4A] text-blue-300">Önerilen</option>
-                  </select>
-                </th>
-
-                {/* 10. İŞLEM */}
-                <th className="py-3 px-1 w-[140px] text-center">İŞLEM</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 font-medium">
-              {filteredCourses.map((course) => {
-                const instructor = getInstructorForCourse(course.slug || course.id, course.category);
-                const courseImg = getCourseImage(course.title, course.category, course.department);
-                const isSelected = selectedCourseIds.includes(course.id);
-                const isInCart = cartItemIds.includes(course.id);
-                const priceInfo = calculateCoursePrice(course);
-                const certBadge = getCourseCertBadge(course, priceInfo.price);
-
-                return (
-                  <tr
-                    key={course.id}
-                    onClick={() => handleOpenCourseModal(course)}
-                    className={`hover:bg-blue-50/60 cursor-pointer transition-colors ${
-                      isSelected ? 'bg-emerald-50/90 border-l-4 border-l-emerald-500 font-bold' : ''
-                    }`}
-                  >
-                    {/* Checkbox */}
-                    <td
-                      className="py-3 px-1 text-center border-r border-gray-100 w-[40px]"
-                      onClick={(e) => toggleCourseSelect(course.id, e)}
-                    >
-                      <div className="flex flex-col items-center justify-center space-y-0.5">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => {}}
-                          className="w-3.5 h-3.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer accent-emerald-600"
-                        />
-                        {isSelected && (
-                          <span className="px-1 py-0.2 bg-emerald-600 text-white font-black text-[8px] rounded-full uppercase tracking-tighter">
-                            ✓
+                    <div className="flex items-center space-x-3 min-w-0">
+                      <div className="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black shadow-md shrink-0 text-sm">
+                        🏬
+                      </div>
+                      <div className="min-w-0 space-y-0.5">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="font-black text-sm sm:text-base text-white truncate">{dept.name}</h3>
+                          <span className="text-[10px] bg-amber-400 text-slate-950 font-black px-2.5 py-0.5 rounded-full font-mono shrink-0">
+                            {courses.length} Eğitim
                           </span>
+                          <span className="text-[10px] bg-white/20 text-cyan-200 font-bold px-2.5 py-0.5 rounded-full font-mono shrink-0 hidden sm:inline-block">
+                            ⏱️ {deptTotalHours} Saat
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-200 font-light truncate max-w-2xl">
+                          {dept.careerGoal ? `🎯 Hedef: ${dept.careerGoal} • ` : ''}{dept.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-3 shrink-0 ml-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPositionFilter(positionFilter === dept.id ? 'all' : dept.id);
+                        }}
+                        className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white font-bold text-[11px] rounded-xl transition-all border border-white/20 hidden md:inline-flex items-center space-x-1"
+                        title="Sadece bu pozisyona ait eğitimleri süz"
+                      >
+                        <Filter className="w-3 h-3 text-amber-300" />
+                        <span>{positionFilter === dept.id ? 'Süzmeyi Kaldır' : 'Pozisyonu Süz'}</span>
+                      </button>
+                      <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
+                        {isExpanded ? (
+                          <ChevronUp className="w-5 h-5" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5" />
                         )}
                       </div>
-                    </td>
-
-                    {/* DERS ADI */}
-                    <td className="py-2.5 px-2.5 w-[22%] overflow-hidden">
-                      <div className="flex items-start space-x-2">
-                        <div className="relative shrink-0 mt-0.5">
-                          <img src={courseImg} alt={course.title} className="w-8 h-8 rounded-lg object-cover border border-gray-200 shadow-xs" />
-                          {isSelected && (
-                            <div className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 shadow-sm">
-                              <Check className="w-2.5 h-2.5 stroke-[3]" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="min-w-0 flex-1 space-y-0.5">
-                          <div className="font-extrabold text-xs text-[#0B2A4A] group-hover:text-[#087F96] leading-tight truncate" title={course.title}>
-                            {course.title}
-                          </div>
-                          <span className="text-[10px] text-gray-400 block truncate">{course.subCategory}</span>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* POZİSYON */}
-                    <td className="py-2.5 px-2 text-emerald-800 font-extrabold text-[11px] truncate bg-emerald-50/20" title={course.department}>
-                      {course.department}
-                    </td>
-
-                    {/* EĞİTMEN */}
-                    <td className="py-2.5 px-2 overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center space-x-1.5 min-w-0">
-                        <img
-                          src={instructor.avatar}
-                          alt={instructor.name}
-                          className="w-6 h-6 rounded-full object-cover border border-emerald-500 shrink-0"
-                        />
-                        <button
-                          onClick={(e) => handleOpenInstructorModal(e, instructor)}
-                          className="font-bold text-[11px] text-[#0B2A4A] hover:text-[#087F96] hover:underline truncate"
-                          title={instructor.name}
-                        >
-                          {instructor.name}
-                        </button>
-                      </div>
-                    </td>
-
-                    {/* SÜRE */}
-                    <td className="py-2.5 px-1 text-center font-mono font-bold text-gray-700 text-xs border-r border-gray-100">{course.duration} Sa</td>
-
-                    {/* EĞİTİM ÜCRETİ (CLEAN SINGLE VALUE) */}
-                    <td className="py-2.5 px-2 text-right whitespace-nowrap bg-amber-50/70 border-r border-amber-200/80">
-                      <div className="font-black text-xs text-[#0B2A4A] font-mono">
-                        {priceInfo.formatted}
-                      </div>
-                    </td>
-
-                    {/* 🏷️ DEDICATED SEVİYE BUTTON / BADGE COLUMN */}
-                    <td className="py-2.5 px-2 text-center border-r border-gray-100 w-[100px]" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        onClick={() => setLevelFilter(levelFilter === priceInfo.badge ? 'all' : priceInfo.badge)}
-                        className={`inline-flex items-center justify-center px-2 py-0.5 rounded-lg text-[10px] border shadow-2xs font-extrabold cursor-pointer transition-transform hover:scale-105 ${priceInfo.badgeColor}`}
-                        title={`Tıklayarak sadece ${priceInfo.badge} seviyesindeki eğitimleri süzün`}
-                      >
-                        {priceInfo.badge}
-                      </button>
-                    </td>
-
-                    {/* SERTİFİKA TÜRÜ */}
-                    <td className="py-2.5 px-2 text-center border-r border-gray-100 w-[125px]">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] border shadow-2xs ${certBadge.badgeClass}`}>
-                        {certBadge.shortLabel}
-                      </span>
-                    </td>
-
-                    {/* KAPSAM */}
-                    <td className="py-2.5 px-1 text-center border-r border-gray-100">
-                      <span className={`px-1.5 py-0.5 text-[9px] font-black rounded ${
-                        course.isMandatory ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {course.isMandatory ? 'Zorunlu' : 'Önerilen'}
-                      </span>
-                    </td>
-
-                    {/* İŞLEM BUTTONS */}
-                    <td className="py-2.5 px-1 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center justify-center space-x-1">
-                        
-                        {/* ŞİMDİ SATIN AL */}
-                        <button
-                          onClick={() => {
-                            addToCart(course.id);
-                            setIsCartModalOpen(true);
-                          }}
-                          className="px-2 py-1 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-lg shadow-xs transition-all flex items-center space-x-0.5 text-[10px] border border-amber-300"
-                          title="Şimdi Satın Al"
-                        >
-                          <CreditCard className="w-3 h-3" />
-                          <span>Satın Al</span>
-                        </button>
-
-                        {/* SEPETE EKLE */}
-                        <button
-                          onClick={(e) => addToCart(course.id, e)}
-                          className={`p-1 rounded-lg font-bold text-[10px] transition-all border ${
-                            isInCart
-                              ? 'bg-emerald-100 text-emerald-900 border-emerald-300 font-black'
-                              : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
-                          }`}
-                          title={isInCart ? 'Sepetinizde Ekli' : 'Sepete Ekle'}
-                        >
-                          <ShoppingCart className="w-3.5 h-3.5" />
-                        </button>
-
-                        {/* DETAY */}
-                        <button
-                          onClick={() => handleOpenCourseModal(course)}
-                          className="px-1.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-lg text-[10px] border border-gray-200"
-                        >
-                          Detay
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-
-            {/* DEDICATED TABLE SUMMARY FOOTER ROW (TFOOT) DIRECTLY BELOW THE TABLE */}
-            <tfoot className="bg-[#0B2A4A] text-white font-black border-t-2 border-amber-400 select-none">
-              <tr>
-                {/* 1. Checkbox Column Status */}
-                <td className="py-3 px-1 text-center font-mono text-[9px] text-amber-300 border-r border-white/10">
-                  {selectedCourseIds.length > 0 ? `${selectedCourseIds.length} SEÇİLİ` : `${filteredCourses.length} DERS`}
-                </td>
-
-                {/* 2. Title Column Summary */}
-                <td className="py-3 px-2.5 text-xs text-amber-300 uppercase tracking-wider font-extrabold">
-                  {selectedCourseIds.length > 0
-                    ? `SEÇİLEN (${selectedCourseIds.length}) EĞİTİM TOPLAMI`
-                    : `LİSTELENEN (${filteredCourses.length}) EĞİTİM TOPLAMI`}
-                </td>
-
-                {/* 3. Pozisyon */}
-                <td className="py-3 px-2 text-[10px] text-gray-300 font-bold uppercase truncate border-r border-white/10">
-                  GENEL MÜFREDAT
-                </td>
-
-                {/* 4. Eğitmen */}
-                <td className="py-3 px-2 text-[10px] text-gray-300 font-bold uppercase truncate border-r border-white/10">
-                  AKADEMİ KADROSU
-                </td>
-
-                {/* 5. Süre Total */}
-                <td className="py-3 px-1 text-center font-mono font-black text-cyan-300 text-xs border-r border-white/10">
-                  {displayedTotals.hours} Sa
-                </td>
-
-                {/* 6. ÜCRET TOTAL */}
-                <td className="py-3 px-2 text-right bg-amber-400/25 text-amber-300 font-black text-xs font-mono border-r border-amber-400/50 shadow-inner">
-                  <div className="space-y-0.5">
-                    <div className="text-amber-300 text-xs font-black">
-                      ₺{displayedTotals.budget.toLocaleString('tr-TR')} TL
-                    </div>
-                    <div className="text-[8px] text-amber-200 font-bold uppercase tracking-tighter">
-                      TOPLAM TUTAR
                     </div>
                   </div>
-                </td>
 
-                {/* 7. Seviye Footer */}
-                <td className="py-3 px-2 text-center text-[9px] text-amber-200 font-bold border-r border-white/10">
-                  TÜM SEVİYELER
-                </td>
-
-                {/* 8. Sertifika Türü Footer */}
-                <td className="py-3 px-2 text-center text-[9px] text-purple-200 font-bold border-r border-white/10">
-                  AKREDİTE
-                </td>
-
-                {/* 9. Kapsam */}
-                <td className="py-3 px-1 text-center text-[9px] text-gray-300 font-bold border-r border-white/10">
-                  GENEL
-                </td>
-
-                {/* 10. İşlem */}
-                <td className="py-3 px-1 text-center">
-                  <button
-                    onClick={addSelectedToCart}
-                    className="px-2.5 py-1 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black rounded-lg text-[10px] shadow-md border border-amber-300 cursor-pointer transition-all hover:scale-105"
-                  >
-                    💳 Toplu Satın Al
-                  </button>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+                  {/* Expanded Position Course Table */}
+                  {isExpanded && (
+                    <div className="p-1 overflow-x-auto">
+                      {renderCourseTable(courses, false)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          renderCourseTable(filteredCourses, true)
+        )
       ) : (
         <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center space-y-4">
           <BookOpen className="h-12 w-12 text-gray-300 mx-auto" />
