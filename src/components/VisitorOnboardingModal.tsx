@@ -168,11 +168,8 @@ export default function VisitorOnboardingModal() {
   const [regData, setRegData] = useState({
     name: '',
     surname: '',
-    email: '',
     phone: '',
-    position: '',
-    customPosition: '',
-    companyName: '',
+    email: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -265,8 +262,8 @@ export default function VisitorOnboardingModal() {
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!regData.name.trim() || !regData.surname.trim() || !regData.email.trim() || !regData.phone.trim() || !regData.position || !regData.companyName.trim() || !regData.password) {
-      setErrorMsg('Lütfen tüm zorunlu alanları doldurunuz.');
+    if (!regData.name.trim() || !regData.surname.trim() || !regData.phone.trim() || !regData.email.trim() || !regData.password) {
+      setErrorMsg('Lütfen Ad, Soyad, Telefon Numarası, E-posta ve Şifre alanlarını doldurunuz.');
       return;
     }
     if (regData.password.length < 6) {
@@ -276,7 +273,6 @@ export default function VisitorOnboardingModal() {
 
     setErrorMsg(null);
     setIsSubmitting(true);
-    const finalTitle = regData.position === 'Diğer' ? regData.customPosition : regData.position;
 
     try {
       const res = await fetch('/api/register', {
@@ -285,10 +281,8 @@ export default function VisitorOnboardingModal() {
         body: JSON.stringify({
           name: regData.name,
           surname: regData.surname,
-          email: regData.email,
           phone: regData.phone,
-          title: finalTitle,
-          companyName: regData.companyName,
+          email: regData.email,
           password: regData.password
         })
       });
@@ -521,22 +515,6 @@ export default function VisitorOnboardingModal() {
                 </div>
               </div>
 
-              {/* E-posta */}
-              <div>
-                <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">E-Posta Adresi *</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                  <input
-                    type="email"
-                    value={regData.email}
-                    onChange={(e) => setRegData({ ...regData, email: e.target.value })}
-                    placeholder="ornek@domain.com"
-                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#0B2A4A] font-medium"
-                    required
-                  />
-                </div>
-              </div>
-
               {/* Telefon */}
               <div>
                 <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">Telefon Numarası *</label>
@@ -553,47 +531,16 @@ export default function VisitorOnboardingModal() {
                 </div>
               </div>
 
-              {/* Pozisyon */}
+              {/* E-posta */}
               <div>
-                <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">Pozisyon / Görev *</label>
+                <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">E-Posta Adresi *</label>
                 <div className="relative">
-                  <Briefcase className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                  <select
-                    value={regData.position}
-                    onChange={(e) => setRegData({ ...regData, position: e.target.value })}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#0B2A4A] font-medium cursor-pointer"
-                    required
-                  >
-                    <option value="" disabled>Pozisyon seçiniz...</option>
-                    {POSITIONS_LIST.map((pos) => (
-                      <option key={pos} value={pos}>{pos}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {regData.position === 'Diğer' && (
-                <div>
+                  <Mail className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                   <input
-                    type="text"
-                    value={regData.customPosition}
-                    onChange={(e) => setRegData({ ...regData, customPosition: e.target.value })}
-                    placeholder="Pozisyonunuzu belirtiniz..."
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#0B2A4A] font-medium"
-                  />
-                </div>
-              )}
-
-              {/* Çalıştığı Kurum */}
-              <div>
-                <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">Çalıştığı Kurum / Şirket *</label>
-                <div className="relative">
-                  <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                  <input
-                    type="text"
-                    value={regData.companyName}
-                    onChange={(e) => setRegData({ ...regData, companyName: e.target.value })}
-                    placeholder="Şirket / İşletme Adı"
+                    type="email"
+                    value={regData.email}
+                    onChange={(e) => setRegData({ ...regData, email: e.target.value })}
+                    placeholder="ornek@domain.com"
                     className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#0B2A4A] font-medium"
                     required
                   />

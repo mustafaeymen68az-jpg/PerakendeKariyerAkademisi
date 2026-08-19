@@ -26,10 +26,10 @@ export async function POST(req: Request) {
       rawSurname = parts.slice(-1).join(' ');
     }
 
-    // Basic Validation
-    if (!firstName || !email || !password) {
+    // Basic Validation: Name, Surname (or full name), Phone, Email, Password required
+    if (!firstName || !phone || !email || !password) {
       return NextResponse.json(
-        { success: false, message: 'Lütfen Ad, E-posta ve Şifre alanlarını doldurunuz.' },
+        { success: false, message: 'Lütfen Ad, Soyad, Telefon Numarası, E-posta ve Şifre alanlarını doldurunuz.' },
         { status: 400 }
       );
     }

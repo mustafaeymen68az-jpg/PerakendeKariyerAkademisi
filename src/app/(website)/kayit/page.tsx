@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   User,
-  Building2,
-  Briefcase,
   Mail,
   Phone,
   Lock,
@@ -15,50 +13,17 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
-  ChevronDown,
   UserPlus
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 import HomePageBackground from '@/components/HomePageBackground';
 
-const POSITIONS = [
-  'Açık Şarküteri Reyonu Satış Elemanı',
-  'Bilgi İşlem',
-  'Bölge Müdürü',
-  'CEO / Genel Müdür / İşletme Sahibi',
-  'E-Ticaret ve Online Sipariş',
-  'Finans',
-  'Güvenlik ve Kayıp Önleme',
-  'İnsan Kaynakları',
-  'Kasap Reyonu Satış Elemanı',
-  'Kasiyer',
-  'Kuruyemiş Reyonu Satış Elemanı',
-  'Lojistik ve Depo',
-  'Mağaza Müdür Yardımcıları',
-  'Mağaza Müdürleri',
-  'Meyve Sebze Reyonu Satış Elemanı',
-  'Muhasebe',
-  'Müşteri Hizmetleri ve Danışma',
-  'Pazarlama ve CRM',
-  'Rapor Analiz',
-  'Reyon Satış Elemanları',
-  'Satınalma ve Kategori Yönetimi',
-  'Taze Gıda Reyonları',
-  'Teknik Bakım ve İdari İşler',
-  'Temizlik ve Destek Hizmetleri',
-  'Unlu Mamuller ve Hazır Yemek Reyonu',
-  'Diğer'
-];
-
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
-    email: '',
     phone: '',
-    position: '',
-    customPosition: '',
-    companyName: '',
+    email: '',
     password: '',
   });
 
@@ -68,7 +33,7 @@ export default function RegisterPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
@@ -81,11 +46,15 @@ export default function RegisterPage() {
     let isValid = true;
 
     if (!formData.name.trim()) {
-      errs.name = 'İsim giriniz.';
+      errs.name = 'Adınızı giriniz.';
       isValid = false;
     }
     if (!formData.surname.trim()) {
-      errs.surname = 'Soyisim giriniz.';
+      errs.surname = 'Soyadınızı giriniz.';
+      isValid = false;
+    }
+    if (!formData.phone.trim()) {
+      errs.phone = 'Telefon numarası giriniz.';
       isValid = false;
     }
     if (!formData.email.trim()) {
@@ -93,21 +62,6 @@ export default function RegisterPage() {
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errs.email = 'Geçerli bir e-posta adresi giriniz.';
-      isValid = false;
-    }
-    if (!formData.phone.trim()) {
-      errs.phone = 'Telefon numarası giriniz.';
-      isValid = false;
-    }
-    if (!formData.position) {
-      errs.position = 'Lütfen pozisyonunuzu seçiniz.';
-      isValid = false;
-    } else if (formData.position === 'Diğer' && !formData.customPosition.trim()) {
-      errs.customPosition = 'Lütfen pozisyonunuzu belirtiniz.';
-      isValid = false;
-    }
-    if (!formData.companyName.trim()) {
-      errs.companyName = 'Çalıştığınız kurumu / işletmeyi giriniz.';
       isValid = false;
     }
     if (!formData.password) {
@@ -129,8 +83,6 @@ export default function RegisterPage() {
     setIsSubmitting(true);
     setServerError('');
 
-    const finalTitle = formData.position === 'Diğer' ? formData.customPosition : formData.position;
-
     try {
       const response = await fetch('/api/register', {
         method: 'POST',
@@ -138,10 +90,8 @@ export default function RegisterPage() {
         body: JSON.stringify({
           name: formData.name,
           surname: formData.surname,
-          email: formData.email,
           phone: formData.phone,
-          title: finalTitle,
-          companyName: formData.companyName,
+          email: formData.email,
           password: formData.password,
         }),
       });
@@ -234,7 +184,7 @@ export default function RegisterPage() {
               {/* Registration Form */}
               <form onSubmit={handleSubmit} className="space-y-3.5">
                 
-                {/* 1. AD & SOYAD */}
+                {/* AD & SOYAD */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">
@@ -274,28 +224,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                {/* 2. E-POSTA */}
-                <div>
-                  <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">
-                    E-Posta Adresi *
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-3 h-4 w-4 text-gray-400" />
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="ornek@domain.com"
-                      className={`w-full pl-10 pr-4 py-2.5 bg-[#F8FAFC] border rounded-2xl text-xs text-[#0B2A4A] font-medium placeholder-gray-400 focus:outline-none focus:bg-white transition-all ${
-                        errors.email ? 'border-red-500' : 'border-gray-200 focus:border-[#087F96] focus:ring-2 focus:ring-[#087F96]/10'
-                      }`}
-                    />
-                  </div>
-                  {errors.email && <span className="text-[10px] text-red-500 font-semibold px-1">{errors.email}</span>}
-                </div>
-
-                {/* 3. TELEFON */}
+                {/* TELEFON */}
                 <div>
                   <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">
                     Telefon Numarası *
@@ -316,74 +245,28 @@ export default function RegisterPage() {
                   {errors.phone && <span className="text-[10px] text-red-500 font-semibold px-1">{errors.phone}</span>}
                 </div>
 
-                {/* 4. POZİSYON */}
+                {/* E-POSTA */}
                 <div>
                   <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">
-                    Pozisyon / Görev *
+                    E-Posta Adresi *
                   </label>
                   <div className="relative">
-                    <Briefcase className="absolute left-3.5 top-3 h-4 w-4 text-gray-400" />
-                    <select
-                      name="position"
-                      value={formData.position}
-                      onChange={handleChange}
-                      className={`w-full pl-10 pr-8 py-2.5 bg-[#F8FAFC] border rounded-2xl text-xs text-[#0B2A4A] font-medium focus:outline-none focus:bg-white transition-all appearance-none cursor-pointer ${
-                        errors.position ? 'border-red-500' : 'border-gray-200 focus:border-[#087F96] focus:ring-2 focus:ring-[#087F96]/10'
-                      }`}
-                    >
-                      <option value="" disabled>
-                        Pozisyonunuzu seçiniz...
-                      </option>
-                      {POSITIONS.map((pos) => (
-                        <option key={pos} value={pos}>
-                          {pos}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
-                  {errors.position && <span className="text-[10px] text-red-500 font-semibold px-1">{errors.position}</span>}
-                </div>
-
-                {/* Diğer pozisyon girme alanı */}
-                {formData.position === 'Diğer' && (
-                  <div>
+                    <Mail className="absolute left-3.5 top-3 h-4 w-4 text-gray-400" />
                     <input
-                      type="text"
-                      name="customPosition"
-                      value={formData.customPosition}
+                      type="email"
+                      name="email"
+                      value={formData.email}
                       onChange={handleChange}
-                      placeholder="Pozisyonunuzu yazınız..."
-                      className={`w-full px-4 py-2.5 bg-[#F8FAFC] border rounded-2xl text-xs text-[#0B2A4A] font-medium placeholder-gray-400 focus:outline-none focus:bg-white transition-all ${
-                        errors.customPosition ? 'border-red-500' : 'border-gray-200 focus:border-[#087F96] focus:ring-2 focus:ring-[#087F96]/10'
-                      }`}
-                    />
-                    {errors.customPosition && <span className="text-[10px] text-red-500 font-semibold px-1">{errors.customPosition}</span>}
-                  </div>
-                )}
-
-                {/* 5. ÇALIŞTIĞI KURUM */}
-                <div>
-                  <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">
-                    Çalıştığı Kurum / İşletme *
-                  </label>
-                  <div className="relative">
-                    <Building2 className="absolute left-3.5 top-3 h-4 w-4 text-gray-400" />
-                    <input
-                      type="text"
-                      name="companyName"
-                      value={formData.companyName}
-                      onChange={handleChange}
-                      placeholder="Şirket / İşletme Adı"
+                      placeholder="ornek@domain.com"
                       className={`w-full pl-10 pr-4 py-2.5 bg-[#F8FAFC] border rounded-2xl text-xs text-[#0B2A4A] font-medium placeholder-gray-400 focus:outline-none focus:bg-white transition-all ${
-                        errors.companyName ? 'border-red-500' : 'border-gray-200 focus:border-[#087F96] focus:ring-2 focus:ring-[#087F96]/10'
+                        errors.email ? 'border-red-500' : 'border-gray-200 focus:border-[#087F96] focus:ring-2 focus:ring-[#087F96]/10'
                       }`}
                     />
                   </div>
-                  {errors.companyName && <span className="text-[10px] text-red-500 font-semibold px-1">{errors.companyName}</span>}
+                  {errors.email && <span className="text-[10px] text-red-500 font-semibold px-1">{errors.email}</span>}
                 </div>
 
-                {/* 6. ŞİFRE */}
+                {/* ŞİFRE */}
                 <div>
                   <label className="block text-[11px] font-extrabold text-[#0B2A4A] mb-1">
                     Şifre Belirleyin *
